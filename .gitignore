@@ -1,0 +1,7 @@
+# Godot-generated imports and editor state.
+.godot/
+# Local builds, test evidence, and OS files.
+builds/
+artifacts/
+.DS_Store
+__pycache__/

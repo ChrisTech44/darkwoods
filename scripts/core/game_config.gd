@@ -9,7 +9,8 @@ extends Resource
 @export var stamina_restart: float = 1.0
 @export var interact_radius: float = 25.0
 @export var start_hold_seconds: float = 2.0
-@export var extraction_seconds: float = 5.0
+@export var extraction_seconds: float = 8.0
+@export var boarding_radius: float = 32.0
 @export var revive_seconds: float = 3.0
 @export var revive_grace_seconds: float = 2.0
 @export var bleedout_seconds: float = 16.0
@@ -22,3 +23,5 @@ extends Resource
 @export var memory_seconds: float = 6.0
 @export var search_seconds: float = 4.0
 @export var sprint_noise_interval: float = 0.7
+@export var night_ambient: Color = Color(0.035, 0.045, 0.065, 1.0)
+@export var flashlight_range: float = 220.0

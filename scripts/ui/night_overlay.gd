@@ -1,25 +1,32 @@
-extends CanvasLayer
-## Local visual only. Darkness never controls authority-side sight checks.
+extends Node2D
+## Real world lighting. CanvasLayer HUD remains unaffected by world darkness.
 
 var player: CampPlayer
-var shade: ColorRect
+var flashlight: PointLight2D
+var nearby_glow: PointLight2D
+var ambient: CanvasModulate
 
 
 func _ready() -> void:
-	layer = 3
-	shade = ColorRect.new()
-	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var shader_material := ShaderMaterial.new()
-	shader_material.shader = preload("res://assets/night.gdshader")
-	shade.material = shader_material
-	add_child(shade)
+	ambient = CanvasModulate.new()
+	ambient.color = player.config.night_ambient
+	add_child(ambient)
+	nearby_glow = CampLights.lamp(player, Vector2(0, -10), 38, Color("b3bfba"), 0.6)
+	nearby_glow.shadow_enabled = true
+	flashlight = PointLight2D.new()
+	flashlight.texture = CampLights.texture(true)
+	flashlight.texture_scale = player.config.flashlight_range / 128.0
+	flashlight.energy = 1.6
+	flashlight.color = Color("fff1bf")
+	flashlight.shadow_enabled = true
+	flashlight.shadow_filter = Light2D.SHADOW_FILTER_PCF5
+	player.add_child(flashlight)
 
 
 func _process(_delta: float) -> void:
 	if not is_instance_valid(player):
 		return
-	var screen := player.get_global_transform_with_canvas().origin
-	shade.material.set_shader_parameter("survivor_uv", screen / get_viewport().get_visible_rect().size)
-	shade.material.set_shader_parameter("facing", player.facing)
-	shade.material.set_shader_parameter("flashlight_on", player.flashlight_on)
+	flashlight.position = Vector2(0, -12) + player.facing * 8.0
+	flashlight.rotation = player.facing.angle()
+	flashlight.enabled = player.flashlight_on and player.status not in [CampPlayer.Status.BOARDED, CampPlayer.Status.ESCAPED, CampPlayer.Status.DEAD]
+	nearby_glow.enabled = player.status not in [CampPlayer.Status.BOARDED, CampPlayer.Status.ESCAPED]

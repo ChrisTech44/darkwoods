@@ -1,2 +1,2 @@
 # Preserve native engine log output, including its trailing empty line.
-docs/evidence/**/*.log whitespace=-blank-at-eof
+docs/evidence/**/*.log whitespace=-blank-at-eof,-blank-at-eol

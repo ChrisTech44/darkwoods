@@ -28,48 +28,33 @@ func _run() -> void:
 	await _tap(KEY_F)
 	await _tap(KEY_TAB)
 	_check(level.hud.inventory_label.visible, "inventory_key_opens_pack")
+	_check(level.hud.chart.visible, "inventory_key_opens_camp_map")
 	await _tap(KEY_TAB)
+	_check(not level.hud.chart.visible, "inventory_key_closes_camp_map")
 	await _tap(KEY_ESCAPE)
 	var killer_position: Vector2 = level.killer.position
 	await _frames(60)
 	_check(level.paused and level.killer.position == killer_position, "pause_freezes_killer")
 	await _tap(KEY_ESCAPE)
 	_check(not level.paused, "escape_resumes_round")
-	# Shed first, around its southern doorway. Every waypoint uses real collision.
-	if not await _leg([Vector2(132, 384), Vector2(132, 444), Vector2(468, 444), Vector2(468, 360), Vector2(492, 360)]):
-		_finish()
-		return
-	await _tap(KEY_E)
-	_check("key" in player.inventory, "walked_to_shed_and_collected_key")
-	if capture:
-		await _snapshot("playthrough_shed")
-	if not await _leg([Vector2(468, 360), Vector2(468, 444), Vector2(132, 444), Vector2(132, 330), Vector2(108, 330)]):
-		_finish()
-		return
-	await _tap(KEY_E)
-	_check("key" in level.van.installed, "walked_back_and_installed_key")
-	if not await _leg([Vector2(156, 330), Vector2(156, 204), Vector2(204, 204), Vector2(204, 120), Vector2(228, 120)]):
-		_finish()
-		return
-	await _tap(KEY_E)
-	_check("battery" in player.inventory, "walked_to_west_cabin_and_collected_battery")
-	if not await _leg([Vector2(204, 120), Vector2(204, 204), Vector2(156, 204), Vector2(156, 330), Vector2(108, 330)]):
-		_finish()
-		return
-	await _tap(KEY_E)
-	_check("battery" in level.van.installed, "walked_back_and_installed_battery")
-	if not await _leg([Vector2(156, 330), Vector2(156, 204), Vector2(540, 204), Vector2(540, 120), Vector2(564, 120)]):
-		_finish()
-		return
-	await _tap(KEY_E)
-	_check("fuel" in player.inventory, "walked_to_east_cabin_and_collected_fuel")
-	if not await _leg([Vector2(540, 120), Vector2(540, 204), Vector2(156, 204), Vector2(156, 330), Vector2(108, 330)]):
-		_finish()
-		return
-	await _tap(KEY_E)
+	# Visit the authored objectives via the native navigation mesh, using input.
+	for index in [2, 0, 1]:
+		var pickup: CampPickup = level.pickups[index]
+		if not await _navigate_to(pickup.global_position):
+			_finish()
+			return
+		await _tap(KEY_E)
+		_check(pickup.kind in player.inventory, "explored_building_and_collected_" + pickup.kind)
+		if capture:
+			await _snapshot("playthrough_" + pickup.kind)
+		if not await _navigate_to(level.van.interaction_point()):
+			_finish()
+			return
+		await _tap(KEY_E)
+		_check(pickup.kind in level.van.installed, "returned_and_installed_" + pickup.kind)
 	_check(level.van.installed.size() == 3, "all_components_installed_via_input")
 	await _hold(KEY_E, 130)
-	await _frames(310)
+	await _frames(ceili(level.config.extraction_seconds * 60.0) + 10)
 	_check(level.finished and level.won and player.status == CampPlayer.Status.ESCAPED, "complete_input_only_win_with_active_killer")
 	if capture:
 		await _snapshot("playthrough_win")
@@ -79,10 +64,10 @@ func _run() -> void:
 	player = level.player
 	_check(not level.finished and level.van.installed.is_empty(), "result_enter_restarts_round")
 	# Deliberately wait on the killer's patrol route to verify a complete loss.
-	if not await _leg([Vector2(132, 384), Vector2(132, 444), Vector2(708, 444), Vector2(708, 336), Vector2(684, 336)]):
+	if not await _navigate_to(Vector2(360, 216)):
 		_finish()
 		return
-	for index in range(2400):
+	for index in range(3600):
 		if level.finished:
 			break
 		await physics_frame
@@ -94,6 +79,21 @@ func _run() -> void:
 	await _frames(3)
 	_check(current_scene.name == "MainMenu" and get_nodes_in_group("survivors").is_empty() and get_nodes_in_group("killers").is_empty(), "results_menu_removes_round_actors")
 	_finish()
+
+
+func _navigate_to(destination: Vector2) -> bool:
+	NavigationServer2D.map_force_update(level.get_world_2d().navigation_map)
+	var path := NavigationServer2D.map_get_path(level.get_world_2d().navigation_map, player.global_position, destination, true)
+	for attempt in range(240):
+		if path.size() >= 2:
+			break
+		await physics_frame
+		path = NavigationServer2D.map_get_path(level.get_world_2d().navigation_map, player.global_position, destination, true)
+	print(JSON.stringify({"event": "path_probe", "count": path.size(), "destination": [destination.x, destination.y], "end": [path[-1].x, path[-1].y] if not path.is_empty() else []}))
+	_check(path.size() >= 2 and path[-1].distance_to(destination) < 4.0, "objective_has_reachable_navigation_path")
+	if path.size() < 2:
+		return false
+	return await _leg(Array(path))
 
 
 func _leg(points: Array) -> bool:

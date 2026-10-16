@@ -101,9 +101,12 @@ func _objective_checks() -> void:
 	await _frames(125)
 	Input.action_release("interact")
 	_check(level.van.running and not level.finished, "full_hold_starts_countdown")
+	_check(player.status == CampPlayer.Status.BOARDED and player in level.van.passengers, "starting_driver_boards_automatically")
+	player.receive_hit()
+	_check(player.status == CampPlayer.Status.BOARDED, "boarded_survivor_safe_from_killer")
 	if capture:
 		await _snapshot("van_countdown")
-	await _frames(310)
+	await _frames(ceili(level.config.extraction_seconds * 60.0) + 10)
 	_check(level.finished and level.won, "living_survivor_wins_round")
 	_check(player.status == CampPlayer.Status.ESCAPED, "per_player_escape_recorded")
 	if capture:
@@ -215,9 +218,8 @@ func _departure_failure_checks() -> void:
 	player.position = level.van.interaction_point()
 	await _frames(2)
 	level.try_interact(player)
-	Input.action_press("interact")
-	await _frames(125)
-	Input.action_release("interact")
+	# Engine-only fixture: no driver boards, to verify an empty van cannot win.
+	level.van.advance_start(player, true, level.config.start_hold_seconds)
 	var pause_event := InputEventKey.new()
 	pause_event.keycode = KEY_ESCAPE
 	pause_event.physical_keycode = KEY_ESCAPE
@@ -240,7 +242,7 @@ func _departure_failure_checks() -> void:
 	Input.parse_input_event(pause_event)
 	level.killer.enabled = false
 	player.position = Vector2(156, 384)
-	await _frames(310)
+	await _frames(ceili(level.config.extraction_seconds * 60.0) + 10)
 	_check(level.finished and not level.won, "empty_extraction_zone_loses_round")
 	_check(player.status == CampPlayer.Status.LEFT_BEHIND, "absent_survivor_recorded_left_behind")
 

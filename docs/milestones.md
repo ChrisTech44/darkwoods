@@ -6,6 +6,12 @@ engine checks. Full input-driven win/loss/restart runs pass headlessly and in a
 real graphical session. A human playtest at normal speed remains unrecorded;
 do not describe that manual gate as executed. Multiplayer remains M2.
 
+User-requested follow-up: boarding is now explicit and protects seated survivors,
+and an authorized visual/map pass expands the camp to 1536×960 with ten furnished
+buildings, original character/environment pixel art, shadow-casting lights and a
+field map. This work does not implement or claim M2 networking or unrelated M5
+randomization/replayability features.
+
 ## M1: offline vertical slice, one verified pass per step
 
 1. **Walking in camp.** Wire Play to a small ForestLevel, original placeholder

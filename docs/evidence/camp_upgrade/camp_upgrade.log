@@ -1,0 +1,36 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"map_has_four_times_original_area","passed":true}
+{"event":"assertion","name":"ten_authored_buildings","passed":true}
+{"event":"assertion","name":"dense_forest_layout","passed":true}
+{"event":"assertion","name":"native_pixel_tile_ground","passed":true}
+{"event":"assertion","name":"reachable_battery","passed":true}
+{"event":"assertion","name":"reachable_fuel","passed":true}
+{"event":"assertion","name":"reachable_key","passed":true}
+{"event":"assertion","name":"entrance_reachable_cabin","passed":true}
+{"event":"assertion","name":"entrance_reachable_cabin","passed":true}
+{"event":"assertion","name":"entrance_reachable_cabin","passed":true}
+{"event":"assertion","name":"entrance_reachable_bunkhouse","passed":true}
+{"event":"assertion","name":"entrance_reachable_workshop","passed":true}
+{"event":"assertion","name":"entrance_reachable_mess","passed":true}
+{"event":"assertion","name":"entrance_reachable_ranger","passed":true}
+{"event":"assertion","name":"entrance_reachable_bath","passed":true}
+{"event":"assertion","name":"entrance_reachable_infirmary","passed":true}
+{"event":"assertion","name":"entrance_reachable_boat","passed":true}
+{"event":"assertion","name":"roof_cuts_away_inside_lodge","passed":true}
+{"event":"assertion","name":"roof_restores_outside_lodge","passed":true}
+{"event":"assertion","name":"cannot_board_before_engine_starts","passed":true}
+{"event":"assertion","name":"distant_boarding_rejected","passed":true}
+{"event":"assertion","name":"e_interaction_boards_nearby_survivor","passed":true}
+{"event":"assertion","name":"boarding_status_explicit","passed":true}
+{"event":"assertion","name":"duplicate_boarding_rejected","passed":true}
+{"event":"assertion","name":"second_survivor_boards_at_side_door","passed":true}
+{"event":"assertion","name":"two_passengers_counted_once","passed":true}
+{"event":"assertion","name":"downed_survivor_cannot_board","passed":true}
+{"event":"assertion","name":"passengers_cannot_be_downed","passed":true}
+{"event":"assertion","name":"passenger_cannot_walk_out_of_van","passed":true}
+{"event":"round_finished","result":"2 survivor(s) escaped. You: escaped.","won":true}
+{"event":"assertion","name":"all_boarded_survivors_extract","passed":true}
+{"event":"assertion","name":"standing_near_van_does_not_silently_count_as_boarding","passed":true}
+{"checks":31,"event":"test_result","failures":0,"suite":"camp_upgrade"}

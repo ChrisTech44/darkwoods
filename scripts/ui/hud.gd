@@ -10,6 +10,8 @@ var pause_panel: PanelContainer
 var result_panel: PanelContainer
 var inventory_label: Label
 var threat_label: Label
+var location_label: Label
+var chart: Control
 var root: Control
 
 
@@ -49,8 +51,17 @@ func _ready() -> void:
 	stamina.add_theme_stylebox_override("fill", bar_fill)
 	root.add_child(stamina)
 	stamina.size = Vector2(68, 6)
-	inventory_label = _label(Vector2(9, 40), Vector2(180, 60), 9)
+	inventory_label = _label(Vector2(9, 40), Vector2(366, 124), 8)
+	var pack_style := style.duplicate() as StyleBoxFlat
+	pack_style.bg_color = Color("101c1c")
+	inventory_label.add_theme_stylebox_override("normal", pack_style)
+	location_label = _label(Vector2(9, 169), Vector2(366, 12), 8)
+	location_label.add_theme_color_override("font_color", Color("c3c6a1"))
 	inventory_label.hide()
+	chart = preload("res://scripts/ui/camp_chart.gd").new()
+	chart.position = Vector2(216, 46)
+	chart.size = Vector2(154, 112)
+	root.add_child(chart)
 	pause_panel = _panel("PAUSED", "Esc to resume", false)
 	pause_panel.hide()
 	result_panel = _panel("ROUND OVER", "", true)

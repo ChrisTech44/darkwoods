@@ -17,6 +17,7 @@ var stuck_clock: float = 0.0
 var enabled: bool = true
 var visible_target: CampPlayer
 var facing := Vector2.DOWN
+var stride: float = 0.0
 @onready var agent: NavigationAgent2D = $NavigationAgent2D
 
 
@@ -71,6 +72,7 @@ func _physics_process(delta: float) -> void:
 		velocity = direction * (config.killer_chase_speed if state == State.CHASE else config.killer_patrol_speed)
 	var previous := position
 	move_and_slide()
+	stride += position.distance_to(previous)
 	if velocity.length() > 1.0 and position.distance_to(previous) < 0.1:
 		stuck_clock += delta
 		if stuck_clock > 1.5:
@@ -126,18 +128,20 @@ func state_label() -> String:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(-7, 3, 14, 5), Color(0, 0, 0, 0.4))
-	draw_rect(Rect2(-5, -4, 10, 10), Color("713e46"))
-	draw_rect(Rect2(-4, -11, 8, 8), Color("c3bca0"))
-	draw_rect(Rect2(-3, -8, 2, 2), Color("1b2228"))
-	draw_rect(Rect2(1, -8, 2, 2), Color("1b2228"))
-	draw_line(Vector2(6, -2), Vector2(9, 5), Color("b8bfc0"), 2)
+	draw_circle(Vector2(0, 2), 9, Color(0, 0, 0, 0.4))
+	var row := 0
+	if absf(facing.x) > absf(facing.y):
+		row = 2 if facing.x > 0 else 3
+	elif facing.y < 0:
+		row = 1
+	var frame := 0 if velocity.length() < 1.0 else 1 + int(stride / 9.0) % 2
+	draw_texture_rect_region(preload("res://assets/sprites/stalker.png"), Rect2(-16, -36, 32, 40), Rect2(frame * 32, row * 40, 32, 40))
 	var cue := "."
 	var color := Color("a7b194")
 	if state == State.CHASE:
 		cue = "!"
 		color = Color("ee947e")
-	elif state == State.INVESTIGATE or state == State.SEARCH:
+	elif state in [State.INVESTIGATE, State.SEARCH]:
 		cue = "?"
 		color = Color("dfc18e")
-	draw_string(ThemeDB.fallback_font, Vector2(-3, -16), cue, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)
+	draw_string(ThemeDB.fallback_font, Vector2(-3, -40), cue, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)

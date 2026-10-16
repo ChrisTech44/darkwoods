@@ -34,10 +34,13 @@ def main():
     commands.append(("offline_slice", ["--headless", *offline]))
     playthrough = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/offline_playthrough.gd"]
     commands.append(("offline_playthrough", ["--headless", *playthrough]))
+    upgrade = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/camp_upgrade.gd"]
+    commands.append(("camp_upgrade", ["--headless", *upgrade]))
     if args.graphical:
         commands.append(("graphical_smoke", [*smoke, "--", "--capture"]))
         commands.append(("graphical_offline", [*offline, "--", "--capture"]))
         commands.append(("graphical_playthrough", [*playthrough, "--", "--capture"]))
+        commands.append(("graphical_upgrade", [*upgrade, "--", "--capture"]))
     results = []
     for name, arguments in commands:
         command = [engine, *arguments]
@@ -57,7 +60,7 @@ def main():
                   if re.search(r"(?:SCRIPT ERROR|ERROR|Parse Error):", line)]
         warnings = [line for line in clean.splitlines() if "WARNING:" in line]
         passed = status == 0 and not errors and not timed_out
-        if name in ("menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough"):
+        if name in ("menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade"):
             summaries = []
             for line in clean.splitlines():
                 if line.startswith("{"):

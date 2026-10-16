@@ -1,5 +1,89 @@
 # Development log
 
+## 2026-10-15 — M1 follow-up: van boarding and requested visual expansion
+
+**Selected scope:** repair the confusing escape flow, then apply the user's
+explicitly requested graphics/map/lighting improvements. This authorizes this
+visual portion of polish ahead of M2; no networking milestone is claimed.
+
+**Boarding:** the old implementation had no enter/aboard state and only checked
+distance at departure, leaving waiting players vulnerable. The driver now boards
+automatically after the start hold completes. Other living survivors can press E
+at either side or rear door during an eight-second countdown. Proximity and clear
+access are validated. BOARDED survivors are visibly seated (passenger pixels in
+the van), cannot walk out, and cannot be downed. HUD says YOU ARE ABOARD and shows
+the passenger count. Only recorded passengers extract; nearby unboarded players
+are left behind. Outcomes include the local player's actual status.
+
+**World/art:** expanded from 768×480 to 1536×960 (four times the area), with ten
+authored buildings: bunk cabins, storage, larger bunkhouse, maintenance workshop,
+mess hall, ranger lodge, bathhouse, infirmary and boathouse. Added paths, dense
+pine/birch woods, undergrowth, lakeshore/dock and detailed campsite props. Building
+interiors have floor materials, windows, beds, offices, shelving, workbenches,
+kitchen/dining tables, showers/sink, medical beds and canoe storage. Larger lodgings
+have interior partitions; roofs fade away on entry and return outside.
+
+Created original directional camper and stalker sheets with walking frames,
+hiking clothing/pack/rolled mat and a distinct hooded stalker with logging hook.
+Original terrain/tree art is reproducible via `python3 tools/build_pixel_art.py`
+(exit 0, Python standard library only). No external assets/plugins were obtained.
+Rebuilding again and comparing SHA-256 values confirmed all nine PNG assets are
+byte-for-byte deterministic.
+The staged whitespace check identified trailing spaces in native engine progress
+output. Extended the existing evidence-log-only Git attribute to preserve those
+raw lines; source and document whitespace checks remain enabled.
+The existing decorative menu backdrop is retained; the gameplay visuals are
+upgraded. Provenance/layout: [assets/README.md](../assets/README.md).
+
+Replaced the darkness shader with native CanvasModulate, PointLight2D beams and
+LightOccluder2D walls/trunks. Unlit woods are nearly black, with small local player
+glow; flashlights, warm lamps, campfire and van headlights illuminate local areas.
+Added a Tab field map with building footprints, supply markers, van and player
+position, and location labels so the larger dark map remains navigable.
+
+**Verification:** `python3 tools/verify.py --graphical` final exit **0**; import,
+startup, every script's parse check, and four suites in both modes passed with
+no engine errors or warnings. `git diff --check` exited 0.
+
+After the deterministic art rebuild, `godot --headless --path . --import`,
+`godot --headless --path . --quit-after 5`, and direct gameplay startup with
+`--scene res://scenes/world/forest_level.tscn --quit-after 5` each exited 0,
+without engine errors or warnings.
+
+| Suite | Headless assertions | Graphical assertions | Failures |
+| --- | ---: | ---: | ---: |
+| Menu/input bindings | 37 | 39 | 0 |
+| Movement, AI, objectives, driver boarding | 60 | 66 | 0 |
+| Larger-camp input-only win/loss/restart | 108 | 113 | 0 |
+| Layout, roof, boarding, and visual checks | 31 | 44 | 0 |
+
+The full playthrough traverses the relocated objective buildings with collision,
+normal pickup/delivery/start controls, an active killer and default rules. Its
+native-path helper waits for navigation readiness after scene reload. Additional
+fixtures verify all ten entrances and three objective positions are reachable,
+two survivors board exactly once and safely extract, downed/distant boarding is
+rejected, and a nearby third survivor who never boards is left behind.
+
+The real graphical tour's matched probe measured rendered luminance about **0.292
+with the flashlight / 0.010 without it** at one unlit woodland sample. Both assertions
+passed. Opened and inspected the campsite, lodge, workshop, bathhouse, mess hall,
+shore, characters, field map, boarding, and on/off screenshots. Final snapshot:
+[evidence/camp_upgrade](evidence/camp_upgrade/summary.json).
+
+**Failures corrected:** old escape-zone tests were adapted to an explicitly empty
+van fixture after automatic driver entry changed the rule. Old walking waypoints
+targeted removed supply locations; the input test now traverses the authored new
+layout via native paths. Initial/reloaded large-map navigation was not ready after
+a fixed few frames; bounded readiness checks resolved the zero-path test failures.
+Visual QA caught actors being drawn below interior floors; moved map floors below
+the Y-sorted actors. Reduced flashlight overexposure, refined wood/cool bathhouse
+lighting, and shortened field-map text to remove HUD overlap. Final checks passed.
+
+**Limits:** executed on macOS arm64 / Godot 4.7.2. No network sessions, exported
+packages or other desktop platforms tested. Multi-survivor assertions use local
+fixtures and do not imply connected co-op. A human real-time playtest of the
+expanded layout remains unrecorded. Restart and menu return remain runnable.
+
 ## 2026-10-15 — M1 pass 3: stalker, consequences, and complete rounds
 
 **Implemented:** killer PATROL/INVESTIGATE/CHASE/SEARCH, wall-occluded sight,

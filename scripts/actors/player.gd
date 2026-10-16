@@ -4,7 +4,7 @@ extends CharacterBody2D
 signal noise_emitted(origin: Vector2)
 signal status_changed
 
-enum Status { ALIVE, DOWNED, DEAD, ESCAPED, LEFT_BEHIND }
+enum Status { ALIVE, DOWNED, DEAD, ESCAPED, LEFT_BEHIND, BOARDED }
 
 var config: CampConfig = preload("res://assets/default_config.tres")
 var local_input: bool = true
@@ -95,25 +95,22 @@ func set_status(next: Status) -> void:
 
 
 func _draw() -> void:
-	if status == Status.ESCAPED:
+	if status in [Status.ESCAPED, Status.BOARDED]:
 		return
-	draw_ellipse_shadow()
-	if status == Status.DEAD or status == Status.DOWNED:
-		draw_rect(Rect2(-7, -3, 14, 6), Color("9c6b55") if status == Status.DOWNED else Color("514c4b"))
+	draw_circle(Vector2(0, 1), 7, Color(0, 0, 0, 0.35))
+	var sheet: Texture2D = preload("res://assets/sprites/camper.png")
+	var row := 0
+	if absf(facing.x) > absf(facing.y):
+		row = 2 if facing.x > 0 else 3
+	elif facing.y < 0:
+		row = 1
+	var frame := 0 if velocity.length() < 1.0 else 1 + int(stride / 6.0) % 2
+	if status in [Status.DOWNED, Status.DEAD]:
+		draw_set_transform(Vector2(10, -2), -PI * 0.5)
+		draw_texture_rect_region(sheet, Rect2(-12, -29, 24, 32), Rect2(0, 0, 24, 32), Color.WHITE if status == Status.DOWNED else Color("738080"))
+		draw_set_transform(Vector2.ZERO)
 		if status == Status.DOWNED:
-			draw_line(Vector2(-2, -8), Vector2(2, -8), Color("ecd6a0"), 2)
-			draw_line(Vector2(0, -10), Vector2(0, -6), Color("ecd6a0"), 2)
+			draw_line(Vector2(-2, -12), Vector2(2, -12), Color("ecd6a0"), 2)
+			draw_line(Vector2(0, -14), Vector2(0, -10), Color("ecd6a0"), 2)
 		return
-	var step := 1.0 if int(stride / 5.0) % 2 == 0 else -1.0
-	draw_rect(Rect2(-4, 1 + step, 3, 5), Color("283c52"))
-	draw_rect(Rect2(1, 1 - step, 3, 5), Color("283c52"))
-	draw_rect(Rect2(-5, -5, 10, 8), Color("a9af7d"))
-	draw_rect(Rect2(-3, -10, 6, 6), Color("dab98b"))
-	draw_rect(Rect2(-3, -11, 6, 2), Color("584637"))
-	draw_line(Vector2.ZERO, facing * 9.0, Color("f1e8bb"), 2.0)
-	if flashlight_on:
-		draw_circle(facing * 10.0, 2, Color("ffe3a0"))
-
-
-func draw_ellipse_shadow() -> void:
-	draw_rect(Rect2(-6, 2, 12, 5), Color(0, 0, 0, 0.3))
+	draw_texture_rect_region(sheet, Rect2(-12, -29, 24, 32), Rect2(frame * 24, row * 32, 24, 32))

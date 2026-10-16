@@ -106,13 +106,13 @@ text = "SURVIVOR FIELD GUIDE"
 [node name="Bindings" type="Label" parent="ControlsPanel/Margin/Content"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "WASD / Arrows     Walk\nShift                       Sprint\nE                             Interact / hold to use\nF                             Toggle flashlight\nTab                        Inventory\nEsc                         Pause / close this guide"
+text = "WASD / Arrows     Walk\nShift                       Sprint\nE                             Use / hold to start / enter van\nF                             Toggle flashlight\nTab                        Pack and camp map\nEsc                         Pause / close this guide"
 
 [node name="Note" type="Label" parent="ControlsPanel/Margin/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.64, 0.7, 0.61, 1)
 theme_override_font_sizes/font_size = 8
-text = "Collect supplies, repair the van, and survive until you escape."
+text = "Starting seats the driver. Others press E at the running van."
 
 [node name="Back" type="Button" parent="ControlsPanel/Margin/Content"]
 custom_minimum_size = Vector2(0, 23)

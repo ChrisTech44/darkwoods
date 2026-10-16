@@ -41,7 +41,7 @@ it is independent of **Random Night**. All roles can collect every part and esca
 **G** drops its whole stack; **E** picks it back up. Each supply type takes one
 slot, with same-type items stacking. Slots show the key and name without trailing quantity numbers; Tab lists the main supply counts. Vehicle components and cutters are carried
 separately. Q/R/C still use flares, batteries and food. Medkits help while holding
-E to revive a teammate; they cannot self-revive.
+E to revive a teammate faster, and V patches your own wound.
 
 Find **noise tins** (three delayed distracting rattles), **salt wards** (4s of
 physical-hit protection), and **glow moss** (+35 light charge and hex removal).
@@ -214,7 +214,8 @@ survivors left outside are left behind.
 | **WASD / arrow keys** | Walk and face a direction |
 | **Shift** | Sprint while stamina lasts; sprinting makes noise |
 | **E** | Take items, open caches with cutters or a crowbar, install parts, enter a running van |
-| **Hold E** | Start the repaired van or revive a nearby downed teammate |
+| **Hold E** | Start the repaired van, revive a nearby downed teammate, or (solo, downed) get back up once |
+| **Space** | Flash-stun creatures close in your beam (costs light, 8 s cooldown) |
 | **F** | Toggle the flashlight |
 | **1–6 / keypad 1–6** | Select a belt slot |
 | **V / G** | Use held supply / drop its stack |
@@ -275,7 +276,7 @@ one of noise tin, salt ward or glow moss; the reward depends on its seeded site.
 | **Flare** | Start with 2; Woods loot; 3-flare Maintenance stash; Village well; Graveyard crypt. Medic and Overprepared start with +1. | **Q**, or select + **V**, throws it ahead. Lights the area for up to **9s** and repels enemies with clear sight nearby. Lantern Moths follow it; Candle Grazers can consume it. |
 | **Spare flashlight battery** | Start with 1; Woods loot; extra campsite battery; Village well. Grease Monkey and Overprepared start with +1. | **R**, or select + **V**, restores **70 charge**, capped at 90, and switches the light on. Not consumed if already full. |
 | **Rations** | Start with 1; Woods loot; Village well. Scout and Overprepared start with +1. | **C**, or select + **V**, restores full stamina and clears exhaustion. Not consumed at full stamina. Eating can attract nearby Ration Moths. |
-| **Medkit** | First-Aid Kid starts with 1; Woods loot. | Carry one and **hold E beside a downed teammate**: 3s, or 2.25s as First-Aid Kid. Consumes one kit on completion. Interrupted attempts keep it. No self-revive; V does not use a medkit. |
+| **Medkit** | First-Aid Kid starts with 1; Woods loot. | Select + **V** patches your own wound. Carried while you **hold E beside a downed teammate**, it speeds the revive to 3s (2.25s as First-Aid Kid) instead of 6s bare-handed, and is consumed on completion. Interrupted attempts keep it. |
 | **Noise tin** | Woods loot; landmark reward. | Select + **V** places a lure ahead. It rattles at **1.5s, 3.5s and 5.5s**, drawing noise-sensitive enemies within 480 world pixels. Move away before they investigate. |
 | **Salt ward** | Woods loot; landmark reward. | Select + **V** grants **4s of protection from physical hits**. Does not heal or remove hexes. |
 | **Glow moss** | Woods loot; landmark reward. | Select + **V** restores **35 light charge**, capped at 90, and removes the current hex. Use F if your flashlight was switched off. |
@@ -294,14 +295,14 @@ press E once to refill your light, at the cost of a 2s hex and a loud noise.
 ### Carrying, selecting and sharing items
 
 The belt holds **six different supply types**; matching units stack in the same
-slot. Select with **1–6 or keypad 1–6**, use with **V** (medkits use hold E), and
+slot. Select with **1–6 or keypad 1–6**, use with **V** (a medkit patches a wound), and
 press **G** to drop the selected supply's **whole stack**. The belt labels show
 slot keys and names; Tab shows flare, battery and ration counts. Parts and
 boltcutters stay outside this limit.
 
 On down or disconnect, every carried part, tool and supply unit drops beside
-the survivor for teammates to recover with E. Without a medkit, E still collects
-gear near a downed teammate. Players cannot use supplies while downed.
+the survivor for teammates to recover with E. E collects gear near a downed
+teammate while holding E revives them. Players cannot use supplies while downed.
 
 ## Survive the woods
 
@@ -316,14 +317,28 @@ connected screen; walls and the viewer’s woods line of sight still block visib
 Interaction and supply messages appear only on the acting player’s HUD; down,
 revive and departure announcements remain shared.
 
-The first hit **downs** a survivor indefinitely. Further hits and elapsed time
-do not kill them. All carried parts, tools and supplies drop on reachable ground
-beside the body, where teammates can recover them with E. A living teammate
-**with a medkit** can hold E nearby to revive; one kit is consumed only on
-completion, followed by a short grace period. If everyone is down, the round
-ends in defeat. Successful revivals do not accumulate toward defeat; the round
-continues while anyone is standing or aboard. Without a medkit, E can still
-collect dropped gear beside a downed teammate. In solo play nobody can revive you.
+**Wounded, then downed.** The first hit **wounds** you. You get 1.2 seconds of
+grace to run, sprint 10% slower and leave a short blood trail that nearby
+patrolling creatures can follow. Select a **medkit and press V** to patch the
+wound. A second hit while wounded **downs** you indefinitely; further hits and
+time never kill. All carried parts, tools and supplies drop beside the body,
+where teammates can recover them with E.
+
+- **Downed:** crawl slowly with WASD (20 px/s) and press **E** to call for help.
+  That gives every teammate a flashing HELP marker for 8 s and makes a small noise
+  (10 s cooldown).
+- **Reviving:** any living teammate can **hold E** beside you. Bare-handed takes
+  **6 s** (4.5 s for the First-Aid Kid); with a medkit it takes 3 s (2.25 s) and
+  uses the kit. Revived survivors come back wounded.
+- **Solo:** if you're the only survivor, you get **20 seconds** after going down to
+  **hold E for 8 s** and drag yourself up, once per night, loudly.
+- **Flash-stun:** press **Space** to flare your flashlight. Creatures in the beam
+  within 90 px freeze for 1.5 s. It costs 15 light charge (expedition), has an 8 s
+  cooldown, and the same creature can't be stunned again for 6 s.
+
+If everyone is down (and no solo last chance remains), the round ends in defeat.
+Successful revivals do not accumulate toward defeat; the round continues while
+anyone is standing or aboard.
 
 ### Know what is following you
 
@@ -531,9 +546,10 @@ recover units. Vehicle components and cutters remain separate from this limit.
 
 The current implementation includes solo and 1–4 player ENet co-op in both
 modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
-species. Full baseline verification passed **81 steps** with no errors/warnings,
-including the [navigation](docs/evidence/navigation/README.md) and
-[night phase](docs/evidence/night_phases/README.md) suites;
+species. Full baseline verification passed **84 steps** with no errors/warnings,
+including the [navigation](docs/evidence/navigation/README.md),
+[night phase](docs/evidence/night_phases/README.md) and
+[chase toolkit](docs/evidence/chase_toolkit/README.md) suites;
 final content checks passed **350 assertions**. Current graphical ENet tests passed **654
 assertions across 14 process runs**, including two/four peers and graphical
 host/client windows in both modes. See the

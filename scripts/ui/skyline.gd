@@ -52,6 +52,9 @@ func _draw() -> void:
 	if level.plan.expedition and CampMap.is_woods(from):
 		for beacon in beacons(level.plan, from):
 			_marker(to_screen * beacon["position"], view, beacon["kind"], beacon["label"], Color("d8cfa4"))
+	for ping: Dictionary in level.help_pings:
+		if int(ping["remaining"] * 4) % 2 == 0:
+			_marker(to_screen * ping["position"], view, "help", "HELP " + ping["name"], Color("e0705a"))
 	# Nearby pins collapse into one marker so an edge never stacks unreadable labels.
 	var drawn: Array[Vector2] = []
 	for index in range(level.pins.size() - 1, -1, -1):
@@ -79,6 +82,9 @@ func _icon(at: Vector2, kind: String, color: Color) -> void:
 	match kind:
 		"camp":
 			draw_colored_polygon(PackedVector2Array([at + Vector2(-3, 3), at + Vector2(0, -5), at + Vector2(3, 3)]), Color("e9a65f"))
+		"help":
+			draw_rect(Rect2(at + Vector2(-1, -4), Vector2(3, 9)), color)
+			draw_rect(Rect2(at + Vector2(-4, -1), Vector2(9, 3)), color)
 		"pin":
 			draw_line(at + Vector2(-2, 4), at + Vector2(-2, -5), color, 1)
 			draw_colored_polygon(PackedVector2Array([at + Vector2(-2, -5), at + Vector2(4, -3), at + Vector2(-2, -1)]), color)

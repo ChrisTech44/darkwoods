@@ -1,8 +1,8 @@
 class_name WorldSync
 extends RefCounted
 ## Host snapshots contain plain data only. Clients render, never simulate outcomes.
-const PLAYER_FIELDS := ["notice","notice_time","velocity","status","stamina","exhausted","sprinting","flashlight_on","flashlight_charge","bleedout","invulnerability","hex_remaining","ward_remaining","selected_slot","facing","stride"]
-const ENEMY_FIELDS := ["enabled","velocity","facing","stride","state"]
+const PLAYER_FIELDS := ["notice","notice_time","velocity","status","stamina","exhausted","sprinting","flashlight_on","flashlight_charge","bleedout","invulnerability","hex_remaining","ward_remaining","selected_slot","facing","stride","wounded","flash_time","flash_cooldown","self_recovery_used","help_cooldown"]
+const ENEMY_FIELDS := ["enabled","velocity","facing","stride","state","stun_remaining"]
 const CRYPTID_FIELDS := ["power_tell","power_aim","dash_remaining","casting","cast_remaining","cast_aim","hunt_clock"]
 
 static func capture(net: Node) -> Dictionary:
@@ -10,7 +10,7 @@ static func capture(net: Node) -> Dictionary:
 	var players := {}
 	for id: int in net.actors:
 		var actor: CampPlayer=net.actors[id]
-		var row := {"position":actor.position,"inventory":actor.inventory,"supplies":actor.supplies,"belt":actor.belt}
+		var row := {"position":actor.position,"inventory":actor.inventory,"supplies":actor.supplies,"belt":actor.belt,"blood":actor.blood}
 		for field in PLAYER_FIELDS: row[field]=actor.get(field)
 		players[id]=row
 	var enemies := []
@@ -51,7 +51,7 @@ static func capture(net: Node) -> Dictionary:
 		entities[entity.get_meta("network_id")]=row
 	return {"players":players,"enemies":enemies,"items":items,"sites":sites,"entities":entities,
 		"van":{"installed":level.van.installed,"progress":level.van.start_progress,"running":level.van.running,"remaining":level.van.remaining},
-		"pins":level.pins,"night":level.night_clock.snapshot(),"revive":level.revive_progress,"finished":level.finished,"won":level.won,"message":level.message,"message_time":level.message_time}
+		"pins":level.pins,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"revive":level.revive_progress,"finished":level.finished,"won":level.won,"message":level.message,"message_time":level.message_time}
 
 static func apply(net: Node, state: Dictionary) -> void:
 	var level: Node2D=net.world
@@ -71,6 +71,7 @@ static func apply(net: Node, state: Dictionary) -> void:
 		for field in PLAYER_FIELDS: actor.set(field,row[field])
 		actor.inventory.assign(row["inventory"])
 		actor.belt.assign(row["belt"])
+		actor.blood.assign(row["blood"])
 		actor.supplies=row["supplies"]
 		actor.queue_redraw()
 	var enemies: Array=level.get_tree().get_nodes_in_group("killers")
@@ -140,6 +141,9 @@ static func apply(net: Node, state: Dictionary) -> void:
 		if actor.status==CampPlayer.Status.BOARDED: level.van.passengers.append(actor)
 	level.van.queue_redraw()
 	level.pins.assign(state["pins"])
+	level.help_pings.assign(state["help"])
+	level.self_recovery_progress=state["self_recovery"]
+	level.revive_duration=state["revive_duration"]
 	level.night_clock.restore(state["night"])
 	level.revive_progress=state["revive"]
 	level.message=state["message"]

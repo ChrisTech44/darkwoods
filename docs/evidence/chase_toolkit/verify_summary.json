@@ -1,0 +1,1542 @@
+{
+  "timestamp_utc": "2026-10-16T21:56:06.107144+00:00",
+  "passed": true,
+  "graphical": false,
+  "results": [
+    {
+      "step": "version",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/version.log"
+    },
+    {
+      "step": "import",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--import"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/import.log"
+    },
+    {
+      "step": "startup",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--quit-after",
+        "5"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/startup.log"
+    },
+    {
+      "step": "parse_scripts_actors_player.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/actors/player.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_actors_player.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_cryptid.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ai/cryptid.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_cryptid.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_hex_bolt.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ai/hex_bolt.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_hex_bolt.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_killer.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ai/killer.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_killer.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_landmark_hazard.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ai/landmark_hazard.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_landmark_hazard.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_audio_manager.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/core/audio_manager.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_audio_manager.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_game_config.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/core/game_config.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_game_config.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_night_clock.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/core/night_clock.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_night_clock.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_round_plan.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/core/round_plan.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_round_plan.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_session.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/core/session.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_session.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_survivor_roster.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/core/survivor_roster.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_survivor_roster.gd.log"
+    },
+    {
+      "step": "parse_scripts_items_escape_van.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/items/escape_van.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_items_escape_van.gd.log"
+    },
+    {
+      "step": "parse_scripts_items_flare.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/items/flare.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_items_flare.gd.log"
+    },
+    {
+      "step": "parse_scripts_items_noise_lure.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/items/noise_lure.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_items_noise_lure.gd.log"
+    },
+    {
+      "step": "parse_scripts_items_pickup.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/items/pickup.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_items_pickup.gd.log"
+    },
+    {
+      "step": "parse_scripts_network_network_session.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/network/network_session.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_network_network_session.gd.log"
+    },
+    {
+      "step": "parse_scripts_network_world_sync.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/network/world_sync.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_network_world_sync.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_audio_controls.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/audio_controls.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_audio_controls.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_camp_chart.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/camp_chart.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_camp_chart.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_camp_style.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/camp_style.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_camp_style.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_hud.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/hud.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_hud.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_loading_screen.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/loading_screen.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_loading_screen.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_main_menu.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/main_menu.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_main_menu.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_menu_audio.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/menu_audio.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_menu_audio.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_menu_backdrop.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/menu_backdrop.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_menu_backdrop.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_network_lobby.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/network_lobby.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_network_lobby.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_night_overlay.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/night_overlay.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_night_overlay.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_skyline.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/skyline.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_skyline.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_weather.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/weather.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_weather.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_woods_visibility.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/ui/woods_visibility.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_woods_visibility.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_blood_trail.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/blood_trail.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_blood_trail.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_building_roof.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/building_roof.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_building_roof.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_camp_building.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/camp_building.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_camp_building.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_camp_layout.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/camp_layout.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_camp_layout.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_camp_lights.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/camp_lights.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_camp_lights.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_camp_map.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/camp_map.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_camp_map.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_camp_soundscape.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/camp_soundscape.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_camp_soundscape.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_forest_level.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/forest_level.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_forest_level.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_forest_site.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/forest_site.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_forest_site.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_woods_decor.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/woods_decor.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_woods_decor.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_woods_layout.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/woods_layout.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_woods_layout.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_woods_terrain.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://scripts/world/woods_terrain.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_woods_terrain.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_audio_polish.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/audio_polish.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_audio_polish.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_camp_upgrade.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/camp_upgrade.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_camp_upgrade.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_chase_toolkit.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/chase_toolkit.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_chase_toolkit.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_content_expansion.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/content_expansion.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_content_expansion.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_forest_hunt.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/forest_hunt.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_forest_hunt.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_layout_polish.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/layout_polish.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_layout_polish.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_menu_defaults.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/menu_defaults.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_menu_defaults.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_menu_smoke.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/menu_smoke.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_menu_smoke.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_navigation_aids.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/navigation_aids.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_navigation_aids.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_navigation_seeds.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/navigation_seeds.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_navigation_seeds.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_network_peer.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/network_peer.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_network_peer.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_night_phases.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/night_phases.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_night_phases.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_offline_playthrough.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/offline_playthrough.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_offline_playthrough.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_offline_slice.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/offline_slice.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_offline_slice.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_player_render.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/player_render.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_player_render.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_surround_world.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/surround_world.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_surround_world.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_woods_playthrough.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/woods_playthrough.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_woods_playthrough.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_woods_replay.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/woods_replay.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_woods_replay.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_woods_shadows.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/woods_shadows.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_woods_shadows.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_woods_visibility.gd",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/woods_visibility.gd",
+        "--check-only"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_woods_visibility.gd.log"
+    },
+    {
+      "step": "menu_smoke",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/menu_smoke.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/menu_smoke.log"
+    },
+    {
+      "step": "offline_slice",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/offline_slice.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/offline_slice.log"
+    },
+    {
+      "step": "offline_playthrough",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/offline_playthrough.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/offline_playthrough.log"
+    },
+    {
+      "step": "camp_upgrade",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/camp_upgrade.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/camp_upgrade.log"
+    },
+    {
+      "step": "woods_replay",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/woods_replay.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/woods_replay.log"
+    },
+    {
+      "step": "woods_playthrough",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/woods_playthrough.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/woods_playthrough.log"
+    },
+    {
+      "step": "forest_hunt",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/forest_hunt.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/forest_hunt.log"
+    },
+    {
+      "step": "navigation_seeds",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/navigation_seeds.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/navigation_seeds.log"
+    },
+    {
+      "step": "surround_world",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/surround_world.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/surround_world.log"
+    },
+    {
+      "step": "woods_visibility",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/woods_visibility.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/woods_visibility.log"
+    },
+    {
+      "step": "menu_defaults",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/menu_defaults.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/menu_defaults.log"
+    },
+    {
+      "step": "woods_shadows",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/woods_shadows.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/woods_shadows.log"
+    },
+    {
+      "step": "audio_polish",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/audio_polish.gd",
+        "--",
+        "--audio-test"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/audio_polish.log"
+    },
+    {
+      "step": "layout_polish",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/layout_polish.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/layout_polish.log"
+    },
+    {
+      "step": "player_render",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "res://tests/integration/player_render.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/player_render.log"
+    },
+    {
+      "step": "content_expansion",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/content_expansion.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/content_expansion.log"
+    },
+    {
+      "step": "navigation_aids",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/navigation_aids.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/navigation_aids.log"
+    },
+    {
+      "step": "night_phases",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/night_phases.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/night_phases.log"
+    },
+    {
+      "step": "chase_toolkit",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--fixed-fps",
+        "60",
+        "--disable-vsync",
+        "--script",
+        "res://tests/integration/chase_toolkit.gd"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/chase_toolkit.log"
+    }
+  ]
+}

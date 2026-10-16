@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-5"
+const RULES := "lnac-net-6"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -329,8 +329,12 @@ func _accept_action(id: int, generation: int, code: String, slot: int) -> void:
 	command_budgets[id]=budget
 	if budget["count"]>15: return
 	var actor: CampPlayer=actors[id]
+	if actor.status==CampPlayer.Status.DOWNED and code=="interact":
+		world.call_for_help(actor)
+		return
 	if actor.status!=CampPlayer.Status.ALIVE: return
 	match code:
+		"flash": world.use_flash(actor)
 		"interact": world.try_interact(actor)
 		"select":
 			if slot>=0 and slot<6: actor.selected_slot=slot
@@ -396,7 +400,7 @@ func handle_input(event: InputEvent) -> void:
 		if slot>=0: action("select",slot)
 		if event.physical_keycode==KEY_V: action("use")
 		if event.physical_keycode==KEY_G: action("drop")
-	var bindings := {"interact":"interact","flashlight":"light","use_flare":"flare","recharge":"battery","eat":"food","map_pin":"pin"}
+	var bindings := {"interact":"interact","flashlight":"light","use_flare":"flare","recharge":"battery","eat":"food","map_pin":"pin","flash_burst":"flash"}
 	for binding in bindings:
 		if event.is_action_pressed(binding): action(bindings[binding])
 

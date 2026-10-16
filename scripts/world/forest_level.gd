@@ -17,6 +17,14 @@ var killer: CampKiller
 var revive_actor: CampPlayer
 var revive_target: CampPlayer
 var revive_progress: float = 0.0
+var revive_duration: float = 3.0
+var self_recovery_progress: float = 0.0
+var help_pings: Array[Dictionary] = []
+var blood_clock: float = 0.0
+const KITLESS_REVIVE_FACTOR := 2.0
+const SELF_RECOVERY_SECONDS := 8.0
+const SOLO_LAST_CHANCE := 20.0
+const HELP_PING_SECONDS := 8.0
 var world_objects: Node2D
 var plan := RoundPlan.new()
 var soundscape: CampSoundscape
@@ -90,6 +98,9 @@ func _ready() -> void:
 		pickup.locked = item["locked"]
 		pickups.append(pickup)
 		add_child(pickup)
+	var trail := preload("res://scripts/world/blood_trail.gd").new()
+	trail.z_index = -1
+	add_child(trail)
 	night_clock = NightClock.new()
 	night_clock.name = "NightClock"
 	night_clock.level = self
@@ -139,11 +150,15 @@ func _process(_delta: float) -> void:
 	elif player.status == CampPlayer.Status.DEAD:
 		heading = "ELIMINATED / WAITING FOR SURVIVORS"
 	elif player.status == CampPlayer.Status.DOWNED:
-		heading = "DOWNED · NEED A MEDKIT"
+		heading = "DOWNED · LAST CHANCE %ds" % int(maxf(0.0, SOLO_LAST_CHANCE - player.bleedout)) if solo_recovery_available(player) else "DOWNED · A TEAMMATE CAN REVIVE YOU"
 	var detail := context_prompt()
 	if revive_progress > 0.0:
-		detail = "HOLD E · REVIVE  %d%%" % int(revive_progress / (revive_actor.config.revive_seconds if is_instance_valid(revive_actor) else player.config.revive_seconds) * 100)
+		detail = "HOLD E · REVIVE  %d%%" % int(revive_progress / revive_duration * 100)
+	if self_recovery_progress > 0.0:
+		detail = "HOLD E · GET UP  %d%%" % int(self_recovery_progress / SELF_RECOVERY_SECONDS * 100)
 	hud.threat_label.text = ""
+	if player.wounded and player.status == CampPlayer.Status.ALIVE:
+		hud.threat_label.text = "WOUNDED · MEDKIT (V) PATCHES"
 	if not finished and killer.global_position.distance_to(player.global_position) < 155.0:
 		hud.threat_label.text = "SPOTTED · RUN!" if killer.state == CampKiller.State.CHASE else "FOOTSTEPS NEARBY · KEEP QUIET"
 	if player.notice_time > 0.0:
@@ -188,14 +203,19 @@ func _physics_process(delta: float) -> void:
 	else:
 		var target := nearby_downed(player)
 		advance_revive(player, target, Input.is_action_pressed("interact"), delta)
+		advance_self_recovery(player, Input.is_action_pressed("interact"), delta)
 		var was_running := van.running
 		van.advance_start(player, Input.is_action_pressed("interact") and clear_path(player.global_position, van.interaction_point()), delta)
 		if van.running and not was_running:
 			van.board(player)
 			announce("Engine started. Driver boarded automatically. Others: E to enter.")
+	_advance_chase_toolkit(delta)
 	var living := false
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if actor.status in [CampPlayer.Status.ALIVE, CampPlayer.Status.BOARDED]:
+			living = true
+		# A lone survivor gets a short last chance to pick themselves up.
+		elif solo_recovery_available(actor) and actor.bleedout < SOLO_LAST_CHANCE:
 			living = true
 	if not living:
 		finish_round(false, "No survivor made it out. You were caught in the woods.")
@@ -269,7 +289,7 @@ func try_interact(actor: CampPlayer) -> bool:
 			return true
 		if van.installed.size() == plan.required.size():
 			return true
-	announce("Medkit needed. Recover nearby gear with E." if nearby_downed(actor)!=null else "Nothing to use here. Tab shows supply locations.",actor)
+	announce("Hold E to revive. A medkit makes it faster." if nearby_downed(actor)!=null else "Nothing to use here. Tab shows supply locations.",actor)
 	actor.noise_emitted.emit(actor.global_position)
 	return false
 
@@ -284,7 +304,7 @@ func nearby_downed(actor: CampPlayer) -> CampPlayer:
 
 
 func advance_revive(actor: CampPlayer, target: CampPlayer, holding: bool, delta: float) -> void:
-	if paused or finished or not holding or target == null or not actor.is_in_group("survivors") or not target.is_in_group("survivors") or actor.status != CampPlayer.Status.ALIVE or actor.supplies.get("medkit",0) <= 0 or target.status != CampPlayer.Status.DOWNED or actor.global_position.distance_to(target.global_position) > config.interact_radius or not clear_path(actor.global_position, target.global_position):
+	if paused or finished or not holding or target == null or not actor.is_in_group("survivors") or not target.is_in_group("survivors") or actor.status != CampPlayer.Status.ALIVE or target.status != CampPlayer.Status.DOWNED or actor.global_position.distance_to(target.global_position) > config.interact_radius or not clear_path(actor.global_position, target.global_position):
 		revive_target = null
 		revive_progress = 0.0
 		return
@@ -293,15 +313,91 @@ func advance_revive(actor: CampPlayer, target: CampPlayer, holding: bool, delta:
 		revive_target = target
 		revive_progress = 0.0
 	revive_progress += delta
-	var duration := actor.config.revive_seconds
-	if revive_progress >= duration:
-		if actor.supplies["medkit"] > 0:
+	# A medkit makes the revive fast; bare hands work too, just slower.
+	var kit: bool = actor.supplies.get("medkit", 0) > 0
+	revive_duration = actor.config.revive_seconds * (1.0 if kit else KITLESS_REVIVE_FACTOR)
+	if revive_progress >= revive_duration:
+		if kit:
 			actor.supplies["medkit"] -= 1
 			actor.tidy_belt()
 		target.set_status(CampPlayer.Status.ALIVE)
 		revive_target = null
 		revive_progress = 0.0
-		announce("Survivor revived. Move before the stalker returns!")
+		announce("Survivor revived, still wounded. Move before the stalker returns!")
+
+
+func solo_recovery_available(actor: CampPlayer) -> bool:
+	return actor.status == CampPlayer.Status.DOWNED and not actor.self_recovery_used and get_tree().get_nodes_in_group("survivors").size() == 1
+
+
+func advance_self_recovery(actor: CampPlayer, holding: bool, delta: float) -> void:
+	if paused or finished or not holding or not solo_recovery_available(actor):
+		self_recovery_progress = 0.0
+		return
+	self_recovery_progress += delta
+	if self_recovery_progress >= SELF_RECOVERY_SECONDS:
+		self_recovery_progress = 0.0
+		actor.self_recovery_used = true
+		actor.set_status(CampPlayer.Status.ALIVE)
+		loud_noise(actor.global_position, 500)
+		announce("You drag yourself up, wounded. That groan carried. No second chances tonight.", actor)
+
+
+## Downed survivors can call out: a marker for every teammate, and a small noise.
+func call_for_help(actor: CampPlayer) -> bool:
+	if paused or finished or actor.status != CampPlayer.Status.DOWNED or actor.help_cooldown > 0.0 or get_tree().get_nodes_in_group("survivors").size() < 2:
+		return false
+	actor.help_cooldown = 10.0
+	help_pings.append({"position": actor.global_position.round(), "remaining": HELP_PING_SECONDS, "name": (actor.peer_name if not actor.peer_name.is_empty() else "SURVIVOR").left(8).to_upper()})
+	loud_noise(actor.global_position, 160)
+	announce("%s is down and calling for help!" % (actor.peer_name if not actor.peer_name.is_empty() else "A survivor"))
+	return true
+
+
+## Flashlight burst: briefly stuns creatures caught close in the beam. Costs light, has a cooldown.
+func use_flash(actor: CampPlayer) -> int:
+	if paused or finished or actor.status != CampPlayer.Status.ALIVE or actor.flash_cooldown > 0.0:
+		return -1
+	if plan.expedition and actor.flashlight_charge < CampPlayer.FLASH_COST:
+		announce("Not enough light for a flash. R swaps in a battery.", actor)
+		return -1
+	if plan.expedition:
+		actor.flashlight_charge -= CampPlayer.FLASH_COST
+	actor.flashlight_on = true
+	actor.flash_time = 0.18
+	actor.flash_cooldown = CampPlayer.FLASH_COOLDOWN
+	var stunned := 0
+	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
+		var offset := enemy.global_position - actor.global_position
+		if enemy.enabled and offset.length() <= 90.0 and actor.facing.dot(offset.normalized()) >= 0.75 and clear_path(actor.global_position, enemy.global_position) and enemy.stun(1.5):
+			stunned += 1
+	announce("FLASH! %d stunned. Run!" % stunned if stunned > 0 else "Flash! Nothing caught in the beam.", actor)
+	return stunned
+
+
+func _advance_chase_toolkit(delta: float) -> void:
+	for ping in help_pings.duplicate():
+		ping["remaining"] -= delta
+		if ping["remaining"] <= 0.0:
+			help_pings.erase(ping)
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if actor.status == CampPlayer.Status.DOWNED:
+			actor.bleedout += delta
+	# Fresh blood draws nearby patrolling creatures to the newest drop.
+	blood_clock -= delta
+	if blood_clock > 0.0:
+		return
+	blood_clock = 2.5
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if actor.wounded and actor.status == CampPlayer.Status.ALIVE and not actor.blood.is_empty():
+			for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
+				if enemy.state == CampKiller.State.PATROL:
+					enemy.hear_stimulus(actor.blood.back(), 110.0)
+
+
+func on_survivor_wounded(actor: CampPlayer) -> void:
+	if get_node("/root/Net").active and not multiplayer.is_server(): return
+	announce("WOUNDED! One more hit downs you. Run, then patch up with a medkit.", actor)
 
 
 func _on_noise(origin: Vector2) -> void:
@@ -340,9 +436,11 @@ func context_prompt() -> String:
 	if van.can_board(player):
 		return "E · ENTER VAN  —  Board before the countdown ends!"
 	if player.status == CampPlayer.Status.DOWNED:
-		return "Need a teammate with a medkit. Your gear is beside you; van escape rescues you."
-	if nearby_downed(player) != null and player.supplies.get("medkit",0)>0:
-		return "HOLD E · REVIVE TEAMMATE (MEDKIT)"
+		if solo_recovery_available(player):
+			return "HOLD E (8s) · DRAG YOURSELF UP · ONCE PER NIGHT, LOUD"
+		return "WASD crawl · E call for help · a teammate holds E to revive you"
+	if nearby_downed(player) != null:
+		return "HOLD E · REVIVE (MEDKIT %ss)" % str(player.config.revive_seconds) if player.supplies.get("medkit",0)>0 else "HOLD E · REVIVE BARE-HANDED (%ss) · E grabs gear" % str(player.config.revive_seconds * KITLESS_REVIVE_FACTOR)
 	for pickup in pickups:
 		if pickup.available and player.global_position.distance_to(pickup.global_position) <= config.interact_radius and clear_path(player.global_position, pickup.global_position):
 			if pickup.locked and "boltcutters" not in player.inventory:
@@ -360,8 +458,7 @@ func context_prompt() -> String:
 		if van.installed.size() == plan.required.size():
 			return "HOLD E · START VAN  %d%%" % int(van.start_progress / player.config.start_hold_seconds * 100)
 		return "E · INSTALL SUPPLIES   |   NEED: " + ", ".join(missing_parts()).to_upper()
-	if nearby_downed(player) != null: return "MEDKIT NEEDED · Recover nearby gear with E."
-	return "1-6 select · V use · G drop · E interact · M pin · Tab notes" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
+	return "1-6 select · V use · G drop · E interact · Space flash · M pin" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
 
 
 ## Shared team pin at the actor's feet. Each owner keeps their newest three.
@@ -489,6 +586,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			actor.set_physics_process(not paused)
 		hud.show_pause(paused)
 		get_viewport().set_input_as_handled()
+	elif not paused and event.is_action_pressed("interact") and not event.is_echo() and player.status == CampPlayer.Status.DOWNED:
+		call_for_help(player)
+		get_viewport().set_input_as_handled()
+	elif not paused and event.is_action_pressed("flash_burst") and not event.is_echo():
+		use_flash(player)
+		get_viewport().set_input_as_handled()
 	elif not paused and event.is_action_pressed("interact") and not event.is_echo():
 		try_interact(player)
 		get_viewport().set_input_as_handled()
@@ -568,6 +671,13 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 	elif kind == "salt_ward":
 		actor.ward_remaining = 4.0
 		announce("Salt ward: four seconds of protection. Keep moving!",actor)
+	elif kind == "medkit":
+		if not actor.wounded:
+			announce("You're not wounded. Save the medkit for a revive.", actor)
+			return false
+		actor.wounded = false
+		actor.blood.clear()
+		announce("Wound patched. One hit no longer downs you.", actor)
 	elif kind == "glow_moss":
 		actor.flashlight_charge = minf(actor.config.flashlight_capacity, actor.flashlight_charge + 35)
 		actor.hex_remaining = 0
@@ -630,6 +740,7 @@ func _advance_network_holds(net: Node, delta: float) -> void:
 	ids.sort()
 	for id: int in ids:
 		var actor: CampPlayer=net.actors[id]
+		if actor.status==CampPlayer.Status.DOWNED: advance_self_recovery(actor,net.holding(id),delta)
 		if actor.status!=CampPlayer.Status.ALIVE or not net.holding(id): continue
 		var downed := nearby_downed(actor)
 		if downed!=null and rescuer==null:
@@ -672,7 +783,7 @@ func spawn_dropped(kind: String, at: Vector2) -> CampPickup:
 func on_survivor_downed(actor: CampPlayer) -> void:
 	if get_node("/root/Net").active and not multiplayer.is_server(): return
 	drop_all_items(actor)
-	announce("Survivor down! Gear dropped nearby. Hold E with a medkit to revive.")
+	announce("Survivor down! Gear dropped nearby. Hold E beside them to revive (a medkit is faster).")
 
 
 func drop_all_items(actor: CampPlayer) -> void:

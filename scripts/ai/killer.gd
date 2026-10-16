@@ -23,6 +23,8 @@ var stride: float = 0.0
 var search_points: Array[Vector2] = []
 var search_index: int = 0
 var retreat_remaining: float = 0.0
+var stun_remaining: float = 0.0
+var stun_immunity: float = 0.0
 @onready var agent: NavigationAgent2D = $NavigationAgent2D
 
 
@@ -33,6 +35,8 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not enabled:
 		velocity = Vector2.ZERO
+		return
+	if tick_stun(delta):
 		return
 	attack_remaining = maxf(0.0, attack_remaining - delta)
 	retreat_remaining = maxf(0.0, retreat_remaining - delta)
@@ -116,6 +120,35 @@ func _physics_process(delta: float) -> void:
 	queue_redraw()
 
 
+## A flash-stunned creature freezes briefly, then cannot be re-stunned for a while.
+func stun(seconds: float) -> bool:
+	if stun_immunity > 0.0 or stun_remaining > 0.0:
+		return false
+	stun_remaining = seconds
+	stun_immunity = seconds + 6.0
+	velocity = Vector2.ZERO
+	visible_target = null
+	return true
+
+
+func draw_stun(top: float) -> void:
+	if stun_remaining <= 0.0:
+		return
+	for index in range(3):
+		var at := Vector2.from_angle(index * TAU / 3 + stun_remaining * 6) * 7 + Vector2(0, top)
+		draw_rect(Rect2(at - Vector2.ONE, Vector2(3, 3)), Color("f3e7a8"))
+
+
+func tick_stun(delta: float) -> bool:
+	stun_immunity = maxf(0.0, stun_immunity - delta)
+	if stun_remaining <= 0.0:
+		return false
+	stun_remaining = maxf(0.0, stun_remaining - delta)
+	velocity = Vector2.ZERO
+	queue_redraw()
+	return true
+
+
 func sense_visible_target() -> CampPlayer:
 	var nearest: CampPlayer
 	var distance := config.sight_radius
@@ -196,6 +229,7 @@ func state_label() -> String:
 
 func _draw() -> void:
 	draw_circle(Vector2(0, 2), 9, Color(0, 0, 0, 0.4))
+	draw_stun(-36)
 	var row := 0
 	if absf(facing.x) > absf(facing.y):
 		row = 2 if facing.x > 0 else 3

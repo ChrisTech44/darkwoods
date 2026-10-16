@@ -366,3 +366,22 @@ camp versus left-behind in the woods. `network_peer.gd` adds a host-advanced
 Nightfall replicated to clients with the fuel cache visible (`lnac-net-5`).
 Legacy route tests reveal staged parts with `reveal_all()` and disable the
 director. Evidence: [night phases](evidence/night_phases/README.md).
+
+## Chase toolkit (overhaul F3a)
+
+Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/chase_toolkit.gd`
+(add `-- --capture` without `--headless` for the flash capture). It covers:
+
+- first-hit wound and grace, the HUD warning, wounded sprint speed, blood drops,
+  and fresh blood pulling a patrolling hunter;
+- medkit patch rules, second-hit down, and the downed crawl distance;
+- the solo self-recovery hold, reset, noise and once-per-night limit;
+- flash cone, cost, cooldown and immunity, and that stunned creatures can't move
+  or attack;
+- teammate help calls and cooldown, the bare-handed revive prompt and timing,
+  and ping expiry.
+
+`offline_slice.gd` now asserts wound-then-down and the solo last chance before
+defeat. `network_peer.gd` checks that kitless revives are slower than kit time,
+and that a guest flash stuns on the host and replicates (`lnac-net-6`).
+Evidence: [chase toolkit](evidence/chase_toolkit/README.md).

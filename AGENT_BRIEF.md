@@ -110,6 +110,15 @@ in camp or aboard are rescued and those in the woods are left behind. F2 also
 adds dread, a bounded director, phase supply drops, storms, blackouts with a
 generator restart, dread-scaled music and modest stalker escalation (rules
 `lnac-net-5`). Quick Camp stays short.
+F3a (chase toolkit, part one) is implemented and supersedes the one-hit-down and
+medkit-only-revive rules above. The first hit wounds (1.2s grace, −10% sprint,
+blood trail that patrolling AI follow; medkit + V patches) and a second downs.
+Downed survivors crawl and call for help. Revives work bare-handed at 2× the role
+time, or at role time with a medkit (consumed), and revived survivors return
+wounded. A lone survivor gets a 20s last chance to self-recover once (8s hold,
+loud) before all-down defeat. Space flash-stun costs 15 charge, has an 8s
+cooldown, freezes creatures in the beam within 90px for 1.5s, then 6s immunity.
+Rules `lnac-net-6`. F3b (hiding, doors, knock-overs) follows.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 

@@ -39,6 +39,19 @@ var selected_slot: int = 0
 var role_applied := false
 var ward_remaining: float = 0.0
 var hex_remaining: float = 0.0
+## F3 chase toolkit: wounded before downed, a crawl while downed, flash-stun and solo recovery.
+const WOUND_GRACE := 1.2
+const WOUNDED_SPRINT := 0.9
+const CRAWL_SPEED := 20.0
+const FLASH_COST := 15.0
+const FLASH_COOLDOWN := 8.0
+var wounded: bool = false
+var flash_time: float = 0.0
+var flash_cooldown: float = 0.0
+var self_recovery_used: bool = false
+var help_cooldown: float = 0.0
+var blood: Array[Vector2] = []
+var blood_distance: float = 0.0
 
 
 func _ready() -> void:
@@ -53,6 +66,9 @@ func _physics_process(delta: float) -> void:
 	notice_time=maxf(0,notice_time-delta)
 	ward_remaining = maxf(0, ward_remaining - delta)
 	hex_remaining = maxf(0, hex_remaining - delta)
+	flash_time = maxf(0.0, flash_time - delta)
+	flash_cooldown = maxf(0.0, flash_cooldown - delta)
+	help_cooldown = maxf(0.0, help_cooldown - delta)
 	if expedition and CampMap.is_woods(global_position) and flashlight_on and status == Status.ALIVE:
 		flashlight_charge = maxf(0.0, flashlight_charge - delta * light_drain)
 		if flashlight_charge <= 0:
@@ -71,6 +87,17 @@ func _physics_process(delta: float) -> void:
 
 func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 	velocity = Vector2.ZERO
+	if status == Status.DOWNED:
+		# Downed survivors drag themselves slowly toward cover or a teammate.
+		sprinting = false
+		var crawl := direction.limit_length(1.0)
+		if crawl.length_squared() > 0.0:
+			facing = crawl
+		velocity = crawl * CRAWL_SPEED
+		var before := position
+		move_and_slide()
+		stride += position.distance_to(before) * 0.5
+		return
 	if status != Status.ALIVE:
 		sprinting = false
 		return
@@ -86,13 +113,21 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 			exhausted = true
 	else:
 		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery)
-	velocity = movement * (config.sprint_speed if sprinting else config.walk_speed)
+	velocity = movement * (config.sprint_speed * (WOUNDED_SPRINT if wounded else 1.0) if sprinting else config.walk_speed)
 	if hex_remaining > 0:
 		velocity *= 0.6
 	var previous := position
 	move_and_slide()
 	var distance := position.distance_to(previous)
 	stride += distance
+	if wounded:
+		# A short-lived trail: the newest drops show where a wounded survivor went.
+		blood_distance += distance
+		if blood_distance >= 18.0:
+			blood_distance = 0.0
+			blood.append(global_position.round())
+			if blood.size() > 14:
+				blood.pop_front()
 	if sprinting and distance > 0.1:
 		noise_clock -= delta
 		if noise_clock <= 0.0:
@@ -105,8 +140,16 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 func receive_hit() -> void:
 	if invulnerability > 0.0 or ward_remaining > 0.0:
 		return
-	if status == Status.ALIVE:
-		set_status(Status.DOWNED)
+	if status != Status.ALIVE:
+		return
+	if not wounded:
+		# First hit wounds: a brief grace window to run before a second hit downs.
+		wounded = true
+		invulnerability = WOUND_GRACE
+		get_tree().call_group("round_world", "on_survivor_wounded", self)
+		queue_redraw()
+		return
+	set_status(Status.DOWNED)
 
 
 func apply_hex(seconds: float) -> void:
@@ -127,6 +170,8 @@ func set_status(next: Status) -> void:
 		bleedout = 0
 		get_tree().call_group("round_world", "on_survivor_downed", self)
 	if status == Status.ALIVE:
+		# Revived survivors come back wounded: one more hit downs them again.
+		wounded = true
 		stamina = config.stamina_max * 0.5
 		invulnerability = config.revive_grace_seconds
 	status_changed.emit()
@@ -156,6 +201,13 @@ func _draw() -> void:
 			draw_line(Vector2(0, -14), Vector2(0, -10), Color("ecd6a0"), 2)
 		return
 	draw_texture_rect_region(sheet, Rect2(-12, -29, 24, 32), Rect2(frame * 24, row * 32, 24, 32))
+	if wounded:
+		draw_rect(Rect2(-4, -14, 3, 3), Color("a8322c"))
+		draw_rect(Rect2(2, -9, 2, 2), Color("8c2a25"))
+	if flash_time > 0.0:
+		var spread := facing.orthogonal() * 34
+		var reach := facing * 90 + Vector2(0, -12)
+		draw_colored_polygon(PackedVector2Array([Vector2(0, -12), reach + spread, reach - spread]), Color(1, 0.98, 0.85, flash_time / 0.18 * 0.55))
 	if not held_item().is_empty():
 		var hand := Vector2(9 if facing.x >= 0 else -10, -9)
 		var colors := {"flare":"d58460", "battery_pack":"9bb5ad", "rations":"d1ae72", "medkit":"e5dfc2", "noise_tin":"a5b9bd", "salt_ward":"ded9bb", "glow_moss":"a6d99a"}

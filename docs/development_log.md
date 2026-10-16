@@ -1,5 +1,40 @@
 # Development log
 
+## 2026-10-16 — Overhaul F3a: wounds, revives, crawl, self-recovery, flash-stun
+
+First half of the chase toolkit, aimed at more close calls and fewer instant downs.
+
+- **Wounded before downed:** the first hit sets `wounded` with 1.2 s of
+  invulnerability; a second hit downs. Wounded survivors sprint ×0.9 and drop
+  up to 14 blood marks (every 18 px). Every 2.5 s, patrolling creatures within
+  110 px of the newest drop investigate it. A medkit + V clears the wound.
+  Revived survivors return wounded.
+- **Revives:** a medkit is no longer required. Bare-handed takes 2× the role's
+  revive time (6 s base, 4.5 s First-Aid Kid); with a kit it takes the role time
+  and uses the kit.
+- **Downed:** crawl at 20 px/s; E calls for help when teammates exist (8 s
+  HELP edge marker for everyone, 160 px noise, 10 s cooldown).
+- **Solo:** a lone survivor gets 20 s after going down to hold E for 8 s and get
+  up, once per night (500 px noise). Otherwise all-down defeat applies as before.
+- **Flash-stun** (Space, `flash_burst`): costs 15 charge in expedition, 8 s
+  cooldown. Creatures within 90 px in a 0.75-dot cone with clear line of sight
+  freeze for 1.5 s (no movement, attacks, dashes or casts), then can't be
+  stunned again for 6 s.
+- Snapshots carry wound/flash/help/self-recovery state and enemy stun; downed
+  peers may send `interact` (help), and `flash` is a new intent. Rules `lnac-net-6`.
+
+Tests: `offline_slice` updated to wound-then-down and solo last chance; the
+network revive check now asserts kitless is slower than kit time. A test
+side-effect (re-disabling a stunned stalker froze its stun) was fixed in the
+fixture, not the game.
+
+**Verification:** `python3 tools/verify.py` 84/84 steps, no errors or warnings
+(new `chase_toolkit`: 29 headless / 30 graphical assertions).
+`verify_network.py --mode all`: 2 peers 261 assertions, 4 peers 439, all
+passing. Evidence: [chase toolkit](evidence/chase_toolkit/README.md). Not
+verified: human close-call:down ratio, balance of the 20 s solo window, graphical
+network windows, other platforms.
+
 ## 2026-10-16 — Overhaul F2: the 60-minute night
 
 User amendment: expedition rounds should span **40–60 minutes**. Implemented as

@@ -109,6 +109,26 @@ func _host() -> void:
 	if not await _reports(peers-1): return
 	_check(level.pins.size()==1 and level.pins[0]["owner"]==guest,"guest_pin_accepted_by_host")
 	for report: Dictionary in harness.reports.values(): _check(report.get("pin",false),"guest_pin_replicated_to_clients")
+	# A guest's flash is a host-validated intent; the stun replicates to every peer.
+	var flasher: CampPlayer=net.actors[guest]
+	flasher.facing=Vector2.RIGHT
+	flasher.ward_remaining=4.0
+	flasher.flashlight_charge=90.0
+	flasher.flash_cooldown=0.0
+	var dazzled: CampKiller=level.killer
+	var dazzled_was: bool=dazzled.enabled
+	dazzled.position=flasher.position+Vector2(60,0)
+	dazzled.stun_remaining=0.0
+	dazzled.stun_immunity=0.0
+	dazzled.enabled=true
+	harness.advance.rpc("flash",{"guest":guest})
+	if not await _reports(peers-1): return
+	_check(dazzled.stun_immunity>0.0 and flasher.flash_cooldown>0.0,"guest_flash_stuns_on_host")
+	for report: Dictionary in harness.reports.values(): _check(report.get("stun",false),"flash_stun_replicated_to_clients")
+	dazzled.stun_remaining=0.0
+	dazzled.stun_immunity=0.0
+	dazzled.enabled=dazzled_was
+	flasher.ward_remaining=0.0
 	if selected_mode=="woods":
 		# The host owns the night clock; clients see the phase and the radio-revealed fuel cache.
 		level.night_clock.skip_to(NightClock.PHASE_STARTS[1])
@@ -187,8 +207,10 @@ func _host() -> void:
 	if not await _reports(peers-1): return
 	for report: Dictionary in harness.reports.values(): _check(report.get("downed",false),"downed_state_shared")
 	level.player.supplies["medkit"]=0
-	level.advance_revive(level.player,injured,true,10)
-	_check(injured.status==CampPlayer.Status.DOWNED and level.revive_progress==0,"revive_without_medkit_rejected")
+	level.advance_revive(level.player,injured,true,level.player.config.revive_seconds+0.01)
+	_check(injured.status==CampPlayer.Status.DOWNED and level.revive_progress>0,"kitless_revive_slower_than_kit_time")
+	level.advance_revive(level.player,injured,false,0.1)
+	_check(level.revive_progress==0,"released_revive_resets")
 	level.player.pack("medkit")
 	Input.action_press("interact")
 	await create_timer(2.6).timeout
@@ -239,6 +261,7 @@ func _host() -> void:
 	# Leave one teammate down away from the van: departure must rescue them too.
 	level.player.position=Vector2(180,420)
 	level.player.invulnerability=0
+	level.player.wounded=true
 	level.player.receive_hit()
 	harness.advance.rpc("board")
 	if not await _reports(peers-1): return
@@ -314,6 +337,14 @@ func _client() -> void:
 				await _until(func(): return net.actors[harness.data["guest"]].notice.contains("Nothing to use"),5)
 				var personal_actor: CampPlayer=net.world.player
 				harness.report.rpc_id(1,handled,{"private":personal_actor.notice.contains("Nothing to use") if get_multiplayer().get_unique_id()==harness.data["guest"] else personal_actor.notice_time==0})
+			"flash":
+				if mine==harness.data["guest"]: net.action("flash")
+				var stunned := func() -> bool:
+					for enemy: CampKiller in get_nodes_in_group("killers"):
+						if enemy.stun_remaining>0.0: return true
+					return false
+				await _until(stunned,5)
+				harness.report.rpc_id(1,handled,{"stun":stunned.call() and net.actors[harness.data["guest"]].flash_cooldown>0.0})
 			"night_phase":
 				var fuel: CampPickup
 				for pickup: CampPickup in net.world.pickups:

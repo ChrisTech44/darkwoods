@@ -177,7 +177,10 @@ func _killer_and_revive_checks() -> void:
 	teammate.position = player.position + Vector2(16, 0)
 	level.add_child(teammate)
 	teammate.receive_hit()
-	_check(teammate.status == CampPlayer.Status.DOWNED, "first_hit_downs_survivor")
+	_check(teammate.status == CampPlayer.Status.ALIVE and teammate.wounded and teammate.invulnerability > 0, "first_hit_wounds_with_grace")
+	teammate.invulnerability = 0.0
+	teammate.receive_hit()
+	_check(teammate.status == CampPlayer.Status.DOWNED and not get_nodes_in_group("survivors").is_empty(), "second_hit_downs_wounded_survivor")
 	teammate.position += Vector2(100, 0)
 	level.advance_revive(player, teammate, true, level.config.revive_seconds)
 	_check(teammate.status == CampPlayer.Status.DOWNED and level.revive_progress == 0.0, "distant_revive_rejected")
@@ -191,13 +194,19 @@ func _killer_and_revive_checks() -> void:
 	Input.action_press("interact")
 	await _frames(185)
 	Input.action_release("interact")
-	_check(teammate.status == CampPlayer.Status.ALIVE, "timed_teammate_revive_succeeds")
+	_check(teammate.status == CampPlayer.Status.ALIVE and teammate.wounded and player.supplies["medkit"] == 0, "medkit_revive_succeeds_and_leaves_wounded")
 	teammate.receive_hit()
 	_check(teammate.status == CampPlayer.Status.ALIVE, "revive_grace_prevents_instant_redown")
 	await _frames(125)
 	teammate.receive_hit()
 	teammate.receive_hit()
-	_check(teammate.status == CampPlayer.Status.DOWNED, "second_hit_does_not_eliminate")
+	_check(teammate.status == CampPlayer.Status.DOWNED, "revived_survivor_downs_on_next_hit_and_never_dies")
+	teammate.position = player.position + Vector2(16, 0)
+	level.advance_revive(player, teammate, true, player.config.revive_seconds + 0.01)
+	_check(teammate.status == CampPlayer.Status.DOWNED and level.revive_progress > 0, "kitless_revive_takes_longer_than_kit_time")
+	level.advance_revive(player, teammate, true, player.config.revive_seconds)
+	_check(teammate.status == CampPlayer.Status.ALIVE, "kitless_revive_completes_at_double_time")
+	teammate.set_status(CampPlayer.Status.DOWNED)
 	teammate.set_status(CampPlayer.Status.DOWNED)
 	teammate.bleedout = 0.03
 	await _frames(4)
@@ -208,13 +217,21 @@ func _killer_and_revive_checks() -> void:
 	killer.attack_remaining = 0.0
 	killer.enabled = true
 	await _frames(3)
-	_check(player.status == CampPlayer.Status.DOWNED, "killer_attack_downs_player")
+	_check(player.status == CampPlayer.Status.ALIVE and player.wounded, "killer_attack_wounds_player")
+	await _frames(55)
+	_check(player.status == CampPlayer.Status.ALIVE, "attack_cooldown_and_grace_prevent_double_hit")
+	for frame in range(240):
+		if player.status == CampPlayer.Status.DOWNED: break
+		await physics_frame
+	_check(player.status == CampPlayer.Status.DOWNED, "second_attack_downs_wounded_player")
 	if capture:
 		await _snapshot("downed")
-	await _frames(55)
-	_check(player.status == CampPlayer.Status.DOWNED, "attack_cooldown_prevents_double_hit")
-	await _frames(75)
-	_check(level.finished and not level.won and player.status == CampPlayer.Status.DOWNED, "all_downed_causes_local_defeat_without_death")
+	await _frames(30)
+	_check(not level.finished and level.solo_recovery_available(player), "solo_survivor_gets_last_chance")
+	for frame in range(ceili(level.SOLO_LAST_CHANCE * 60.0) + 30):
+		if level.finished: break
+		await physics_frame
+	_check(level.finished and not level.won and player.status == CampPlayer.Status.DOWNED, "all_downed_causes_local_defeat_after_last_chance")
 	if capture:
 		await _snapshot("loss")
 	level.restart_round()

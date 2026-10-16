@@ -62,6 +62,11 @@ func _physics_process(delta: float) -> void:
 	if species == "witch" and not enabled:
 		super._physics_process(delta)
 		return
+	if enabled and tick_stun(delta):
+		dash_remaining = 0
+		power_tell = 0
+		casting = false
+		return
 	if enabled:
 		if nearby_flare() != Vector2.INF:
 			dash_remaining = 0
@@ -194,6 +199,7 @@ func _draw() -> void:
 		draw_string(ThemeDB.fallback_font, Vector2(-18, -63), "HEX!" if casting else ("HOWL!" if species == "werewolf" else "!"), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("d9b581"))
 	if casting:
 		draw_arc(Vector2(0, -20), 22, 0, TAU * (1 - cast_remaining / 0.8), 24, Color("c4aadf"), 2)
+	draw_stun(-66)
 
 
 func constrain_destination(point: Vector2) -> Vector2:

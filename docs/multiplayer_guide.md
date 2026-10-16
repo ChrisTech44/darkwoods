@@ -44,7 +44,8 @@ starts the repaired van. **1–6/keypad** selects a belt item; **V** uses it and
 vehicle parts and reusable cutters remain separate from the six supply slots.
 Map pins (**M**) are sent to the host, which keeps each player's newest three
 and shares them with everyone. The host also owns the 60-minute night clock, part reveals, storms and blackouts.
-Both copies must run rules version `lnac-net-5`.
+Flash-stuns (Space) and help calls are host-validated intents.
+Both copies must run rules version `lnac-net-6`.
 Nearby teammates show their names; each survivor keeps their own flashlight,
 limited sight, stamina, inventory and role advantage.
 
@@ -57,12 +58,14 @@ survivors outside the van are left behind.
 
 **Esc opens your local settings/menu; it does not pause the shared world.**
 Your survivor stops sending movement while that menu is open and can still be
-caught. A downed teammate stays down indefinitely and requires a medkit to revive
-(hold E for 3s, or 2.25s as First-Aid Kid). Further hits never permanently kill
-them. All parts, tools and supplies drop beside their body on down or disconnect,
+caught. The first hit wounds; a second downs. A downed teammate stays down
+indefinitely and can crawl and press E to call for help. Any teammate can hold E
+to revive: 6s bare-handed, or 3s (2.25s as First-Aid Kid) with a medkit, which
+is consumed. Revived survivors come back wounded. Further hits never permanently
+kill them. All parts, tools and supplies drop beside their body on down or disconnect,
 so teammates can recover them with E. When everyone is down the round is lost. Alternating downs after successful
-revivals do not count toward a cumulative loss. Without a kit, E still collects
-nearby dropped gear. Enemies ignore downed bodies, pursue standing survivors or
+revivals do not count toward a cumulative loss. A press of E collects nearby
+dropped gear; holding E revives. Enemies ignore downed bodies, pursue standing survivors or
 resume searching/patrolling. The stalker now sweeps central camp early.
 Empty interactions, pickup/belt errors and supply feedback display only on the
 acting player’s HUD; shared team events still announce to everyone.

@@ -80,7 +80,7 @@ func _seed_checks() -> void:
 				locked += 1
 		for kind in a.required:
 			_check(counts[kind] == 1, "seed_%d_one_%s" % [seed_value, kind])
-		_check(locked == 3 and counts["boltcutters"] == 1 and counts["battery_pack"] == 15, "seed_%d_cache_tools_and_supplies" % seed_value)
+		_check(locked == 3 and counts["boltcutters"] == 2 and counts["crowbar"] == 1 and counts["battery_pack"] == 15, "seed_%d_cache_tools_and_supplies" % seed_value)
 		_check(a.encounters.size() == RoundPlan.CRYPTID_COUNT and a.encounters[0]["species"] == "vampire" and a.encounters[1]["species"] == "witch" and a.encounters[2]["species"] != a.encounters[3]["species"], "seed_%d_twenty_four_cryptids" % seed_value)
 		_check(a.woods.zones.size() == 9 and a.woods.zones[0]["bounds"].size == Vector2(960,576), "seed_%d_nine_expanded_sites" % seed_value)
 		for encounter in a.encounters:
@@ -145,7 +145,7 @@ func _rules() -> void:
 	for pickup: CampPickup in level.pickups:
 		if pickup.kind == "fuel":
 			cache = pickup
-		if pickup.kind == "boltcutters":
+		if pickup.kind == "boltcutters" and not CampMap.is_woods(pickup.position):
 			cutters = pickup
 	player.position = cache.position
 	await _frames(2)

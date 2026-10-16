@@ -70,6 +70,25 @@ creatures; nearby footsteps and calls provide audible warnings without revealing
 the whole maze. The local field map follows you, records explored trails and
 points back toward camp. The village lies northwest, bog east and graveyard south.
 
+### Find your way
+
+- **Signposts** stand at about 120 trail junctions per night. Each board points
+  along the real shortest trail to **camp** and the two nearest regions. Stand
+  beside one to read its full directions on the HUD
+  (for example `SIGNPOST · CAMP E · ABANDONED VILLAGE W · OLD GRAVEYARD S`).
+- **Skyline markers.** Tall landmarks show over the treetops: the camp fire always,
+  plus up to four regions within about 2,400 px (bell tower, bog glow, dome,
+  rail signal and others). They sit at the screen edge in that direction and
+  never reveal trails, caches or creatures.
+- **Region names from the start.** The field map (Tab) outlines every nearby
+  region from the Ranger Lodge wall map; regions brighten once you have walked them.
+  Trails still appear only where you have explored.
+- **Team pins.** Press **M** to drop a pin where you stand. Everyone sees it on
+  their field map and as an edge marker, with a shared "pinned WITCH'S BOG"
+  notice. Each player keeps their newest three pins.
+
+![Signpost arrows to camp, village and graveyard in the flashlight beam](docs/evidence/navigation/nav_signpost.png)
+
 Both modes default to fresh randomized camp layouts. Loot, required extra parts,
 weather, creature homes and trails use the run seed. Music plays on the menu;
 **Settings** holds the saved mixer before Play. Foreground canopies fade when
@@ -133,7 +152,8 @@ and chapel are optional; six smaller ruined landmarks also remain along the trai
 ## How to escape
 
 1. **Prepare in camp.** Check **Tab** for component clues. In Woods Expedition,
-   find the reusable **boltcutters in Maintenance** before opening locked caches.
+   find reusable **boltcutters** (Maintenance, or a second pair in a woods
+   toolbox) or the noisy **crowbar** (a bunk cabin) before opening locked caches.
    Building doors face south.
 2. **Search and collect.** Stand close to an item and press **E**. Walls block
    interaction. In the woods, explore to reveal trails on your field map; it does
@@ -160,7 +180,7 @@ your own outcome too; living survivors left outside are left behind.
 | --- | --- |
 | **WASD / arrow keys** | Walk and face a direction |
 | **Shift** | Sprint while stamina lasts; sprinting makes noise |
-| **E** | Take items, open caches with cutters, install parts, enter a running van |
+| **E** | Take items, open caches with cutters or a crowbar, install parts, enter a running van |
 | **Hold E** | Start the repaired van or revive a nearby downed teammate |
 | **F** | Toggle the flashlight |
 | **1–6 / keypad 1–6** | Select a belt slot |
@@ -168,6 +188,7 @@ your own outcome too; living survivors left outside are left behind.
 | **Q** | Throw a flare |
 | **R** | Use a spare flashlight battery |
 | **C** | Eat rations to restore stamina |
+| **M** | Drop a team map pin where you stand (newest three kept) |
 | **Tab** | Toggle pack, objective clues, and field map |
 | **Esc** | Solo: pause/resume. Co-op: local menu; the shared world continues. |
 
@@ -194,7 +215,8 @@ fuse, tire and spark plug; check Tab to see which two your night requires.
 | **Fuse** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
 | **Tire** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
 | **Spark plug** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
-| **Boltcutters** | Woods only: Maintenance. | Reusable tool that opens locked caches when you press E. Kept after use; it is not installed in the van. |
+| **Boltcutters** | Woods only: Maintenance, plus a second pair in a woods toolbox 1,000–1,600 px from camp (Tab shows its compass bearing). | Reusable tool that opens locked caches quietly when you press E. Kept after use; it is not installed in the van. Each survivor can carry one pair, so the second is left for a teammate. |
+| **Crowbar** | Woods only: the bunk cabin that does not hold the van battery. | Pries a locked cache open when you have no cutters, with a loud 500 px noise. Reusable; carried in the pack like cutters. |
 
 The Woods objective caches are in **Village / Surveyor Hut**, **Witch's Bog /
 Stash**, and **Old Graveyard / Cache**. Fuel and the two selected extra parts are
@@ -476,7 +498,8 @@ recover units. Vehicle components and cutters remain separate from this limit.
 
 The current implementation includes solo and 1–4 player ENet co-op in both
 modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
-species. Full baseline verification passed **75 steps** with no errors/warnings;
+species. Full baseline verification passed **78 steps** with no errors/warnings,
+including the new [navigation suite](docs/evidence/navigation/README.md);
 final content checks passed **350 assertions**. Current graphical ENet tests passed **654
 assertions across 14 process runs**, including two/four peers and graphical
 host/client windows in both modes. See the

@@ -1,8 +1,10 @@
 # Heart-pounding nights: gameplay overhaul plan
 
-Status: **approved planning direction, not implemented**. Nothing in this
-document exists in the current build until a development-log entry records
-execution evidence for it. The user asked (16 October 2026) to make the game
+Status: **approved planning direction; F1 navigation aids implemented**
+(signposts, skyline markers, wall-map regions, team pins, spare cutters and
+crowbar; see [evidence](evidence/navigation/README.md)). Everything else in
+this document is still planned until a development-log entry records execution
+evidence for it. The user asked (16 October 2026) to make the game
 more fun, more dynamic and more heart-pounding, and is explicitly open to
 better map designs, new regions and new cross-map requirements. Where this plan
 conflicts with older planning text, this plan wins; the
@@ -255,14 +257,17 @@ Record these per human playtest (automation alone does not prove fun):
 Each increment is runnable, verified in solo **and** two-peer co-op (the game
 already has ENet authority), logged and pushed before the next one starts.
 
-1. **F1 Navigation and clues**: skyline silhouettes, signposts, Lodge wall map
-   skeleton, clue chains, map pins, second boltcutters + crowbar.
+1. **F1 Navigation** *(implemented)*: skyline markers, junction signposts,
+   wall-map region outlines, team map pins (M), second boltcutters + crowbar.
+   Clue chains moved to F4: the pack already names each part's exact cache, so
+   vaguer clues only make sense once objective regions rotate.
 2. **F2 Night phases, dread and director**: phase clock, dread, relief windows,
    build-ups, dynamic music layers, two night events (Blackout, Storm Front).
 3. **F3 Chase toolkit**: Wounded state, hiding spots and breath meter, doors,
    vaults, knock-overs, kitless revive, downed crawl/ping, solo self-recovery.
 4. **F4 Ring-and-spoke map**: rework the woods generator into hub/ring/spokes/
-   thickets with unlockable shortcuts and rotating objective regions.
+   thickets with unlockable shortcuts, rotating objective regions and the
+   camp → field → building clue chains that point to them.
 5. **F5 Escapes and new regions**: Radio Rescue first (Substation, Radio Relay
    Station), then Boat (Logging Camp, Lakeshore Boathouse) and Ranger Gate; escape finales.
 6. **F6 Roles 2.0 and co-op actions**: active abilities, item passing, heavy

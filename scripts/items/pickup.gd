@@ -56,6 +56,14 @@ func _draw() -> void:
 	elif kind == "rations":
 		draw_rect(Rect2(-5,-5,10,10),Color("a58b61"))
 		draw_rect(Rect2(-4,-2,8,4),Color("d3c29a"))
+	elif kind == "boltcutters":
+		draw_line(Vector2(-6, 5), Vector2(1, -2), Color("c7744f"), 2)
+		draw_line(Vector2(6, 5), Vector2(-1, -2), Color("c7744f"), 2)
+		draw_line(Vector2(-1, -2), Vector2(2, -7), Color("b8c0b4"), 2)
+		draw_line(Vector2(1, -2), Vector2(-2, -7), Color("b8c0b4"), 2)
+	elif kind == "crowbar":
+		draw_line(Vector2(-6, 6), Vector2(4, -5), Color("b2463c"), 2)
+		draw_line(Vector2(4, -5), Vector2(7, -3), Color("b2463c"), 2)
 	elif kind not in ["battery", "fuel", "key"]:
 		draw_rect(Rect2(-5, -5, 10, 10), Color("a4b49b"))
 		draw_line(Vector2(-3, 0), Vector2(3, 0), Color("485c51"), 2)

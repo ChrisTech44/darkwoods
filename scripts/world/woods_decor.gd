@@ -81,3 +81,26 @@ func _draw() -> void:
 				draw_rect(Rect2(at + Vector2(14, -18), Vector2(9, 12)), Color("9d754b"))
 				draw_line(at + Vector2(15, -15), at + Vector2(21, -15), Color("c2ad78"))
 		draw_string(ThemeDB.fallback_font, at + Vector2(-38, 32), landmark["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("c2b58b"))
+	for post: Dictionary in woods.signposts:
+		_signpost(post)
+
+
+func _signpost(post: Dictionary) -> void:
+	var at: Vector2 = post["position"]
+	draw_rect(Rect2(at + Vector2(-1, -10), Vector2(3, 30)), Color("5d4a33"))
+	draw_rect(Rect2(at + Vector2(-2, 18), Vector2(5, 2)), Color("3a3326"))
+	var targets: Array = post["targets"]
+	for index in range(targets.size()):
+		var target: Dictionary = targets[index]
+		var step: Vector2i = target["step"]
+		var top := at.y - 12 + index * 9
+		var board := Rect2(at.x - 22, top, 45, 8)
+		var face := Color("b49b69") if index == 0 else Color("8f7d57")
+		draw_rect(board, face)
+		draw_rect(Rect2(board.position + Vector2(0, 7), Vector2(45, 1)), Color("51432f"))
+		# Painted arrow in the board's left notch: the real next trail toward that place.
+		var tip := Vector2(board.position.x + 5, top + 4)
+		var arrow := Vector2(step).normalized()
+		var side := Vector2(-arrow.y, arrow.x)
+		draw_colored_polygon(PackedVector2Array([tip + arrow * 3, tip - arrow * 2 + side * 3, tip - arrow * 2 - side * 3]), Color("2a2a22"))
+		draw_string(ThemeDB.fallback_font, Vector2(board.position.x + 10, top + 7), target["short"], HORIZONTAL_ALIGNMENT_LEFT, 34, 6, Color("2a2a22"))

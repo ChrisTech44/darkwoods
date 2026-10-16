@@ -19,6 +19,11 @@ var zones: Array[Dictionary] = []
 var visited: Dictionary = {}
 var landmark_distances: Dictionary = {}
 var open_tiles: Dictionary = {}
+var signposts: Array[Dictionary] = []
+const SIGN_SPACING := 640.0
+const SIGN_OFFSET := Vector2(-44, -40)
+const SIGN_NAMES := {"village":"VILLAGE", "bog":"BOG", "graveyard":"GRAVES", "mill":"MILL", "orchard":"ORCHARD", "observatory":"DOME", "rail":"RAILS", "quarry":"QUARRY", "chapel":"CHAPEL"}
+const COMPASS := {Vector2i.UP:"N", Vector2i.DOWN:"S", Vector2i.LEFT:"W", Vector2i.RIGHT:"E"}
 
 func generate(seed_value: int) -> void:
 	links.clear()
@@ -28,6 +33,7 @@ func generate(seed_value: int) -> void:
 	zones.clear()
 	visited.clear()
 	open_tiles.clear()
+	signposts.clear()
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var stack: Array[Vector2i] = [ENTRY]
@@ -84,6 +90,76 @@ func generate(seed_value: int) -> void:
 		if landmarks.size() == labels.size():
 			break
 	landmark_distances.clear()
+	_make_signposts()
+
+func _make_signposts() -> void:
+	# Graph data only (no RNG), so adding signs never shifts other seeded content.
+	var to_camp := distances_from_many(ENTRIES)
+	var to_zone: Array[Dictionary] = []
+	for zone in zones:
+		to_zone.append(distances_from(zone["cell"]))
+	var junctions: Array = []
+	for cell: Vector2i in links:
+		if links[cell].size() >= 3 and zone_at(center(cell)).is_empty():
+			junctions.append(cell)
+	junctions.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		return to_camp[a] < to_camp[b] if to_camp[a] != to_camp[b] else a.y * SIZE.x + a.x < b.y * SIZE.x + b.x)
+	for cell: Vector2i in junctions:
+		var spaced := true
+		var at := center(cell) + SIGN_OFFSET
+		for post in signposts:
+			if at.distance_to(post["position"]) < SIGN_SPACING:
+				spaced = false
+				break
+		for landmark in landmarks:
+			if center(cell).distance_to(landmark["position"]) < 160:
+				spaced = false
+		if not spaced:
+			continue
+		var home := next_step(cell, to_camp)
+		if home == Vector2i.ZERO:
+			# Camp exits sit beside the camp block; point straight into it.
+			var offset := Vector2(CAMP_CELLS.get_center()) - Vector2(cell)
+			home = Vector2i(signi(int(offset.x)), 0) if absf(offset.x) > absf(offset.y) else Vector2i(0, signi(int(offset.y)))
+		var targets: Array[Dictionary] = [{"label": "CAMP", "short": "CAMP", "step": home}]
+		var order: Array = range(zones.size())
+		order.sort_custom(func(a: int, b: int) -> bool:
+			return to_zone[a][cell] < to_zone[b][cell] if to_zone[a][cell] != to_zone[b][cell] else a < b)
+		for index in order.slice(0, 2):
+			targets.append({"label": short_name(zones[index]), "short": SIGN_NAMES.get(zones[index]["kind"], "?"), "step": next_step(cell, to_zone[index]), "zone": index})
+		signposts.append({"cell": cell, "position": at, "targets": targets})
+
+
+## Neighbouring cell on a shortest trail toward the distance field's source.
+func next_step(cell: Vector2i, field: Dictionary) -> Vector2i:
+	var best := cell
+	for next: Vector2i in links[cell]:
+		if field[next] < field[best] or (field[next] == field[best] and best != cell and next.y * SIZE.x + next.x < best.y * SIZE.x + best.x):
+			best = next
+	return best - cell
+
+
+static func short_name(zone: Dictionary) -> String:
+	var label: String = zone["label"]
+	for prefix in ["NORTH", "EAST", "SOUTH", "WEST"]:
+		if label.begins_with(prefix):
+			return label.get_slice(" / ", 1)
+	return label.get_slice(" / ", 0)
+
+
+static func signpost_text(post: Dictionary) -> String:
+	var parts: Array[String] = []
+	for target: Dictionary in post["targets"]:
+		parts.append("%s %s" % [target["label"], COMPASS.get(target["step"], "?")])
+	return "SIGNPOST · " + " · ".join(parts)
+
+
+func signpost_near(point: Vector2, radius: float = 72.0) -> Dictionary:
+	for post in signposts:
+		if point.distance_to(post["position"]) <= radius:
+			return post
+	return {}
+
 
 func _link(a: Vector2i, b: Vector2i) -> void:
 	if b not in links[a]:
@@ -203,6 +279,22 @@ func walkable(point: Vector2) -> bool:
 func distances_from(start: Vector2i) -> Dictionary:
 	var result := {start:0}
 	var queue: Array[Vector2i] = [start]
+	var cursor := 0
+	while cursor < queue.size():
+		var cell := queue[cursor]
+		cursor += 1
+		for next: Vector2i in links[cell]:
+			if not result.has(next):
+				result[next] = result[cell]+1
+				queue.append(next)
+	return result
+
+func distances_from_many(starts: Array[Vector2i]) -> Dictionary:
+	var result := {}
+	var queue: Array[Vector2i] = []
+	for start in starts:
+		result[start] = 0
+		queue.append(start)
 	var cursor := 0
 	while cursor < queue.size():
 		var cell := queue[cursor]

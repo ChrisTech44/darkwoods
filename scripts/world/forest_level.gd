@@ -21,6 +21,8 @@ var world_objects: Node2D
 var plan := RoundPlan.new()
 var soundscape: CampSoundscape
 var sight: WoodsVisibility
+var pins: Array[Dictionary] = []
+const PINS_PER_PLAYER := 3
 
 
 func _ready() -> void:
@@ -92,6 +94,12 @@ func _ready() -> void:
 	hud.chart.player = player
 	hud.chart.van = van
 	hud.chart.plan = plan
+	hud.chart.level = self
+	var skyline := Skyline.new()
+	skyline.level = self
+	skyline.size = Vector2(384, 216)
+	hud.root.add_child(skyline)
+	hud.root.move_child(skyline, 0)
 	hud.menu_requested.connect(return_to_menu)
 	hud.restart_requested.connect(restart_round)
 	hud.retry_requested.connect(retry_round)
@@ -136,9 +144,16 @@ func _process(_delta: float) -> void:
 	hud.set_status(heading, detail, player.stamina / player.config.stamina_max)
 	hud.inventory_label.text = "NIGHT %d / %s\nQ FLARE %d · R BATTERY %d · C FOOD %d\n" % [plan.seed_value, plan.weather.to_upper(), player.supplies["flare"], player.supplies["battery_pack"], player.supplies["rations"]]
 	hud.inventory_label.text += plan.pack_description(van.installed)
-	hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINTENANCE") + " / TAB CLOSE"
+	if plan.expedition:
+		hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINT./%s WOODS BOX" % plan.toolbox_hint) + (" +BAR" if "crowbar" in player.inventory else "") + " · TAB CLOSE"
+	else:
+		hud.inventory_label.text += "\nM PIN · TAB CLOSE"
 	hud.update_belt(player)
 	hud.location_label.text = camp_map.location_label(player.global_position)
+	if plan.expedition:
+		var post := plan.woods.signpost_near(player.global_position)
+		if not post.is_empty() and sight.can_see(post["position"]):
+			hud.location_label.text = WoodsLayout.signpost_text(post)
 	hud.supplies_label.text = "LIGHT %ds / FLARES %d" % [int(player.flashlight_charge), player.supplies["flare"]] if plan.expedition else "QUICK CAMP"
 	for enemy: CampKiller in get_tree().get_nodes_in_group("cryptids"):
 		if player.global_position.distance_to(enemy.global_position) < 180 and sight.can_see(enemy.global_position):
@@ -200,14 +215,22 @@ func try_interact(actor: CampPlayer) -> bool:
 		return true
 	for pickup in pickups:
 		if pickup.available and actor.global_position.distance_to(pickup.global_position) <= config.interact_radius and clear_path(actor.global_position, pickup.global_position):
+			var pried := false
 			if pickup.locked and "boltcutters" not in actor.inventory:
-				announce("Locked cache! Find boltcutters in Maintenance first.",actor)
-				actor.noise_emitted.emit(actor.global_position)
-				return false
+				if "crowbar" not in actor.inventory:
+					announce("Locked cache! Boltcutters: Maintenance or the woods toolbox. A crowbar works, loudly.",actor)
+					actor.noise_emitted.emit(actor.global_position)
+					return false
+				pried = true
 			if actor.supplies.has(pickup.kind) and not actor.can_pack(pickup.kind):
 				announce("Belt full. Select a slot and G to drop its stack.",actor)
 				return false
+			if pickup.kind in ["boltcutters", "crowbar"] and pickup.kind in actor.inventory:
+				announce("You already carry " + pickup.kind + ". Leave these for a teammate.",actor)
+				return false
 			pickup.consume()
+			if pried:
+				loud_noise(pickup.global_position, 500)
 			if plan.expedition:
 				actor.noise_emitted.emit(pickup.global_position)
 			if actor.supplies.has(pickup.kind):
@@ -215,9 +238,11 @@ func try_interact(actor: CampPlayer) -> bool:
 			else:
 				actor.inventory.append(pickup.kind)
 			if pickup.kind in plan.required:
-				announce("Found " + pickup.kind.replace("_", " ") + ". Install it at the van.",actor)
+				announce(("Crowbar screech! " if pried else "") + "Found " + pickup.kind.replace("_", " ") + ". Install it at the van.",actor)
 			elif pickup.kind == "boltcutters":
 				announce("Boltcutters found. Woods caches can now be opened with E.",actor)
+			elif pickup.kind == "crowbar":
+				announce("Crowbar found. It pries caches open, but loudly.",actor)
 			else:
 				announce("Packed " + pickup.kind.replace("_", " ") + ". Q flare / R battery / C food.",actor)
 			return true
@@ -305,7 +330,9 @@ func context_prompt() -> String:
 		return "HOLD E · REVIVE TEAMMATE (MEDKIT)"
 	for pickup in pickups:
 		if pickup.available and player.global_position.distance_to(pickup.global_position) <= config.interact_radius and clear_path(player.global_position, pickup.global_position):
-			return "E · LOCKED CACHE / NEED BOLTCUTTERS" if pickup.locked and "boltcutters" not in player.inventory else "E · TAKE " + pickup.kind.replace("_", " ").to_upper()
+			if pickup.locked and "boltcutters" not in player.inventory:
+				return "E · PRY CACHE WITH CROWBAR (LOUD)" if "crowbar" in player.inventory else "E · LOCKED CACHE / NEED BOLTCUTTERS OR CROWBAR"
+			return "E · TAKE " + pickup.kind.replace("_", " ").to_upper()
 	for site in camp_map.sites:
 		var action := site.nearby(player)
 		if not action.is_empty():
@@ -317,7 +344,42 @@ func context_prompt() -> String:
 			return "HOLD E · START VAN  %d%%" % int(van.start_progress / player.config.start_hold_seconds * 100)
 		return "E · INSTALL SUPPLIES   |   NEED: " + ", ".join(missing_parts()).to_upper()
 	if nearby_downed(player) != null: return "MEDKIT NEEDED · Recover nearby gear with E."
-	return "1-6 select · V use · G drop · E interact · Tab notes" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
+	return "1-6 select · V use · G drop · E interact · M pin · Tab notes" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
+
+
+## Shared team pin at the actor's feet. Each owner keeps their newest three.
+func place_pin(actor: CampPlayer, owner: int, owner_name: String) -> bool:
+	if paused or finished or actor.status != CampPlayer.Status.ALIVE or not actor.is_in_group("survivors"):
+		return false
+	var mine: Array[Dictionary] = []
+	for pin in pins:
+		if pin["owner"] == owner:
+			mine.append(pin)
+	if mine.size() >= PINS_PER_PLAYER:
+		pins.erase(mine[0])
+	var slot := 0
+	var ids: Array = [owner]
+	if get_node("/root/Net").active:
+		ids = get_node("/root/Net").actors.keys()
+		ids.sort()
+	slot = maxi(0, ids.find(owner))
+	var place := pin_place(actor.global_position)
+	var label := owner_name.left(8).to_upper() if get_node("/root/Net").active else "PIN %d" % (mine.size() % PINS_PER_PLAYER + 1)
+	pins.append({"owner": owner, "slot": slot, "position": actor.global_position.round(), "name": label, "place": place})
+	announce("%s pinned %s for the team. M pins again." % [owner_name, place])
+	return true
+
+
+func pin_place(point: Vector2) -> String:
+	if not CampMap.is_woods(point):
+		return camp_map.location_label(point)
+	var zone := plan.woods.zone_at(point)
+	if not zone.is_empty():
+		return WoodsLayout.short_name(zone)
+	for landmark in plan.woods.landmarks:
+		if point.distance_to(landmark["position"]) < 160:
+			return landmark["label"]
+	return "THE WOODS"
 
 
 func missing_parts() -> Array[String]:
@@ -394,6 +456,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif not paused and event.is_action_pressed("inventory"):
 		hud.inventory_label.visible = not hud.inventory_label.visible
 		hud.chart.visible = hud.inventory_label.visible
+		get_viewport().set_input_as_handled()
+	elif not paused and event.is_action_pressed("map_pin"):
+		place_pin(player, 1, "You")
 		get_viewport().set_input_as_handled()
 	elif not paused and event.is_action_pressed("use_flare"):
 		use_supply(player, "flare")

@@ -11,6 +11,7 @@ var camp := CampLayout.new()
 var required: Array[String] = ["battery", "fuel", "key"]
 var loot: Array[Dictionary] = []
 var encounters: Array[Dictionary] = []
+var toolbox_hint: String = ""
 
 
 func generate(value: int, mode: String) -> void:
@@ -65,6 +66,7 @@ func generate(value: int, mode: String) -> void:
 	for index in range(3):
 		_add("flare", Vector2(1304, 312), "MAINTENANCE FLARE STASH", false)
 	_add("battery_pack", Vector2(168, 356), "CAMPSITE", false)
+	_add_spare_tools(value, battery_pool)
 	for item in loot:
 		item["position"] = camp.remap(item["position"])
 	_encounter("vampire", woods.zones[2]["cell"] + Vector2i(1,1))
@@ -106,6 +108,29 @@ func generate(value: int, mode: String) -> void:
 		_encounter(["relay_jackal","ration_moth","lens_eater","switchback_hound"][added.size()%4],cell)
 		added.append(at)
 		if encounters.size()==CRYPTID_COUNT: break
+
+
+## Extra lock tools so a team can split up. A separate RNG keeps older seeded content unchanged.
+func _add_spare_tools(value: int, battery_pool: Array[Vector2]) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = value + 9091
+	var free_bunks: Array[Vector2] = []
+	for at in battery_pool:
+		if not loot.any(func(item: Dictionary) -> bool: return item["kind"] == "battery" and item["position"] == at):
+			free_bunks.append(at)
+	_add("crowbar", free_bunks[rng.randi_range(0, free_bunks.size() - 1)], "BUNK CABINS", false)
+	var camp_center := CampMap.CAMP_BOUNDS.get_center()
+	var candidates: Array[Vector2i] = []
+	for cell: Vector2i in woods.links:
+		var at := woods.center(cell)
+		var distance := at.distance_to(camp_center)
+		if distance > 1000 and distance < 1600 and woods.zone_at(at).is_empty() and woods.signpost_near(at - Vector2(20, -14), 48).is_empty():
+			candidates.append(cell)
+	candidates.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y * WoodsLayout.SIZE.x + a.x < b.y * WoodsLayout.SIZE.x + b.x)
+	var chosen := woods.center(candidates[rng.randi_range(0, candidates.size() - 1)]) + Vector2(-20, 14)
+	var bearing := chosen - camp_center
+	toolbox_hint = ("N" if bearing.y < -absf(bearing.x) * 0.4 else ("S" if bearing.y > absf(bearing.x) * 0.4 else "")) + ("E" if bearing.x > absf(bearing.y) * 0.4 else ("W" if bearing.x < -absf(bearing.y) * 0.4 else ""))
+	_add("boltcutters", chosen, "WOODS TOOLBOX / %s OF CAMP" % toolbox_hint, false)
 
 
 func _encounter(species: String, cell: Vector2i) -> void:

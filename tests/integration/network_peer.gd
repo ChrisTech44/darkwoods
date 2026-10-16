@@ -104,6 +104,11 @@ func _host() -> void:
 	if not await _reports(peers-1): return
 	_check(net.actors[guest].notice.contains("Nothing to use") and level.player.notice_time==0 and level.message==shared_before,"empty_interaction_does_not_broadcast")
 	for report: Dictionary in harness.reports.values(): _check(report.get("private",false),"client_interaction_feedback_is_private")
+	# Map pins are host-accepted intents, replicated once to every peer.
+	harness.advance.rpc("map_pin",{"guest":guest})
+	if not await _reports(peers-1): return
+	_check(level.pins.size()==1 and level.pins[0]["owner"]==guest,"guest_pin_accepted_by_host")
+	for report: Dictionary in harness.reports.values(): _check(report.get("pin",false),"guest_pin_replicated_to_clients")
 	for actor: CampPlayer in net.actors.values():
 		actor.flashlight_on=false
 		actor.position=Vector2(140,430)
@@ -303,6 +308,10 @@ func _client() -> void:
 				await _until(func(): return net.actors[harness.data["guest"]].notice.contains("Nothing to use"),5)
 				var personal_actor: CampPlayer=net.world.player
 				harness.report.rpc_id(1,handled,{"private":personal_actor.notice.contains("Nothing to use") if get_multiplayer().get_unique_id()==harness.data["guest"] else personal_actor.notice_time==0})
+			"map_pin":
+				if mine==harness.data["guest"]: net.action("pin")
+				await _until(func(): return net.world.pins.size()==1,5)
+				harness.report.rpc_id(1,handled,{"pin":net.world.pins.size()==1 and net.world.pins[0]["owner"]==harness.data["guest"]})
 			"active_ai_0", "active_ai_1", "active_ai_2", "active_ai_3":
 				await _until(func(): return net.actors[harness.data["down"]].status==CampPlayer.Status.DOWNED,5)
 				var enemies := get_nodes_in_group("killers")

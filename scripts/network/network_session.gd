@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-3"
+const RULES := "lnac-net-4"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -338,6 +338,7 @@ func _accept_action(id: int, generation: int, code: String, slot: int) -> void:
 		"flare": world.use_supply(actor,"flare")
 		"battery": world.use_supply(actor,"battery_pack")
 		"food": world.use_supply(actor,"rations")
+		"pin": world.place_pin(actor,id,actor.peer_name)
 		"light":
 			if not actor.expedition or actor.flashlight_charge>0: actor.flashlight_on=not actor.flashlight_on
 
@@ -394,8 +395,9 @@ func handle_input(event: InputEvent) -> void:
 		if slot>=0: action("select",slot)
 		if event.physical_keycode==KEY_V: action("use")
 		if event.physical_keycode==KEY_G: action("drop")
-	for binding in {"interact":"interact","flashlight":"light","use_flare":"flare","recharge":"battery","eat":"food"}:
-		if event.is_action_pressed(binding): action({"interact":"interact","flashlight":"light","use_flare":"flare","recharge":"battery","eat":"food"}[binding])
+	var bindings := {"interact":"interact","flashlight":"light","use_flare":"flare","recharge":"battery","eat":"food","map_pin":"pin"}
+	for binding in bindings:
+		if event.is_action_pressed(binding): action(bindings[binding])
 
 func return_lobby(retry: bool) -> void:
 	if active and multiplayer.is_server(): _return_lobby.rpc(seed_value if retry else 0)

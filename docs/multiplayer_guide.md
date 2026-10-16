@@ -42,6 +42,8 @@ changing survivor; there is no mid-round reconnect that refreshes supplies.
 starts the repaired van. **1–6/keypad** selects a belt item; **V** uses it and
 **G** drops its stack. **Q/R/C** remain flare/battery/food shortcuts. Required
 vehicle parts and reusable cutters remain separate from the six supply slots.
+Map pins (**M**) are sent to the host, which keeps each player's newest three
+and shares them with everyone. Both copies must run rules version `lnac-net-4`.
 Nearby teammates show their names; each survivor keeps their own flashlight,
 limited sight, stamina, inventory and role advantage.
 

@@ -332,3 +332,18 @@ check living-target preference, medkit pickup beside a body, private empty-E
 feedback, client-visible enemy stride and absence of false defeat while someone
 is standing. Authoritative all-down still ends defeat; repeated downs do not
 accumulate a loss. Input-only solo escape/loss uses the new central patrol route.
+
+
+## Navigation aids (overhaul F1)
+
+Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/navigation_aids.gd`.
+Add `-- --capture`, remove `--headless` and use `--audio-driver Dummy` for
+viewport captures. The full runner includes both forms. The suite checks
+signpost reproducibility, spacing and open-trail placement for four seeds. It
+proves every arrow leads one trail step closer to camp or its region, using
+independently computed distance fields. It also covers skyline edge clamping,
+bearing and range limits, HUD sign readout, the camp + woods boltcutters and
+the crowbar, reachability, a crowbar-pried cache waking a listener 420 px away,
+one-pair-per-survivor, M-key pins (cap of three, place names) and downed
+rejection. `network_peer.gd` adds a guest pin accepted by the host and
+replicated to every client (`lnac-net-4`). Evidence: [navigation](evidence/navigation/README.md).

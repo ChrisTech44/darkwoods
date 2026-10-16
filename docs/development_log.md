@@ -1,5 +1,42 @@
 # Development log
 
+## 2026-10-16 — Overhaul F1: navigation aids, team pins and spare lock tools
+
+Continued the user's gameplay overhaul with slice F1 to cut "puzzling, tedious"
+searching in the large maze.
+
+- **Signposts:** `WoodsLayout` places about 120 signs per seed at trail junctions
+  (spaced ≥ 640 px, outside regions). It uses graph data only, so older seeded
+  content is unchanged. Boards point along the shortest trail to camp and the
+  two nearest regions; the HUD prints full directions when the sign is in sight.
+- **Skyline markers** (`scripts/ui/skyline.gd`): camp plus up to four regions within
+  2,400 px, clamped to a HUD-safe edge band. They give direction only and are
+  hidden in camp.
+- **Field map:** shows every region outline/name in view from the start (Lodge
+  wall map); visited regions brighten. Trails remain exploration-only.
+- **Team pins:** new `map_pin` action (M). Host-accepted `pin` intent, newest
+  three per owner, replicated in snapshots, shown on the map and as edge markers.
+  Rules version bumped to `lnac-net-4`.
+- **Spare tools:** a second boltcutters pair in a woods toolbox 1,000–1,600 px
+  from camp, with a compass bearing in the pack, and a crowbar in the free bunk
+  cabin. The crowbar opens caches with a 500 px noise. A survivor can carry only
+  one of each, so the spare is left for a teammate. These use a separate RNG
+  stream, so existing loot and encounter seeds don't shift.
+- Clue chains moved to F4: the pack already names each exact cache today.
+
+Graphical review caught and fixed three layout issues before commit: edge labels
+hidden by the belt, stacked nearby pin labels, and a pack line running under the
+field map. Signpost spacing initially compared cell centres to offset
+positions; the new spacing assertion caught it.
+
+**Verification:** `python3 tools/verify.py` 78/78 steps passed with no errors or
+warnings (new `navigation_aids` suite: 45 headless assertions; graphical run 48
+with three captures). `verify_network.py --mode all` passed 2 peers (6
+processes / 248 assertions) and 4 peers (8 processes / 414 assertions),
+including the new guest-pin replication stage. Evidence:
+[navigation](evidence/navigation/README.md). Not verified: human pacing (time to
+find regions), graphical network windows for this increment, other platforms.
+
 ## 2026-10-16 — Gameplay overhaul planning (fun, dynamic, heart-pounding)
 
 User feedback: searching feels puzzling and tedious, and nights are not very

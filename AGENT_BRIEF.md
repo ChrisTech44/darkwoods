@@ -98,6 +98,9 @@ van escape (→ rotating regions, clue chains and alternate cross-map escapes),
 the uniform maze (→ hub, ring road, spokes, thickets and shortcuts within the same
 world budget), a single boltcutters pair, and flat threat (→ night phases, dread
 and a bounded director). Until then, the current rules describe the build.
+F1 navigation aids are implemented (signposts, skyline markers, wall-map regions,
+M-key team pins, a woods boltcutters pair and a loud crowbar; rules `lnac-net-4`).
+Clue chains moved to F4 alongside rotating objective regions.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 

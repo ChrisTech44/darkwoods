@@ -1,10 +1,11 @@
 extends Control
-## Field notes: camp is printed, woods trails are revealed only by exploration.
+## Field notes: camp and region names are printed (Lodge wall map); woods trails are revealed only by exploration.
 
 var camp_map: CampMap
 var player: CampPlayer
 var van: CampVan
 var plan: RoundPlan
+var level: Node2D
 
 
 func _ready() -> void:
@@ -32,9 +33,12 @@ func _draw() -> void:
 			for cell: Vector2i in plan.woods.visited:
 				if zone["bounds"].has_point(plan.woods.center(cell)):
 					known = true
-			if known and zone["bounds"].intersects(bounds):
+			if zone["bounds"].intersects(bounds):
 				var rect: Rect2 = zone["bounds"].intersection(bounds)
-				draw_rect(Rect2(origin + (rect.position - bounds.position) * factor, rect.size * factor), Color("b29c70"), false)
+				var area := Rect2(origin + (rect.position - bounds.position) * factor, rect.size * factor)
+				# Region outlines come from the Lodge wall map; walking there brightens them.
+				draw_rect(area, Color("b29c70") if known else Color("6d6450"), false)
+				draw_string(ThemeDB.fallback_font, area.position + Vector2(1, 6), WoodsLayout.SIGN_NAMES[zone["kind"]], HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Color("d9c99a") if known else Color("948a6c"))
 		for cell: Vector2i in plan.woods.visited:
 			if not bounds.has_point(plan.woods.center(cell)):
 				continue
@@ -68,6 +72,13 @@ func _draw() -> void:
 	if bounds.has_point(van.global_position):
 		var vehicle := origin + (van.global_position - bounds.position) * factor
 		draw_rect(Rect2(vehicle - Vector2(2, 3), Vector2(4, 6)), Color("f0dca3"))
+	if level != null:
+		for pin: Dictionary in level.pins:
+			if bounds.has_point(pin["position"]):
+				var mark: Vector2 = origin + (pin["position"] - bounds.position) * factor
+				var tint: Color = Skyline.PIN_COLORS[int(pin["slot"]) % Skyline.PIN_COLORS.size()]
+				draw_line(mark + Vector2(0, 2), mark + Vector2(0, -5), tint)
+				draw_colored_polygon(PackedVector2Array([mark + Vector2(0, -5), mark + Vector2(4, -4), mark + Vector2(0, -2)]), tint)
 	var survivor := origin + (player.global_position - bounds.position) * factor
 	draw_circle(survivor, 2, Color("9ee3d7"))
 	draw_line(survivor, survivor + player.facing * 4, Color("9ee3d7"))

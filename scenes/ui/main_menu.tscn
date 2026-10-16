@@ -47,11 +47,11 @@ offset_right = 240.0
 offset_bottom = 139.0
 theme_override_colors/font_color = Color(0.68, 0.74, 0.68, 1)
 theme_override_font_sizes/font_size = 10
-text = "Some trails only lead deeper."
+text = "A fresh random camp every night."
 
 [node name="Menu" type="VBoxContainer" parent="."]
 offset_left = 248.0
-offset_top = 26.0
+offset_top = 16.0
 offset_right = 364.0
 offset_bottom = 163.0
 theme_override_constants/separation = 5
@@ -61,11 +61,20 @@ custom_minimum_size = Vector2(116, 23)
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
 
+[node name="RandomNight" type="CheckBox" parent="Menu"]
+custom_minimum_size = Vector2(116, 18)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+button_pressed = true
+text = "RANDOM NIGHT"
+tooltip_text = "New camp and woods every start. Uncheck to enter a repeatable seed."
+
 [node name="Seed" type="LineEdit" parent="Menu"]
 custom_minimum_size = Vector2(116, 23)
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
-placeholder_text = "SEED (OPTIONAL)"
+editable = false
+placeholder_text = "AUTO: FRESH NIGHT"
 max_length = 10
 
 [node name="Play" type="Button" parent="Menu"]

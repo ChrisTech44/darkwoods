@@ -18,6 +18,8 @@ func _run() -> void:
 	capture = "--capture" in OS.get_cmdline_user_args()
 	change_scene_to_file("res://scenes/ui/main_menu.tscn")
 	await _frames(3)
+	current_scene.get_node("Menu/RandomNight").button_pressed = false
+	current_scene.get_node("Menu/Seed").text = "42"
 	current_scene.get_node("Menu/Play").grab_focus()
 	await _tap(KEY_ENTER)
 	while current_scene == null or current_scene.name != "ForestLevel":
@@ -175,4 +177,5 @@ func _check(condition: bool, label: String) -> void:
 
 func _finish() -> void:
 	print(JSON.stringify({"event": "test_result", "suite": "offline_playthrough", "checks": checks, "failures": failures}))
+	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures == 0 else 1)

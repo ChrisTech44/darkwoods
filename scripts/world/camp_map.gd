@@ -4,7 +4,7 @@ extends Node2D
 
 const WORLD_SIZE := Vector2(3456, 1920)
 const PICKUP_POSITIONS: Array[Vector2] = [Vector2(228, 120), Vector2(1304, 272), Vector2(696, 680)]
-const PICKUP_HINTS: Array[String] = ["Battery · west bunk cabin", "Fuel · maintenance workshop", "Key · ranger lodge office"]
+const PICKUP_HINTS: Array[String] = ["Battery · Fern bunk cabin", "Fuel · maintenance workshop", "Key · ranger lodge office"]
 const ATLAS := preload("res://assets/tiles/camp_tiles.png")
 var obstacles: Array[Rect2] = []
 var trees: Array[Rect2] = []
@@ -147,8 +147,8 @@ func _canopy(at: Vector2, variant: int) -> void:
 
 func _build_woods() -> void:
 	for wall in woods.walls:
-		# Merged collision spans are not visible tree silhouettes.
-		add_wall(wall, false)
+		# The solid tree border blocks light across paths; small trunks alone leak.
+		add_wall(wall, true)
 		for x in range(int(wall.position.x) + 12, int(wall.end.x), 40):
 			_canopy(Vector2(x, wall.get_center().y + 8), (x / 40 + int(wall.position.y)) % 3)
 			if (x / 40 + int(wall.position.y / 32)) % 2 == 0:

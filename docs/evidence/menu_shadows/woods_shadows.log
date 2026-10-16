@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"every_solid_woods_span_has_full_shadow_polygon","passed":true}
+{"event":"assertion","name":"head_offset_cannot_place_flashlight_inside_border","passed":true}
+{"checks":2,"event":"test_result","failures":0,"suite":"woods_shadows"}

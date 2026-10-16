@@ -162,3 +162,9 @@ Use synthetic deterministic audio for routing/load automation and actual opted-i
 microphones/headphones for listening tests. Log event counts, queue limits and
 latency measurements, never microphone content. Preserve commands and honest
 results in the development log; online/microphone tests have not been executed yet. Local-only evidence is in the development log.
+
+## Local menu playback amendment
+
+The main menu now owns ominous music and subdued forest ambience, with the same
+saved mixer controls available before Play. Its channels stop/free on departure;
+round channels remain separate. This adds no microphone capture or permissions.

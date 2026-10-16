@@ -35,7 +35,7 @@ F toggles the flashlight; Q throws a flare; R consumes a spare flashlight batter
 C consumes rations; Tab toggles notes/map; Esc pauses. Teammate revive is
 implemented and fixture-tested, but there is only one human survivor in M1.
 In Quick Camp, Tab opens the pack and field map with numbered locations: battery in the
-west bunk cabin, fuel in Maintenance, key in the Ranger Lodge. Building doors face
+Fern bunk cabin, fuel in Maintenance, key in the Ranger Lodge. Building doors face
 south; roof cutaways reveal furnished interiors. Deliver all parts at the rear
 of the van and hold E for two seconds. This automatically boards the driver and
 displays YOU ARE ABOARD. Other living survivors press E beside the running van
@@ -171,7 +171,7 @@ they are distinct from the complete active playthrough evidence.
 camps, road/building reservations, native paths to every camp entrance and every
 pickup. The graphical version captures seed 42 and 2026 overviews with an
 inspection camera/raised ambient light; normal play retains its usual camera and
-lighting. Quick Camp remains the fixed tutorial route.
+lighting. Both modes now use randomized camp lots; Quick Camp keeps its shorter objective.
 
 ## Offline audio verification
 
@@ -189,3 +189,17 @@ Playback never captures or requests a microphone. Windows/Linux and desktop
 exports remain unverified. Before final mix acceptance, a human should listen to
 walking/running indoors/outdoors, campfire near/far, bog boundaries, every creature
 call, heartbeat target loss, mute/restore and pause/retry on headphones/speakers.
+
+## Menu defaults and woods light borders
+
+`menu_defaults.gd` exercises music/mixer before Play, immediate mute/saved gain,
+random-default starts in both modes, changed camp on Another Night, explicit
+retry/seed reproducibility, and menu/round playback ownership. Settings checks
+use a temporary preferences file, then restore the player's settings.
+
+`woods_shadows.gd` checks all solid woods spans have full shadow polygons and
+head-offset emitters stay on the player's side of collision. Four graphical
+probes compare flashlight off/on across closed horizontal/vertical trail links.
+Each probe has a positive control with borders disabled, reproducing the leak.
+These controls/teleports are test fixtures; production bounds and rules remain
+active in the separate full playthroughs.

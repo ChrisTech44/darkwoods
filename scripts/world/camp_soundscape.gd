@@ -20,6 +20,7 @@ var last_step_cue := ""
 
 
 func _ready() -> void:
+	add_to_group("round_audio")
 	mixer = get_node("/root/AudioManager")
 	rng.seed = level.plan.seed_value + 9051
 	last_position = level.player.global_position
@@ -181,9 +182,14 @@ func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float =
 
 
 func stop_round() -> void:
+	set_physics_process(false)
 	for node in loops.values():
 		node.stop()
 	for voice in voices:
 		voice.queue_free()
 	voices.clear()
 	threat_gain = 0.0
+
+
+func _exit_tree() -> void:
+	stop_round()

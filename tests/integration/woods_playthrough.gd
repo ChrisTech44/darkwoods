@@ -139,4 +139,5 @@ func _leg(points: Array) -> bool:
 
 func _finish() -> void:
 	print(JSON.stringify({"event": "test_result", "suite": "woods_playthrough", "checks": checks, "failures": failures}))
+	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures == 0 else 1)

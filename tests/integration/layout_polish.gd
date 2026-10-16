@@ -17,6 +17,9 @@ func _run() -> void:
 		b.generate(value, true)
 		_check(a.signature() == b.signature(), "seed_%d_camp_reproducible" % value)
 		signatures[a.signature()] = true
+		var quick := RoundPlan.new()
+		quick.generate(value, "camp")
+		_check(quick.camp.signature() == a.signature(), "seed_%d_both_modes_use_random_camp" % value)
 		for index in range(a.entries.size()):
 			var rect: Rect2 = a.entries[index][0]
 			var clear := true
@@ -58,6 +61,7 @@ func _run() -> void:
 			_check(root.get_texture().get_image().save_png("res://artifacts/verification/camp_layout_%d.png" % value) == OK, "capture_seed_%d" % value)
 	_check(signatures.size() == 8, "eight_different_camp_layouts")
 	print(JSON.stringify({"event": "test_result", "suite": "layout_polish", "checks": checks, "failures": failures}))
+	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures == 0 else 1)
 
 func _reachable(level: Node2D, goal: Vector2) -> bool:

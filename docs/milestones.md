@@ -13,7 +13,7 @@ field map. The user's subsequent request explicitly authorizes woods,
 replayability and UI polish ahead of M2: a seeded finite trail maze, five-part
 repair/cache objectives, tools/supplies, weather and six original cryptid types
 (four per expedition), interactive village/bog/graveyard sites and richer sensing,
-search, patrol and projectile behavior. Quick Camp retains M1's three-part acceptance route.
+search, patrol and projectile behavior. Quick Camp retains M1's three-part objective with randomized camp positions.
 This work does not implement or claim M2 networking.
 
 ## M1: offline vertical slice, one verified pass per step
@@ -81,3 +81,7 @@ Offline layout/audio implementation now includes seeded camp lots and all 14
 user-supplied MP3 cues, saved mix controls and local cleanup/decode tests. Asset
 license documentation and human listening remain unverified; this does not pass
 the synchronized M2-A gate or any voice/platform/export gate.
+
+Menu/defaults amendment: pre-game music/mixer, random camps in both modes by
+default, wider seeded offsets/compatible building swaps, and solid woods shadow
+borders now precede networking/voice. Explicit seed/retry still reproduces runs.

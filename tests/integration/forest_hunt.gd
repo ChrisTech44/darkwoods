@@ -18,6 +18,7 @@ func _run() -> void:
 	await _frames(3)
 	_check(get_nodes_in_group("hazards").is_empty() and get_nodes_in_group("cryptids").is_empty(), "new_hazards_and_creatures_freed_on_menu_return")
 	print(JSON.stringify({"event":"test_result","suite":"forest_hunt","checks":checks,"failures":failures}))
+	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures == 0 else 1)
 
 

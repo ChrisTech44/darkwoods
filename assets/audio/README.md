@@ -37,9 +37,9 @@ Monster calls have a shared per-source 8–14s cooldown, including witch casting
 so state changes do not stack loud voices. At most 12 positional one-shots play
 at once. Seven round-owned loop channels fade smoothly; stopping, collision and
 boarding stop movement sounds. Pause suspends playback; results stop it and
-scene replacement frees all emitters. Menu has no round playback.
+scene replacement frees all emitters. Menu has separate music/subdued woods channels, freed before entering the round.
 
-Esc opens saved Master/Effects/Ambience/Music volume controls; zero mutes. Voice
+The main menu and Esc pause panel provide saved Master/Effects/Ambience/Music controls; zero mutes. Voice
 bus is reserved and inactive. AI hearing is independent of local playback/mute.
 No microphone capture or microphone permission request exists in this build.
 

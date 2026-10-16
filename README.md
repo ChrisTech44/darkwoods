@@ -12,7 +12,7 @@ the latest update fixes camp trails and adds local sound. Networking and voice
 are **not implemented yet**. Run this
 prototype from source; standalone desktop packages are a later milestone.
 
-![The forest menu with Woods Expedition and optional seed selection](docs/evidence/woods_replay/menu.png)
+![The forest menu with Woods Expedition and optional seed selection](docs/evidence/menu_shadows/menu_defaults.png)
 
 ## The first major update
 
@@ -20,7 +20,8 @@ The world now spans **3456×1920**, combining ten furnished camp buildings, two 
 **1600×1600 woods maze**: 100 connected clearings, loops, dead ends, and six ruined
 landmarks. Roofs cut away inside buildings. Native flashlight shadows, cabin
 lamps, flares, and headlights provide local light in a nearly black forest.
-Soft mist and trunk-shaped shadows keep paths readable; foreground canopy fades
+Solid woods borders block the flashlight from reaching neighboring paths.
+Soft mist and trunk-shaped shadows keep the current path readable; foreground canopy fades
 when it covers the camper.
 
 Woods expeditions add five-part repairs, locked caches, survival supplies,
@@ -49,8 +50,9 @@ the helper commands. No plugins, Python packages, or export templates are needed
    python3 tools/run_game.py
    ```
 
-3. Choose **Woods Expedition** or **Quick Camp**, optionally enter a positive
-   seed, and select **Enter the Night**. Leave the seed blank for a random night.
+3. Choose **Woods Expedition** or **Quick Camp**, and select **Enter the Night**.
+   **Random Night is on by default** in both modes. To repeat a particular night,
+   uncheck it and enter a positive seed. Adjust the volume sliders before playing.
    **Controls** opens the survivor field guide.
 
 The launcher finds `godot` or `godot4` on PATH, or the macOS app executable.
@@ -62,7 +64,7 @@ Set `GODOT_BIN` to another executable if needed. Use
 
 | Mode | Repair objective | Threats and exploration |
 | --- | --- | --- |
-| **Quick Camp** | Battery in the west bunk cabin, fuel in Maintenance, key in the Ranger Lodge. | The camp stalker and a shorter, fixed objective route. Flashlight charge does not drain. |
+| **Quick Camp** | Battery in the Fern bunk cabin, fuel in Maintenance, key in the Ranger Lodge. | The camp stalker and a shorter three-part objective with randomized camp buildings. Flashlight charge does not drain. |
 | **Woods Expedition** | Battery and key in camp location pools; fuel and two extra parts in themed-area caches. | The stalker plus four cryptids, a seeded trail maze, survival supplies, weather, and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
@@ -159,7 +161,8 @@ The supplied MP3s now provide forest/bog ambience, a positional campfire,
 restrained music, surface-specific walking/running sounds, six creature voices,
 and pursuit heartbeat. Creature calls have cooldowns; visual cues remain usable
 with sound muted. **Esc** opens Master, Effects, Ambience and Music sliders;
-settings persist and zero mutes. Pause suspends sound, results stop it, and
+the same controls are available on the main menu with music and subdued forest
+ambience playing. Settings persist and zero mutes. Pause suspends round sound, results stop it, and
 replaying creates fresh emitters. Muting does not change monster hearing.
 
 No microphone capture, permission prompt or voice chat exists in this offline
@@ -183,17 +186,17 @@ next encounter, and plan a return route rather than spending every flare at once
 
 ## Replay the expedition
 
-Enter a seed on the menu to reproduce its trails, item recipe, weather, and
+Random Night is enabled whenever the menu opens. Uncheck it and enter a seed
+to reproduce the camp, trails, item recipe, weather, and
 encounter roster. The seed is also displayed in field notes and results.
 After a round:
 
-- **Try Another Night** selects a fresh seed in Woods Expedition.
+- **Try Another Night** selects a fresh seed and camp in either mode.
 - **Retry This Seed** starts over with the same layout and fresh items/supplies.
 - **Main Menu** returns to mode selection.
 
-Quick Camp retains its fixed three-part objective route when restarted. Woods
-Expedition also varies building positions and surrounding trees within reserved
-camp lots; door paths, loot and field-map markers move together. Roof footprints
+Both modes vary building positions and surrounding trees within reserved camp
+lots. Bunk cabins can trade places, as can the bathhouse and first aid building. Door paths, loot and field-map markers move together. Roof footprints
 and main trails stay separate. Retrying a seed reproduces the camp too.
 
 ## Screenshots

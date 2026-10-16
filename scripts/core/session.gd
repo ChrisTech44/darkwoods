@@ -12,7 +12,10 @@ func begin_run() -> int:
 	else:
 		var rng := RandomNumberGenerator.new()
 		rng.randomize()
+		var previous := current_seed
 		current_seed = rng.randi_range(1, 2147483646)
+		while current_seed == previous:
+			current_seed = rng.randi_range(1, 2147483646)
 	next_seed = 0
 	return current_seed
 

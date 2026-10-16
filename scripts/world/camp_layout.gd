@@ -34,15 +34,34 @@ func generate(seed_value: int, randomized: bool) -> void:
 		for index in range(entries.size()):
 			var original: Rect2 = BASE[index][0]
 			for attempt in range(48):
-				var candidate := Rect2(original.position + Vector2(rng.randi_range(-4, 4), rng.randi_range(-2, 2)) * 16, original.size)
+				var candidate := Rect2(original.position + Vector2(rng.randi_range(-6, 6), rng.randi_range(-3, 3)) * 16, original.size)
 				if _fits(candidate, index):
 					entries[index][0] = candidate
 					break
+		if rng.randi_range(0, 1) == 1:
+			_swap_lots(0, 1)
+		if rng.randi_range(0, 1) == 1:
+			_swap_lots(7, 8)
 	for entry in entries:
 		var rect: Rect2 = entry[0]
 		var door_x := rect.position.x + (60 if rect.size.x <= 176 else 112)
 		var target_y := 264.0 if rect.end.y < 248 else (520.0 if rect.end.y < 496 else 880.0)
 		roads.append(Rect2(door_x - 16, rect.end.y, 32, target_y - rect.end.y + 8))
+
+
+func _swap_lots(a: int, b: int) -> void:
+	var original_a: Rect2 = entries[a][0]
+	var original_b: Rect2 = entries[b][0]
+	var at_a := original_b.position
+	var at_b := original_a.position
+	if a == 7:
+		at_a.y = minf(original_a.position.y, original_b.position.y)
+		at_b.y = at_a.y
+	entries[a][0] = Rect2(at_a, original_a.size)
+	entries[b][0] = Rect2(at_b, original_b.size)
+	if not _fits(entries[a][0], a) or not _fits(entries[b][0], b):
+		entries[a][0] = original_a
+		entries[b][0] = original_b
 
 
 func _fits(candidate: Rect2, index: int) -> bool:
@@ -59,7 +78,14 @@ func _fits(candidate: Rect2, index: int) -> bool:
 	var door_x := candidate.position.x + (60 if candidate.size.x <= 176 else 112)
 	var approach := Rect2(door_x - 24, candidate.end.y, 48, target_y - candidate.end.y)
 	for other in range(entries.size()):
-		if other != index and approach.intersects(entries[other][0]):
+		if other == index:
+			continue
+		var rect: Rect2 = entries[other][0]
+		if approach.intersects(rect):
+			return false
+		var other_y := 264.0 if rect.end.y < 248 else (520.0 if rect.end.y < 496 else 880.0)
+		var other_x := rect.position.x + (60 if rect.size.x <= 176 else 112)
+		if candidate.grow(12).intersects(Rect2(other_x - 16, rect.end.y, 32, other_y - rect.end.y)):
 			return false
 	return true
 

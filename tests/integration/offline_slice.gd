@@ -35,13 +35,13 @@ func _run() -> void:
 	await _frames(2)
 	await _move(["move_left"], 30)
 	_check(player.position.x >= 28.5, "world_boundary_blocks_player")
-	player.position = Vector2(204, 180)
+	player.position = level.camp_map.buildings[0].door + Vector2(0, 12)
 	await _frames(2)
 	await _move(["move_up"], 70)
-	_check(player.position.y < 145.0, "cabin_door_allows_entry")
+	_check(player.position.y < level.camp_map.buildings[0].bounds.end.y - 23, "cabin_door_allows_entry")
 	await _move(["move_up"], 60)
-	_check(player.position.y >= 100.5, "cabin_wall_blocks_player")
-	player.position = Vector2(312, 300)
+	_check(player.position.y >= level.camp_map.buildings[0].bounds.position.y + 28.5, "cabin_wall_blocks_player")
+	player.position = Vector2(312, 520)
 	player.stamina = player.config.stamina_max
 	await _frames(2)
 	start = player.position
@@ -70,6 +70,7 @@ func _run() -> void:
 	level.queue_free()
 	await process_frame
 	print(JSON.stringify({"event": "test_result", "suite": "offline_slice", "checks": checks, "failures": failures}))
+	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures == 0 else 1)
 
 
@@ -78,7 +79,7 @@ func _objective_checks() -> void:
 	# Expanded reach is an isolated fixture to make line-of-sight decisive.
 	var original_radius: float = level.config.interact_radius
 	level.config.interact_radius = 75.0
-	player.position = Vector2(228, 60)
+	player.position = level.plan.camp.remap(Vector2(228, 120)) - Vector2(0, 60)
 	await _frames(2)
 	_check(not level.try_interact(player) and level.pickups[0].available, "pickup_through_cabin_wall_rejected")
 	level.config.interact_radius = original_radius
@@ -115,7 +116,7 @@ func _objective_checks() -> void:
 		await _snapshot("win")
 	var previous: WeakRef = weakref(level)
 	level.hud.result_panel.get_child(0).get_node("Restart").pressed.emit()
-	await _frames(4)
+	await _wait_world()
 	level = current_scene
 	player = level.player
 	_check(previous.get_ref() == null, "restart_frees_old_round")
@@ -127,24 +128,25 @@ func _objective_checks() -> void:
 
 func _killer_and_revive_checks() -> void:
 	var killer: CampKiller = level.killer
-	player.position = Vector2(228, 120)
-	killer.position = Vector2(228, 48)
+	player.position = level.plan.camp.remap(Vector2(228, 120))
+	killer.position = level.plan.camp.remap(Vector2(228, 120)) - Vector2(0, 72)
 	await _frames(3)
 	_check(killer.sense_visible_target() == null, "cabin_wall_occludes_killer_sight")
-	killer.hear_noise(Vector2(300, 48))
+	var noise := killer.position + Vector2(72, 0)
+	killer.hear_noise(noise)
 	_check(killer.state == CampKiller.State.INVESTIGATE, "nearby_noise_triggers_investigation")
-	_check(killer.last_seen == Vector2(300, 48), "noise_records_sensed_location")
+	_check(killer.last_seen == noise, "noise_records_sensed_location")
 	killer.hear_noise(Vector2(1000, 1000))
-	_check(killer.last_seen == Vector2(300, 48), "distant_noise_ignored")
-	player.position = Vector2(360, 300)
-	killer.position = Vector2(300, 300)
+	_check(killer.last_seen == noise, "distant_noise_ignored")
+	player.position = Vector2(360, 520)
+	killer.position = Vector2(300, 520)
 	await _frames(3)
 	_check(killer.state == CampKiller.State.CHASE, "clear_sight_triggers_chase")
 	_check(killer.memory.has(player.get_instance_id()), "visible_target_enters_memory")
 	if capture:
 		await _snapshot("chase")
 	var sensed := killer.last_seen
-	player.position = Vector2(228, 120)
+	player.position = level.plan.camp.remap(Vector2(228, 120))
 	await _frames(3)
 	_check(killer.state == CampKiller.State.SEARCH, "lost_sight_enters_search")
 	_check(killer.last_seen == sensed, "hidden_player_does_not_update_last_seen")
@@ -152,14 +154,14 @@ func _killer_and_revive_checks() -> void:
 	_check(killer.state == CampKiller.State.PATROL, "search_timeout_returns_to_patrol")
 	_check(killer.memory.is_empty(), "target_memory_decays")
 	player.position = Vector2(96, 384)
-	killer.position = Vector2(204, 216)
+	killer.position = level.camp_map.buildings[0].door + Vector2(0, 36)
 	killer.transition(CampKiller.State.PATROL)
 	await _frames(2)
-	killer.hear_noise(Vector2(228, 120))
+	killer.hear_noise(level.plan.camp.remap(Vector2(228, 120)))
 	var entered_cabin := false
 	for frame in range(240):
 		await physics_frame
-		if killer.position.distance_to(Vector2(228,120)) < 14:
+		if killer.position.distance_to(level.plan.camp.remap(Vector2(228,120))) < 14:
 			entered_cabin = true
 			break
 	_check(entered_cabin, "navigation_routes_killer_through_cabin_door")
@@ -209,7 +211,7 @@ func _killer_and_revive_checks() -> void:
 	if capture:
 		await _snapshot("loss")
 	level.restart_round()
-	await _frames(4)
+	await _wait_world()
 	level = current_scene
 	player = level.player
 	_check(not level.finished and get_nodes_in_group("survivors").size() == 1 and get_nodes_in_group("killers").size() == 1, "defeat_restart_cleans_up_all_actors")
@@ -252,6 +254,13 @@ func _departure_failure_checks() -> void:
 	await _frames(ceili(level.config.extraction_seconds * 60.0) + 10)
 	_check(level.finished and not level.won, "empty_extraction_zone_loses_round")
 	_check(player.status == CampPlayer.Status.LEFT_BEHIND, "absent_survivor_recorded_left_behind")
+
+
+func _wait_world() -> void:
+	await process_frame
+	while current_scene == null or current_scene.name != "ForestLevel":
+		await process_frame
+	await _frames(4)
 
 
 func _move(actions: Array, frames: int) -> void:

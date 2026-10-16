@@ -33,7 +33,8 @@ No external assets, plugins, or package dependencies are required.
 - `docs`: architecture, testing, milestone plan, and development log.
 - `artifacts/verification`: ignored, reproducible logs, JSON, and screenshots.
 
-The animated menu selects Quick Camp or Woods Expedition and an optional seed.
+The animated menu selects Quick Camp or Woods Expedition, starts with Random
+Night enabled, and offers explicit fixed-seed entry and saved volume controls.
 Session retains only mode/current seed/next seed, not actors or inventory. The
 loading card renders before synchronous scene/world preparation; its moving bar
 is an activity indicator, not simulated resource progress. Threaded resource
@@ -78,14 +79,16 @@ flashlight beams, warm cabin/camp lights and headlights light local terrain.
 Walls/trunks cast visual shadows. The old full-screen darkness shader is removed.
 Footstep hints and the killer's !/? indicators remain visual telegraphs alongside
 local audio playback.
-Quick Camp retains fixed M1 pickups/patrol. The user's woods request authorizes
+Quick Camp retains the three-part M1 objective/patrol, with seeded buildings and
+aligned pickup positions. The user's woods request authorizes
 the following replayability work ahead of M2.
 
 RoundPlan uses private seeded RNGs for topology, component pools, cache assignments,
 supplies, weather and the four-cryptid roster. WoodsLayout uses DFS plus extra
 connections across a finite 10×10 trail grid: all 100 clearings connect, with
 dead ends, loops and six separated ruins. Solid 32px cells merge into row spans
-for physics and AI sight; separate octagonal trunks cast visual shadows.
+for physics, AI sight and complete light-blocking borders; separate octagonal
+trunks add local visual detail.
 Trees fade locally when they cover the camper; soft radial fog has no rectangular
 screen-strip edges. Both player and AI use
 the same native navigation bake. The woods chart reveals visited clearings and
@@ -171,11 +174,12 @@ owns hazard cleanup. New authority paths remain local until M2 networking.
 
 `CampLayout` reserves main roads before selecting pixel-aligned building offsets
 inside finite authored camp lots. It rejects water, neighboring roofs, road and
-door-approach conflicts. Quick Camp uses the corrected authored layout; Woods
-Expedition uses seeded offsets. `RoundPlan.camp` remaps indoor loot from authored
+door-approach conflicts. Both modes use seeded offsets and optional bunk/medical-bath lot swaps. `RoundPlan.camp` remaps indoor loot from authored
 coordinates, and `CampMap` uses that same recipe for walls, roofs, lights, door
 paths and the field chart. Tree placement excludes roads and building clearances.
-Native navigation uses the resulting collision rectangles.
+Native navigation uses the resulting collision rectangles. Each solid woods span
+also has a full LightOccluder2D; flashlight/glow head offsets ray-clamp before
+nearby collision so they cannot jump across the border.
 
 ## Offline audio
 
@@ -193,4 +197,8 @@ per-source cooldowns. It never emits AI stimuli or reads a microphone.
 Headless mode tracks local accepted cues without starting playback. Missing or
 unrecognized streams fail safely. Pause suspends streams; results stop all audio;
 restart/menu replacement frees the entire soundscape. Persistent mixer settings
-do not retain round playback. Network event IDs/deduplication are future M2-A.
+do not retain round playback. `menu_audio.gd` owns two separate menu loops,
+cleans them on scene exit and uses the same saved buses as pre-game/pause sliders.
+Random Night is checked on every menu load; entering a fixed seed is opt-in.
+Both modes use fresh seeds on ordinary start/Another Night and preserve the seed
+only for explicit retry. Network event IDs/deduplication are future M2-A.

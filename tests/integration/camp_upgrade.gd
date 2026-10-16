@@ -22,7 +22,7 @@ func _run() -> void:
 	player = level.player
 	level.killer.enabled = false
 	for attempt in range(240):
-		var ready_path := NavigationServer2D.map_get_path(level.get_world_2d().navigation_map, player.position, CampMap.PICKUP_POSITIONS[0], true)
+		var ready_path := NavigationServer2D.map_get_path(level.get_world_2d().navigation_map, player.position, level.pickups[0].position, true)
 		if ready_path.size() > 1:
 			break
 		await physics_frame
@@ -38,16 +38,17 @@ func _run() -> void:
 		var path := NavigationServer2D.map_get_path(level.get_world_2d().navigation_map, player.global_position, destination, true)
 		_check(path.size() > 1 and path[-1].distance_to(destination) < 8, "entrance_reachable_" + building.kind)
 	var lodge: CampBuilding = level.camp_map.buildings[6]
-	player.position = Vector2(592, 784)
+	player.position = lodge.door - Vector2(0, 40)
 	await _frames(20)
 	_check(lodge.roof.modulate.a < 0.05, "roof_cuts_away_inside_lodge")
-	player.position = Vector2(600, 872)
+	player.position = lodge.door + Vector2(0, 48)
 	await _frames(20)
 	_check(lodge.roof.modulate.a > 0.95, "roof_restores_outside_lodge")
 	if capture:
 		await _tour()
 	await _boarding()
 	print(JSON.stringify({"event": "test_result", "suite": "camp_upgrade", "checks": checks, "failures": failures}))
+	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures == 0 else 1)
 
 
@@ -96,19 +97,19 @@ func _tour() -> void:
 	player.facing = Vector2.RIGHT
 	await _frames(20)
 	await _snapshot("upgrade_campsite")
-	player.position = Vector2(592, 720)
+	player.position = level.plan.camp.remap(Vector2(592, 720))
 	player.facing = Vector2.UP
 	await _frames(20)
 	await _snapshot("upgrade_lodge")
-	player.position = Vector2(1300, 316)
+	player.position = level.plan.camp.remap(Vector2(1300, 316))
 	player.facing = Vector2.UP
 	await _frames(20)
 	await _snapshot("upgrade_workshop")
-	player.position = Vector2(944, 420)
+	player.position = level.plan.camp.remap(Vector2(944, 420))
 	player.facing = Vector2.UP
 	await _frames(20)
 	await _snapshot("upgrade_mess_hall")
-	player.position = Vector2(368, 736)
+	player.position = level.plan.camp.remap(Vector2(368, 736))
 	player.facing = Vector2.UP
 	await _frames(20)
 	await _snapshot("upgrade_bathhouse")

@@ -17,7 +17,7 @@ func generate(value: int, mode: String) -> void:
 	expedition = mode == "woods"
 	weather = "clear"
 	woods.generate(value)
-	camp.generate(value, expedition)
+	camp.generate(value, true)
 	loot.clear()
 	encounters.clear()
 	required.assign(["battery", "fuel", "key"])
@@ -25,7 +25,7 @@ func generate(value: int, mode: String) -> void:
 	rng.seed = value + 771
 	if not expedition:
 		for index in range(3):
-			loot.append({"kind": required[index], "position": CampMap.PICKUP_POSITIONS[index], "hint": CampMap.PICKUP_HINTS[index], "locked": false})
+			loot.append({"kind": required[index], "position": camp.remap(CampMap.PICKUP_POSITIONS[index]), "hint": CampMap.PICKUP_HINTS[index], "locked": false})
 		return
 	weather = ["fog", "rain", "moonless"][rng.randi_range(0, 2)]
 	var extras: Array[String] = ["fuse", "belt", "tire", "spark_plug"]

@@ -30,8 +30,18 @@ func _process(_delta: float) -> void:
 	var woods := player.global_position.x >= 1536
 	ambient.color = player.config.night_ambient.lerp(Color(0.003, 0.008, 0.015, 1), 0.8 if woods else 0.0)
 	nearby_glow.texture_scale = (25.0 if woods else 38.0) / 128.0
-	flashlight.position = Vector2(0, -12) + player.facing * 8.0
+	flashlight.position = _safe_emitter(Vector2(0, -12) + player.facing * 8.0)
+	nearby_glow.position = _safe_emitter(Vector2(0, -10))
 	flashlight.rotation = player.facing.angle()
 	flashlight.texture_scale = player.config.flashlight_range / 128.0 * (0.7 if woods and weather == "fog" else 1.0)
 	flashlight.enabled = player.flashlight_on and player.status not in [CampPlayer.Status.BOARDED, CampPlayer.Status.ESCAPED, CampPlayer.Status.DEAD]
 	nearby_glow.enabled = player.status not in [CampPlayer.Status.BOARDED, CampPlayer.Status.ESCAPED]
+
+
+func _safe_emitter(offset: Vector2) -> Vector2:
+	# A head-height sprite offset must not place the light beyond a nearby wall.
+	var query := PhysicsRayQueryParameters2D.create(player.global_position, player.global_position + offset, 1)
+	var hit := player.get_world_2d().direct_space_state.intersect_ray(query)
+	if hit.is_empty():
+		return offset
+	return player.to_local(hit["position"] + hit["normal"] * 1.5)

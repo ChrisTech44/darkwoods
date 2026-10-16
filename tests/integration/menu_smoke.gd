@@ -99,4 +99,5 @@ func _check(condition: bool, label: String) -> void:
 func _finish() -> void:
 	print(JSON.stringify({"event": "test_result", "suite": "menu_smoke",
 		"checks": checks, "failures": failures}))
+	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures == 0 else 1)

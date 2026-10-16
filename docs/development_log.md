@@ -1,5 +1,66 @@
 # Development log
 
+## 2026-10-16 — Menu music/mixer, random-default camps and opaque woods borders
+
+**User amendments:** music/volume knobs on the menu before Play, random by
+default, and no flashlight spill onto paths beyond the bordering trees. Updated
+Markdown/Word requirements, player documentation, architecture and testing.
+
+Menu owns ominous music and subdued forest ambience with the shared saved
+Master/Effects/Ambience/Music controls. Controls browsing keeps audio playing;
+scene departure stops/frees it before round audio starts. Normal Quit drains
+native audio-thread stop commands before shutdown. No microphone/network change.
+
+Random Night is checked on every menu load and ignores/disables the seed field.
+Both Quick Camp and Woods Expedition now randomize camp buildings; wider 16px
+offsets and compatible bunk/bath-first-aid lot swaps make changes clearer. Loot,
+doors, lights and map markers follow the same recipe. Placement rejects other
+door approaches as well as roads/roofs/water. Ordinary starts and Another Night
+use fresh seeds in both modes, avoiding immediate seed repeats. Explicit seed
+entry and Retry This Seed preserve reproducibility. Quick Camp retains three
+components and its original sensing values, not fixed building coordinates.
+
+Solid woods collision spans now also cast full native light shadows. Small
+trunk silhouettes alone previously allowed beams across neighboring paths.
+Flashlight/nearby-glow offsets ray-clamp on the player's side of collision so
+hugging a border cannot place a head-height light beyond it. The current path
+remains illuminated; adjacent disconnected paths receive no flashlight light.
+
+**Verification:** final `python3 tools/verify.py --graphical` exit 0: **67 steps**,
+zero engine errors/warnings. Required import/startup and all GDScript parses pass;
+eleven suites pass headlessly and graphically, including complete active-enemy
+camp/woods escapes and all 14 audio decode/seven loop checks. Menu/defaults: 17
+headless / 18 graphical assertions; shadow suite: 2 headless / 12 graphical;
+eight seeded camp checks: 369 headless / 371 graphical. Zero assertion failures.
+Menu/default tests execute actual menu starts in both modes, mixer mute/saved
+gain before Play, new camp/seed on Another Night, explicit seed and same-seed
+retry, and free/recreate menu audio ownership. Isolated preferences are restored.
+
+Four pixel probes across horizontal/vertical blocked trail links measured
+current-path flashlight luminance gain about 0.415–0.429 and adjacent-path gain
+**0.0**. Turning off border shadows in the positive control reproduces adjacent
+spill of 0.154–0.184, proving the probe is inside the beam. Full native border
+polygons and safe emitter offsets also pass headlessly. Opened/inspected menu
+knobs/default option, blocked/unblocked border captures, both seed overviews,
+campsite/lodge, woods light and successful expedition outcome.
+
+**Iteration:** initial graphical fixture required explicit Vector2 declarations.
+Native MP3 playbacks produced shutdown leak warnings when the engine/test quit
+immediately after stopping menu or round loops. Normal Quit and test exits now
+use the same graceful stop/drain, and stopping round playback disables its audio
+update so loops cannot restart during shutdown. Final run has zero warnings.
+Decoder fixtures stop menu loops before per-file PCM measurements to avoid
+ambience contamination. Legacy rule fixtures now use current seeded building/
+loot coordinates; gameplay rules and active enemies were not weakened.
+
+[Full report](evidence/menu_shadows/summary.json),
+[evidence/limits](evidence/menu_shadows/README.md). Links/images, asset hashes
+and `git diff --check` pass. All 54 Markdown requirement bullets match the Word
+brief; XML/namespaces check structurally. DOCX render retry remains blocked by
+missing `pdf2image`/LibreOffice; Word visual QA unverified. macOS arm64 / Godot
+4.7.2 only. Human listening/balance, Windows/Linux/exports and network/voice gates
+remain unverified.
+
 ## 2026-10-16 — Offline supplied audio, adaptive heartbeat and saved mixer
 
 **Scope:** continued the visual/audio-first amendment after publishing the layout

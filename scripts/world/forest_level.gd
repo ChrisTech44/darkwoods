@@ -352,12 +352,9 @@ func return_to_menu() -> void:
 
 
 func restart_round() -> void:
-	if not plan.expedition:
-		get_tree().reload_current_scene()
-	else:
-		var session: Node = get_node("/root/Session")
-		session.next_seed = 0
-		session.load_game()
+	var session: Node = get_node("/root/Session")
+	session.next_seed = 0
+	session.load_game()
 
 
 func retry_round() -> void:

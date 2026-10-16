@@ -117,9 +117,11 @@ func _run() -> void:
 	await _frames(3)
 	_check(current_scene.name == "MainMenu" and get_nodes_in_group("survivors").is_empty(), "menu_has_no_round_audio_or_capture")
 	if capture:
+		await mixer.prepare_shutdown()
 		await _decode_mix()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(mixer.settings_path))
 	print(JSON.stringify({"event": "test_result", "suite": "audio_polish", "checks": checks, "failures": failures, "audio_driver": AudioServer.get_driver_name(), "display": DisplayServer.get_name(), "output_enabled": mixer.output_enabled}))
+	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures == 0 else 1)
 
 func _decode_mix() -> void:

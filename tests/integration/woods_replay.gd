@@ -50,6 +50,7 @@ func _run() -> void:
 	await _frames(3)
 	_check(current_scene.name == "MainMenu" and get_nodes_in_group("killers").is_empty() and get_nodes_in_group("survivors").is_empty(), "woods_menu_return_cleans_up")
 	print(JSON.stringify({"event": "test_result", "suite": "woods_replay", "checks": checks, "failures": failures}))
+	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures == 0 else 1)
 
 

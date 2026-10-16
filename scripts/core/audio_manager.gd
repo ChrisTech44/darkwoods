@@ -77,3 +77,12 @@ func stream_for(cue: String) -> AudioStream:
 		stream.loop = cues[cue]["loop"]
 		streams[cue] = stream
 	return streams[cue]
+
+
+func prepare_shutdown() -> void:
+	get_tree().call_group("menu_audio", "stop_playback")
+	get_tree().call_group("round_audio", "stop_round")
+	# Allow native audio-thread stop commands to drain before engine shutdown.
+	var deadline := Time.get_ticks_msec() + 180
+	while output_enabled and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame

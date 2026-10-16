@@ -1,5 +1,28 @@
 # Development log
 
+## 2026-10-16 — Refresh the full-map example for the nine-region forest
+
+Replaced the README's earlier three-region atlas with an actual Godot capture
+of the current Night 42 recipe. The overview now numbers all nine regions,
+color-codes their footprints, labels each optional region's guardian and the
+three required-cache regions, and shows central Fernwood camp plus the current
+24 cryptid spawn positions. The original finite world bounds, seeded maze and
+2,410 clearings are drawn directly from the current world recipe. No gameplay
+rules changed; the full atlas is an inspection example, separate from the
+explored-only field map. Historical evidence remains unchanged.
+
+Updated the README, content guide and screenshot/evidence notes. The new
+[full-map image](evidence/content_expansion/full_map.png) was opened and visually
+inspected for readability, alignment and complete world framing. Godot 4.7.2
+macOS arm64 required headless import/startup exited 0 without errors/warnings.
+Graphical `surround_world.gd -- --capture` with Dummy audio exited 0:
+**89 assertions, zero failures**, including nine region centres, current creature
+homes, connected forest cells and all four camp exits. Preserved
+[raw execution](evidence/content_expansion/full_map_graphical.log) and appended
+the [report](evidence/content_expansion/summary.json). Local links/image paths
+and `git diff --check` passed. Fetch/push the authorized origin/main and confirm
+the remote commit. Human balance, other platforms and online gates are unchanged.
+
 ## 2026-10-16 — Complete the README player guide and illustrated content gallery
 
 Corrected the incomplete player-facing documentation from the prior content

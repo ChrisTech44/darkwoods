@@ -6,25 +6,54 @@ var level: Node2D
 
 class Overview extends Control:
 	var plan: RoundPlan
+	const COLORS := {"village":"c8b28b", "bog":"81ad92", "graveyard":"a3b7b4", "mill":"79aeb2", "orchard":"a9b878", "observatory":"aaa8d0", "rail":"c79c78", "quarry":"bac2ad", "chapel":"8cabbc"}
 	func _draw() -> void:
 		draw_rect(Rect2(0,0,384,216),Color("091614"))
 		var scale := 180.0 / WoodsLayout.WORLD_BOUNDS.size.y
-		var origin := Vector2(100,24)
+		var origin := Vector2(99,26)
+		draw_rect(Rect2(origin-Vector2.ONE,WoodsLayout.WORLD_BOUNDS.size*scale+Vector2.ONE*2),Color("69816c"),false)
 		draw_rect(Rect2(origin,WoodsLayout.WORLD_BOUNDS.size*scale),Color("1a3828"))
 		for rect in plan.woods.corridors:
 			draw_rect(Rect2(origin+(rect.position-WoodsLayout.ORIGIN)*scale,rect.size*scale),Color("685e3c"))
 		for zone in plan.woods.zones:
 			var rect: Rect2 = zone["bounds"]
-			draw_rect(Rect2(origin+(rect.position-WoodsLayout.ORIGIN)*scale,rect.size*scale),Color("a9ad79"))
+			draw_rect(Rect2(origin+(rect.position-WoodsLayout.ORIGIN)*scale,rect.size*scale),Color(COLORS[zone["kind"]]))
 		var camp := CampMap.CAMP_BOUNDS
 		draw_rect(Rect2(origin+(camp.position-WoodsLayout.ORIGIN)*scale,camp.size*scale),Color("e0cb87"))
 		for enemy in plan.encounters:
-			draw_circle(origin+(enemy["position"]-WoodsLayout.ORIGIN)*scale,1.5,Color("dd8161"))
-		draw_string(ThemeDB.fallback_font,Vector2(10,14),"INSPECTION / 9,600 x 9,408 / CAMP AT CENTRE",HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("e4d7ad"))
-		draw_string(ThemeDB.fallback_font,Vector2(6,45),"NW VILLAGE",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("c4c2a0"))
-		draw_string(ThemeDB.fallback_font,Vector2(294,100),"EAST BOG",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("c4c2a0"))
-		draw_string(ThemeDB.fallback_font,Vector2(6,170),"S GRAVEYARD",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("c4c2a0"))
-		draw_string(ThemeDB.fallback_font,Vector2(294,160),"24 CREATURES",HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("c4c2a0"))
+			var at: Vector2 = origin+(enemy["position"]-WoodsLayout.ORIGIN)*scale
+			draw_circle(at,1.2,Color("f38e72"))
+			if enemy.has("home"):
+				draw_arc(at,2.5,0,TAU,12,Color("e6c49c"))
+		# Number badges reference the two readable legends without covering trail geometry.
+		for index in range(plan.woods.zones.size()):
+			var zone: Dictionary = plan.woods.zones[index]
+			var at: Vector2 = origin+(zone["bounds"].position-WoodsLayout.ORIGIN)*scale
+			draw_rect(Rect2(at+Vector2(1,1),Vector2(7,9)),Color("10201d"))
+			draw_string(ThemeDB.fallback_font,at+Vector2(2,8),str(index+1),HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("fff0c2"))
+		var camp_at: Vector2 = origin+(camp.get_center()-WoodsLayout.ORIGIN)*scale
+		draw_string(ThemeDB.fallback_font,camp_at+Vector2(-3,3),"C",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("17261c"))
+		draw_string(ThemeDB.fallback_font,Vector2(8,12),"FOREST ATLAS / NIGHT %d / 9,600 x 9,408" % plan.seed_value,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("e4d7ad"))
+		draw_string(ThemeDB.fallback_font,Vector2(8,23),"9 REGIONS / 24 CRYPTIDS + CAMP STALKER / NORTH UP",HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("9eae96"))
+		var labels := [
+			[7,"8 QUARRY","STONEBACK RAM",Vector2(4,42)],
+			[0,"1 VILLAGE","REQUIRED CACHE",Vector2(4,78)],
+			[3,"4 FLOODED MILL","BOILER SAINT",Vector2(4,114)],
+			[4,"5 ORCHARD","SEAMSTRESS",Vector2(4,150)],
+			[2,"3 GRAVEYARD","REQUIRED CACHE",Vector2(4,186)],
+			[5,"6 OBSERVATORY","SHUTTER WRAITH",Vector2(288,42)],
+			[1,"2 WITCH'S BOG","REQUIRED CACHE",Vector2(288,86)],
+			[6,"7 RAIL YARD","CONDUCTOR",Vector2(288,130)],
+			[8,"9 CHAPEL","CANDLE GRAZER",Vector2(288,174)]
+		]
+		for label in labels:
+			var zone: Dictionary=plan.woods.zones[label[0]]
+			var at: Vector2=label[3]
+			draw_string(ThemeDB.fallback_font,at,label[1],HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color(COLORS[zone["kind"]]))
+			draw_string(ThemeDB.fallback_font,at+Vector2(0,10),label[2],HORIZONTAL_ALIGNMENT_LEFT,-1,6,Color("a8b69e"))
+		draw_string(ThemeDB.fallback_font,Vector2(287,196),"C  FERNWOOD CAMP",HORIZONTAL_ALIGNMENT_LEFT,-1,6,Color("e0cb87"))
+		draw_circle(Vector2(290,204),1.2,Color("f38e72"))
+		draw_string(ThemeDB.fallback_font,Vector2(296,207),"CRYPTID SPAWN",HORIZONTAL_ALIGNMENT_LEFT,-1,6,Color("a8b69e"))
 
 func _initialize() -> void:
 	_run.call_deferred()

@@ -34,3 +34,14 @@ sight masking disabled and the camper hidden with its local lights disabled for 
 zero failures, 15 PNG captures**. The original 309-assertion content run above
 remains preserved separately. The close-ups are inspection fixtures, not combat
 or human-play evidence. All seven were opened and visually inspected.
+
+
+`full_map.png` is the refreshed Night 42 overview rendered by the actual Godot
+`Overview` control in `surround_world.gd`. It shows all nine numbered regions,
+resident guardians/required-cache labels, central camp and current cryptid spawn
+positions. This is an inspection atlas, not the explored-only player field map.
+`full_map_graphical.log` preserves the full current-world run: **89 assertions,
+zero failures**, including native region/home reachability and four camp exits.
+The map was opened and visually inspected for legible labels, complete world
+bounds and alignment with the current recipe. The historical three-region atlas
+under `surround_forest` is retained as evidence of that earlier build.

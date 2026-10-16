@@ -1,0 +1,94 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"assertion","name":"camp_exactly_at_world_centre","passed":true}
+{"event":"assertion","name":"forest_more_than_thirty_times_old_area","passed":true}
+{"event":"assertion","name":"all_forest_cells_connected_42","passed":true}
+{"event":"assertion","name":"twenty_four_surrounding_creatures_42","passed":true}
+{"event":"assertion","name":"monsters_on_all_four_sides_42","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_42_village","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_42_bog","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_42_graveyard","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_42_mill","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_42_orchard","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_42_observatory","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_42_rail","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_42_quarry","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_42_chapel","passed":true}
+{"event":"assertion","name":"all_forest_cells_connected_2026","passed":true}
+{"event":"assertion","name":"twenty_four_surrounding_creatures_2026","passed":true}
+{"event":"assertion","name":"monsters_on_all_four_sides_2026","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_2026_village","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_2026_bog","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_2026_graveyard","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_2026_mill","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_2026_orchard","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_2026_observatory","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_2026_rail","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_2026_quarry","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_2026_chapel","passed":true}
+{"event":"assertion","name":"all_forest_cells_connected_6789","passed":true}
+{"event":"assertion","name":"twenty_four_surrounding_creatures_6789","passed":true}
+{"event":"assertion","name":"monsters_on_all_four_sides_6789","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_6789_village","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_6789_bog","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_6789_graveyard","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_6789_mill","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_6789_orchard","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_6789_observatory","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_6789_rail","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_6789_quarry","passed":true}
+{"event":"assertion","name":"spacious_clear_apron_6789_chapel","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"native_camp_exit_(20, 24)","passed":true}
+{"event":"assertion","name":"native_camp_exit_(29, 24)","passed":true}
+{"event":"assertion","name":"native_camp_exit_(24, 21)","passed":true}
+{"event":"assertion","name":"native_camp_exit_(25, 27)","passed":true}
+{"event":"assertion","name":"native_creature_home_vampire_(25, 30)","passed":true}
+{"event":"assertion","name":"native_creature_home_witch_(33, 21)","passed":true}
+{"event":"assertion","name":"native_creature_home_werewolf_(24, 18)","passed":true}
+{"event":"assertion","name":"native_creature_home_bigfoot_(18, 24)","passed":true}
+{"event":"assertion","name":"native_creature_home_lantern_moth_(25, 30)","passed":true}
+{"event":"assertion","name":"native_creature_home_briar_revenant_(32, 26)","passed":true}
+{"event":"assertion","name":"native_creature_home_boiler_saint_(10, 21)","passed":true}
+{"event":"assertion","name":"native_creature_home_bramble_seamstress_(14, 33)","passed":true}
+{"event":"assertion","name":"native_creature_home_shutter_wraith_(34, 12)","passed":true}
+{"event":"assertion","name":"native_creature_home_last_car_conductor_(38, 31)","passed":true}
+{"event":"assertion","name":"native_creature_home_stoneback_ram_(9, 9)","passed":true}
+{"event":"assertion","name":"native_creature_home_candle_grazer_(28, 39)","passed":true}
+{"event":"assertion","name":"native_creature_home_switchback_hound_(19, 19)","passed":true}
+{"event":"assertion","name":"native_creature_home_bigfoot_(30, 19)","passed":true}
+{"event":"assertion","name":"native_creature_home_lantern_moth_(32, 28)","passed":true}
+{"event":"assertion","name":"native_creature_home_vampire_(28, 29)","passed":true}
+{"event":"assertion","name":"native_creature_home_switchback_hound_(20, 28)","passed":true}
+{"event":"assertion","name":"native_creature_home_briar_revenant_(18, 22)","passed":true}
+{"event":"assertion","name":"native_creature_home_werewolf_(6, 10)","passed":true}
+{"event":"assertion","name":"native_creature_home_bigfoot_(17, 6)","passed":true}
+{"event":"assertion","name":"native_creature_home_switchback_hound_(32, 6)","passed":true}
+{"event":"assertion","name":"native_creature_home_vampire_(44, 12)","passed":true}
+{"event":"assertion","name":"native_creature_home_witch_(44, 25)","passed":true}
+{"event":"assertion","name":"native_creature_home_briar_revenant_(42, 40)","passed":true}
+{"event":"assertion","name":"native_region_centre_village","passed":true}
+{"event":"assertion","name":"native_region_centre_bog","passed":true}
+{"event":"assertion","name":"native_region_centre_graveyard","passed":true}
+{"event":"assertion","name":"native_region_centre_mill","passed":true}
+{"event":"assertion","name":"native_region_centre_orchard","passed":true}
+{"event":"assertion","name":"native_region_centre_observatory","passed":true}
+{"event":"assertion","name":"native_region_centre_rail","passed":true}
+{"event":"assertion","name":"native_region_centre_quarry","passed":true}
+{"event":"assertion","name":"native_region_centre_chapel","passed":true}
+{"event":"assertion","name":"input_traverses_camp_gate_move_left","passed":true}
+{"event":"assertion","name":"input_traverses_camp_gate_move_right","passed":true}
+{"event":"assertion","name":"input_traverses_camp_gate_move_up","passed":true}
+{"event":"assertion","name":"input_traverses_camp_gate_move_down","passed":true}
+{"event":"assertion","name":"capture_surround_overview","passed":true}
+{"event":"assertion","name":"capture_surround_village","passed":true}
+{"event":"assertion","name":"capture_surround_bog","passed":true}
+{"event":"assertion","name":"capture_surround_graveyard","passed":true}
+{"event":"assertion","name":"capture_surround_mill","passed":true}
+{"event":"assertion","name":"capture_surround_orchard","passed":true}
+{"event":"assertion","name":"capture_surround_observatory","passed":true}
+{"event":"assertion","name":"capture_surround_rail","passed":true}
+{"event":"assertion","name":"capture_surround_quarry","passed":true}
+{"event":"assertion","name":"capture_surround_chapel","passed":true}
+{"checks":89,"clearings":2410,"event":"test_result","failures":0,"suite":"surround_world","walls":1323}

@@ -280,7 +280,13 @@ Both modes vary building positions and surrounding trees within reserved camp
 lots. Bunk cabins can trade places, as can the bathhouse and first aid building. Door paths, loot and field-map markers move together. Roof footprints
 and main trails stay separate. Retrying a seed reproduces the camp too.
 
-![Inspection map of the massive forest surrounding central camp](docs/evidence/surround_forest/surround_overview.png)
+![Current full-map example for Night 42 with all nine numbered regions, central Fernwood camp and 24 cryptid spawn positions](docs/evidence/content_expansion/full_map.png)
+
+**Full-map example — Night 42.** Numbers match the region names around the map;
+**C** marks Fernwood camp and coral dots mark the 24 cryptid starting positions.
+The six optional biomes show their resident guardians, alongside the village,
+bog and graveyard required-cache regions. North is up. This is an inspection
+atlas; the in-game field map still reveals only explored trails.
 
 ## Screenshots
 

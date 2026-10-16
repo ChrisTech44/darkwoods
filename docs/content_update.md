@@ -41,6 +41,13 @@ holding E at a downed teammate, rather than V. The hand displays the held supply
 
 ## Regions and encounters
 
+![Current Night 42 forest atlas with nine labeled regions, central camp and cryptid spawns](evidence/content_expansion/full_map.png)
+
+The full-map example is generated from the current Night 42 world recipe.
+Numbers identify all nine regions; C marks camp and coral dots show cryptid
+starting positions. This inspection atlas is separate from the explored-trail
+field map used during play.
+
 The original required-cache locations and five-part expedition recipe are
 preserved. Six new pockets are optional, graph-connected open loops with multiple
 entrances and 32px approach aprons. All nine regions fit inside the existing

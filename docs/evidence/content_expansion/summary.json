@@ -1296,5 +1296,17 @@
     "screenshots": 15,
     "log": "docs/evidence/content_expansion/guide_graphical.log",
     "purpose": "Seven additional native-zoom monster portraits for the README player guide; no gameplay rules changed."
+  },
+  "full_map_refresh": {
+    "command": "godot --path . --audio-driver Dummy --fixed-fps 60 --script res://tests/integration/surround_world.gd -- --capture",
+    "exit_code": 0,
+    "checks": 89,
+    "failures": 0,
+    "seed": 42,
+    "regions": 9,
+    "cryptids": 24,
+    "clearings": 2410,
+    "image": "docs/evidence/content_expansion/full_map.png",
+    "log": "docs/evidence/content_expansion/full_map_graphical.log"
   }
 }

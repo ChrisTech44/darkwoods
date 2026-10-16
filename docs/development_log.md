@@ -1,5 +1,55 @@
 # Development log
 
+## 2026-10-16 — Active enemies through downs and scoped interaction feedback
+
+Confirmed that enemy senses still selected DOWNED actors after the indefinite-
+down amendment. They could stand on an invulnerable body instead of hunting a
+standing teammate. Senses now accept ALIVE targets only; attackers clear a target
+immediately after downing it and enter SEARCH. Witch casts reject downed targets.
+Idle navigation recovery now counts non-arrival with zero movement, including
+finished/unreachable paths that previously bypassed the stuck timer. Authored
+spell wind-ups, flare reactions and Shutter Wraith beam counterplay remain.
+
+The stalker starts on central roads in both modes, sweeps the campsite early,
+then tours a seed-varied perimeter. Every seed keeps the early sweep. Movement
+speed, senses and collision are unchanged; no omniscient tracking or teleports.
+
+Ordinary interaction/supply feedback now uses each actor's replicated notice
+and only their own HUD. Empty E, locked-cache/belt errors, pickups and drops no
+longer replace everyone's banner. Shared injury/revive/engine events remain
+shared. Fixed a second interaction issue: a nearby downed teammate no longer
+swallows E when the rescuer lacks a kit, allowing dropped gear/medkits to be
+recovered. Rules version is `lnac-net-3`; both copies must update.
+
+Real graphical ENet tests: two peers/both modes **244 assertions**; four peers/
+both modes **410 assertions**. **14 process runs / 654 assertions**, all pass,
+zero errors/warnings. Added living-target preference over a closer body, actual
+native stalker/roamer movement through four alternating host/guest down/revive
+cycles, replicated stride/enabled state on every client, kit recovery beside a
+body, and owner-only empty-E feedback. All 49 expedition enemies are enabled
+during these cycles with fixture wards and controlled positions. This is real
+host AI/replication evidence, not human balance or separate-machine Internet.
+
+The reported alternating-down defeat was not reproduced after a successful
+revive; all tested cycles continued while a survivor was standing. All-down
+still intentionally ends defeat. Initial unit movement/item fixtures were caught
+by the earlier stalker patrol; isolated those fixtures from AI and retained live
+AI in dedicated movement/authority tests and full input-only rounds. The solo
+Quick Camp bot now chooses a reproducible Jock and natural battery/fuel/key order,
+then waits on the central sweep for its loss check. The forest bot uses
+Overprepared supplies and normal belt keys for carried ward/moss counterplay;
+no outcome edits, teleporting or disabled enemies in those full rounds.
+
+Final `python3 tools/verify.py`: **75 steps passed**, no errors/warnings,
+including required import/startup, input-only Quick Camp win/loss, and Woods
+escape with all 49 enemies active (**200 assertions**, 12,502px, one flare left).
+Content regression: **350 assertions**, zero failures. Documentation links/anchors
+and `git diff --check` passed before publishing.
+
+[Network reports and raw logs](evidence/active_ai/README.md) preserve execution.
+Player guide/README/spec/architecture describe targeting, scoped notices and
+current defeat rules. Voice/microphone APIs remain unchanged.
+
 ## 2026-10-16 — Center names, indefinite downs and shared survivor lighting
 
 Applied the user's rescue/lighting amendment. Names now center by measured font

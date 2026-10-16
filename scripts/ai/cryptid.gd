@@ -140,7 +140,7 @@ func pursuit_goal(actor: CampPlayer) -> Vector2:
 
 func _advance_spell(delta: float) -> void:
 	cast_cooldown = maxf(0, cast_cooldown - delta)
-	if not is_instance_valid(visible_target) or nearby_flare() != Vector2.INF:
+	if not is_instance_valid(visible_target) or visible_target.status != CampPlayer.Status.ALIVE or nearby_flare() != Vector2.INF:
 		casting = false
 		cast_remaining = 0
 		return

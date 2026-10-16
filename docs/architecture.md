@@ -306,3 +306,23 @@ for extremely cramped geometry. Repeated hits/timers never remove a downed peer.
 A medkit is mandatory; completed holds consume one. Successful van departure
 rescues downed connected teammates, while all-down ends defeat without permanent
 death. Network rules version is now `lnac-net-2`; both peers must update.
+
+
+## Active enemies and per-player interaction feedback
+
+Senses select only ALIVE survivors; after a hit downs its target, the attacker
+clears that target and enters SEARCH immediately. With no standing survivor in
+sight, normal search/patrol continues. Witch spells also discard downed targets.
+Stalled-path recovery includes zero-velocity/unreachable navigation endings,
+which previously never advanced the stuck timer. The stalker starts on central
+roads and always sweeps camp first; seed parity reverses its later perimeter.
+No hidden player-position tracking or teleports were added. Intentional authored
+wind-ups and the Shutter Wraith's beam counterplay remain.
+
+Each actor owns `notice`/`notice_time`, replicated with its plain state. The local
+HUD reads only its own actor's notice. `announce(text, actor)` routes ordinary
+interaction/supply feedback to that actor; shared down/revive/engine events use
+the round announcement. This is display scoping, not encryption. Without a
+medkit, nearby-down interaction no longer bypasses the pickup loop. All-down
+still evaluates current authoritative statuses, never a running count of downs.
+Network rules version `lnac-net-3` requires both peers to update.

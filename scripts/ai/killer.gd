@@ -54,6 +54,9 @@ func _physics_process(delta: float) -> void:
 		if global_position.distance_to(last_seen) <= config.attack_radius and attack_remaining <= 0.0:
 			attack_remaining = config.attack_cooldown
 			visible_target.receive_hit()
+			if visible_target.status != CampPlayer.Status.ALIVE:
+				visible_target = null
+				transition(State.SEARCH)
 	elif state == State.CHASE:
 		transition(State.SEARCH)
 	var destination := patrol[patrol_index]
@@ -98,7 +101,7 @@ func _physics_process(delta: float) -> void:
 	var previous := position
 	move_and_slide()
 	stride += position.distance_to(previous)
-	if velocity.length() > 1.0 and position.distance_to(previous) < 0.1:
+	if not arrived and position.distance_to(previous) < 0.1:
 		stuck_clock += delta
 		if stuck_clock > 1.5:
 			# Recompute a reachable route; never teleport through collision.
@@ -119,7 +122,7 @@ func sense_visible_target() -> CampPlayer:
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if not can_sense(actor):
 			continue
-		if actor.status not in [CampPlayer.Status.ALIVE, CampPlayer.Status.DOWNED]:
+		if actor.status != CampPlayer.Status.ALIVE:
 			continue
 		var candidate_distance := global_position.distance_to(actor.global_position)
 		if candidate_distance <= distance and has_line_of_sight(actor.global_position):

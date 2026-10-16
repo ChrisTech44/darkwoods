@@ -20,6 +20,8 @@ func _run() -> void:
 	root.add_child(level)
 	current_scene = level
 	player = level.player
+	# Isolate movement/item fixtures from the now-central stalker patrol.
+	level.killer.enabled=false
 	await _frames(3)
 	var start := player.position
 	await _move(["move_right"], 30)
@@ -131,6 +133,7 @@ func _objective_checks() -> void:
 
 func _killer_and_revive_checks() -> void:
 	var killer: CampKiller = level.killer
+	killer.enabled=true
 	player.position = level.plan.camp.remap(Vector2(228, 120))
 	killer.position = level.plan.camp.remap(Vector2(228, 120)) - Vector2(0, 72)
 	await _frames(3)

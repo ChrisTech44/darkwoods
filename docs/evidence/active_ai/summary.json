@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "environment": "macOS arm64 / Godot 4.7.2",
+  "transport": "ENet UDP loopback; actual independent graphical processes",
+  "network_checks": 654,
+  "network_process_runs": 14,
+  "errors": 0,
+  "warnings": 0,
+  "reports": [
+    "summary_all_2_graphical.json",
+    "summary_all_4_graphical.json"
+  ],
+  "limits": [
+    "Host fixtures isolate retargeting, patrol movement and repeated revives; not human balance evidence",
+    "No cross-machine LAN/Wi-Fi/Internet or other-platform tests",
+    "Authored spell wind-ups and Shutter Wraith beam counterplay remain intentional"
+  ],
+  "offline": {
+    "passed": true,
+    "steps": 75,
+    "report": "offline_summary.json"
+  }
+}

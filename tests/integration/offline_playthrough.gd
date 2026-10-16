@@ -14,6 +14,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	root.get_node("Session").mode = "camp"
+	root.get_node("Session").survivor = "jock"
 	root.get_node("Session").next_seed = 42
 	capture = "--capture" in OS.get_cmdline_user_args()
 	change_scene_to_file("res://scenes/ui/main_menu.tscn")
@@ -44,7 +45,7 @@ func _run() -> void:
 	await _tap(KEY_ESCAPE)
 	_check(not level.paused, "escape_resumes_round")
 	# Visit the authored objectives via the native navigation mesh, using input.
-	for index in [2, 0, 1]:
+	for index in [0, 1, 2]:
 		var pickup: CampPickup = level.pickups[index]
 		if not await _navigate_to(pickup.global_position):
 			_finish()
@@ -75,8 +76,8 @@ func _run() -> void:
 	level = current_scene
 	player = level.player
 	_check(not level.finished and level.van.installed.is_empty(), "result_enter_restarts_round")
-	# Deliberately wait on the killer's patrol route to verify a complete loss.
-	if not await _navigate_to(Vector2(360, 216)):
+	# Deliberately wait on the new central camp sweep to verify a complete loss.
+	if not await _navigate_to(Vector2(96, 520)):
 		_finish()
 		return
 	for index in range(3600):

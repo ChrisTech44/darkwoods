@@ -56,15 +56,11 @@ func _ready() -> void:
 	player.sprint_noise_emitted.connect(_on_sprint_noise)
 	killer = preload("res://scenes/actors/killer.tscn").instantiate()
 	killer.config = config
-	killer.position = Vector2(1400, 480)
-	killer.patrol = [Vector2(1400, 520), Vector2(960, 520), Vector2(960, 840), Vector2(600, 520), Vector2(360, 520), Vector2(360, 216), Vector2(960, 216)]
-	if plan.expedition:
-		killer.position = Vector2(600, 520)
-		killer.patrol.assign([Vector2(360,216), Vector2(360,520), Vector2(960,520), Vector2(1400,520), Vector2(960,216), Vector2(960,840), Vector2(600,520)])
-		killer.patrol_index = 0
-		if plan.seed_value % 2 == 1:
-			killer.patrol.reverse()
-			killer.patrol.push_front(Vector2(360,216))
+	# Visit central camp early, then tour the roads and cabin approaches.
+	killer.position = Vector2(600,520)
+	var perimeter: Array[Vector2]=[Vector2(360,520),Vector2(360,216),Vector2(960,216),Vector2(960,520),Vector2(1400,520),Vector2(960,840),Vector2(600,520)]
+	if plan.seed_value % 2 == 1: perimeter.reverse()
+	killer.patrol.assign([Vector2(360,520),Vector2(96,520),Vector2(96,384),Vector2(96,520)]+perimeter)
 	world_objects.add_child(killer)
 	_spawn_cryptids()
 	_apply_weather()
@@ -133,7 +129,9 @@ func _process(_delta: float) -> void:
 	hud.threat_label.text = ""
 	if not finished and killer.global_position.distance_to(player.global_position) < 155.0:
 		hud.threat_label.text = "SPOTTED · RUN!" if killer.state == CampKiller.State.CHASE else "FOOTSTEPS NEARBY · KEEP QUIET"
-	if message_time > 0.0:
+	if player.notice_time > 0.0:
+		detail=player.notice+"\n"+detail
+	elif message_time > 0.0:
 		detail = message + "\n" + detail
 	hud.set_status(heading, detail, player.stamina / player.config.stamina_max)
 	hud.inventory_label.text = "NIGHT %d / %s\nQ FLARE %d · R BATTERY %d · C FOOD %d\n" % [plan.seed_value, plan.weather.to_upper(), player.supplies["flare"], player.supplies["battery_pack"], player.supplies["rations"]]
@@ -196,18 +194,18 @@ func try_interact(actor: CampPlayer) -> bool:
 	if van.can_board(actor):
 		var entered := van.board(actor)
 		if entered:
-			announce("You're aboard. Stay seated until departure.")
+			announce("You're aboard. Stay seated until departure.",actor)
 		return entered
-	if nearby_downed(actor) != null:
+	if nearby_downed(actor) != null and actor.supplies.get("medkit",0)>0:
 		return true
 	for pickup in pickups:
 		if pickup.available and actor.global_position.distance_to(pickup.global_position) <= config.interact_radius and clear_path(actor.global_position, pickup.global_position):
 			if pickup.locked and "boltcutters" not in actor.inventory:
-				announce("Locked cache! Find boltcutters in Maintenance first.")
+				announce("Locked cache! Find boltcutters in Maintenance first.",actor)
 				actor.noise_emitted.emit(actor.global_position)
 				return false
 			if actor.supplies.has(pickup.kind) and not actor.can_pack(pickup.kind):
-				announce("Belt full. Select a slot and G to drop its stack.")
+				announce("Belt full. Select a slot and G to drop its stack.",actor)
 				return false
 			pickup.consume()
 			if plan.expedition:
@@ -217,11 +215,11 @@ func try_interact(actor: CampPlayer) -> bool:
 			else:
 				actor.inventory.append(pickup.kind)
 			if pickup.kind in plan.required:
-				announce("Found " + pickup.kind.replace("_", " ") + ". Install it at the van.")
+				announce("Found " + pickup.kind.replace("_", " ") + ". Install it at the van.",actor)
 			elif pickup.kind == "boltcutters":
-				announce("Boltcutters found. Woods caches can now be opened with E.")
+				announce("Boltcutters found. Woods caches can now be opened with E.",actor)
 			else:
-				announce("Packed " + pickup.kind.replace("_", " ") + ". Q flare / R battery / C food.")
+				announce("Packed " + pickup.kind.replace("_", " ") + ". Q flare / R battery / C food.",actor)
 			return true
 	for site in camp_map.sites:
 		if not site.nearby(actor).is_empty():
@@ -229,11 +227,11 @@ func try_interact(actor: CampPlayer) -> bool:
 	if van.in_range(actor) and clear_path(actor.global_position, van.interaction_point()):
 		var count := van.deliver(actor)
 		if count > 0:
-			announce("Installed %d component(s)." % count)
+			announce("Installed %d component(s)." % count,actor)
 			return true
 		if van.installed.size() == plan.required.size():
 			return true
-	announce("Nothing to use here. Tab shows supply locations.")
+	announce("Medkit needed. Recover nearby gear with E." if nearby_downed(actor)!=null else "Nothing to use here. Tab shows supply locations.",actor)
 	actor.noise_emitted.emit(actor.global_position)
 	return false
 
@@ -330,7 +328,11 @@ func missing_parts() -> Array[String]:
 	return missing
 
 
-func announce(text: String) -> void:
+func announce(text: String, recipient: CampPlayer = null) -> void:
+	if recipient != null:
+		recipient.notice=text
+		recipient.notice_time=3
+		return
 	message = text
 	message_time = 3.0
 
@@ -439,7 +441,7 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 		flare.position = target if clear_path(actor.global_position, target) else actor.global_position
 		world_objects.add_child(flare)
 		actor.noise_emitted.emit(flare.global_position)
-		announce("Flare out! Teeth hate it. Wings don't.")
+		announce("Flare out! Teeth hate it. Wings don't.",actor)
 	elif kind == "battery_pack":
 		if actor.flashlight_charge >= config.flashlight_capacity:
 			return false
@@ -458,14 +460,14 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 		lure.position = target if clear_path(actor.global_position, target) else actor.global_position
 		lure.level = self
 		world_objects.add_child(lure)
-		announce("Tin timer: three delayed rattles. Move away quietly.")
+		announce("Tin timer: three delayed rattles. Move away quietly.",actor)
 	elif kind == "salt_ward":
 		actor.ward_remaining = 4.0
-		announce("Salt ward: four seconds of protection. Keep moving!")
+		announce("Salt ward: four seconds of protection. Keep moving!",actor)
 	elif kind == "glow_moss":
 		actor.flashlight_charge = minf(actor.config.flashlight_capacity, actor.flashlight_charge + 35)
 		actor.hex_remaining = 0
-		announce("Glow moss clears hexes and restores 35 light charge.")
+		announce("Glow moss clears hexes and restores 35 light charge.",actor)
 	else:
 		return false
 	actor.supplies[kind] -= 1
@@ -511,7 +513,7 @@ func drop_held(actor: CampPlayer) -> bool:
 	actor.supplies[kind] = 0
 	actor.tidy_belt()
 	loud_noise(actor.global_position, 130)
-	announce("Dropped " + kind.replace("_", " ") + ". E to recover.")
+	announce("Dropped " + kind.replace("_", " ") + ". E to recover.",actor)
 	return true
 
 

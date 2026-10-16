@@ -320,3 +320,15 @@ repeat-hit/time persistence, mandatory medkits, no spawn-bonus refresh and van
 rescue of an unrevived downed peer. The latest offline suite passed **75 steps**,
 including **350 content assertions**. Earlier multiplayer reports above describe
 their historical pre-amendment rules; the current player guide is authoritative.
+
+
+## Active AI and alternating downs
+
+The latest [network report](evidence/active_ai/summary.json) records **654 passing
+assertions / 14 real graphical process runs**, two/four peers in both modes.
+Stalker and roaming-cryptid movement continues during four alternating host/guest
+down/revive cycles, with all enemies enabled and fixture wards/positions. Tests
+check living-target preference, medkit pickup beside a body, private empty-E
+feedback, client-visible enemy stride and absence of false defeat while someone
+is standing. Authoritative all-down still ends defeat; repeated downs do not
+accumulate a loss. Input-only solo escape/loss uses the new central patrol route.

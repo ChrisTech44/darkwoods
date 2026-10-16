@@ -50,7 +50,7 @@ func interact(actor: CampPlayer) -> bool:
 			if kind not in actor.belt:
 				needed += 1
 		if actor.belt.count("") < needed:
-			level.announce("Make room in the belt before searching. G drops a stack.")
+			level.announce("Make room in the belt before searching. G drops a stack.",actor)
 			return false
 		for kind in rewards[action["kind"]]:
 			actor.pack(kind, rewards[action["kind"]][kind])

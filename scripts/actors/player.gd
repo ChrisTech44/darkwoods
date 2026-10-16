@@ -10,6 +10,8 @@ enum Status { ALIVE, DOWNED, DEAD, ESCAPED, LEFT_BEHIND, BOARDED }
 var sheet: Texture2D
 var config: CampConfig = preload("res://assets/default_config.tres")
 var peer_name := ""
+var notice := ""
+var notice_time := 0.0
 var net_controlled := false
 var network_direction := Vector2.ZERO
 var network_sprint := false
@@ -48,6 +50,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	notice_time=maxf(0,notice_time-delta)
 	ward_remaining = maxf(0, ward_remaining - delta)
 	hex_remaining = maxf(0, hex_remaining - delta)
 	if expedition and CampMap.is_woods(global_position) and flashlight_on and status == Status.ALIVE:

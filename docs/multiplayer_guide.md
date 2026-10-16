@@ -56,7 +56,12 @@ Your survivor stops sending movement while that menu is open and can still be
 caught. A downed teammate stays down indefinitely and requires a medkit to revive
 (hold E for 3s, or 2.25s as First-Aid Kid). Further hits never permanently kill
 them. All parts, tools and supplies drop beside their body on down or disconnect,
-so teammates can recover them with E. When everyone is down the round is lost.
+so teammates can recover them with E. When everyone is down the round is lost. Alternating downs after successful
+revivals do not count toward a cumulative loss. Without a kit, E still collects
+nearby dropped gear. Enemies ignore downed bodies, pursue standing survivors or
+resume searching/patrolling. The stalker now sweeps central camp early.
+Empty interactions, pickup/belt errors and supply feedback display only on the
+acting player’s HUD; shared team events still announce to everyone.
 Every survivor’s flashlight and flare lights render on all peers, with local
 wall shadows and woods sight occlusion. Leaving does not grant fresh supplies or permit an
 active-round rejoin.

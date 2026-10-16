@@ -97,6 +97,13 @@ func _host() -> void:
 		await process_frame
 		RenderingServer.force_draw(true)
 		root.get_texture().get_image().save_png("res://artifacts/network/host_%s_%d.png"%[selected_mode,peers])
+	# Empty interaction feedback belongs to the acting peer, never the shared banner.
+	for actor: CampPlayer in net.actors.values(): actor.notice_time=0
+	var shared_before: String=level.message
+	harness.advance.rpc("empty_interaction",{"guest":guest})
+	if not await _reports(peers-1): return
+	_check(net.actors[guest].notice.contains("Nothing to use") and level.player.notice_time==0 and level.message==shared_before,"empty_interaction_does_not_broadcast")
+	for report: Dictionary in harness.reports.values(): _check(report.get("private",false),"client_interaction_feedback_is_private")
 	for actor: CampPlayer in net.actors.values():
 		actor.flashlight_on=false
 		actor.position=Vector2(140,430)
@@ -204,6 +211,7 @@ func _host() -> void:
 		harness.advance.rpc("hazards")
 		if not await _reports(peers-1): return
 		for report: Dictionary in harness.reports.values(): _check(report.get("hazards",false),"woods_projectile_patch_replicated_without_client_physics")
+	await _active_ai_round(level,ids,guest)
 	# Assemble the objective with host fixture inventory; interaction still uses production validation.
 	level.player.inventory.assign(level.plan.required)
 	level.player.position=level.van.interaction_point()
@@ -290,6 +298,22 @@ func _client() -> void:
 					RenderingServer.force_draw(true)
 					root.get_texture().get_image().save_png("res://artifacts/network/client_%s_%d_%d.png"%[selected_mode,peers,index])
 				harness.report.rpc_id(1,handled,{"host_moved":net.actors[1].position.x>125,"own_moved":net.world.player.position.y>410})
+			"empty_interaction":
+				if get_multiplayer().get_unique_id()==harness.data["guest"]: net.action("interact")
+				await _until(func(): return net.actors[harness.data["guest"]].notice.contains("Nothing to use"),5)
+				var personal_actor: CampPlayer=net.world.player
+				harness.report.rpc_id(1,handled,{"private":personal_actor.notice.contains("Nothing to use") if get_multiplayer().get_unique_id()==harness.data["guest"] else personal_actor.notice_time==0})
+			"active_ai_0", "active_ai_1", "active_ai_2", "active_ai_3":
+				await _until(func(): return net.actors[harness.data["down"]].status==CampPlayer.Status.DOWNED,5)
+				var enemies := get_nodes_in_group("killers")
+				var initial := []
+				for enemy_index in harness.data["enemies"]: initial.append(enemies[enemy_index].stride)
+				await create_timer(0.5).timeout
+				var moving := true
+				for i in range(initial.size()):
+					var enemy: CampKiller=enemies[harness.data["enemies"][i]]
+					moving=moving and enemy.enabled and enemy.stride>initial[i]+1
+				harness.report.rpc_id(1,handled,{"moving":moving,"playing":not net.world.finished})
 			"light_off":
 				await _until(func(): return not net.actors[1].flashlight_on,5)
 				await create_timer(0.15).timeout
@@ -425,3 +449,59 @@ func _brighter(bright: Image, dark: Image) -> bool:
 			var b := dark.get_pixel(x,y)
 			gain+=maxf(0,(a.r+a.g+a.b)-(b.r+b.g+b.b))
 	return gain>20
+
+
+func _active_ai_round(level: Node2D, ids: Array, guest: int) -> void:
+	var enemies := get_nodes_in_group("killers")
+	var probes: Array[CampKiller]=[level.killer]
+	for enemy: CampKiller in enemies:
+		if enemy is CampCryptid and enemy.species=="relay_jackal":
+			probes.append(enemy)
+			break
+	var indices := []
+	for enemy in probes: indices.append(enemies.find(enemy))
+	# Real senses must choose a living teammate over a closer downed body.
+	for id in ids:
+		net.actors[id].position=Vector2(96+12*ids.find(id),384)
+		net.actors[id].ward_remaining=60
+	level.player.position=Vector2(360,520)
+	net.actors[guest].position=Vector2(400,520)
+	level.player.set_status(CampPlayer.Status.DOWNED)
+	for enemy in probes:
+		enemy.position=Vector2(360,520)
+		_check(enemy.sense_visible_target()==net.actors[guest],"active_enemy_prefers_living_teammate_over_body")
+	# With no kit, E must collect nearby gear rather than silently starting a revive.
+	net.actors[guest].position=level.player.position+Vector2(16,0)
+	level.spawn_dropped("medkit",net.actors[guest].position)
+	for attempt in range(10):
+		if net.actors[guest].supplies["medkit"]>0: break
+		level.try_interact(net.actors[guest])
+	_check(net.actors[guest].supplies["medkit"]==1,"no_kit_interaction_recovers_gear_beside_downed_teammate")
+	level.advance_revive(net.actors[guest],level.player,true,net.actors[guest].config.revive_seconds+0.01)
+	_check(level.player.status==CampPlayer.Status.ALIVE,"recovered_kit_revives_teammate")
+	for id in ids: net.actors[id].position=Vector2(96+12*ids.find(id),384)
+	for i in range(probes.size()):
+		var enemy := probes[i]
+		enemy.position=Vector2(360,520+i*20)
+		enemy.patrol.assign([Vector2(600,520+i*20),Vector2(360,520+i*20)])
+		enemy.patrol_index=0
+		enemy.visible_target=null
+		enemy.transition(CampKiller.State.PATROL)
+		if enemy is CampCryptid: enemy.home=Rect2()
+	for enemy: CampKiller in enemies: enemy.enabled=true
+	for turn in range(4):
+		var target: CampPlayer=net.actors[1 if turn%2==0 else guest]
+		var rescuer: CampPlayer=net.actors[guest if turn%2==0 else 1]
+		target.set_status(CampPlayer.Status.DOWNED)
+		var before := []
+		for enemy in probes: before.append(enemy.stride)
+		harness.advance.rpc("active_ai_%d"%turn,{"down":1 if turn%2==0 else guest,"enemies":indices})
+		if not await _reports(peers-1): return
+		for i in range(probes.size()): _check(probes[i].stride>before[i]+3 and probes[i].enabled,"enemy_keeps_walking_during_down_%d"%turn)
+		for report: Dictionary in harness.reports.values(): _check(report.get("moving",false) and report.get("playing",false),"clients_see_active_enemies_without_false_defeat_%d"%turn)
+		_check(not level.finished,"alternating_down_does_not_end_round_%d"%turn)
+		rescuer.pack("medkit")
+		level.advance_revive(rescuer,target,true,rescuer.config.revive_seconds+0.01)
+		_check(target.status==CampPlayer.Status.ALIVE and rescuer.supplies["medkit"]==0,"alternating_revive_completes_%d"%turn)
+	for enemy: CampKiller in enemies: enemy.enabled=false
+	for actor: CampPlayer in net.actors.values(): actor.ward_remaining=0

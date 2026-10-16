@@ -192,19 +192,23 @@ Search for additional supplies in camp, woods clearings, and themed sites.
 Tools and supplies cannot be used while paused or downed. Every survivor’s
 flashlight, nearby glow and deployed flares illuminate the shared world on each
 connected screen; walls and the viewer’s woods line of sight still block visibility.
+Interaction and supply messages appear only on the acting player’s HUD; down,
+revive and departure announcements remain shared.
 
 The first hit **downs** a survivor indefinitely. Further hits and elapsed time
 do not kill them. All carried parts, tools and supplies drop on reachable ground
 beside the body, where teammates can recover them with E. A living teammate
 **with a medkit** can hold E nearby to revive; one kit is consumed only on
 completion, followed by a short grace period. If everyone is down, the round
-ends in defeat. In solo play nobody can revive you.
+ends in defeat. Successful revivals do not accumulate toward defeat; the round
+continues while anyone is standing or aboard. Without a medkit, E can still
+collect dropped gear beside a downed teammate. In solo play nobody can revive you.
 
 ### Know what is following you
 
 | Threat | Behavior | Useful response |
 | --- | --- | --- |
-| **Camp stalker** | Patrols camp, investigates noise, chases on clear sight, and searches its last known target location. | Break sight around buildings; use sprint carefully and flares when cornered. |
+| **Camp stalker** | Sweeps central camp early, patrols the roads, investigates noise and chases standing survivors on clear sight. Leaves downed bodies to search or pursue others. | Break sight around buildings; use sprint carefully and flares when cornered. |
 | **Werewolf** | Alternates a fast charge with a slower recovery. | Save stamina for the burst and use the recovery window to reposition. |
 | **Sasquatch / Bigfoot** | A long-armed forest ape that hears farther than the stalker, with a slower chase. | Walk quietly and avoid broadcasting your route with repeated sprinting. |
 | **Lantern moth** | Tracks lit survivors and visible flares; ignores dark survivors beyond close range. | Switch off your light to reduce detection, and remember that flares attract it. |
@@ -407,11 +411,11 @@ recover units. Vehicle components and cutters remain separate from this limit.
 The current implementation includes solo and 1–4 player ENet co-op in both
 modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
 species. Full baseline verification passed **75 steps** with no errors/warnings;
-final content checks passed **350 assertions**. Current graphical ENet tests passed **480
+final content checks passed **350 assertions**. Current graphical ENet tests passed **654
 assertions across 14 process runs**, including two/four peers and graphical
 host/client windows in both modes. See the
-[current network report](docs/evidence/rescue_lighting/summary.json),
-[evidence notes](docs/evidence/rescue_lighting/README.md), and
+[current network report](docs/evidence/active_ai/summary.json),
+[evidence notes](docs/evidence/active_ai/README.md), and
 [rendering/denser-forest evidence](docs/evidence/denser_forest/README.md).
 Earlier graphical baselines remain preserved separately.
 

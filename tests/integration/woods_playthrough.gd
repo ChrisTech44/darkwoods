@@ -7,6 +7,7 @@ var walked: float = 0.0
 
 func _run() -> void:
 	root.get_node("Session").mode = "woods"
+	root.get_node("Session").survivor = "quartermaster"
 	root.get_node("Session").next_seed = 42
 	capture = "--capture" in OS.get_cmdline_user_args()
 	change_scene_to_file("res://scenes/world/forest_level.tscn")
@@ -107,6 +108,11 @@ func _leg(points: Array) -> bool:
 				await _tap(KEY_Q)
 				print(JSON.stringify({"event": "expedition_flare", "position": player.position, "danger_distance": danger}))
 				supply_cooldown = 30
+			# Use carried rare counterplay through normal belt keys when flares run out.
+			if danger<65 and player.supplies["flare"]==0 and player.ward_remaining<=0 and player.supplies.get("salt_ward",0)>0:
+				await _belt_use("salt_ward")
+			if player.hex_remaining>0 and player.supplies.get("glow_moss",0)>0:
+				await _belt_use("glow_moss")
 			if player.flashlight_charge < 10 and player.supplies["battery_pack"] > 0:
 				await _tap(KEY_R)
 			if chasing:
@@ -128,7 +134,7 @@ func _leg(points: Array) -> bool:
 			Input.action_release(action)
 		await _frames(1)
 		if not reached:
-			print(JSON.stringify({"event": "expedition_blocked", "destination": destination, "position": player.position, "status": player.status, "stamina": player.stamina}))
+			print(JSON.stringify({"event": "expedition_blocked", "destination": destination, "position": player.position, "status": player.status, "stamina": player.stamina, "supplies":player.supplies}))
 			for enemy: CampKiller in get_nodes_in_group("killers"):
 				print(JSON.stringify({"event": "enemy_at_failure", "position": enemy.position, "state": enemy.state, "flare": enemy.nearby_flare()}))
 		_check(reached, "woods_walk_to_%d_%d" % [destination.x, destination.y])
@@ -141,3 +147,10 @@ func _finish() -> void:
 	print(JSON.stringify({"event": "test_result", "suite": "woods_playthrough", "checks": checks, "failures": failures}))
 	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures == 0 else 1)
+
+
+func _belt_use(kind: String) -> void:
+	var slot := player.belt.find(kind)
+	if slot<0: return
+	await _tap([KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_6][slot])
+	await _tap(KEY_V)

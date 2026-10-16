@@ -42,6 +42,15 @@ func _run() -> void:
 		if not await _collect(closest):
 			_finish()
 			return
+		for site: ForestSite in level.camp_map.sites:
+			if site.definition["kind"] in ["village", "graveyard"] and site.definition["bounds"].has_point(closest.position):
+				for action in site.actions:
+					if action["kind"] in ["supplies", "crypt"] and not action["used"]:
+						if not await _navigate_to(action["position"]):
+							_finish()
+							return
+						await _tap(KEY_E)
+						_check(action["used"], "input_searches_" + action["kind"])
 		remaining.erase(closest)
 	_check(level.plan.required.all(func(kind: String) -> bool: return kind in player.inventory), "five_parts_collected_via_input")
 	if not await _navigate_to(level.van.interaction_point()):
@@ -87,14 +96,14 @@ func _leg(points: Array) -> bool:
 					nearby_moth = true
 				if enemy.state == CampKiller.State.CHASE and distance < 180:
 					chasing = true
-				if distance < 110:
+				if distance < 90 and enemy.has_line_of_sight(player.position):
 					chasing = true
-				if enemy.fears_flare():
+				if enemy.fears_flare() and (enemy.state == CampKiller.State.CHASE or distance < 48 and enemy.has_line_of_sight(player.position)) and enemy.nearby_flare() == Vector2.INF:
 					danger = minf(danger, distance)
 			if nearby_moth == player.flashlight_on and (nearby_moth or player.flashlight_charge > 0):
 				await _tap(KEY_F)
 			supply_cooldown = maxi(0, supply_cooldown - 1)
-			if danger < 64 and supply_cooldown == 0 and player.supplies["flare"] > 0:
+			if danger < 48 and supply_cooldown == 0 and player.supplies["flare"] > 0:
 				await _tap(KEY_Q)
 				print(JSON.stringify({"event": "expedition_flare", "position": player.position, "danger_distance": danger}))
 				supply_cooldown = 30

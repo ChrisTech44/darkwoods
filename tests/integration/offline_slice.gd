@@ -156,8 +156,13 @@ func _killer_and_revive_checks() -> void:
 	killer.transition(CampKiller.State.PATROL)
 	await _frames(2)
 	killer.hear_noise(Vector2(228, 120))
-	await _frames(240)
-	_check(killer.position.distance_to(Vector2(228, 120)) < 14.0, "navigation_routes_killer_through_cabin_door")
+	var entered_cabin := false
+	for frame in range(240):
+		await physics_frame
+		if killer.position.distance_to(Vector2(228,120)) < 14:
+			entered_cabin = true
+			break
+	_check(entered_cabin, "navigation_routes_killer_through_cabin_door")
 	killer.enabled = false
 	var teammate: CampPlayer = load("res://scenes/actors/player.tscn").instantiate()
 	teammate.local_input = false

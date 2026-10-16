@@ -27,6 +27,14 @@ func _draw() -> void:
 	draw_rect(Rect2(0, 0, 154, 112), Color("1c2b28"))
 	draw_string(ThemeDB.fallback_font, Vector2(4, 10), "THE WOODS / N ↑" if in_woods else "FERNWOOD / N ↑", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("cfc89f"))
 	if in_woods:
+		for zone in plan.woods.zones:
+			var known := false
+			for cell: Vector2i in plan.woods.visited:
+				if zone["bounds"].has_point(plan.woods.center(cell)):
+					known = true
+			if known:
+				var rect: Rect2 = zone["bounds"]
+				draw_rect(Rect2(origin + (rect.position - bounds.position) * factor, rect.size * factor), Color("b29c70"), false)
 		for cell: Vector2i in plan.woods.visited:
 			var at := origin + (plan.woods.center(cell) - bounds.position) * factor
 			draw_circle(at, 2, Color("77805f"))

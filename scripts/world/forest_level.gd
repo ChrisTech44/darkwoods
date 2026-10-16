@@ -50,9 +50,12 @@ func _ready() -> void:
 	killer.position = Vector2(1400, 480)
 	killer.patrol = [Vector2(1400, 520), Vector2(960, 520), Vector2(960, 840), Vector2(600, 520), Vector2(360, 520), Vector2(360, 216), Vector2(960, 216)]
 	if plan.expedition:
-		killer.patrol_index = plan.seed_value % killer.patrol.size()
+		killer.position = Vector2(600, 520)
+		killer.patrol.assign([Vector2(360,216), Vector2(360,520), Vector2(960,520), Vector2(1400,520), Vector2(960,216), Vector2(960,840), Vector2(600,520)])
+		killer.patrol_index = 0
 		if plan.seed_value % 2 == 1:
 			killer.patrol.reverse()
+			killer.patrol.push_front(Vector2(360,216))
 	world_objects.add_child(killer)
 	_spawn_cryptids()
 	_apply_weather()
@@ -117,6 +120,8 @@ func _process(_delta: float) -> void:
 	for enemy: CampKiller in get_tree().get_nodes_in_group("cryptids"):
 		if player.global_position.distance_to(enemy.global_position) < 180:
 			hud.threat_label.text = enemy.species.replace("_", " ").to_upper() + " NEARBY"
+	if player.hex_remaining > 0:
+		hud.threat_label.text = "HEXED %.1fs / SLOWED!" % player.hex_remaining
 
 
 
@@ -171,6 +176,8 @@ func try_interact(actor: CampPlayer) -> bool:
 				actor.noise_emitted.emit(actor.global_position)
 				return false
 			pickup.consume()
+			if plan.expedition:
+				actor.noise_emitted.emit(pickup.global_position)
 			if actor.supplies.has(pickup.kind):
 				actor.supplies[pickup.kind] += 1
 			else:
@@ -182,6 +189,9 @@ func try_interact(actor: CampPlayer) -> bool:
 			else:
 				announce("Packed " + pickup.kind.replace("_", " ") + ". Q flare / R battery / C food.")
 			return true
+	for site in camp_map.sites:
+		if not site.nearby(actor).is_empty():
+			return site.interact(actor)
 	if van.in_range(actor) and clear_path(actor.global_position, van.interaction_point()):
 		var count := van.deliver(actor)
 		if count > 0:
@@ -228,6 +238,13 @@ func _on_noise(origin: Vector2) -> void:
 			enemy.hear_noise(origin)
 
 
+func loud_noise(origin: Vector2, radius: float) -> void:
+	if paused or finished:
+		return
+	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
+		enemy.hear_stimulus(origin, radius)
+
+
 func clear_path(from: Vector2, to: Vector2) -> bool:
 	var query := PhysicsRayQueryParameters2D.create(from, to, 1)
 	return get_world_2d().direct_space_state.intersect_ray(query).is_empty()
@@ -247,6 +264,10 @@ func context_prompt() -> String:
 	for pickup in pickups:
 		if pickup.available and player.global_position.distance_to(pickup.global_position) <= config.interact_radius and clear_path(player.global_position, pickup.global_position):
 			return "E · LOCKED CACHE / NEED BOLTCUTTERS" if pickup.locked and "boltcutters" not in player.inventory else "E · TAKE " + pickup.kind.replace("_", " ").to_upper()
+	for site in camp_map.sites:
+		var action := site.nearby(player)
+		if not action.is_empty():
+			return "E · " + action["label"] if site.cooldown <= 0 else "LET THE ECHO FADE..."
 	if van.in_range(player):
 		if van.running:
 			return "E · ENTER VAN  —  Board before the countdown ends!"
@@ -277,6 +298,8 @@ func finish_round(success: bool, detail: String) -> void:
 		actor.set_physics_process(false)
 	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 		enemy.enabled = false
+	for hazard in get_tree().get_nodes_in_group("hazards"):
+		hazard.set_physics_process(false)
 	hud.show_result(success, detail + "\nNight %d / %s" % [plan.seed_value, plan.weather])
 	print(JSON.stringify({"event": "round_finished", "won": success, "result": detail}))
 
@@ -290,6 +313,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			enemy.enabled = not paused
 		for flare in get_tree().get_nodes_in_group("flares"):
 			flare.set_physics_process(not paused)
+		for hazard in get_tree().get_nodes_in_group("hazards"):
+			hazard.set_physics_process(not paused)
 		for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 			actor.controls_enabled = not paused
 			actor.set_physics_process(not paused)
@@ -367,9 +392,7 @@ func _spawn_cryptids() -> void:
 		enemy.position = encounter["position"]
 		enemy.patrol.clear()
 		var start: Vector2i = encounter["cell"]
-		enemy.patrol.append(plan.woods.center(start))
-		for neighbor: Vector2i in plan.woods.links[start]:
-			enemy.patrol.append(plan.woods.center(neighbor))
+		enemy.patrol.assign(plan.woods.roaming_route(start))
 		world_objects.add_child(enemy)
 
 
@@ -377,6 +400,9 @@ func _apply_weather() -> void:
 	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 		# Never mutate the shared default resource or another creature's tuning.
 		enemy.config = enemy.config.duplicate() as CampConfig
+		if plan.expedition and enemy == killer:
+			enemy.config.sight_radius = 150
+			enemy.config.hearing_radius = 220
 		if plan.weather == "fog":
 			enemy.config.sight_radius *= 0.72
 		elif plan.weather == "rain":

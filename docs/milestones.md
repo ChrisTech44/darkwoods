@@ -11,8 +11,9 @@ and an authorized visual/map pass expands the camp to 1536×960 with ten furnish
 buildings, original character/environment pixel art, shadow-casting lights and a
 field map. The user's subsequent request explicitly authorizes woods,
 replayability and UI polish ahead of M2: a seeded finite trail maze, five-part
-repair/cache objectives, tools/supplies, weather and three original cryptid types
-(two per expedition). Quick Camp retains M1's three-part acceptance route.
+repair/cache objectives, tools/supplies, weather and six original cryptid types
+(four per expedition), interactive village/bog/graveyard sites and richer sensing,
+search, patrol and projectile behavior. Quick Camp retains M1's three-part acceptance route.
 This work does not implement or claim M2 networking.
 
 ## M1: offline vertical slice, one verified pass per step

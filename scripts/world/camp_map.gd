@@ -10,6 +10,8 @@ var obstacles: Array[Rect2] = []
 var trees: Array[Rect2] = []
 var canopies: Array[Sprite2D] = []
 var buildings: Array[CampBuilding] = []
+var forest_buildings: Array[CampBuilding] = []
+var sites: Array[ForestSite] = []
 var navigation_region: NavigationRegion2D
 var objects: Node2D
 var focus: CampPlayer
@@ -75,6 +77,7 @@ func _ready() -> void:
 	add_wall(Rect2(1296, 912, 48, 16), false)
 	_seed_forest()
 	_build_woods()
+	_build_sites()
 	_ground()
 	_build_navigation()
 	CampLights.lamp(self, Vector2(168, 336), 110, Color("ffb266"), 1.3)
@@ -83,6 +86,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	for building in buildings:
+		building.roof.focus = focus
+	for building in forest_buildings:
 		building.roof.focus = focus
 	if is_instance_valid(focus):
 		for canopy in canopies:
@@ -93,6 +98,12 @@ func _process(delta: float) -> void:
 
 func location_label(point: Vector2) -> String:
 	if point.x >= 1536:
+		for building in forest_buildings:
+			if building.bounds.grow(5).has_point(point):
+				return "ABANDONED VILLAGE / " + building.label
+		var zone := woods.zone_at(point)
+		if not zone.is_empty():
+			return zone["label"]
 		for landmark in woods.landmarks:
 			if point.distance_to(landmark["position"]) < 90:
 				return "THE WOODS / " + landmark["label"]
@@ -194,6 +205,37 @@ func _seed_forest() -> void:
 			objects.add_child(sprite)
 
 
+func _build_sites() -> void:
+	for definition in woods.zones:
+		var site := ForestSite.new()
+		site.definition = definition
+		site.level = get_parent()
+		add_child(site)
+		sites.append(site)
+		if definition["kind"] == "village":
+			var origin: Vector2 = definition["bounds"].position
+			for index in range(2):
+				var building := CampBuilding.new()
+				building.configure(Rect2(origin + Vector2(16 + index * 224, 16), Vector2(144, 96)), "cabin", "SURVEYOR HUT" if index == 0 else "LOOTED COTTAGE")
+				forest_buildings.append(building)
+				add_child(building)
+				for wall in building.walls:
+					add_wall(wall)
+				for furniture in building.furnishings:
+					add_wall(furniture["rect"].grow(-2), false)
+				var roof := preload("res://scripts/world/building_roof.gd").new()
+				roof.building = building
+				roof.z_index = 8
+				building.roof = roof
+				add_child(roof)
+				CampLights.lamp(self, building.door - Vector2(0,4), 70, Color("bdab84"), 0.7)
+			CampLights.lamp(self, site.definition["position"] + Vector2(0, 48), 88, Color("beaa78"), 0.8)
+		elif definition["kind"] == "bog":
+			CampLights.lamp(self, definition["position"] - Vector2(0, 13), 66, Color("a0b876"), 0.65)
+		else:
+			CampLights.lamp(self, definition["position"] + Vector2(-32, 8), 75, Color("83a9a0"), 0.75)
+
+
 func _ground() -> void:
 	var tile_set := TileSet.new()
 	tile_set.tile_size = Vector2i(16, 16)
@@ -218,6 +260,9 @@ func _ground() -> void:
 					tile = Vector2i(4 + (x + y) % 3, 0)
 			if center.x >= 1536:
 				tile = Vector2i(2 + (x + y) % 2, 1) if woods.walkable(center) else Vector2i((x + y) % 2, 1)
+				var zone := woods.zone_at(center)
+				if not zone.is_empty():
+					tile = Vector2i(2 + (x + y) % 2, 3) if zone["kind"] == "village" else Vector2i(0 if zone["kind"] == "bog" else 7, 1)
 			if lake.has_point(center):
 				tile = Vector2i((x + y) % 2, 2)
 			layer.set_cell(Vector2i(x, y), 0, tile)

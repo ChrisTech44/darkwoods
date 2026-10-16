@@ -118,7 +118,7 @@ tools/supplies and roster/weather variety. Seeds 42 and 2026 bake real worlds an
 check native navigation to every item/landmark. Isolated fixtures cover locked
 cache/tool/proximity rules, battery depletion/refill, rations, flare placement and
 pause, species sensing, flare responses, wolf charge recovery, seed retry/new run
-and scene cleanup. The graphical tour captures loading, woods darkness, all three
+and scene cleanup. The graphical tour captures loading, woods darkness, all six
 cryptids, landmarks, notes and results. These fixtures intentionally place actors
 and disable AI to inspect individual rules/art; they are not a full playthrough.
 
@@ -143,3 +143,24 @@ assertions will be added in M2 with an actual implementation, not stub flags.
 Network acceptance must include two real ENet clients; later cover four peers,
 single-award pickup races, shared downed/repair/extraction state, restart and
 disconnect cleanup. Unsigned desktop release notes belong to M4.
+
+## Forest hunt coverage
+
+The updated woods recipe checks four distinct cryptids (vampire/witch guaranteed),
+three expanded themed sites, all required items and abstract clearings in the
+native bake. Clearing destinations inside furnished huts use their nearest
+walkable point; item and hut entrance assertions still require exact access.
+The active Woods test uses ordinary E to search the village well and graveyard
+crypt as preparation; all five enemies remain active throughout the escape.
+The Quick Camp bot now also uses its existing Q/C supplies when threatened.
+No game damage, speed, health or inventory is edited by either playthrough.
+
+`forest_hunt.gd` adds isolated fixtures for both hut interiors, broad patrol
+coverage and actual roaming movement, finite/no-duplicate site rewards,
+remote-interaction rejection, bell stimuli/cooldown, cauldron trade-off,
+vampire beam/flank behavior, motion-sensitive revenant sensing, multiple-point
+search without hidden-target updates, witch wind-up/fire, hex application,
+swept projectile wall collision, blocked casting, dodging, pause and cleanup.
+Its graphical variant captures the three sites, witch telegraph and moving bolt.
+Site/creature screenshots use deliberate actor placement and camera composition;
+they are distinct from the complete active playthrough evidence.

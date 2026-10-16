@@ -81,15 +81,17 @@ Quick Camp retains fixed M1 pickups/patrol. The user's woods request authorizes
 the following replayability work ahead of M2.
 
 RoundPlan uses private seeded RNGs for topology, component pools, cache assignments,
-supplies, weather and the two-cryptid roster. WoodsLayout uses DFS plus extra
+supplies, weather and the four-cryptid roster. WoodsLayout uses DFS plus extra
 connections across a finite 10×10 trail grid: all 100 clearings connect, with
 dead ends, loops and six separated ruins. Solid 32px cells merge into row spans
-for physics/occlusion; trees above them are visual only. Both player and AI use
+for physics and AI sight; separate octagonal trunks cast visual shadows.
+Trees fade locally when they cover the camper; soft radial fog has no rectangular
+screen-strip edges. Both player and AI use
 the same native navigation bake. The woods chart reveals visited clearings and
 their immediate connecting trails, not the whole maze or hidden caches.
 
 Expeditions require battery/fuel/key and two parts chosen from belt/fuse/tire/spark
-plug. Battery/key use camp location pools; three parts occupy locked woods caches.
+plug. Battery/key use camp location pools; three parts occupy locked caches in the village hut, witch's bog and graveyard.
 One reusable boltcutters pickup in Maintenance unlocks caches. Q throws a 9-second
 flare, R consumes a spare battery (+70s, maximum 90s), C consumes rations (full
 stamina). Woods flashlight use drains charge; camp use does not. Medkits reduce
@@ -118,3 +120,48 @@ the current authority path to the host and replacing direct input with intents.
 Clients send input/intents; the host owns positions, inventory, AI, health, repair,
 extraction, and phase changes. Initial late-join policy: lobby only. Direct IP/LAN
 or virtual LAN; no relay, NAT traversal, or host migration is promised.
+
+## Forest hunt follow-up
+
+The same world bounds now contain three larger open sites: a 416×256 abandoned
+village and two 256×256 bog/graveyard clearings. Internal trail links match their
+open footprints. The village adds two furnished CampBuilding huts with native
+walls, roof cutaways and accessible south-facing entrances. CampMap keeps these
+in a separate forest_buildings collection; the original ten camp buildings remain.
+Generated supplies avoid hut walls/furniture by using the open village square.
+
+ForestSite owns finite interaction claims, cooldown and drawing. ForestLevel
+validates the actor and dispatches E through proximity and wall checks. The bell
+emits an event at its own position within 1100px and has a 12s cooldown; the well
+awards two flares, a battery and rations once. The cauldron refills torch charge
+once at the cost of a 2s hex; the crypt awards two flares once. Stashes and
+expedition pickups emit location-based noise stimuli, with no unsensed player
+tracking. These are AI/visual events; audio remains unimplemented.
+
+Expeditions guarantee vampire and witch, plus two distinct draws from wolf,
+Sasquatch, moth and briar revenant: four cryptids plus the camp stalker. Home cells
+are closer to travel/objective areas. An eight-waypoint branching trail circuit
+replaces tiny one-door patrols. The expedition stalker starts at (600,520), visits
+west-camp routes first, and has 150px sight / 220px hearing before weather modifiers.
+Quick Camp retains its original spawn/sensing values.
+
+CampKiller projects destinations onto native navigation so furnishing-obstructed
+waypoints cannot leave a patrol permanently waiting. Chase prediction uses a
+visible actor's velocity only, with a wall check on its short lead point. Search
+sweeps the last sensed position and four nearby navigable points, preserving the
+last_seen memory while the target is hidden. Nearby visible flares trigger a
+faster retreat. The AI still has no global player-position pursuit or teleport.
+
+Vampires slow from 90 to 52px/s in an aligned flashlight beam and choose a flank
+point while actually seeing the survivor. Revenants sense movement outside 55px,
+otherwise requiring close proximity. Witches hold casting distance or retreat
+when approached. A visible 0.8s wind-up locks an aim point; a 3.2s cooldown follows
+firing. Losing sight or seeing a nearby flare cancels casting.
+
+HexBolt travels in a fixed direction at 104px/s for at most 2.5s. Swept wall rays
+and player-segment proximity prevent tunneling; walls absorb it. A hit on a
+living survivor applies 1.6s at 60% movement speed and drains 1.5 stamina seconds,
+without instantly downing them. Witch melee still uses the normal damage rules.
+Hexed survivors get a violet ring and priority HUD countdown. Pause freezes
+actor hex timers, spell cooldown/wind-up and projectiles; scene replacement
+owns hazard cleanup. New authority paths remain local until M2 networking.

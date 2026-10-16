@@ -35,7 +35,7 @@ func _run() -> void:
 	await process_frame
 	await _wait_world()
 	_check(level.plan.seed_value == 42 and level.plan.woods.signature() == signature, "retry_preserves_seed_and_maze")
-	_check(get_nodes_in_group("survivors").size() == 1 and get_nodes_in_group("cryptids").size() == 2 and get_nodes_in_group("flares").is_empty(), "retry_frees_old_actors_and_flares")
+	_check(get_nodes_in_group("survivors").size() == 1 and get_nodes_in_group("cryptids").size() == 4 and get_nodes_in_group("flares").is_empty() and get_nodes_in_group("hazards").is_empty(), "retry_frees_old_actors_and_flares")
 	level.restart_round()
 	await process_frame
 	await _wait_world()
@@ -77,11 +77,12 @@ func _seed_checks() -> void:
 		for kind in a.required:
 			_check(counts[kind] == 1, "seed_%d_one_%s" % [seed_value, kind])
 		_check(locked == 3 and counts["boltcutters"] == 1 and counts["battery_pack"] == 5, "seed_%d_cache_tools_and_supplies" % seed_value)
-		_check(a.encounters.size() == 2 and a.encounters[0]["species"] != a.encounters[1]["species"], "seed_%d_two_distinct_cryptids" % seed_value)
+		_check(a.encounters.size() == 4 and a.encounters[0]["species"] == "vampire" and a.encounters[1]["species"] == "witch" and a.encounters[2]["species"] != a.encounters[3]["species"], "seed_%d_four_distinct_cryptids" % seed_value)
+		_check(a.woods.zones.size() == 3 and a.woods.zones[0]["bounds"].size == Vector2(416,256), "seed_%d_three_expanded_sites" % seed_value)
 		for encounter in a.encounters:
 			found_species[encounter["species"]] = true
 		found_weather[a.weather] = true
-	_check(found_species.size() == 3 and found_weather.size() == 3, "seeds_vary_all_creatures_and_weather")
+	_check(found_species.size() == 6 and found_weather.size() == 3, "seeds_vary_all_creatures_and_weather")
 
 
 func _wait_world() -> void:
@@ -99,13 +100,13 @@ func _wait_world() -> void:
 
 
 func _navigation_checks() -> void:
-	_check(get_nodes_in_group("cryptids").size() == 2 and get_nodes_in_group("killers").size() == 3, "night_%d_three_enemies" % level.plan.seed_value)
+	_check(get_nodes_in_group("cryptids").size() == 4 and get_nodes_in_group("killers").size() == 5, "night_%d_five_enemies" % level.plan.seed_value)
 	for enemy: CampKiller in get_nodes_in_group("killers"):
-		var sight: float = level.config.sight_radius
-		var hearing: float = level.config.hearing_radius
+		var sight: float = 150
+		var hearing: float = 220
 		if enemy is CampCryptid:
-			sight = {"werewolf": 125.0, "bigfoot": 95.0, "lantern_moth": 220.0}[enemy.species]
-			hearing = {"werewolf": 210.0, "bigfoot": 300.0, "lantern_moth": 80.0}[enemy.species]
+			sight = {"werewolf": 125.0, "bigfoot": 95.0, "lantern_moth": 220.0, "vampire":165.0, "witch":190.0, "briar_revenant":155.0}[enemy.species]
+			hearing = {"werewolf": 210.0, "bigfoot": 300.0, "lantern_moth": 80.0, "vampire":190.0, "witch":210.0, "briar_revenant":160.0}[enemy.species]
 		if level.plan.weather == "fog":
 			sight *= 0.72
 		elif level.plan.weather == "rain":
@@ -122,6 +123,8 @@ func _navigation_checks() -> void:
 	var all_reachable := true
 	for cell: Vector2i in level.plan.woods.links:
 		var destination: Vector2 = level.plan.woods.center(cell)
+		# An abstract clearing may now contain a furnished hut; use its walkable edge.
+		destination = NavigationServer2D.map_get_closest_point(level.get_world_2d().navigation_map, destination)
 		var path := NavigationServer2D.map_get_path(level.get_world_2d().navigation_map, player.global_position, destination, true)
 		if path.size() < 2 or path[-1].distance_to(destination) > 4:
 			all_reachable = false
@@ -238,6 +241,10 @@ func _creature_rules(flare: Node2D) -> void:
 
 
 func _tour() -> void:
+	for enemy: CampKiller in get_nodes_in_group("killers"):
+		enemy.enabled = false
+	for hazard in get_nodes_in_group("hazards"):
+		hazard.queue_free()
 	level.message_time = 0
 	player.flashlight_charge = 90
 	player.position = Vector2(1538, 536)
@@ -261,7 +268,7 @@ func _tour() -> void:
 	player.flashlight_on = true
 	# Compose close art-inspection fixtures below the HUD, with the native camera.
 	player.get_node("Camera2D").offset = Vector2(0, -32)
-	for species in ["werewolf", "bigfoot", "lantern_moth"]:
+	for species in ["werewolf", "bigfoot", "lantern_moth", "vampire", "witch", "briar_revenant"]:
 		player.position = level.plan.woods.center(Vector2i(4, 4)) + Vector2(0, 28)
 		player.facing = Vector2.UP
 		var enemy: CampCryptid = load("res://scenes/actors/cryptid.tscn").instantiate()

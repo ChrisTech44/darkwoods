@@ -40,6 +40,8 @@ def main():
     commands.append(("woods_replay", ["--headless", *woods]))
     expedition = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/woods_playthrough.gd"]
     commands.append(("woods_playthrough", ["--headless", *expedition]))
+    hunt = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/forest_hunt.gd"]
+    commands.append(("forest_hunt", ["--headless", *hunt]))
     if args.graphical:
         commands.append(("graphical_smoke", [*smoke, "--", "--capture"]))
         commands.append(("graphical_offline", [*offline, "--", "--capture"]))
@@ -47,6 +49,7 @@ def main():
         commands.append(("graphical_upgrade", [*upgrade, "--", "--capture"]))
         commands.append(("graphical_woods", [*woods, "--", "--capture"]))
         commands.append(("graphical_expedition", [*expedition, "--", "--capture"]))
+        commands.append(("graphical_hunt", [*hunt, "--", "--capture"]))
     results = []
     for name, arguments in commands:
         command = [engine, *arguments]
@@ -67,7 +70,7 @@ def main():
                   if re.search(r"(?:SCRIPT ERROR|ERROR|Parse Error):", line)]
         warnings = [line for line in clean.splitlines() if "WARNING:" in line]
         passed = status == 0 and not errors and not timed_out
-        if name in ("menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition"):
+        if name in ("menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt"):
             summaries = []
             for line in clean.splitlines():
                 if line.startswith("{"):

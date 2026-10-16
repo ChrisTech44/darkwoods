@@ -1,5 +1,112 @@
 # Development log
 
+## 2026-10-15 — Forest hunt expansion: themed sites, six species and smarter AI
+
+**Authorized scope:** continue the user's request after the separately verified
+path-visibility fix (`27d6c77`, pushed to GitHub). Keep the same world bounds and
+finite trail maze while adding larger, usable areas, more discoverable monsters,
+intelligent sensed behavior, a Sasquatch redesign, vampire/witch and another
+fitting creature. No networking or distribution milestone is claimed.
+
+**Areas/objectives:** opened a 416×256 abandoned village and two 256×256 bog/
+graveyard clearings, with matching internal trail links. Village has two furnished,
+enterable huts with roof cutaways and native walls. Each themed site now holds
+one of the three required woods caches; battery/key and the five-part repair
+rule remain. Generated supplies avoid hut walls. Kept all six smaller landmarks.
+Added stone square/well/bell, marsh planks/cauldron, crypt/headstones/fencing and
+small localized lamps. Bounds remain 3456×1920; most of the woods remains maze.
+
+Village bell is a reusable location-based distraction with a 12s cooldown and
+1100px event range. The well yields two flares, a battery and rations once. Bog
+cauldron refills the flashlight once but applies a 2s hex. Crypt gives two flares
+once. Claims validate living actor membership, proximity, clear access, pause,
+cooldown and availability. Pickups and stashes make AI noise events at the item,
+not at an unsensed player's later location. Audio remains unimplemented.
+
+**Creatures/art:** each expedition now spawns four different cryptids: vampire
+and witch plus two selected from wolf, Sasquatch, moth and briar revenant, alongside
+the stalker. Revised Bigfoot into a tall hunched ape with a crested skull, small
+sunken face, sloping shoulders, shaggy fur, long arms/fingers and large feet.
+Original vampire has a high collar/pale face/cloak; witch a pointed hat/braid/
+staff; antlered briar revenant twig limbs/ribs/moss. All six use 64×64 directional
+walking sheets, reproducible with the standard-library art tool. No external
+assets, packages or image service were used.
+
+**Intelligence/encounters:** moved expedition stalker toward traveled camp routes
+and increased its sight/hearing before weather modifiers. Cryptids traverse
+branching eight-waypoint circuits near objective areas, replacing tiny home
+patrols. Native projection prevents obstructed goals from leaving enemies stuck.
+Visible-target lead uses current sensed movement and wall checks. Lost-target
+search sweeps the last sensed location and four nearby reachable points, keeping
+hidden positions out of destination updates. Visible flares cause a faster
+retreat. Vampire slows/flanks in an aligned flashlight beam; revenant senses
+motion unless very close. Quick Camp retains its original spawn/sensor values.
+
+Witch keeps ranged distance and telegraphs a 0.8s wind-up, locking aim before a
+fixed-trajectory projectile with a 3.2s firing cooldown. Losing sight or seeing a
+nearby flare cancels casting. Bolts move 104px/s, expire within 2.5s, and use swept
+wall/player checks. They can be dodged; walls absorb them. A hit causes a 1.6s hex
+at 60% movement speed and drains 1.5 stamina seconds, not instant downing. Violet
+ring and priority HUD timer explain the effect. Pause freezes casting, hazards
+and actor hex timers; restart/menu replacement clears them.
+
+Updated README (including current creatures/areas screenshots), field guide,
+architecture, testing and milestones. Woods chart outlines discovered site areas.
+
+**Failures/iteration:** early tests incorrectly applied wolf-only expectations to
+new species; kept legacy species checks separate and added dedicated new behavior
+fixtures. A legacy cabin-navigation assertion expected the killer to remain at
+its destination after four seconds; the smarter search had already left. It now
+asserts actual arrival during the bounded traversal. Early bots wasted flares
+on nearby but repelled/unseeing enemies, then ran into vampires or the returning
+stalker. They now use normal input to search the well and crypt, conserve flares,
+react to nearby searching threats and use existing rations. Quick Camp's bot also
+uses its existing supplies and follows native segments with correct input
+strengths. Both full playthroughs keep production rules active and award items
+through ordinary input; isolated rule fixtures deliberately place actors and
+set state to inspect individual behavior.
+
+Rendered review caught a dark caster shot and fixture enemies re-enabled by pause
+resume. Lit/recomposed the isolated shot and explicitly restored fixture isolation.
+Site overview cameras use 0.75 zoom only for evidence; normal gameplay stays at 1.
+The village huts remain physically enterable and objectives are reachable.
+
+**Verification:** `python3 tools/verify.py --graphical` final exit 0; all 50 steps
+passed, with zero engine errors or warnings. Import/startup and every GDScript
+parse passed. Seven suites run headlessly and in actual graphical windows.
+
+| Suite | Headless assertions | Graphical assertions | Failures |
+| --- | ---: | ---: | ---: |
+| Menu | 37 | 39 | 0 |
+| Offline rules | 60 | 66 | 0 |
+| Quick Camp active rounds | 108 | 113 | 0 |
+| Camp layout/boarding | 31 | 44 | 0 |
+| Seeded woods/navigation/art | 213 | 229 | 0 |
+| Five-enemy active expedition | 162 | 163 | 0 |
+| Sites, AI and spells | 36 | 41 | 0 |
+
+The active expedition collected all five parts and used the two real site
+stashes through E, traveled about 9,940px/32 clearings, installed parts, boarded
+and escaped with all five enemies active. Native fixtures also verify actual
+patrol movement, both hut interiors, no duplicate rewards, bell stimuli/cooldown,
+cauldron trade-off, vampire beam/flank, motion sensing, hidden-target memory,
+wind-up/fire, blocked casting, projectile collision/dodge, pause and cleanup.
+All six rebuilt sprite sheets matched SHA-256 values byte-for-byte.
+
+Opened and inspected the final six creature shots, expanded village/bog/graveyard,
+witch wind-up and bolt, field guide/notes, light on/off and active escape result.
+Final report, raw logs, art hashes and captures:
+[forest_hunt](evidence/forest_hunt/summary.json). Source/document whitespace and
+README link/image checks passed: 41 local links and 16 embedded PNGs resolve.
+Final art reimport and five-frame startup each exited 0 without errors/warnings.
+
+**Limits:** macOS arm64 / Godot 4.7.2 only. No connected co-op, exports, other
+platform execution or human real-time balance session. Seeds 42/2026 receive
+physical navigation checks; eight seeds receive recipe checks; only seed 42 has
+an active Woods escape test. The bot uses native paths as a route guide. Themed
+props are primarily decorative around the validated huts/interactions; no claim
+of a fully simulated settlement or every seed's balance. Networking remains M2.
+
 ## 2026-10-15 — Path visibility correction
 
 First verified pass of the requested hunt expansion. Investigated dark blocks:

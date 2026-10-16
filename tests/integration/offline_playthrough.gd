@@ -112,14 +112,18 @@ func _leg(points: Array) -> bool:
 				break
 			for action in ["move_left", "move_right", "move_up", "move_down"]:
 				Input.action_release(action)
+			if level.killer.global_position.distance_to(player.global_position) < 45 and level.killer.nearby_flare() == Vector2.INF and player.supplies["flare"] > 0:
+				await _tap(KEY_Q)
+			if player.stamina < 0.5 and player.supplies["rations"] > 0:
+				await _tap(KEY_C)
 			if level.killer.state == CampKiller.State.CHASE:
 				Input.action_press("sprint")
 			else:
 				Input.action_release("sprint")
 			if absf(offset.x) > 1.0:
-				Input.action_press("move_right" if offset.x > 0 else "move_left")
+				Input.action_press("move_right" if offset.x > 0 else "move_left", absf(offset.x) / maxf(absf(offset.x), absf(offset.y)))
 			if absf(offset.y) > 1.0:
-				Input.action_press("move_down" if offset.y > 0 else "move_up")
+				Input.action_press("move_down" if offset.y > 0 else "move_up", absf(offset.y) / maxf(absf(offset.x), absf(offset.y)))
 			await physics_frame
 		for action in ["move_left", "move_right", "move_up", "move_down"]:
 			Input.action_release(action)

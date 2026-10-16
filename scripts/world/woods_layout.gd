@@ -11,6 +11,7 @@ var links: Dictionary = {}
 var corridors: Array[Rect2] = []
 var walls: Array[Rect2] = []
 var landmarks: Array[Dictionary] = []
+var zones: Array[Dictionary] = []
 var visited: Dictionary = {}
 var landmark_distances: Dictionary = {}
 
@@ -20,6 +21,7 @@ func generate(seed_value: int) -> void:
 	corridors.clear()
 	walls.clear()
 	landmarks.clear()
+	zones.clear()
 	visited.clear()
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
@@ -46,12 +48,15 @@ func generate(seed_value: int) -> void:
 		if valid(neighbor) and neighbor not in links[cell]:
 			links[cell].append(neighbor)
 			links[neighbor].append(cell)
+	_make_zones(rng)
 	for cell: Vector2i in links:
 		var at := center(cell)
 		corridors.append(Rect2(at - Vector2(48, 48), Vector2(96, 96)))
 		for neighbor: Vector2i in links[cell]:
 			var other := center(neighbor)
 			corridors.append(Rect2(Vector2(minf(at.x, other.x), minf(at.y, other.y)) - Vector2(48, 48), (other - at).abs() + Vector2(96, 96)))
+	for zone in zones:
+		corridors.append(zone["bounds"])
 	corridors.append(Rect2(1512, 488, 296, 64))
 	# Merge solid 32px cells into row spans for efficient physics/navigation.
 	for y in range(50):
@@ -77,6 +82,51 @@ func generate(seed_value: int) -> void:
 		if landmarks.size() == labels.size():
 			break
 	landmark_distances.clear()
+
+
+func _make_zones(rng: RandomNumberGenerator) -> void:
+	var definitions := [
+		["village", "ABANDONED VILLAGE", Vector2i(rng.randi_range(1, 2), 1), Vector2i(3, 2)],
+		["bog", "WITCH'S BOG", Vector2i(rng.randi_range(4, 5), 5), Vector2i(2, 2)],
+		["graveyard", "OLD GRAVEYARD", Vector2i(7, rng.randi_range(1, 2)), Vector2i(2, 2)]
+	]
+	for definition in definitions:
+		var anchor: Vector2i = definition[2]
+		var dimensions: Vector2i = definition[3]
+		var bounds := Rect2(center(anchor) - Vector2(48, 48), Vector2(dimensions - Vector2i.ONE) * CELL + Vector2(96, 96))
+		zones.append({"kind": definition[0], "label": definition[1], "cell": anchor, "bounds": bounds, "position": bounds.get_center()})
+		for y in range(dimensions.y):
+			for x in range(dimensions.x):
+				var cell := anchor + Vector2i(x, y)
+				for direction in [Vector2i.RIGHT, Vector2i.DOWN]:
+					var next: Vector2i = cell + direction
+					if Rect2i(anchor, dimensions).has_point(next) and next not in links[cell]:
+						links[cell].append(next)
+						links[next].append(cell)
+
+
+func zone_at(point: Vector2) -> Dictionary:
+	for zone in zones:
+		if zone["bounds"].has_point(point):
+			return zone
+	return {}
+
+
+func roaming_route(start: Vector2i, steps: int = 8) -> Array[Vector2]:
+	# Explore branching trails around a home area instead of pacing one doorway.
+	var result: Array[Vector2] = [center(start)]
+	var seen := {start: true}
+	var queue: Array[Vector2i] = [start]
+	while not queue.is_empty() and result.size() < steps:
+		var cell: Vector2i = queue.pop_front()
+		for neighbor: Vector2i in links[cell]:
+			if not seen.has(neighbor):
+				seen[neighbor] = true
+				queue.append(neighbor)
+				result.append(center(neighbor))
+				if result.size() >= steps:
+					break
+	return result
 
 
 func _farthest_first(a: Vector2i, b: Vector2i) -> bool:

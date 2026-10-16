@@ -15,7 +15,7 @@ prototype from source; standalone desktop packages are a later milestone.
 
 ## The first major update
 
-The world now spans **3456×1920**, combining ten furnished camp buildings with a
+The world now spans **3456×1920**, combining ten furnished camp buildings, two enterable village huts, and a
 **1600×1600 woods maze**: 100 connected clearings, loops, dead ends, and six ruined
 landmarks. Roofs cut away inside buildings. Native flashlight shadows, cabin
 lamps, flares, and headlights provide local light in a nearly black forest.
@@ -23,9 +23,11 @@ Soft mist and trunk-shaped shadows keep paths readable; foreground canopy fades
 when it covers the camper.
 
 Woods expeditions add five-part repairs, locked caches, survival supplies,
-weather, and two cryptids chosen from werewolf, Bigfoot, and lantern moth.
+weather, and four cryptids: vampire and witch plus two chosen from werewolf,
+Sasquatch, lantern moth, and briar revenant.
 Seeded trails, loot, required extra parts, creature roster, and camp patrols make
-each night different. The menu, loading card, field guide, and results share the
+each night different. Broader patrols and searches make encounters more frequent.
+The menu, loading card, field guide, and results share the
 new forest palette.
 
 ## Play from source
@@ -60,12 +62,13 @@ Set `GODOT_BIN` to another executable if needed. Use
 | Mode | Repair objective | Threats and exploration |
 | --- | --- | --- |
 | **Quick Camp** | Battery in the west bunk cabin, fuel in Maintenance, key in the Ranger Lodge. | The camp stalker and a shorter, fixed objective route. Flashlight charge does not drain. |
-| **Woods Expedition** | Battery and key in camp location pools; fuel and two extra parts in locked woods caches. | The stalker plus two cryptids, a seeded trail maze, survival supplies, weather, and a draining flashlight. |
+| **Woods Expedition** | Battery and key in camp location pools; fuel and two extra parts in themed-area caches. | The stalker plus four cryptids, a seeded trail maze, survival supplies, weather, and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
 The pack lists the current requirements and location clues. The woods contains
-the split stump, hunter's blind, hollow rock cave, fallen watchtower, crooked
-shrine, and rusted scrap cache.
+three larger areas with a required cache in each: **Abandoned Village**,
+**Witch's Bog**, and **Old Graveyard**. Six smaller ruined landmarks remain along
+the trails for exploration.
 
 ## How to escape
 
@@ -115,14 +118,14 @@ sight; losing line of sight helps break pursuit.
 | --- | --- |
 | **Flashlight** | Starts with 90 seconds of charge. In an expedition it drains while lit in the woods, then switches off when empty. Turning it off saves charge. Camp use does not drain it. |
 | **Spare battery — R** | Restores up to 70 seconds, capped at 90, and switches the light on. |
-| **Flare — Q** | Burns for nine seconds. Repels the stalker, werewolf, and Bigfoot nearby when they can see it; attracts lantern moths. |
+| **Flare — Q** | Burns for nine seconds. Repels the stalker and all cryptids except the lantern moth nearby when they can see it; attracts moths. |
 | **Rations — C** | Restore full stamina and clear exhaustion. |
 | **Medkit** | Automatically consumed on a completed teammate revive, shortening the hold from three seconds to 1.2 seconds. It does not provide a solo self-revive. |
 | **Fog** | Shortens enemy sight and the woods flashlight beam. |
 | **Rain** | Reduces enemy hearing. |
 
 Expeditions start with two flares, one spare battery, and one ration pack.
-Search for additional supplies in camp and scattered woods clearings.
+Search for additional supplies in camp, woods clearings, and themed sites.
 Tools and supplies cannot be used while paused or downed.
 
 The first hit **downs** a survivor. A second hit or **16 seconds of bleeding out**
@@ -136,11 +139,30 @@ being downed.
 | --- | --- | --- |
 | **Camp stalker** | Patrols camp, investigates noise, chases on clear sight, and searches its last known target location. | Break sight around buildings; use sprint carefully and flares when cornered. |
 | **Werewolf** | Alternates a fast charge with a slower recovery. | Save stamina for the burst and use the recovery window to reposition. |
-| **Bigfoot** | Hears farther than the stalker, with a slower chase. | Walk quietly and avoid broadcasting your route with repeated sprinting. |
+| **Sasquatch / Bigfoot** | A long-armed forest ape that hears farther than the stalker, with a slower chase. | Walk quietly and avoid broadcasting your route with repeated sprinting. |
 | **Lantern moth** | Tracks lit survivors and visible flares; ignores dark survivors beyond close range. | Switch off your light to reduce detection, and remember that flares attract it. |
+| **Vampire** | Fast outside the flashlight beam; slows and tries to flank a lit approach. | Face it with your light and use flares to pass a tight trail. |
+| **Witch** | Keeps casting distance, shows a wind-up, then fires a fixed-trajectory hex bolt. | Sidestep the bolt or put a wall between you. A hit briefly slows movement and drains stamina. |
+| **Briar revenant** | Senses movement, with close-range detection even if you stand still. | Freeze at a distance or break sight; do not wait for it to get close. |
 
-Each expedition spawns two different cryptid species alongside the stalker.
+Each expedition spawns **four different cryptid species alongside the stalker**.
+The stalker starts nearer the camp routes; cryptids roam wider trail circuits and
+visit the objective areas. Enemies lead visible moving targets briefly and sweep
+reachable points around their last sensed location after losing sight.
 Current threat/charge cues are visual; audio is not implemented yet.
+
+## Use the forest sites
+
+Stand close and press **E**, with a clear path to the interaction point.
+
+| Area | Interactions and trade-offs |
+| --- | --- |
+| **Abandoned Village** | Enter two furnished huts and search the required cache. Ring the square's bell to draw nearby enemies toward it, then slip away; the bell has a cooldown. The well stash awards two flares, a battery, and food once. |
+| **Witch's Bog** | Search the ritual stash. The cauldron restores full flashlight charge once, but hexes your movement briefly and makes noise. |
+| **Old Graveyard** | Search the repair cache among the graves. The crypt yields two flares once, with a loud stone-moving noise. |
+
+Searching expedition items makes noise. Treat the stashes as preparation for the
+next encounter, and plan a return route rather than spending every flare at once.
 
 ## Replay the expedition
 
@@ -167,24 +189,32 @@ a complete automated expedition with all enemies active.
 
 | Dark woods and flashlight | Field notes and explored trails |
 | --- | --- |
-| ![A narrow flashlight beam reveals trees in otherwise dark woods](docs/evidence/woods_replay/woods_light_on.png) | ![Five-part objective clues beside the partially explored woods map](docs/evidence/woods_replay/woods_field_notes.png) |
+| ![A narrow flashlight beam reveals trees in otherwise dark woods](docs/evidence/forest_hunt/woods_light_on.png) | ![Five-part objective clues beside the partially explored woods map](docs/evidence/forest_hunt/woods_field_notes.png) |
 
-| Werewolf | Bigfoot | Lantern moth |
+| Werewolf | Sasquatch (Bigfoot) | Lantern moth |
 | --- | --- | --- |
-| ![Original werewolf walking sprite in a flashlight beam](docs/evidence/woods_replay/woods_werewolf.png) | ![Original Bigfoot sprite in a flashlight beam](docs/evidence/woods_replay/woods_bigfoot.png) | ![Original lantern moth sprite with patterned wings](docs/evidence/woods_replay/woods_lantern_moth.png) |
+| ![Original werewolf walking sprite in a flashlight beam](docs/evidence/forest_hunt/woods_werewolf.png) | ![Long-armed Sasquatch sprite in a flashlight beam](docs/evidence/forest_hunt/woods_bigfoot.png) | ![Original lantern moth sprite with patterned wings](docs/evidence/forest_hunt/woods_lantern_moth.png) |
+
+| Vampire | Witch | Briar revenant |
+| --- | --- | --- |
+| ![Pale vampire with a high collar and long cloak](docs/evidence/forest_hunt/woods_vampire.png) | ![Witch with staff and pointed hat](docs/evidence/forest_hunt/woods_witch.png) | ![Antlered briar revenant with twig limbs](docs/evidence/forest_hunt/woods_briar_revenant.png) |
+
+| Abandoned village | Witch's bog | Old graveyard |
+| --- | --- | --- |
+| ![Village huts, bell frame and well](docs/evidence/forest_hunt/hunt_village.png) | ![Glowing cauldron in a marsh clearing](docs/evidence/forest_hunt/hunt_bog.png) | ![Crypt and crooked gravestones](docs/evidence/forest_hunt/hunt_graveyard.png) |
 
 | Loading the next night | Successful extraction |
 | --- | --- |
-| ![Forest loading card before preparing the next night](docs/evidence/woods_replay/woods_loading.png) | ![Successful extraction after a complete active woods expedition](docs/evidence/woods_replay/woods_playthrough_win.png) |
+| ![Forest loading card before preparing the next night](docs/evidence/woods_replay/woods_loading.png) | ![Successful extraction after a complete active woods expedition](docs/evidence/forest_hunt/woods_playthrough_win.png) |
 
 ## Development and verification
 
 The current implementation is **M1 plus the requested woods/replayability and
-visual expansion**. The latest full graphical verification passed all 45 steps,
-including import/startup, every GDScript parse, six suites headlessly and
+visual expansion**. The latest full graphical verification passed all 50 steps,
+including import/startup, every GDScript parse, seven suites headlessly and
 graphically, and complete camp/woods escape playthroughs, with zero engine errors
-or warnings. See the [recorded report](docs/evidence/woods_replay/summary.json)
-and [evidence notes](docs/evidence/woods_replay/README.md).
+or warnings. See the [recorded report](docs/evidence/forest_hunt/summary.json)
+and [evidence notes](docs/evidence/forest_hunt/README.md).
 
 ```sh
 python3 tools/verify.py             # Import, parse, and headless gameplay checks

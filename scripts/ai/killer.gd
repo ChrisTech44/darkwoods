@@ -18,6 +18,9 @@ var enabled: bool = true
 var visible_target: CampPlayer
 var facing := Vector2.DOWN
 var stride: float = 0.0
+var search_points: Array[Vector2] = []
+var search_index: int = 0
+var retreat_remaining: float = 0.0
 @onready var agent: NavigationAgent2D = $NavigationAgent2D
 
 
@@ -30,6 +33,7 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector2.ZERO
 		return
 	attack_remaining = maxf(0.0, attack_remaining - delta)
+	retreat_remaining = maxf(0.0, retreat_remaining - delta)
 	for target_id: int in memory.keys():
 		memory[target_id]["remaining"] -= delta
 		if memory[target_id]["remaining"] <= 0.0:
@@ -40,6 +44,7 @@ func _physics_process(delta: float) -> void:
 		visible_target = null
 		last_seen = global_position + danger.direction_to(global_position) * 100.0
 		transition(State.SEARCH)
+		retreat_remaining = 0.8
 	if is_instance_valid(visible_target):
 		last_seen = visible_target.global_position
 		memory[visible_target.get_instance_id()] = {"position": last_seen, "remaining": config.memory_seconds}
@@ -52,6 +57,12 @@ func _physics_process(delta: float) -> void:
 	var destination := patrol[patrol_index]
 	if state != State.PATROL:
 		destination = last_seen
+	if state == State.CHASE and is_instance_valid(visible_target):
+		destination = pursuit_goal(visible_target)
+	elif state == State.SEARCH and not search_points.is_empty() and retreat_remaining <= 0:
+		destination = search_points[search_index]
+	if NavigationServer2D.map_get_iteration_id(agent.get_navigation_map()) > 0:
+		destination = NavigationServer2D.map_get_closest_point(agent.get_navigation_map(), destination)
 	var arrived := global_position.distance_to(destination) < 9.0
 	if state == State.PATROL and arrived:
 		patrol_index = (patrol_index + 1) % patrol.size()
@@ -59,6 +70,10 @@ func _physics_process(delta: float) -> void:
 	elif state == State.INVESTIGATE and arrived:
 		transition(State.SEARCH)
 	elif state == State.SEARCH:
+		if arrived and retreat_remaining <= 0 and not search_points.is_empty():
+			search_index = (search_index + 1) % search_points.size()
+			destination = search_points[search_index]
+			path_clock = 0
 		search_remaining -= delta
 		if search_remaining <= 0.0:
 			transition(State.PATROL)
@@ -75,6 +90,8 @@ func _physics_process(delta: float) -> void:
 		var direction := global_position.direction_to(next)
 		facing = direction
 		velocity = direction * (config.killer_chase_speed if state == State.CHASE else config.killer_patrol_speed)
+		if retreat_remaining > 0:
+			velocity = direction * maxf(config.killer_patrol_speed, 82)
 	var previous := position
 	move_and_slide()
 	stride += position.distance_to(previous)
@@ -130,10 +147,21 @@ func has_line_of_sight(point: Vector2) -> bool:
 
 
 func hear_noise(origin: Vector2) -> void:
-	if not enabled or state == State.CHASE or global_position.distance_to(origin) > config.hearing_radius:
+	hear_stimulus(origin, config.hearing_radius)
+
+
+func hear_stimulus(origin: Vector2, radius: float) -> void:
+	if not enabled or state == State.CHASE or global_position.distance_to(origin) > radius:
 		return
 	last_seen = origin
 	transition(State.INVESTIGATE)
+	path_clock = 0
+
+
+func pursuit_goal(actor: CampPlayer) -> Vector2:
+	# Brief prediction uses only an actually visible actor's current movement.
+	var lead := actor.global_position + actor.velocity * 0.3
+	return lead if has_line_of_sight(lead) else actor.global_position
 
 
 func transition(next: State) -> void:
@@ -143,6 +171,11 @@ func transition(next: State) -> void:
 	path_clock = 0.0
 	if next == State.SEARCH:
 		search_remaining = config.search_seconds
+		search_index = 0
+		search_points.assign([last_seen])
+		if is_inside_tree() and NavigationServer2D.map_get_iteration_id(agent.get_navigation_map()) > 0:
+			for offset in [Vector2(64, 0), Vector2(0, 64), Vector2(-64, 0), Vector2(0, -64)]:
+				search_points.append(NavigationServer2D.map_get_closest_point(agent.get_navigation_map(), last_seen + offset))
 	queue_redraw()
 
 

@@ -15,10 +15,10 @@ plaid overshirt, shorts, boots, backpack and rolled mat. The stalker has a weath
 hooded coat, stitched face covering and logging hook. Atlas tiles are 16×16.
 Nearest-neighbor filtering and integer viewport scaling preserve the pixels.
 
-`build_cryptids.py` uses the same standard-library pixel painter for three
+`build_cryptids.py` uses the same standard-library pixel painter for six
 original 64×64 creatures, three walking frames in four directional rows:
-werewolf (layered grey fur, muzzle, claws and fangs), Bigfoot (brown fur, broad
-hands and pale face), and lantern moth (patterned eyespot wings, segmented body,
+werewolf (layered grey fur, muzzle, claws and fangs), Sasquatch (hunched ape silhouette, crested skull, shaggy fur, long arms and
+large feet), and lantern moth (patterned eyespot wings, segmented body,
 antennae and amber eyes). PNG output is deterministic. These are original
 interpretations of folklore, not downloaded or franchise character assets.
 
@@ -28,3 +28,9 @@ LightOccluder2D geometry, generated at runtime; the former darkness shader has
 been replaced. `default_config.tres` contains the editable gameplay/light defaults.
 Seeded woods ruins, warning gate, weather, loading card, animated menu and field
 notes are also original GDScript drawing. No audio assets are included yet.
+
+The roster also includes original vampire (pale angular face, high collar and
+maroon-lined cloak), witch (pointed hat, braid, staff and layered robes), and
+briar revenant (antlers, exposed ribs, twig limbs and moss) directional sheets.
+All six rebuild with the same standard-library script. Forest site scenery,
+soft radial mist, trunk occluders and projectile effects are native GDScript art.

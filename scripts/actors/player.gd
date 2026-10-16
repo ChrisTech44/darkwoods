@@ -23,6 +23,7 @@ var expedition: bool = false
 var flashlight_charge: float = 90.0
 var supplies: Dictionary = {"flare": 2, "battery_pack": 1, "rations": 1, "medkit": 0}
 var invulnerability: float = 0.0
+var hex_remaining: float = 0.0
 
 
 func _ready() -> void:
@@ -32,6 +33,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	hex_remaining = maxf(0, hex_remaining - delta)
 	if expedition and global_position.x >= 1536 and flashlight_on and status == Status.ALIVE:
 		flashlight_charge = maxf(0.0, flashlight_charge - delta)
 		if flashlight_charge <= 0:
@@ -68,6 +70,8 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 	else:
 		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery)
 	velocity = movement * (config.sprint_speed if sprinting else config.walk_speed)
+	if hex_remaining > 0:
+		velocity *= 0.6
 	var previous := position
 	move_and_slide()
 	var distance := position.distance_to(previous)
@@ -90,6 +94,14 @@ func receive_hit() -> void:
 		set_status(Status.DEAD)
 
 
+func apply_hex(seconds: float) -> void:
+	if status != Status.ALIVE:
+		return
+	hex_remaining = maxf(hex_remaining, seconds)
+	stamina = maxf(0, stamina - 1.5)
+	queue_redraw()
+
+
 func set_status(next: Status) -> void:
 	status = next
 	velocity = Vector2.ZERO
@@ -106,6 +118,8 @@ func _draw() -> void:
 	if status in [Status.ESCAPED, Status.BOARDED]:
 		return
 	draw_circle(Vector2(0, 1), 7, Color(0, 0, 0, 0.35))
+	if hex_remaining > 0 and status == Status.ALIVE:
+		draw_arc(Vector2(0,-2), 11, 0, TAU, 16, Color("b4a3d3"), 1)
 	var sheet: Texture2D = preload("res://assets/sprites/camper.png")
 	var row := 0
 	if absf(facing.x) > absf(facing.y):

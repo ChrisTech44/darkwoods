@@ -25,14 +25,16 @@ python3 tools/run_game.py
 ```
 
 Or open `project.godot` in Godot and press F6 on the menu or F5 for the project.
-The menu offers Play Solo, Controls and Quit. Click or use Tab/arrows and Enter.
-Escape closes the field guide. Play Solo starts the offline round.
+The menu offers Woods Expedition / Quick Camp, an optional seed, Enter the Night,
+Controls and Quit. Click or use Tab/arrows and Enter. Escape closes the field
+guide. Enter the Night starts the selected offline mode via the loading card.
 
 WASD/arrows walk; Shift sprints and consumes stamina; E picks up or installs
 supplies; hold E to start the repaired van or revive a nearby downed teammate;
-F toggles the flashlight; Tab toggles inventory; Esc pauses. Teammate revive is
+F toggles the flashlight; Q throws a flare; R consumes a spare flashlight battery;
+C consumes rations; Tab toggles notes/map; Esc pauses. Teammate revive is
 implemented and fixture-tested, but there is only one human survivor in M1.
-Tab opens the pack and field map with numbered supply locations: battery in the
+In Quick Camp, Tab opens the pack and field map with numbered locations: battery in the
 west bunk cabin, fuel in Maintenance, key in the Ranger Lodge. Building doors face
 south; roof cutaways reveal furnished interiors. Deliver all parts at the rear
 of the van and hold E for two seconds. This automatically boards the driver and
@@ -40,7 +42,12 @@ displays YOU ARE ABOARD. Other living survivors press E beside the running van
 to enter during the eight-second departure countdown. Passengers cannot move out
 or be hit. Survivors who stay outside are left behind even if they stand nearby.
 A first killer hit downs you; a second or bleed-out eliminates you.
-Solo has no self-revive. Both result screens offer replay and menu return.
+Solo has no self-revive. Woods Expedition instead requires five parts, including
+three locked woods caches opened with boltcutters from Maintenance. Tab reveals
+woods trails as you explore. Torch charge drains in the woods; collect spare
+batteries, flares, food and medkits. Fog shortens sight/beam; rain muffles hearing.
+Results offer a new seed, retry same seed, or menu return. Retrying starts with
+fresh actors/inventory, not a saved checkpoint.
 
 ## Repeatable checks after changes
 
@@ -72,6 +79,8 @@ godot --path . --script res://tests/integration/menu_smoke.gd -- --capture
 godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/offline_slice.gd
 godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/offline_playthrough.gd
 godot --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/offline_playthrough.gd -- --capture
+godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/woods_replay.gd
+godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/woods_playthrough.gd
 ```
 
 Godot writes its normal user data and editor caches outside the repository. In a
@@ -102,6 +111,24 @@ or duplicate boarding, passenger safety, and escaped/left-behind results. Multip
 survivors are fixtures. Its graphical tour captures interiors, campsite, shore,
 field map and character art. A matched flashlight on/off probe verifies dark
 terrain brightens in the beam; this sample does not measure the whole map.
+
+`woods_replay.gd` verifies eight seeds for reproducible topology/loot/encounters,
+100 connected clearings, six landmarks, one of each of five required parts,
+tools/supplies and roster/weather variety. Seeds 42 and 2026 bake real worlds and
+check native navigation to every item/landmark. Isolated fixtures cover locked
+cache/tool/proximity rules, battery depletion/refill, rations, flare placement and
+pause, species sensing, flare responses, wolf charge recovery, seed retry/new run
+and scene cleanup. The graphical tour captures loading, woods darkness, all three
+cryptids, landmarks, notes and results. These fixtures intentionally place actors
+and disable AI to inspect individual rules/art; they are not a full playthrough.
+
+`woods_playthrough.gd` completes seed 42 through ordinary movement/interact/supply
+input with production damage, speeds and all enemies active. The automated
+route guide uses native paths, so it knows trail connectivity; it is not evidence
+of human maze difficulty or balance across every seed. It prepares in camp,
+collects all five parts, uses flares/sprint when threatened, returns, boards and
+escapes. No teleports, health/inventory edits, or AI disabling occur. Both modes
+run this expedition; the graphical variant saves the real escape result.
 
 Manual acceptance still to record: launch normally, play an entire win or loss
 at real-time speed, restart, and check that dark regions, prompts, and keyboard

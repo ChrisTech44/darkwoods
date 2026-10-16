@@ -36,18 +36,25 @@ def main():
     commands.append(("offline_playthrough", ["--headless", *playthrough]))
     upgrade = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/camp_upgrade.gd"]
     commands.append(("camp_upgrade", ["--headless", *upgrade]))
+    woods = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/woods_replay.gd"]
+    commands.append(("woods_replay", ["--headless", *woods]))
+    expedition = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/woods_playthrough.gd"]
+    commands.append(("woods_playthrough", ["--headless", *expedition]))
     if args.graphical:
         commands.append(("graphical_smoke", [*smoke, "--", "--capture"]))
         commands.append(("graphical_offline", [*offline, "--", "--capture"]))
         commands.append(("graphical_playthrough", [*playthrough, "--", "--capture"]))
         commands.append(("graphical_upgrade", [*upgrade, "--", "--capture"]))
+        commands.append(("graphical_woods", [*woods, "--", "--capture"]))
+        commands.append(("graphical_expedition", [*expedition, "--", "--capture"]))
     results = []
     for name, arguments in commands:
         command = [engine, *arguments]
         timed_out = False
+        timeout = 120 if name == "graphical_expedition" else 60
         try:
             result = subprocess.run(command, cwd=ROOT, stdout=subprocess.PIPE,
-                                    stderr=subprocess.STDOUT, text=True, timeout=60)
+                                    stderr=subprocess.STDOUT, text=True, timeout=timeout)
             output, status = result.stdout, result.returncode
         except subprocess.TimeoutExpired as error:
             raw = error.stdout or b""
@@ -60,7 +67,7 @@ def main():
                   if re.search(r"(?:SCRIPT ERROR|ERROR|Parse Error):", line)]
         warnings = [line for line in clean.splitlines() if "WARNING:" in line]
         passed = status == 0 and not errors and not timed_out
-        if name in ("menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade"):
+        if name in ("menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition"):
             summaries = []
             for line in clean.splitlines():
                 if line.startswith("{"):

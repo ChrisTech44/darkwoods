@@ -5,6 +5,7 @@ var player: CampPlayer
 var flashlight: PointLight2D
 var nearby_glow: PointLight2D
 var ambient: CanvasModulate
+var weather: String = "clear"
 
 
 func _ready() -> void:
@@ -26,7 +27,11 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if not is_instance_valid(player):
 		return
+	var woods := player.global_position.x >= 1536
+	ambient.color = player.config.night_ambient.lerp(Color(0.003, 0.008, 0.015, 1), 0.8 if woods else 0.0)
+	nearby_glow.texture_scale = (25.0 if woods else 38.0) / 128.0
 	flashlight.position = Vector2(0, -12) + player.facing * 8.0
 	flashlight.rotation = player.facing.angle()
+	flashlight.texture_scale = player.config.flashlight_range / 128.0 * (0.7 if woods and weather == "fog" else 1.0)
 	flashlight.enabled = player.flashlight_on and player.status not in [CampPlayer.Status.BOARDED, CampPlayer.Status.ESCAPED, CampPlayer.Status.DEAD]
 	nearby_glow.enabled = player.status not in [CampPlayer.Status.BOARDED, CampPlayer.Status.ESCAPED]

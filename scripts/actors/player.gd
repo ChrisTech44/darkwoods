@@ -19,15 +19,23 @@ var inventory: Array[String] = []
 var bleedout: float = 0.0
 var noise_clock: float = 0.0
 var stride: float = 0.0
+var expedition: bool = false
+var flashlight_charge: float = 90.0
+var supplies: Dictionary = {"flare": 2, "battery_pack": 1, "rations": 1, "medkit": 0}
 var invulnerability: float = 0.0
 
 
 func _ready() -> void:
 	stamina = config.stamina_max
+	flashlight_charge = config.flashlight_capacity
 	add_to_group("survivors")
 
 
 func _physics_process(delta: float) -> void:
+	if expedition and global_position.x >= 1536 and flashlight_on and status == Status.ALIVE:
+		flashlight_charge = maxf(0.0, flashlight_charge - delta)
+		if flashlight_charge <= 0:
+			flashlight_on = false
 	invulnerability = maxf(0.0, invulnerability - delta)
 	if local_input and controls_enabled:
 		apply_intent(Input.get_vector("move_left", "move_right", "move_up", "move_down"),

@@ -29,7 +29,7 @@ offset_right = 290.0
 offset_bottom = 32.0
 theme_override_colors/font_color = Color(0.64, 0.7, 0.58, 1)
 theme_override_font_sizes/font_size = 9
-text = "A COOPERATIVE WOODLAND HORROR GAME"
+text = "FERNWOOD  /  AFTER DARK"
 
 [node name="Title" type="Label" parent="."]
 offset_left = 18.0
@@ -47,27 +47,39 @@ offset_right = 240.0
 offset_bottom = 139.0
 theme_override_colors/font_color = Color(0.68, 0.74, 0.68, 1)
 theme_override_font_sizes/font_size = 10
-text = "The woods remember who stays."
+text = "Some trails only lead deeper."
 
 [node name="Menu" type="VBoxContainer" parent="."]
-offset_left = 252.0
-offset_top = 56.0
+offset_left = 248.0
+offset_top = 26.0
 offset_right = 364.0
 offset_bottom = 163.0
-theme_override_constants/separation = 6
+theme_override_constants/separation = 5
+
+[node name="Mode" type="OptionButton" parent="Menu"]
+custom_minimum_size = Vector2(116, 23)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+
+[node name="Seed" type="LineEdit" parent="Menu"]
+custom_minimum_size = Vector2(116, 23)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+placeholder_text = "SEED (OPTIONAL)"
+max_length = 10
 
 [node name="Play" type="Button" parent="Menu"]
-custom_minimum_size = Vector2(112, 27)
+custom_minimum_size = Vector2(116, 25)
 layout_mode = 2
-text = "PLAY SOLO"
+text = "ENTER THE NIGHT"
 
 [node name="Controls" type="Button" parent="Menu"]
-custom_minimum_size = Vector2(112, 27)
+custom_minimum_size = Vector2(116, 25)
 layout_mode = 2
 text = "CONTROLS"
 
 [node name="Quit" type="Button" parent="Menu"]
-custom_minimum_size = Vector2(112, 27)
+custom_minimum_size = Vector2(116, 25)
 layout_mode = 2
 text = "QUIT"
 
@@ -78,7 +90,7 @@ offset_right = 364.0
 offset_bottom = 206.0
 theme_override_colors/font_color = Color(0.66, 0.72, 0.65, 1)
 theme_override_font_sizes/font_size = 8
-text = "EARLY PROTOTYPE  /  M1     •     OFFLINE SOLO  /  CO-OP COMING NEXT"
+text = "SOLO FIELD TEST  •  CO-OP IN DEVELOPMENT  /  EVERY NIGHT IS DIFFERENT"
 
 [node name="ControlsPanel" type="PanelContainer" parent="."]
 visible = false
@@ -89,14 +101,14 @@ offset_bottom = 200.0
 
 [node name="Margin" type="MarginContainer" parent="ControlsPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 12
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 2
 
 [node name="Content" type="VBoxContainer" parent="ControlsPanel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 3
 
 [node name="Heading" type="Label" parent="ControlsPanel/Margin/Content"]
 layout_mode = 2
@@ -105,14 +117,14 @@ text = "SURVIVOR FIELD GUIDE"
 
 [node name="Bindings" type="Label" parent="ControlsPanel/Margin/Content"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 10
-text = "WASD / Arrows     Walk\nShift                       Sprint\nE                             Use / hold to start / enter van\nF                             Toggle flashlight\nTab                        Pack and camp map\nEsc                         Pause / close this guide"
+theme_override_font_sizes/font_size = 9
+text = "WASD / Arrows  Walk    Shift  Sprint (noisy!)\nE  Use / hold to start or revive    F  Flashlight\nQ  Flare    R  Battery    C  Food    Tab  Notes    Esc  Pause"
 
 [node name="Note" type="Label" parent="ControlsPanel/Margin/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.64, 0.7, 0.61, 1)
 theme_override_font_sizes/font_size = 8
-text = "Starting seats the driver. Others press E at the running van."
+text = "Cutters: Maintenance. Open woods caches with E.\nWolf: burst / rest. Bigfoot: hears far. Moth: follows light.\nFlares repel teeth, attract moths. Rain muffles noise.\nDriver boards on start; others E at van. Solo build for now."
 
 [node name="Back" type="Button" parent="ControlsPanel/Margin/Content"]
 custom_minimum_size = Vector2(0, 23)

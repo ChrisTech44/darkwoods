@@ -25,3 +25,5 @@ extends Resource
 @export var sprint_noise_interval: float = 0.7
 @export var night_ambient: Color = Color(0.035, 0.045, 0.065, 1.0)
 @export var flashlight_range: float = 220.0
+
+@export var flashlight_capacity: float = 90.0

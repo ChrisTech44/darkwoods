@@ -9,8 +9,11 @@ do not describe that manual gate as executed. Multiplayer remains M2.
 User-requested follow-up: boarding is now explicit and protects seated survivors,
 and an authorized visual/map pass expands the camp to 1536×960 with ten furnished
 buildings, original character/environment pixel art, shadow-casting lights and a
-field map. This work does not implement or claim M2 networking or unrelated M5
-randomization/replayability features.
+field map. The user's subsequent request explicitly authorizes woods,
+replayability and UI polish ahead of M2: a seeded finite trail maze, five-part
+repair/cache objectives, tools/supplies, weather and three original cryptid types
+(two per expedition). Quick Camp retains M1's three-part acceptance route.
+This work does not implement or claim M2 networking.
 
 ## M1: offline vertical slice, one verified pass per step
 
@@ -47,4 +50,6 @@ for mechanics and add tests when they validate real rules. Commit at M1 acceptan
   late join, shared restart, and practical latency checks.
 - M4: desktop export templates/presets, verified available builds, platform status
   and launch notes. No exports before the applicable milestone passes.
-- M5: replayability and polish **after approval**, as required by the brief.
+- M5: additional replayability/polish after approval. The woods/UI/supplies pass
+  is explicitly approved by the user's current request; alternate extraction,
+  audio, larger balance studies and further modes remain future work.

@@ -4,13 +4,17 @@ Original top-down cooperative woodland horror game in Godot 4. The authoritative
 project specification is [AGENT_BRIEF.md](AGENT_BRIEF.md); the supplied `.docx`
 brief is also retained in the repository.
 
-**Current milestone: M1 — playable offline survival round, expanded camp.** Play
-Solo, search the bunk cabin, workshop and ranger lodge for battery/fuel/key,
+**Current milestone: M1 with requested woods/replayability expansion.** Choose
+Woods Expedition for a seeded trail maze, five-part repair job, survival supplies,
+and two roaming cryptids alongside the camp stalker. Find boltcutters in
+Maintenance, search cabins for battery/key and woods caches for three more parts,
 install them at the rear of the van, then hold E to start it. Starting automatically
 seats the driver; other survivors press E beside the running van to board.
 Passengers are safe inside until automatic departure. A stalker patrols, hears
 sprinting, chases on sight, and searches where it last sensed you. Getting caught
 twice or bleeding out ends the round. Replay and return to menu are available.
+Quick Camp preserves the shorter battery/fuel/key round. Enter a seed on the menu
+to replay a particular expedition; results offer a fresh night or the same seed.
 Multiplayer is the next milestone and is not implemented yet.
 
 Requires Godot **4.7.2 stable** and Python 3 for helper scripts. No plugins,
@@ -29,18 +33,30 @@ and press F5 as an alternative. See [setup/testing](docs/testing.md),
 [architecture](docs/architecture.md), [milestone plan](docs/milestones.md), and
 [development log](docs/development_log.md) for evidence and next steps.
 
-Controls: WASD/arrows walk, Shift sprint, E interact/hold, F flashlight, Tab pack,
-Esc pause. Tab opens both the pack and camp map, with numbered supply locations.
+Controls: WASD/arrows walk, Shift sprint, E interact/hold, F flashlight, Q flare,
+R spare battery, C rations, Tab field notes/map, Esc pause. Woods flashlights drain
+while on; ration packs restore stamina. Medkits shorten teammate revive holds.
+Tab shows camp supply clues and reveals woods trails as you explore.
 Building doors face south. Sprinting makes noise; use it to break a chase, then
 walk quietly. The van leaves eight seconds after its engine starts. Only boarded
 survivors extract; standing nearby does not count as entering.
 
-The camp is 1536×960, four times the original area, with ten buildings, a dense
+The full map spans 3456×1920, 4.5 times the previous camp's bounds, including a
+1600×1600 woods maze with 100 connected clearings, loops and six ruined landmarks.
+The authored camp retains ten buildings, a dense
 forest, trails, lakeshore and dock. Interiors include bedrooms, offices, a kitchen,
 dining tables, showers, medical beds, and canoe storage. Roofs cut away as you
 enter. Original directional camper/stalker sprite sheets replace the basic shapes.
 Native flashlight shadows, warm lamps and headlights illuminate a much darker
-nighttime map. See [asset source/provenance](assets/README.md).
+nighttime map. Unlit woods are nearly black. Fog shortens flashlight/sight range;
+rain reduces enemy hearing. Trails, cache contents, supply placements, camp
+patrols, weather and the two-cryptid roster vary with the seed.
+
+Werewolves charge in bursts with recovery windows; Bigfoot hears farther; lantern
+moths track light. Flares repel the stalker, wolf and Bigfoot but attract moths.
+Each cryptid has original directional 64×64 walking art. The menu, loading card,
+field guide and results share the new forest palette.
+See [asset source/provenance](assets/README.md).
 
 Verified with automated input playthroughs and inspected screenshots on macOS
 arm64 / Godot 4.7.2. Human playtesting, multiplayer, and other desktop platforms

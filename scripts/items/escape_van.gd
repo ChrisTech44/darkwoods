@@ -2,6 +2,7 @@ class_name CampVan
 extends Node2D
 
 const PARTS: Array[String] = ["battery", "fuel", "key"]
+var required_parts: Array[String] = ["battery", "fuel", "key"]
 var config: CampConfig = preload("res://assets/default_config.tres")
 var installed: Array[String] = []
 var start_progress: float = 0.0
@@ -72,7 +73,7 @@ func deliver(actor: CampPlayer) -> int:
 	if not in_range(actor) or running:
 		return 0
 	var delivered := 0
-	for part in PARTS:
+	for part in required_parts:
 		if part in actor.inventory and part not in installed:
 			actor.inventory.erase(part)
 			installed.append(part)
@@ -85,7 +86,7 @@ func advance_start(actor: CampPlayer, holding: bool, delta: float) -> void:
 	if running:
 		remaining = maxf(0.0, remaining - delta)
 		return
-	if not holding or not in_range(actor) or installed.size() != PARTS.size():
+	if not holding or not in_range(actor) or installed.size() != required_parts.size():
 		start_progress = 0.0
 		return
 	start_progress += delta

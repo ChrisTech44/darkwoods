@@ -13,12 +13,15 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	root.get_node("Session").mode = "camp"
+	root.get_node("Session").next_seed = 42
 	capture = "--capture" in OS.get_cmdline_user_args()
 	change_scene_to_file("res://scenes/ui/main_menu.tscn")
 	await _frames(3)
 	current_scene.get_node("Menu/Play").grab_focus()
 	await _tap(KEY_ENTER)
-	await _frames(3)
+	while current_scene == null or current_scene.name != "ForestLevel":
+		await process_frame
 	level = current_scene
 	_check(level.name == "ForestLevel", "menu_play_enters_real_round")
 	player = level.player
@@ -59,7 +62,8 @@ func _run() -> void:
 	if capture:
 		await _snapshot("playthrough_win")
 	await _tap(KEY_ENTER)
-	await _frames(3)
+	while current_scene == null or current_scene.name != "ForestLevel":
+		await process_frame
 	level = current_scene
 	player = level.player
 	_check(not level.finished and level.van.installed.is_empty(), "result_enter_restarts_round")

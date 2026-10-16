@@ -1,5 +1,109 @@
 # Development log
 
+## 2026-10-15 — Requested woods expeditions, cryptids, replayability and UI
+
+**Selected scope:** the user requested a better loading/menu experience, a much
+larger ominous woods section, detailed cryptids, survival supplies and harder,
+maze-like objectives. This explicitly authorizes this portion of M5 ahead of M2;
+the authoritative brief and supplied Word file remain intact. Implemented in
+passes: UI/run selection; seeded topology/objectives/supplies; creature behavior;
+headless rule checks; complete active expedition; rendered review and corrections.
+The offline round remains runnable, with Quick Camp retaining the shorter M1 loop.
+
+**Implemented:** full world bounds 3456×1920 (4.5 times the previous camp bounds),
+including a finite 1600×1600 woods maze with 100 connected clearings, loops, dead
+ends and six landmarks: split stump, hunter's blind, hollow cave, fallen tower,
+crooked shrine and scrap cache. Added original roots, mushrooms, trail markers,
+ruin details and dense tree walls. Shared geometry drives collision, occlusion
+and native navigation. The woods chart reveals explored trails instead of giving
+away the entire maze; notes provide item/landmark clues.
+
+Woods Expedition needs five components: battery/fuel/key and two drawn from
+belt/fuse/tire/spark plug. Battery/key locations vary among camp rooms. Boltcutters
+in Maintenance open three randomized woods caches. Reusable cutters and all
+items require normal availability/proximity/clear-access checks. Supplies include
+9-second flares, spare torch batteries (+70s up to 90s), stamina-restoring rations,
+and medkits that shorten completed teammate revives to 1.2s. Q/R/C use flare/
+battery/food; F toggles light; Tab opens notes. Torches deplete while lit in the
+woods. Pause freezes drain, flare lifetime, monsters and round timers.
+
+Two of three cryptid species roam each expedition alongside the camp stalker.
+Original 64×64 directional walking sheets depict werewolf, Bigfoot and lantern
+moth. Wolves alternate brief fast charges and slower recovery; Bigfoot hears
+farther; moths sense lit survivors and nearby visible flares, ignoring distant
+survivors in darkness. Flares repel the stalker/wolf/Bigfoot and attract moths.
+All inherit sensed-memory AI and native navigation; hidden player positions do
+not become chase destinations. Camp patrol order/start, trail layout, loot,
+required extra parts, roster and weather vary by seed. Fog reduces beam/sight;
+rain reduces hearing. No audio was added; HOWL/alert cues are visual.
+
+The new menu has layered animated original forest art, mode and optional seed
+selection, and a consistent olive/cream theme shared by controls, notes and
+results. A loading card renders before world preparation, with an activity bar
+rather than a fabricated completion percentage. Results offer another night,
+retry same seed, or menu. Retry recreates fresh actors/items with the same plan.
+
+**Incremental verification:** new-mode startup exited 0, legacy headless mechanics
+and complete camp win/loss/restart remained passing. Seed/rule checks initially
+passed 191 assertions; subsequent coverage adds weather perception, medkit
+completion/interruption and native navigation to all 100 clearings in two seeds.
+A complete active expedition passes using ordinary movement/interact/supply
+input, collecting all five parts, repairing, boarding and escaping. It covers
+about 14,700px and 52 clearings in seed 42. The bot uses native paths as an omniscient
+route guide; this is automated playability evidence, not proof of human balance.
+
+**Failures corrected:** standalone parse checks could not resolve the autoload's
+global identifier, so scripts obtain Session through the scene tree. Tests now
+wait for the actual loaded scene/navigation readiness instead of fixed frame
+counts. Initial threaded loading produced leaked RefCounted warnings on teardown;
+isolated repeat transitions reproduced them, and synchronous staged preparation
+removed them. A moth's visual flare response incorrectly used its shorter hearing
+radius; corrected to a line-of-sight light stimulus. Pause measurement was moved
+after the input boundary. Medkit progress now uses the correct hold duration.
+An empty torch cannot be toggled on without a battery.
+
+Early expedition bots were caught; reordered camp preparation and timed flares/
+sprint more promptly, without weakening production damage/AI/speeds. A route
+helper approximated every diagonal as 45 degrees and collided with a tree; input
+strengths now follow native path segments correctly. The bot also stopped
+repeatedly pressing F on a depleted torch. Graphical tests exposed a clipped
+field guide and a null scene during the loading capture; compacted the guide and
+waited for the LoadingScreen node. Rendered review moved the woods warning sign
+inside the visible approach and composed close creature fixtures below the HUD.
+
+**Final verification:** `python3 tools/verify.py --graphical` exited **0**.
+Import, startup, every GDScript parse, and six suites in both headless and actual
+graphical modes passed with **zero engine errors or warnings**. `git diff --check`
+exited 0. Original cryptid rebuild via `python3 tools/build_cryptids.py` exited 0;
+SHA-256 comparison confirmed all three sheets reproduced byte-for-byte.
+
+| Suite | Headless assertions | Graphical assertions | Failures |
+| --- | ---: | ---: | ---: |
+| Menu/input | 37 | 39 | 0 |
+| Offline rules | 60 | 66 | 0 |
+| Quick Camp complete rounds | 108 | 113 | 0 |
+| Camp layout/boarding | 31 | 44 | 0 |
+| Woods seeds/rules/navigation/art | 201 | 214 | 0 |
+| Active Woods expedition | 172 | 173 | 0 |
+
+Opened and inspected final menu, full field guide, loading card, woods gate,
+matched light on/off, all three cryptids, three ruins, field notes, loss results
+and the active expedition's escape result. The matched woods probe measured
+luminance **0.394 lit / 0.003 unlit**; the localized-light/darkness
+assertion passed. Close cryptid art shots deliberately offset the native camera
+for composition; rule/art fixtures are distinguished from the active expedition.
+Final logs, commands/report and PNGs: [evidence/woods_replay](evidence/woods_replay/summary.json).
+
+One final graphical expedition exceeded the original 60s test timeout while
+returning with all five parts, with no engine errors. Increased only that long
+rendered test's timeout to 120s; the subsequent complete verification passed.
+
+**Limits:** macOS arm64 / Godot 4.7.2 only. No connected multiplayer, exports,
+Windows/Linux execution or human real-time balance session was performed.
+Teammate/medkit/boarding checks are local fixtures; they do not establish co-op.
+Networking remains M2. This pass supplies replayable offline mechanics rather
+than claiming the eventual 15–25 minute co-op balance or every possible seed tested.
+
 ## 2026-10-15 — M1 follow-up: van boarding and requested visual expansion
 
 **Selected scope:** repair the confusing escape flow, then apply the user's

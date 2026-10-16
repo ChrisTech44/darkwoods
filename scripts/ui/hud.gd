@@ -2,6 +2,7 @@ extends CanvasLayer
 
 signal menu_requested
 signal restart_requested
+signal retry_requested
 
 var title: Label
 var prompt: Label
@@ -13,14 +14,14 @@ var threat_label: Label
 var location_label: Label
 var chart: Control
 var root: Control
+var supplies_label: Label
 
 
 func _ready() -> void:
 	root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var ui_theme := Theme.new()
-	ui_theme.default_font_size = 10
+	var ui_theme := CampStyle.make()
 	ui_theme.set_color("font_color", "Label", Color("efe3ba"))
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("101e22")
@@ -39,6 +40,7 @@ func _ready() -> void:
 	stamina = ProgressBar.new()
 	stamina.position = Vector2(9, 25)
 	stamina.size = Vector2(68, 6)
+	supplies_label = _label(Vector2(83, 25), Vector2(107, 14), 7)
 	threat_label = _label(Vector2(190, 25), Vector2(185, 14), 9)
 	threat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	threat_label.add_theme_color_override("font_color", Color("e7aa83"))
@@ -79,8 +81,8 @@ func _label(at: Vector2, dimensions: Vector2, font_size: int) -> Label:
 
 func _panel(heading: String, detail: String, replay: bool) -> PanelContainer:
 	var panel := PanelContainer.new()
-	panel.position = Vector2(60, 48)
-	panel.size = Vector2(264, 120)
+	panel.position = Vector2(54, 26)
+	panel.size = Vector2(276, 164)
 	root.add_child(panel)
 	var column := VBoxContainer.new()
 	panel.add_child(column)
@@ -99,14 +101,31 @@ func _panel(heading: String, detail: String, replay: bool) -> PanelContainer:
 		var restart := Button.new()
 		restart.name = "Restart"
 		restart.text = "TRY ANOTHER NIGHT"
-		restart.pressed.connect(func() -> void: restart_requested.emit())
+		restart.pressed.connect(_restart)
 		column.add_child(restart)
+		var retry := Button.new()
+		retry.name = "Retry"
+		retry.text = "RETRY THIS SEED"
+		retry.pressed.connect(_retry)
+		column.add_child(retry)
 	var menu := Button.new()
 	menu.name = "Menu"
 	menu.text = "MAIN MENU"
-	menu.pressed.connect(func() -> void: menu_requested.emit())
+	menu.pressed.connect(_menu)
 	column.add_child(menu)
 	return panel
+
+
+func _restart() -> void:
+	restart_requested.emit()
+
+
+func _retry() -> void:
+	retry_requested.emit()
+
+
+func _menu() -> void:
+	menu_requested.emit()
 
 
 func set_status(heading: String, detail: String, energy: float) -> void:

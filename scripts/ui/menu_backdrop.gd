@@ -1,42 +1,37 @@
 extends Control
-## Original geometric placeholder artwork, drawn in the 384 x 216 viewport.
-## This is scenery only; world collision and navigation belong to M1.
+## Animated original pixel forest: moonlit fog, lamp, fireflies and distant eyes.
+
+var time: float = 0.0
+
+
+func _process(delta: float) -> void:
+	time += delta
+	queue_redraw()
 
 
 func _draw() -> void:
-	draw_rect(Rect2(0, 0, 384, 216), Color("0c171e"))
-	draw_rect(Rect2(0, 122, 384, 94), Color("13272a"))
-	for x in range(8, 384, 29):
-		_tree(Vector2(x, 167 + (x % 13)), 34, Color("1b3434"))
-	for x in range(-10, 394, 47):
-		_tree(Vector2(x, 195 + (x % 9)), 48, Color("102426"))
-	# Moon and a few deliberately placed stars.
-	draw_rect(Rect2(323, 20, 13, 13), Color("9eaa8a"))
-	draw_rect(Rect2(319, 17, 13, 13), Color("0c171e"))
-	for point in [Vector2(245, 22), Vector2(288, 39), Vector2(358, 29)]:
-		draw_rect(Rect2(point, Vector2(1, 1)), Color("7c9386"))
-	# Cabin, warm window, and a path disappearing into the trees.
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(99, 216), Vector2(150, 216), Vector2(116, 169), Vector2(107, 169)
-	]), Color("263837"))
-	draw_rect(Rect2(84, 145, 54, 29), Color("303e36"))
-	draw_colored_polygon(PackedVector2Array([
-		Vector2(78, 147), Vector2(111, 130), Vector2(145, 147)
-	]), Color("09191d"))
-	draw_rect(Rect2(106, 154, 10, 20), Color("101f22"))
-	draw_rect(Rect2(91, 153, 9, 8), Color("b59757"))
-	draw_rect(Rect2(95, 153, 1, 8), Color("394037"))
-	draw_rect(Rect2(91, 156, 9, 1), Color("394037"))
-	_tree(Vector2(26, 224), 70, Color("08171b"))
-	_tree(Vector2(355, 228), 67, Color("08171b"))
-
-
-func _tree(base: Vector2, height: float, color: Color) -> void:
-	draw_rect(Rect2(base.x - 2, base.y - 12, 4, 16), color)
-	for tier in range(3):
-		var top := base + Vector2(0, -height + tier * height * 0.21)
-		var width := 9.0 + tier * 5.0
-		draw_colored_polygon(PackedVector2Array([
-			top, top + Vector2(-width, height * 0.48),
-			top + Vector2(width, height * 0.48)
-		]), color)
+	draw_rect(Rect2(0, 0, 384, 216), Color("081318"))
+	draw_circle(Vector2(214, 33), 16, Color("798f83"))
+	draw_circle(Vector2(220, 29), 15, Color("081318"))
+	for index in range(18):
+		var x := index * 26 - 12
+		draw_texture_rect(preload("res://assets/sprites/pine_1.png"), Rect2(x, 54 + index % 4 * 7, 48, 76), false, Color("334c44"))
+	for index in range(9):
+		var x := index * 48 - 10
+		draw_texture_rect(preload("res://assets/sprites/pine_0.png"), Rect2(x, 92 + index % 3 * 9, 64, 100), false, Color("54644a"))
+	draw_colored_polygon(PackedVector2Array([Vector2(112, 216), Vector2(224, 216), Vector2(192, 128), Vector2(176, 128)]), Color("233732"))
+	draw_texture_rect_region(preload("res://assets/sprites/camper.png"), Rect2(177, 153, 24, 32), Rect2(0, 32, 24, 32), Color("c6c2a0"))
+	draw_colored_polygon(PackedVector2Array([Vector2(190, 165), Vector2(157, 110), Vector2(222, 110)]), Color(0.8, 0.8, 0.5, 0.07))
+	for index in range(4):
+		var y := 128.0 + index * 20 + sin(time * 0.18 + index) * 5
+		draw_rect(Rect2(-20 + sin(time * 0.1 + index) * 12, y, 430, 3), Color(0.6, 0.7, 0.6, 0.025))
+	for index in range(12):
+		var point := Vector2(20 + index * 29, 139 + sin(index * 7.1 + time * 0.4) * 23)
+		draw_rect(Rect2(point.round(), Vector2(1, 1)), Color(0.8, 0.86, 0.5, 0.35 + sin(time + index) * 0.2))
+	draw_texture_rect(preload("res://assets/sprites/pine_2.png"), Rect2(-25, 110, 80, 125), false, Color("182b28"))
+	draw_texture_rect(preload("res://assets/sprites/pine_0.png"), Rect2(340, 122, 75, 118), false, Color("182b28"))
+	draw_rect(Rect2(18, 35, 3, 73), Color("bca56c"))
+	draw_rect(Rect2(239, 20, 130, 166), Color(0.02, 0.06, 0.06, 0.85))
+	draw_line(Vector2(239, 20), Vector2(369, 20), Color("899475"))
+	draw_rect(Rect2(305, 146, 2, 1), Color("bfa27b"))
+	draw_rect(Rect2(311, 146, 2, 1), Color("bfa27b"))

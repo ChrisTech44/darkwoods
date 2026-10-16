@@ -35,6 +35,11 @@ func _physics_process(delta: float) -> void:
 		if memory[target_id]["remaining"] <= 0.0:
 			memory.erase(target_id)
 	visible_target = sense_visible_target()
+	var danger := nearby_flare()
+	if danger != Vector2.INF:
+		visible_target = null
+		last_seen = global_position + danger.direction_to(global_position) * 100.0
+		transition(State.SEARCH)
 	if is_instance_valid(visible_target):
 		last_seen = visible_target.global_position
 		memory[visible_target.get_instance_id()] = {"position": last_seen, "remaining": config.memory_seconds}
@@ -92,6 +97,8 @@ func sense_visible_target() -> CampPlayer:
 	var nearest: CampPlayer
 	var distance := config.sight_radius
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if not can_sense(actor):
+			continue
 		if actor.status not in [CampPlayer.Status.ALIVE, CampPlayer.Status.DOWNED]:
 			continue
 		var candidate_distance := global_position.distance_to(actor.global_position)
@@ -99,6 +106,22 @@ func sense_visible_target() -> CampPlayer:
 			distance = candidate_distance
 			nearest = actor
 	return nearest
+
+
+func can_sense(_actor: CampPlayer) -> bool:
+	return true
+
+
+func fears_flare() -> bool:
+	return true
+
+
+func nearby_flare() -> Vector2:
+	if fears_flare():
+		for flare in get_tree().get_nodes_in_group("flares"):
+			if global_position.distance_to(flare.global_position) < 95 and has_line_of_sight(flare.global_position):
+				return flare.global_position
+	return Vector2.INF
 
 
 func has_line_of_sight(point: Vector2) -> bool:

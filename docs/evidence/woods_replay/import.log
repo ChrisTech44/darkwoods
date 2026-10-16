@@ -1,0 +1,94 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] _update_scan_actions | Started Scanning actions... (36 steps)
+[   0% ] _update_scan_actions | camp.png
+[   2% ] _update_scan_actions | chase.png
+[   5% ] _update_scan_actions | controls.png
+[   8% ] _update_scan_actions | downed.png
+[  10% ] _update_scan_actions | loss.png
+[  13% ] _update_scan_actions | menu.png
+[  16% ] _update_scan_actions | playthrough_battery.png
+[  18% ] _update_scan_actions | playthrough_fuel.png
+[  21% ] _update_scan_actions | playthrough_key.png
+[  24% ] _update_scan_actions | playthrough_loss.png
+[  27% ] _update_scan_actions | playthrough_win.png
+[  29% ] _update_scan_actions | upgrade_bathhouse.png
+[  32% ] _update_scan_actions | upgrade_boarded.png
+[  35% ] _update_scan_actions | upgrade_campsite.png
+[  37% ] _update_scan_actions | upgrade_characters.png
+[  40% ] _update_scan_actions | upgrade_field_map.png
+[  43% ] _update_scan_actions | upgrade_flashlight_off.png
+[  45% ] _update_scan_actions | upgrade_flashlight_on.png
+[  48% ] _update_scan_actions | upgrade_lakeshore.png
+[  51% ] _update_scan_actions | upgrade_lodge.png
+[  54% ] _update_scan_actions | upgrade_mess_hall.png
+[  56% ] _update_scan_actions | upgrade_workshop.png
+[  59% ] _update_scan_actions | van_countdown.png
+[  62% ] _update_scan_actions | win.png
+[  64% ] _update_scan_actions | woods_bigfoot.png
+[  67% ] _update_scan_actions | woods_field_notes.png
+[  70% ] _update_scan_actions | woods_gate.png
+[  72% ] _update_scan_actions | woods_landmark_0.png
+[  75% ] _update_scan_actions | woods_landmark_2.png
+[  78% ] _update_scan_actions | woods_landmark_4.png
+[  81% ] _update_scan_actions | woods_lantern_moth.png
+[  83% ] _update_scan_actions | woods_light_off.png
+[  86% ] _update_scan_actions | woods_light_on.png
+[  89% ] _update_scan_actions | woods_loading.png
+[  91% ] _update_scan_actions | woods_results.png
+[  94% ] _update_scan_actions | woods_werewolf.png
+[ DONE ] _update_scan_actions
+
+[   0% ] reimport | Started (Re)Importing Assets (15 steps)
+[   0% ] reimport | Preparing files to reimport...
+[   6% ] reimport | Preparing files to reimport...
+[  12% ] reimport | Preparing files to reimport...
+[  18% ] reimport | Preparing files to reimport...
+[  25% ] reimport | Preparing files to reimport...
+[  31% ] reimport | Preparing files to reimport...
+[  37% ] reimport | Preparing files to reimport...
+[  43% ] reimport | Preparing files to reimport...
+[  50% ] reimport | Preparing files to reimport...
+[  56% ] reimport | Preparing files to reimport...
+[  62% ] reimport | Preparing files to reimport...
+[  68% ] reimport | Preparing files to reimport...
+[  75% ] reimport | Preparing files to reimport...
+[  81% ] reimport | Preparing files to reimport...
+[  87% ] reimport | Preparing files to reimport...
+[   0% ] reimport | Executing pre-reimport operations...
+[   0% ] reimport | loss.png
+[   6% ] reimport | menu.png
+[  12% ] reimport | playthrough_loss.png
+[  18% ] reimport | playthrough_win.png
+[  25% ] reimport | woods_bigfoot.png
+[  31% ] reimport | woods_field_notes.png
+[  37% ] reimport | woods_gate.png
+[  43% ] reimport | woods_landmark_0.png
+[  50% ] reimport | woods_landmark_2.png
+[  56% ] reimport | woods_landmark_4.png
+[  62% ] reimport | woods_lantern_moth.png
+[  68% ] reimport | woods_light_off.png
+[  75% ] reimport | woods_light_on.png
+[  81% ] reimport | woods_results.png
+[  87% ] reimport | woods_werewolf.png
+[  93% ] reimport | Finalizing Asset Import...
+[ DONE ] reimport
+
+[   0% ] reimport | Started (Re)Importing Assets (15 steps)
+[   0% ] reimport | Executing post-reimport operations...
+[ DONE ] reimport
+
+[   0% ] loading_editor_layout | Started Loading editor (5 steps)
+[   0% ] loading_editor_layout | Loading editor layout...
+[  16% ] loading_editor_layout | Loading docks...
+[ DONE ] loading_editor_layout
+

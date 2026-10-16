@@ -17,9 +17,14 @@ var killer: CampKiller
 var revive_target: CampPlayer
 var revive_progress: float = 0.0
 var world_objects: Node2D
+var plan := RoundPlan.new()
 
 
 func _ready() -> void:
+	var session: Node = get_node("/root/Session")
+	plan.generate(session.begin_run(), session.mode)
+	if plan.expedition:
+		message = "Find cutters in Maintenance. Search woods caches for 3 of 5 van parts."
 	world_objects = Node2D.new()
 	world_objects.name = "WorldObjects"
 	world_objects.y_sort_enabled = true
@@ -27,10 +32,13 @@ func _ready() -> void:
 	camp_map = CampMap.new()
 	camp_map.z_index = -1
 	camp_map.objects = world_objects
+	camp_map.woods = plan.woods
+	camp_map.seed_value = plan.seed_value
 	add_child(camp_map)
 	player = PLAYER_SCENE.instantiate()
 	player.position = Vector2(96, 384)
 	player.config = config
+	player.expedition = plan.expedition
 	world_objects.add_child(player)
 	camp_map.focus = player
 	player.get_node("Camera2D").enabled = true
@@ -41,19 +49,33 @@ func _ready() -> void:
 	killer.config = config
 	killer.position = Vector2(1400, 480)
 	killer.patrol = [Vector2(1400, 520), Vector2(960, 520), Vector2(960, 840), Vector2(600, 520), Vector2(360, 520), Vector2(360, 216), Vector2(960, 216)]
+	if plan.expedition:
+		killer.patrol_index = plan.seed_value % killer.patrol.size()
+		if plan.seed_value % 2 == 1:
+			killer.patrol.reverse()
 	world_objects.add_child(killer)
+	_spawn_cryptids()
+	_apply_weather()
 	var night := preload("res://scripts/ui/night_overlay.gd").new()
 	night.player = player
+	night.weather = plan.weather
 	add_child(night)
+	var weather := preload("res://scripts/ui/weather.gd").new()
+	weather.level = self
+	var weather_layer := CanvasLayer.new()
+	weather_layer.layer = 2
+	add_child(weather_layer)
+	weather_layer.add_child(weather)
 	van = preload("res://scenes/world/escape_van.tscn").instantiate()
 	van.config = config
+	van.required_parts.assign(plan.required)
 	van.position = Vector2(96, 300)
 	world_objects.add_child(van)
-	var locations: Array[Vector2] = CampMap.PICKUP_POSITIONS
-	for index in range(3):
+	for item in plan.loot:
 		var pickup: CampPickup = preload("res://scenes/items/pickup.tscn").instantiate()
-		pickup.kind = CampVan.PARTS[index]
-		pickup.position = locations[index]
+		pickup.kind = item["kind"]
+		pickup.position = item["position"]
+		pickup.locked = item["locked"]
 		pickups.append(pickup)
 		add_child(pickup)
 	hud = preload("res://scenes/ui/hud.tscn").instantiate()
@@ -61,14 +83,16 @@ func _ready() -> void:
 	hud.chart.camp_map = camp_map
 	hud.chart.player = player
 	hud.chart.van = van
+	hud.chart.plan = plan
 	hud.menu_requested.connect(return_to_menu)
 	hud.restart_requested.connect(restart_round)
+	hud.retry_requested.connect(retry_round)
 	print(JSON.stringify({"event": "round_ready", "milestone": "M1"}))
 
 
 func _process(_delta: float) -> void:
-	var heading := "VAN %d/3  ·  SEARCH THE CAMP" % van.installed.size()
-	if van.installed.size() == 3:
+	var heading := "VAN %d/%d · %s" % [van.installed.size(), plan.required.size(), plan.weather.to_upper() + " NIGHT" if plan.expedition else "SEARCH CAMP"]
+	if van.installed.size() == plan.required.size():
 		heading = "VAN REPAIRED  ·  HOLD E AT THE REAR TO START"
 	if van.running:
 		heading = "DEPARTING IN %.1fs  ·  %d ABOARD" % [van.remaining, van.passengers.size()]
@@ -78,21 +102,29 @@ func _process(_delta: float) -> void:
 		heading = "DOWNED  ·  BLEEDING OUT IN %.1fs" % player.bleedout
 	var detail := context_prompt()
 	if revive_progress > 0.0:
-		detail = "HOLD E · REVIVE  %d%%" % int(revive_progress / config.revive_seconds * 100)
+		detail = "HOLD E · REVIVE  %d%%" % int(revive_progress / (1.2 if player.supplies["medkit"] > 0 else config.revive_seconds) * 100)
 	hud.threat_label.text = ""
 	if not finished and killer.global_position.distance_to(player.global_position) < 155.0:
 		hud.threat_label.text = "SPOTTED · RUN!" if killer.state == CampKiller.State.CHASE else "FOOTSTEPS NEARBY · KEEP QUIET"
 	if message_time > 0.0:
 		detail = message + "\n" + detail
 	hud.set_status(heading, detail, player.stamina / config.stamina_max)
-	hud.inventory_label.text = "CARRYING: " + (", ".join(player.inventory).to_upper() if not player.inventory.is_empty() else "NOTHING") + "\nVAN: " + ", ".join(van.installed).to_upper()
+	hud.inventory_label.text = "NIGHT %d / %s\nQ FLARE %d · R BATTERY %d · C FOOD %d\n" % [plan.seed_value, plan.weather.to_upper(), player.supplies["flare"], player.supplies["battery_pack"], player.supplies["rations"]]
+	hud.inventory_label.text += plan.pack_description(van.installed)
+	hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINTENANCE") + " / TAB CLOSE"
 	hud.location_label.text = camp_map.location_label(player.global_position)
-	hud.inventory_label.text += "\n1  BATTERY · FERN BUNK CABIN\n2  FUEL · MAINTENANCE\n3  KEY · RANGER LODGE\nCYAN · YOU   CREAM · VAN\nTAB · CLOSE FIELD MAP"
+	hud.supplies_label.text = "LIGHT %ds / FLARES %d" % [int(player.flashlight_charge), player.supplies["flare"]] if plan.expedition else "QUICK CAMP"
+	for enemy: CampKiller in get_tree().get_nodes_in_group("cryptids"):
+		if player.global_position.distance_to(enemy.global_position) < 180:
+			hud.threat_label.text = enemy.species.replace("_", " ").to_upper() + " NEARBY"
+
 
 
 func _physics_process(delta: float) -> void:
 	if paused or finished:
 		return
+	if plan.woods.valid(plan.woods.cell_at(player.global_position)):
+		plan.woods.visited[plan.woods.cell_at(player.global_position)] = true
 	message_time = maxf(0.0, message_time - delta)
 	var target := nearby_downed(player)
 	advance_revive(player, target, Input.is_action_pressed("interact"), delta)
@@ -134,16 +166,28 @@ func try_interact(actor: CampPlayer) -> bool:
 		return true
 	for pickup in pickups:
 		if pickup.available and actor.global_position.distance_to(pickup.global_position) <= config.interact_radius and clear_path(actor.global_position, pickup.global_position):
+			if pickup.locked and "boltcutters" not in actor.inventory:
+				announce("Locked cache! Find boltcutters in Maintenance first.")
+				actor.noise_emitted.emit(actor.global_position)
+				return false
 			pickup.consume()
-			actor.inventory.append(pickup.kind)
-			announce("Picked up " + pickup.kind + ". Return supplies to the van.")
+			if actor.supplies.has(pickup.kind):
+				actor.supplies[pickup.kind] += 1
+			else:
+				actor.inventory.append(pickup.kind)
+			if pickup.kind in plan.required:
+				announce("Found " + pickup.kind.replace("_", " ") + ". Install it at the van.")
+			elif pickup.kind == "boltcutters":
+				announce("Boltcutters found. Woods caches can now be opened with E.")
+			else:
+				announce("Packed " + pickup.kind.replace("_", " ") + ". Q flare / R battery / C food.")
 			return true
 	if van.in_range(actor) and clear_path(actor.global_position, van.interaction_point()):
 		var count := van.deliver(actor)
 		if count > 0:
 			announce("Installed %d component(s)." % count)
 			return true
-		if van.installed.size() == 3:
+		if van.installed.size() == plan.required.size():
 			return true
 	announce("Nothing to use here. Tab shows supply locations.")
 	actor.noise_emitted.emit(actor.global_position)
@@ -168,7 +212,10 @@ func advance_revive(actor: CampPlayer, target: CampPlayer, holding: bool, delta:
 		revive_target = target
 		revive_progress = 0.0
 	revive_progress += delta
-	if revive_progress >= config.revive_seconds:
+	var duration := 1.2 if actor.supplies["medkit"] > 0 else config.revive_seconds
+	if revive_progress >= duration:
+		if actor.supplies["medkit"] > 0:
+			actor.supplies["medkit"] -= 1
 		target.set_status(CampPlayer.Status.ALIVE)
 		revive_target = null
 		revive_progress = 0.0
@@ -177,7 +224,8 @@ func advance_revive(actor: CampPlayer, target: CampPlayer, holding: bool, delta:
 
 func _on_noise(origin: Vector2) -> void:
 	if not paused and not finished:
-		killer.hear_noise(origin)
+		for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
+			enemy.hear_noise(origin)
 
 
 func clear_path(from: Vector2, to: Vector2) -> bool:
@@ -198,19 +246,19 @@ func context_prompt() -> String:
 		return "HOLD E · REVIVE TEAMMATE"
 	for pickup in pickups:
 		if pickup.available and player.global_position.distance_to(pickup.global_position) <= config.interact_radius and clear_path(player.global_position, pickup.global_position):
-			return "E · PICK UP " + pickup.kind.to_upper()
+			return "E · LOCKED CACHE / NEED BOLTCUTTERS" if pickup.locked and "boltcutters" not in player.inventory else "E · TAKE " + pickup.kind.replace("_", " ").to_upper()
 	if van.in_range(player):
 		if van.running:
 			return "E · ENTER VAN  —  Board before the countdown ends!"
-		if van.installed.size() == 3:
+		if van.installed.size() == plan.required.size():
 			return "HOLD E · START VAN  %d%%" % int(van.start_progress / config.start_hold_seconds * 100)
 		return "E · INSTALL SUPPLIES   |   NEED: " + ", ".join(missing_parts()).to_upper()
-	return "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
+	return "E use · F light · Q flare · R battery · C food · Tab notes" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
 
 
 func missing_parts() -> Array[String]:
 	var missing: Array[String] = []
-	for part in CampVan.PARTS:
+	for part in plan.required:
 		if part not in van.installed:
 			missing.append(part)
 	return missing
@@ -227,8 +275,9 @@ func finish_round(success: bool, detail: String) -> void:
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		actor.controls_enabled = false
 		actor.set_physics_process(false)
-	killer.enabled = false
-	hud.show_result(success, detail)
+	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
+		enemy.enabled = false
+	hud.show_result(success, detail + "\nNight %d / %s" % [plan.seed_value, plan.weather])
 	print(JSON.stringify({"event": "round_finished", "won": success, "result": detail}))
 
 
@@ -237,7 +286,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("pause"):
 		paused = not paused
-		killer.enabled = not paused
+		for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
+			enemy.enabled = not paused
+		for flare in get_tree().get_nodes_in_group("flares"):
+			flare.set_physics_process(not paused)
 		for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 			actor.controls_enabled = not paused
 			actor.set_physics_process(not paused)
@@ -250,8 +302,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		hud.inventory_label.visible = not hud.inventory_label.visible
 		hud.chart.visible = hud.inventory_label.visible
 		get_viewport().set_input_as_handled()
+	elif not paused and event.is_action_pressed("use_flare"):
+		use_supply(player, "flare")
+	elif not paused and event.is_action_pressed("recharge"):
+		use_supply(player, "battery_pack")
+	elif not paused and event.is_action_pressed("eat"):
+		use_supply(player, "rations")
 	elif not paused and event.is_action_pressed("flashlight"):
-		player.flashlight_on = not player.flashlight_on
+		if not player.expedition or player.flashlight_charge > 0:
+			player.flashlight_on = not player.flashlight_on
+		else:
+			announce("Flashlight empty. R uses a spare battery.")
 		get_viewport().set_input_as_handled()
 
 
@@ -260,4 +321,63 @@ func return_to_menu() -> void:
 
 
 func restart_round() -> void:
-	get_tree().reload_current_scene()
+	if not plan.expedition:
+		get_tree().reload_current_scene()
+	else:
+		var session: Node = get_node("/root/Session")
+		session.next_seed = 0
+		session.load_game()
+
+
+func retry_round() -> void:
+	get_node("/root/Session").load_game(true)
+
+
+func use_supply(actor: CampPlayer, kind: String) -> bool:
+	if paused or finished or actor.status != CampPlayer.Status.ALIVE or not actor.is_in_group("survivors") or actor.supplies.get(kind, 0) <= 0:
+		return false
+	if kind == "flare":
+		var flare := preload("res://scripts/items/flare.gd").new()
+		var target := actor.global_position + actor.facing * 28
+		flare.position = target if clear_path(actor.global_position, target) else actor.global_position
+		world_objects.add_child(flare)
+		actor.noise_emitted.emit(flare.global_position)
+		announce("Flare out! Teeth hate it. Wings don't.")
+	elif kind == "battery_pack":
+		if actor.flashlight_charge >= config.flashlight_capacity:
+			return false
+		actor.flashlight_charge = minf(config.flashlight_capacity, actor.flashlight_charge + 70)
+		actor.flashlight_on = true
+	elif kind == "rations":
+		if actor.stamina >= config.stamina_max:
+			return false
+		actor.stamina = config.stamina_max
+		actor.exhausted = false
+	else:
+		return false
+	actor.supplies[kind] -= 1
+	return true
+
+
+func _spawn_cryptids() -> void:
+	for encounter in plan.encounters:
+		var enemy: CampCryptid = preload("res://scenes/actors/cryptid.tscn").instantiate()
+		enemy.species = encounter["species"]
+		enemy.config = config
+		enemy.position = encounter["position"]
+		enemy.patrol.clear()
+		var start: Vector2i = encounter["cell"]
+		enemy.patrol.append(plan.woods.center(start))
+		for neighbor: Vector2i in plan.woods.links[start]:
+			enemy.patrol.append(plan.woods.center(neighbor))
+		world_objects.add_child(enemy)
+
+
+func _apply_weather() -> void:
+	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
+		# Never mutate the shared default resource or another creature's tuning.
+		enemy.config = enemy.config.duplicate() as CampConfig
+		if plan.weather == "fog":
+			enemy.config.sight_radius *= 0.72
+		elif plan.weather == "rain":
+			enemy.config.hearing_radius *= 0.7

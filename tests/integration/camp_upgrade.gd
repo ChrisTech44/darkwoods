@@ -13,6 +13,8 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	root.get_node("Session").mode = "camp"
+	root.get_node("Session").next_seed = 42
 	capture = "--capture" in OS.get_cmdline_user_args()
 	change_scene_to_file("res://scenes/world/forest_level.tscn")
 	await _frames(4)
@@ -24,7 +26,7 @@ func _run() -> void:
 		if ready_path.size() > 1:
 			break
 		await physics_frame
-	_check(CampMap.WORLD_SIZE.x * CampMap.WORLD_SIZE.y == 4.0 * 768 * 480, "map_has_four_times_original_area")
+	_check(CampMap.WORLD_SIZE.x * CampMap.WORLD_SIZE.y == 18.0 * 768 * 480, "map_has_eighteen_times_original_area")
 	_check(level.camp_map.buildings.size() == 10, "ten_authored_buildings")
 	_check(level.camp_map.trees.size() > 100, "dense_forest_layout")
 	_check(level.camp_map.get_node("GroundTiles") is TileMapLayer, "native_pixel_tile_ground")

@@ -2,7 +2,7 @@ class_name CampMap
 extends Node2D
 ## Fixed authored camp: one obstacle list drives collision, shadows and navigation.
 
-const WORLD_SIZE := Vector2(1536, 960)
+const WORLD_SIZE := Vector2(3456, 1920)
 const PICKUP_POSITIONS: Array[Vector2] = [Vector2(228, 120), Vector2(1304, 272), Vector2(696, 680)]
 const PICKUP_HINTS: Array[String] = ["Battery · west bunk cabin", "Fuel · maintenance workshop", "Key · ranger lodge office"]
 const ATLAS := preload("res://assets/tiles/camp_tiles.png")
@@ -12,6 +12,8 @@ var buildings: Array[CampBuilding] = []
 var navigation_region: NavigationRegion2D
 var objects: Node2D
 var focus: CampPlayer
+var woods: WoodsLayout
+var seed_value: int = 42
 var roads: Array[Rect2] = [Rect2(36, 192, 1476, 48), Rect2(72, 216, 48, 696), Rect2(96, 496, 1352, 48), Rect2(784, 240, 32, 656), Rect2(96, 864, 1250, 32)]
 var lake: Rect2 = Rect2(1056, 800, 448, 128)
 
@@ -20,10 +22,21 @@ func _ready() -> void:
 	if objects == null:
 		objects = Node2D.new()
 		add_child(objects)
-	add_wall(Rect2(0, 0, 1536, 24))
-	add_wall(Rect2(0, 936, 1536, 24))
-	add_wall(Rect2(0, 0, 24, 960))
-	add_wall(Rect2(1512, 0, 24, 960))
+	if woods == null:
+		woods = WoodsLayout.new()
+		woods.generate(seed_value)
+	add_wall(Rect2(0, 0, 3456, 24))
+	add_wall(Rect2(0, 1896, 3456, 24))
+	add_wall(Rect2(0, 0, 24, 1920))
+	add_wall(Rect2(3432, 0, 24, 1920))
+	add_wall(Rect2(0, 936, 1536, 984))
+	add_wall(Rect2(1512, 24, 24, 464))
+	add_wall(Rect2(1512, 552, 24, 384))
+	add_wall(Rect2(1536, 24, 160, 464))
+	add_wall(Rect2(1536, 552, 160, 1344))
+	add_wall(Rect2(1696, 24, 1600, 96))
+	add_wall(Rect2(1696, 1720, 1600, 176))
+	add_wall(Rect2(3296, 24, 136, 1872))
 	var layout := [
 		[Rect2(144, 72, 144, 96), "cabin", "FERN BUNK CABIN"],
 		[Rect2(480, 72, 144, 96), "cabin", "PINE BUNK CABIN"],
@@ -60,6 +73,7 @@ func _ready() -> void:
 	add_wall(Rect2(1344, 800, 160, 128), false)
 	add_wall(Rect2(1296, 912, 48, 16), false)
 	_seed_forest()
+	_build_woods()
 	_ground()
 	_build_navigation()
 	CampLights.lamp(self, Vector2(168, 336), 110, Color("ffb266"), 1.3)
@@ -72,6 +86,11 @@ func _process(_delta: float) -> void:
 
 
 func location_label(point: Vector2) -> String:
+	if point.x >= 1536:
+		for landmark in woods.landmarks:
+			if point.distance_to(landmark["position"]) < 90:
+				return "THE WOODS / " + landmark["label"]
+		return "THE WOODS / NO SAFE LIGHT"
 	for building in buildings:
 		if building.bounds.grow(16).has_point(point):
 			return building.label
@@ -104,12 +123,26 @@ func _tree(at: Vector2, variant: int, legacy_rect: Rect2 = Rect2()) -> void:
 	var rect := Rect2(at - Vector2(5, 6), Vector2(10, 12)) if legacy_rect.size == Vector2.ZERO else legacy_rect
 	trees.append(rect)
 	add_wall(rect)
+	_canopy(at, variant)
+
+
+func _canopy(at: Vector2, variant: int) -> void:
 	var sprite := Sprite2D.new()
 	sprite.texture = load("res://assets/sprites/" + ("birch" if variant == 3 else "pine_%d" % variant) + ".png")
 	sprite.position = at
 	sprite.offset = Vector2(0, -32)
 	sprite.modulate = Color(0.85, 0.90, 0.83) if variant == 2 else Color.WHITE
 	objects.add_child(sprite)
+
+
+func _build_woods() -> void:
+	for wall in woods.walls:
+		add_wall(wall)
+		for x in range(int(wall.position.x) + 12, int(wall.end.x), 40):
+			_canopy(Vector2(x, wall.get_center().y + 8), (x / 40 + int(wall.position.y)) % 3)
+	var decor := preload("res://scripts/world/woods_decor.gd").new()
+	decor.woods = woods
+	add_child(decor)
 
 
 func _seed_forest() -> void:
@@ -165,13 +198,15 @@ func _ground() -> void:
 	layer.tile_set = tile_set
 	layer.z_index = -20
 	add_child(layer)
-	for y in range(60):
-		for x in range(96):
+	for y in range(120):
+		for x in range(216):
 			var center := Vector2(x * 16 + 8, y * 16 + 8)
 			var tile := Vector2i((x * 7 + y * 11) % 4, 0)
 			for road in roads:
 				if road.has_point(center):
 					tile = Vector2i(4 + (x + y) % 3, 0)
+			if center.x >= 1536:
+				tile = Vector2i(2 + (x + y) % 2, 1) if woods.walkable(center) else Vector2i((x + y) % 2, 1)
 			if lake.has_point(center):
 				tile = Vector2i((x + y) % 2, 2)
 			layer.set_cell(Vector2i(x, y), 0, tile)

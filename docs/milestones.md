@@ -7,6 +7,28 @@ Internet, synchronized-audio listening, latency/jitter and voice acceptance are
 still pending; loopback evidence does not pass those gates. The older staged
 plan below is retained as historical milestone/acceptance context.
 
+# Next: the fun overhaul track (F1–F8)
+
+Planning only; nothing below is implemented. The user wants nights that are more
+fun, dynamic and heart-pounding, and is open to map redesign, new regions and
+cross-map requirements. Full design: [gameplay overhaul plan](fun_overhaul.md).
+Before F1, record one **human baseline night** (solo and two-peer) with the
+plan's pacing metrics so every slice can show improvement.
+
+| Slice | Smallest shippable content | Gate (solo + two-peer co-op, graphical evidence, logged) |
+| --- | --- | --- |
+| **F1 Navigation & clues** | Skyline silhouettes, junction signposts, Lodge wall map (ring/spokes/region names), camp + field clue chains, three shared map pins per player, second boltcutters and noisy crowbar. | Silhouettes never reveal trails/creatures through trees; every part reachable from clues alone; pins replicate once; human time-to-named-clue ≤ 3 min. |
+| **F2 Phases, dread & director** | Host-owned phase clock and dread, relief windows, build-up cues, layered music, Blackout and Storm Front events. | Phases advance by time or progress; no spawns in sight/within 400px/in camp; no unsensed targeting; relief windows measured ≥ 45s. |
+| **F3 Chase toolkit** | Wounded state, hiding spots with breath meter, slam doors, vaults, one-use knock-overs, flash-stun, kitless revive, downed crawl/ping, one solo self-recovery. | Close-call:down ratio ≥ 3:1 in human play; hide/slam/vault contested intents resolve once; supersession of one-hit downs documented in README. |
+| **F4 Ring-and-spoke map** | Generator rework: hub, inner ring road, 4–6 signposted spokes, thickets, one unlockable shortcut per spoke, rotating objective regions. | Same world budget; graph reachability for every seed tested; spoke travel ≤ 60s and post-shortcut returns ≤ 90s measured by the route player. |
+| **F5 Escapes & new regions** | Radio Rescue (Power Substation + Radio Relay Station) with landing-zone hold-out; then Boat (Logging Camp + Lakeshore Boathouse) and Ranger Gate. Van gets its hold-out finale. | Each chain spans ≥ 3 spokes, solo-completable by every role; finale convergence bounded; results report escape type. |
+| **F6 Roles 2.0 & co-op** | Role active abilities, item passing, heavy items with two-carrier speed, two-person actions with solo fallbacks, ghost wisps, end-of-night awards. | Abilities host-validated and cooldown-bound; wisps reveal only explored trails; four Scouts and a solo Quiet Kid still win. |
+| **F7 Killers & modifiers** | Stalker tiers 1–4 and once-per-night sabotage; first new headline killer (The Groundskeeper); six night modifiers. | Sabotage displaces, never destroys, and marks the region; modifiers shown on loading card and reproducible by seed. |
+| **F8 Meta-progression** | Score and grade, daily seed, per-seed best table, camp journal, merit badges and unlocks; then the five-night campaign. | Local save is versioned and corruption-tolerant; unlocks are cosmetic/side-grades validated by the host. |
+
+F1–F3 precede M3-V proximity voice; voice may run in parallel after F3. Each
+slice keeps the game runnable and pushes verified increments per `AGENTS.md`.
+
 # Incremental implementation plan
 
 Latest user amendment: the offline content update is implemented ahead of M2;
@@ -102,8 +124,9 @@ balance and full all-role input-round gates remain pending. Existing M1 human ac
   microphone permissions and playback/capture on each claimed target. No exports
   before the applicable milestone passes.
 - M5: staged replayability/polish from the approved planning backlog. Alternate
-  extraction, objective-region rotation and further modes remain future rule
-  changes, with separate verification. No catalog size is a release/voice gate.
+  extraction, objective-region rotation, night phases and progression are now
+  scheduled as the F-track above, with per-slice verification. No catalog size
+  is a release/voice gate.
 
 The user has approved including future online voice and audio files in the
 design. This does not mark them implemented or collapse the incremental gates.

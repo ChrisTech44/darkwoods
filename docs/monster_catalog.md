@@ -46,6 +46,51 @@ see the current [README monster guide](../README.md#know-what-is-following-you).
 - All mimicry uses authored original/licensed effects, never player microphone
   recordings, forged peer names or fake platform permission/system messages.
 
+## Overhaul amendments to these rules
+
+The [gameplay overhaul plan](fun_overhaul.md) (planning, not implemented) changes
+three rules above once its slices ship: contact attacks first **Wound**, then
+**Down** (F3); the stalker may **displace** one installed part per night but
+never destroy it (F7); and a host-owned **director** may steer existing roamers
+toward the survivors' general band using only sensed information, with relief
+windows and no in-sight spawns (F2). Every other rule still applies.
+
+Heart-pounding goals for every new or reworked monster:
+
+- **A build-up before the peak**: distant call → nearby sign (tracks, broken
+  branches, flickering light) → visible tell → attack. Close calls should
+  outnumber downs about 3:1 in human play.
+- **Interaction with the chase toolkit**: state whether it checks hiding spots it
+  saw you enter, breaks or ignores doors, can be vaulted away from, and is
+  affected by knock-overs or flash-stun. Variety here matters more than stats.
+- **A phase personality**: how it behaves differently in Witching Hour.
+
+## Stalker escalation and headline killers
+
+The current stalker becomes the first **headline killer**, the night's main
+antagonist. Planned for **F7**, with tier changes driven by night phase:
+
+| Tier / phase | Stalker behavior |
+| --- | --- |
+| 1 Dusk | Quiet camp sweep; does not chase beyond the inner ring. |
+| 2 Nightfall | Hunts loud noises across the inner ring and spokes; checks hiding spots it saw used. |
+| 3 Deep Night | Search memory +50%; **Sabotage** once: when no survivor is within 300px of the van, it pulls one installed part (van alarm, open hood visible from camp) and carries it to a named region, where it lies marked. |
+| 4 Witching Hour | +10% chase speed, breaks doors 1s faster, cuts camp power once if the generator is unguarded. |
+
+Further headline killers rotate by seed (one per night; two only under the rare
+*Hunter's Moon* modifier). Each has original design, tells and counterplay:
+
+| ID / killer | Rule that changes how you play | Tell | Counterplay and limits |
+| --- | --- | --- | --- |
+| H01 **The Groundskeeper** | Sets visible snare traps on trail segments survivors used repeatedly (max 4 active), and rakes leaves to hear footsteps on raked paths. | Snares glint in flashlight within 90px; rake sound nearby; fresh raked patches. | Walk around or disarm (2s, quiet); a teammate frees a snared survivor in 1s. A snare holds 4s solo, never indefinitely. |
+| H02 **Smiley, the Camp Mascot** | Moves only while no survivor is looking at it within light or line of sight; very fast when unseen. | Squeaking costume feet; stops mid-pose when lit; grin glows faintly. | Keep a beam on it while backing away; teammates take turns watching. Cannot attack while observed. Flashlight drain is the pressure. |
+| H03 **The Drowned Counselor** | Travels through water and the lake; emerges near wet ground with a 1.2s splash tell; hunts the Boat escape heavily. | Dripping footprints appear before it does; whistle call. | Stay on dry boardwalks and stone; it is slow on dry land. Never emerges inside buildings. |
+| H04 **The Lantern Warden** | Carries a large lantern; anything in its light is seen at long range; it extinguishes flares it reaches. | Swinging pool of warm light visible from far, which helps you track it. | Stay in shadow, use thickets; flash-stun dims its lantern for 4s. |
+
+The **Lake Thing** in the Boat finale is the Drowned Counselor's landmark
+encounter when H03 is not the headline killer: a bounded hold-out pressure
+(splash tells at the boathouse ramps), not a free-roaming hunter.
+
 ## A. Pursuers and movement traps
 
 | ID / monster | Unique ability and trigger | Nearby tell | Counterplay and limit | Home |

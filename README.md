@@ -10,8 +10,9 @@ van while a stalker and roaming cryptids hunt by sight, sound, and light.
 Quick Camp and Woods Expedition. Host on LAN/Wi-Fi or a reachable Internet /
 virtual-LAN address. Independent local-process and graphical network tests pass;
 real cross-machine/Internet and other-platform acceptance remains pending.
-**Voice chat is next and is not implemented.** Run from source; standalone
-packages are a later milestone.
+**Next up is the [gameplay overhaul](docs/fun_overhaul.md)** (clues, night phases,
+hiding and chases), then voice chat; none of it is implemented yet. Run from
+source; standalone packages are a later milestone.
 
 See the [item reference](#items) for every item, its location and how to use it.
 
@@ -502,7 +503,8 @@ ENet co-op is now implemented in both modes. Two/four-peer local execution and
 scripted graphical two-window checks are recorded in the
 [multiplayer guide](docs/multiplayer_guide.md). Human balance, real cross-machine
 Internet, synchronized-audio listening, jitter/other-platform acceptance and
-exports remain pending. Proximity voice is the next feature.
+exports remain pending. The [gameplay overhaul](docs/fun_overhaul.md) slices F1–F3
+come next, followed by proximity voice.
 
 The larger backlog includes 48 monster concepts and 18 biome designs. Ten
 new monster types and six new regions now have first offline versions; deeper
@@ -510,6 +512,7 @@ powers, interiors and the remaining catalog are still planned.
 
 - [Authoritative project brief](AGENT_BRIEF.md) — requirements and acceptance gates.
 - [Milestones](docs/milestones.md) — implementation plan and remaining work.
+- [Gameplay overhaul](docs/fun_overhaul.md) — planned night phases, chases, hiding, map redesign, new escapes and replayability.
 - [Survivor selection and co-op](docs/survivor_multiplayer_plan.md) — six archetypes, selection screens and the transition into voice.
 - [Monster catalog](docs/monster_catalog.md) — 48 additional designs, their abilities and counterplay.
 - [Biome design](docs/biome_design.md) — 18 detailed regions, randomized layouts, encounters and staged delivery.

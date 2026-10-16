@@ -5,7 +5,7 @@ are maintained in Markdown only. The build implements offline rounds and ENet li
 Exports and real cross-machine Internet acceptance remain unverified.
 
 [Survivor selection and role authority](survivor_multiplayer_plan.md) and
-[ENet co-op](multiplayer_guide.md) are implemented. Voice is the next feature,
+[ENet co-op](multiplayer_guide.md) are implemented. The [gameplay overhaul](fun_overhaul.md) F1–F3 and then voice are next,
 with synchronized-audio listening and real cross-machine acceptance still
 pending. The [monster](monster_catalog.md) and [biome](biome_design.md) catalogs
 contain both current first versions and larger backlogs. Roles use private

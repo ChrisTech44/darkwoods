@@ -494,6 +494,65 @@ parts, adds permanent heat nor changes a burning flare's remaining lifetime.
 from modules. Verify both stash approaches, simultaneous cart intent rejection,
 finite flare transfer and safe behavior if a player stands on the destination.
 
+## Overhaul: ring-and-spoke map, rotating objectives and new regions
+
+Planned for overhaul slices **F4–F5** ([overhaul plan](fun_overhaul.md));
+nothing here is implemented. The user is open to a better map structure, new
+regions and requirements that span the map. When F4 ships it supersedes, in
+contract items 5 and 7 above, the fixed three objective regions and the
+"explored names only" orientation. The world budget stays 9,600×9,408 and every
+other contract item still applies.
+
+### Structure
+
+- **Camp hub** (unchanged furnished camp), now with a **lake edge** to the
+  south-west and a **floodlit ranger gate** on the old road.
+- **Inner ring road**, about 1,600px from camp: 192px wide, lamp posts lit while
+  camp power is on, frequent hiding spots, gentle curves so it never feels like
+  a corridor. It connects every spoke without passing through camp.
+- **Four to six spokes** from camp to the region clusters, each 128–192px wide,
+  signposted at the ring and at a mid-spoke **junction landmark** (cairn, shrine,
+  broken bus, hunting blind). Each spoke has one **unlockable shortcut** back
+  toward camp, opened from the far side.
+- **Middle band** of objective-capable regions; **deep band** of optional,
+  high-risk relic regions. Bands use measured travel distance, not radius alone.
+- **Thickets** fill the space between spokes. The current maze generator lives on
+  here: darker, no lamps, more roamers, shorter as the crow flies.
+- **Skyline silhouettes** for tall landmarks render on a canopy-top layer within
+  a bounded radius; they show direction only, never trails or creatures.
+
+### Rotating objectives
+
+Every night draws its required steps from the **objective-capable pool**
+(village, bog, graveyard, mill, rail yard, plus B19–B24 below) so the chain
+spans at least three spokes and never sits in a deep-band dead end. Clue chains
+(camp → field → building) name the regions; the Lodge wall map names all
+regions from the start. Seed + content version reproduce the draw.
+
+### New regions (B19–B26)
+
+| ID / region | Silhouette and layout | Cross-map role | Local tension |
+| --- | --- | --- | --- |
+| B19 **Ranger Fire Tower** | Tall lookout on a rise, switchback stairs, picnic shelter; skyline landmark. | Lookout reveals region names in a radius and lit creatures in sight; zipline shortcut toward camp; holds clue notes. | Climbing is noisy and exposed; one way down unless the zipline is unlocked. |
+| B20 **Power Substation** | Fenced transformer yard, breaker hut, humming lines leading toward camp. | Fuse restores camp power: ring-road lamps, camp floodlights, radio station and ranger gate. Generator battery (heavy) can substitute. | Electric hum masks footsteps for players *and* AI; arcing transformer tells. |
+| B21 **Radio Relay Station** | Hilltop mast (skyline), equipment shack, guy-wire maze. | Radio Rescue transmit point once power is on; also the Scout-friendly clue hub. | The 10s transmit hold broadcasts noise; guy-wires create tight lanes. |
+| B22 **Logging Camp** | Log decks, a dead skidder, sawhorse rows, a winch line. | Outboard motor (heavy) for the Boat escape; crowbar toolshed; winch two-person action. | Log piles are knock-overs; the Groundskeeper favours it. |
+| B23 **Lakeshore Boathouse** | Boathouse, two ramps, dock, canoe racks on the camp lake. | Boat launch point; canoe shortcut across the lake to camp. | Water edges are the Drowned Counselor / Lake Thing's domain; launch hold-out. |
+| B24 **Old Copper Mine** | Cliff entrance, timbered tunnels with an ore-cart line, lantern hooks. | Holds a gate-code fragment or kerosene; the ore cart is a one-way fast exit toward a spoke. | Pitch dark interior, short sight, echoing sound that is hard to locate. |
+| B25 **Hunting Lodge** | Trophy hall, porch, kennels, a stand of hunting blinds. | Deep-band relic site; flare gun for the Signal Fire; best hiding spots in the woods. | Many hiding spots but the kennels wake hounds; trophies rattle when brushed. |
+| B26 **Signal Ridge** | Bare hilltop with a beacon pyre, wind-bent trees, two steep approaches. | Signal Fire escape finale; also a skyline landmark once lit. | Open ground with no hiding; finale hold-out with everything converging. |
+
+Existing concepts B05 Reservoir, B16 Storm Ridge and B08 Quarry can merge into
+B23/B26/B24 if that reads better; choose during F5 schematics.
+
+### Acceptance additions for F4–F5
+
+Every seed: hub/ring/spoke graph connected; every shortcut only adds routes;
+spoke travel ≤ 60s and post-shortcut return ≤ 90s at walk speed (route player);
+required chain spans ≥ 3 spokes and is solo-completable by every role; heavy
+items never in deep dead ends; skyline layer occlusion probes pass; objective
+rotation and escape choice reproduce by seed in solo and two-peer co-op.
+
 ## Satellites that fill travel gaps without another full biome
 
 Use a few small landmarks between major regions: a collapsed hunting blind with

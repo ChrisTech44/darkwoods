@@ -84,6 +84,21 @@ shared down/revive/escape events remain team-wide. Alternating successful revive
 and subsequent downs must not end a round while someone is still alive/aboard.
 A player without a medkit can collect nearby drops beside a downed teammate.
 
+**Latest fun/heart-pounding amendment (16 October; planning, not implemented):**
+the user wants the game more fun, dynamic and tense, and found searching puzzling,
+tedious and low on replay value. The user is explicitly open to better map
+designs, new regions and new cross-map requirements. The
+[gameplay overhaul plan](docs/fun_overhaul.md) is now the authoritative design
+direction and its F1–F3 slices precede proximity voice. When each slice ships, it
+supersedes these older rules: one-hit downs (→ Wounded then Downed), medkit-only
+revives (→ 6s kitless revive, medkit 3s, one solo self-recovery), "monsters cannot
+destroy required components" (→ the stalker may *displace*, never destroy, one
+part, always marked), fixed village/bog/graveyard objective regions and the single
+van escape (→ rotating regions, clue chains and alternate cross-map escapes),
+the uniform maze (→ hub, ring road, spokes, thickets and shortcuts within the same
+world budget), a single boltcutters pair, and flat threat (→ night phases, dread
+and a bounded director). Until then, the current rules describe the build.
+
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 
 ## Mission & non-negotiables
@@ -99,6 +114,10 @@ A player without a medkit can collect nearby drops beside a downed teammate.
 - Fantasy: friends arrive at an isolated campsite at night; a slasher stalks them as they search for supplies, repair a getaway vehicle, and escape together. Intended tone: tense and scary but allows emergent comedic mishaps. Target rounds for eventual game: 15–25 minutes; the MVP may be shorter.
 
 - Core loop: choose survivor offline or host/join a lobby with survivor selection → confirm/ready → spawn at campsite → investigate cabins and wooded trails → collect randomized objective items → avoid/disrupt killer → repair and start escape vehicle → surviving players extract → show outcome screen → replay.
+
+- Fun pillars (see the [overhaul plan](docs/fun_overhaul.md)): every minute holds a decision; pressure rises through Dusk → Nightfall → Deep Night → Witching Hour; friends need each other; every night tells a different story; fear is earned and fair. Track the plan's pacing metrics in human playtests (≤ 45s with nothing new, a close-call-to-down ratio of at least 3:1, a named-region clue within 3 min).
+
+- Planned dynamic systems (overhaul F-track): clue chains and skyline navigation; hiding spots, doors, vaults and a Wounded state; dread-driven night phases, events and escape hold-out finales; a ring-and-spoke map with unlockable shortcuts; rotating objective regions and alternate escapes (van, radio rescue, boat, ranger gate, signal fire) whose steps span the map; role active abilities, heavy two-person carries and ghost wisps; headline killer rotation, night modifiers, scores, journal and unlocks.
 
 - Replayability systems (introduce after core loop): randomized objective item placements; several possible cabin locks and blocked paths; alternate extraction methods; risk/reward optional loot; killer patrol variations and memory of recent sound/sightings. Do not make "infinite procedural maps" the MVP. Both modes default to fresh random camps; only explicit seed entry/retry repeats a recipe. Keep loot, doors and the chart aligned with seeded building placements. The latest approved forest expansion surrounds a central camp with a finite 9,600×9,408 woods, 2,410 forest clearings, four exits, 128px trails, spacious themed regions, clean approach transitions and 24 roaming cryptids in expedition mode.
 
@@ -167,7 +186,7 @@ A player without a medkit can collect nearby drops beside a downed teammate.
 - In active rounds, attenuate nearby survivor voices by distance and apply simple wall muffling; lobby/results use session-wide chat. Dead/escaped/left-behind players use a separate spectator voice group so they cannot relay unrestricted information to living survivors. No audio recording or microphone payloads in logs.
 - Host-approved peer identity, position and round state determine voice recipients. Use bounded, compressed low-latency frames on a path isolated from reliable gameplay traffic; drop stale frames rather than building a backlog. Choose/verify the codec, transport, dependency licenses and Internet encryption design in an implementation spike before making performance/platform claims.
 - Voice does not attract AI by default. Any later speech-to-game-noise option needs separate balance work and host validation. Clear capture/playback buffers on disconnect, restart and host loss. Test proximity boundaries, occlusion, mute/PTT, denial/no-device behavior, spectator isolation, jitter/load and cross-machine audio.
-- Implementation order: visual/map fixes and seeded camp variety → offline audio cues/assets → M1-S survivor selection/bonuses and recorded human baseline → M2 gameplay with role authority and M2-A synchronized audio → M3 reliability → M3-V proximity voice → M4 packaged audio/permissions. New biome/monster slices follow stable foundations; online acceptance gates remain future work.
+- Implementation order: visual/map fixes and seeded camp variety → offline audio cues/assets → M1-S survivor selection/bonuses and recorded human baseline → M2 gameplay with role authority and M2-A synchronized audio → M3 reliability → overhaul F1–F3 → M3-V proximity voice (may run in parallel after F3) → F4–F8 → M4 packaged audio/permissions. New biome/monster slices follow stable foundations; online acceptance gates remain future work.
 
 ## Killer AI contract
 
@@ -202,6 +221,8 @@ A player without a medkit can collect nearby drops beside a downed teammate.
 - M3-V – Online proximity voice (after M2-A and M3 reliability): opt-in push-to-talk, distance/occlusion, mute/device settings, spectator separation and bounded transport. Gate: two separate machines complete a round with working voice, followed by four-peer/jitter/disconnect checks; denied microphone access does not block gameplay. Record the actual direct-IP/virtual-LAN connection method. Archetypes grant no global voice or extra microphone hearing.
 
 - M4 – Distribution: exported packages for available desktop targets and clear launch instructions, including audio files, codec dependencies and microphone permission behavior once voice is implemented. Gate: packaged audio/voice and builds checked on available platforms; untested target platforms labeled unverified.
+
+- F1–F8 – Fun overhaul track (see [overhaul plan](docs/fun_overhaul.md)): navigation/clues → night phases/director → chase toolkit → ring-and-spoke map → alternate escapes/new regions → roles 2.0/co-op actions → killers/modifiers → meta-progression. F1–F3 come before M3-V voice; each slice needs solo and two-peer co-op verification, graphical evidence and a recorded human pacing playtest before the next. Gate per slice: the plan's fairness/authority rules hold and the targeted pacing metric improves on the recorded baseline.
 
 - M5 – Replayability/polish: the survivor/monster/biome planning backlog is approved for design, with one-at-a-time implementation gates. Further objective rotations, extraction modes, tools, balance, sprite sheets and lighting follow verified slices. Baseline audio cues and voice retain their own M2-A/M3-V gates; a content brainstorm is not execution evidence.
 

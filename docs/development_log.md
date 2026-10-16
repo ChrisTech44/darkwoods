@@ -1,5 +1,36 @@
 # Development log
 
+## 2026-10-16 — Gameplay overhaul planning (fun, dynamic, heart-pounding)
+
+User feedback: searching feels puzzling and tedious, and nights are not very
+replayable. The user wants the game more fun, dynamic and tense with friends, and
+is open to map redesign, new regions and cross-map requirements. Added
+[docs/fun_overhaul.md](fun_overhaul.md) as the authoritative design direction:
+a code-grounded diagnosis (70 px/s walking in a 9,600×9,408 maze, three required
+caches in three directions, one shared boltcutters, low-value optional sites,
+flat threat, one-hit downs) plus pillars, night phases with dread and a bounded
+director, night events, a chase toolkit (Wounded state, hiding, doors, vaults,
+knock-overs, kitless revive), ring-and-spoke map with skyline landmarks and
+shortcuts, clue chains and map pins, rotating objective regions, five escape
+types with cross-map chains and hold-out finales, co-op actions, replayability
+(headline killers, modifiers, scores, journal, unlocks, campaign), pacing
+metrics and the F1–F8 delivery track.
+
+Amended the brief (new amendment, pillars, F-track, ordering: F1–F3 before
+M3-V voice), milestones (F-track table and gates), survivor plan (Roles 2.0
+active abilities, unlockable roles, wisps, awards), monster catalog (rule
+amendments, stalker tiers/sabotage, headline killers H01–H04), biome design
+(ring-and-spoke structure, objective rotation, regions B19–B26 and F4–F5
+acceptance) and audio design (dynamic music/stingers/hiding audio, walkie-talkie
+and opt-in voice-noise modifier ideas). Updated "voice is next" statements in the
+README, multiplayer guide and architecture doc. Planning only; no gameplay
+code, assets or tests changed and none of these systems are implemented.
+
+Verification: all relative Markdown links and heading anchors across README,
+brief and docs resolve (0 broken); `git diff --check` passed; required Godot
+4.7.2 headless import and five-frame startup both exited 0 with no errors or
+warnings. Documentation-only change; no new screenshots.
+
 ## 2026-10-16 — GitHub item reference with locations and effects
 
 Expanded the README with a linked **Items** section covering all seven van

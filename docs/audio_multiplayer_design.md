@@ -96,6 +96,34 @@ uses authored registered cues, never recorded player speech, peer impersonation
 or arbitrary client-supplied audio. Threat cues retain visible counterparts and
 nearby attenuation; new biome ambience must not mask attack warnings.
 
+## Heart-pounding audio (overhaul F2–F3)
+
+Planned in the [gameplay overhaul plan](fun_overhaul.md); not implemented.
+Sound carries most of the tension, so the overhaul adds these local layers on
+top of the current cues:
+
+- **Dynamic music by dread and phase**: an ambient bed per phase (Dusk → Witching
+  Hour), a *build-up* layer when a threat is sensed nearby, and a *chase* layer
+  while a survivor is pursued. Crossfade over 1–2s; never cut abruptly. The local
+  layer follows that player's own state (host-replicated chase/phase flags).
+- **Stingers** for phase changes, sabotage (van alarm), shortcut opened, and
+  part installed, each short and paired with a visual banner.
+- **Hiding audio**: muffled world, loud breathing tied to the breath meter,
+  pursuer footsteps louder and directional.
+- **Stalker tells**: flashlight buzz/flicker near the stalker, heavy distinct
+  footsteps, a door-break crunch. New cues need stable IDs and provenance.
+- **Hold-out finales**: engine, radio static or burning pyre loops that swell over
+  the hold-out, with creature calls converging.
+
+Overhaul ideas for voice (after M3-V's opt-in/PTT baseline):
+
+- **Walkie-talkies** (pickup): a radio channel that lets a holder hear and speak to
+  other holders at any distance with static, using normal PTT. Proximity voice
+  stays the default. Wisps/spectators remain in their own group.
+- **"Loud Voices" night modifier**: optional, off by default and host-validated,
+  where voice above a threshold creates a small AI noise stimulus. It needs the
+  separate balance work already required above and is never on by default.
+
 ## Proximity voice experience
 
 Voice is optional for joining/playing. Default to **mic disabled until explicitly

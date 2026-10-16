@@ -64,6 +64,41 @@ covers a rescue; a Grease Monkey performs the final start while others approach.
 The same objectives must still be solvable by four Scouts or a solo Quiet Kid.
 Avoid adding a timer shortcut that makes the van depart before teammates board.
 
+## Roles 2.0: active abilities and team play
+
+Planned for overhaul slice **F6** ([overhaul plan](fun_overhaul.md)); not
+implemented. Current stat bonuses rarely change decisions. Each role keeps a
+small passive and gains **one active ability** (new `ability` action, proposed
+default **X**) with a cooldown or per-night charges, plus a **team hook** that is
+useful with friends but never required. Values are starting proposals.
+
+| Role | Passive (kept/trimmed) | Active ability | Team hook |
+| --- | --- | --- | --- |
+| **The Jock** | 5s stamina | **Second Wind**: instantly refill stamina and gain 2s of +10% sprint; once per night phase. | Carries a heavy item alone at full walk speed; drags a downed teammate at 35 px/s. |
+| **Grease Monkey** | 1.5s ignition | **Jury-Rig**: barricade a door for 8s, or re-install a sabotaged part in 1s; 2 charges. | Workbench crafts at double speed; can hotwire the rumoured secondary escape vehicle. |
+| **The Scout** | 0.8 light drain | **Mark**: ping one landmark, cache or *seen* creature for all teammates for 6s; 30s cooldown. | Starts each night with one free field clue; climbs the fire tower in 2s. |
+| **First-Aid Kid** | Faster revives | **Patch**: remove Wounded from self or an adjacent teammate without a medkit; 2 charges. | Kitless revive at medkit speed; sees downed teammates' ping from twice as far. |
+| **The Quiet Kid** | Sprint noise ×0.75 | **Hold Breath**: 6s in which walking makes no AI noise and hiding breath drains half as fast; 45s cooldown. | Enters hiding spots in 0.3s; leaves no blood trail while Wounded. |
+| **Overprepared** | Extra supplies | **Unpack**: once per night, open a seventh belt slot and drop a stash crate teammates can loot. | Item passing takes 0.2s instead of 0.5s. |
+
+Rules kept: every role can win alone, duplicates allowed, no exclusive access to
+parts or victory, effects are host-derived from the role registry and the active
+ability is an intent the host validates (cooldown, charges, range, line of sight).
+Mark never reveals what the Scout has not actually seen.
+
+**Unlockable roles** (F8, earned by merit badges; side-grades, not upgrades):
+*The Counselor* (team-wide pin range + calm aura: nearby teammates' breath meters
+drain 20% slower), *The Prankster* (noise tins rattle 5 times; a decoy flashlight),
+*The Lifeguard* (swims short lake channels; faster boat launch).
+
+**Downed, escaped and spectating players** stay involved: downed survivors crawl
+and ping for help; escaped/left-behind players become **ghost wisps** (lead one
+teammate's view along explored trails once per minute, nothing else). This fits
+the spectator voice-isolation rule: wisps show only information the team already has.
+
+**End-of-night awards** add a social layer: per-player titles computed from
+host-recorded stats (rescues, hides, flares, distance, time downed). Shared on the results screen.
+
 ## M1-S: small offline increments before networking
 
 1. **Selection shell.** Add the selection screen, controller-free keyboard/mouse

@@ -3,7 +3,8 @@
 The source build now includes **1–4 player ENet listen-server co-op** in Quick
 Camp and Woods Expedition. One survivor hosts; the others join that machine.
 Both modes keep the current survivor choices, items, enemies and escape rules.
-Voice chat is the next feature; no microphone is opened or requested.
+Voice chat follows the first [gameplay overhaul](fun_overhaul.md) slices; no
+microphone is opened or requested.
 
 ## Host and join
 

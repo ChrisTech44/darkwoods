@@ -101,6 +101,15 @@ and a bounded director). Until then, the current rules describe the build.
 F1 navigation aids are implemented (signposts, skyline markers, wall-map regions,
 M-key team pins, a woods boltcutters pair and a loud crowbar; rules `lnac-net-4`).
 Clue chains moved to F4 alongside rotating objective regions.
+Round-length amendment: expedition rounds should span **40–60 minutes**. F2
+implements this as a host-owned 60-minute night. There are four phases (Dusk
+0–10, Nightfall 10–25, Deep Night 25–40, Witching Hour 40–60). Ranger-radio part
+reveals mean the final part appears at 40:00. Phases advance by clock only;
+progress raises dread instead, so the 40-minute floor holds. At dawn, survivors
+in camp or aboard are rescued and those in the woods are left behind. F2 also
+adds dread, a bounded director, phase supply drops, storms, blackouts with a
+generator restart, dread-scaled music and modest stalker escalation (rules
+`lnac-net-5`). Quick Camp stays short.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 
@@ -114,7 +123,7 @@ Clue chains moved to F4 alongside rotating objective regions.
 
 ## Player experience & replayability
 
-- Fantasy: friends arrive at an isolated campsite at night; a slasher stalks them as they search for supplies, repair a getaway vehicle, and escape together. Intended tone: tense and scary but allows emergent comedic mishaps. Target rounds for eventual game: 15–25 minutes; the MVP may be shorter.
+- Fantasy: friends arrive at an isolated campsite at night; a slasher stalks them as they search for supplies, repair a getaway vehicle, and escape together. Intended tone: tense and scary but allows emergent comedic mishaps. Target rounds: **40–60 minutes** for Woods Expedition (user amendment, 16 October), structured as a 60-minute night with phase-staged objectives and a dawn rescue; Quick Camp remains a short mode.
 
 - Core loop: choose survivor offline or host/join a lobby with survivor selection → confirm/ready → spawn at campsite → investigate cabins and wooded trails → collect randomized objective items → avoid/disrupt killer → repair and start escape vehicle → surviving players extract → show outcome screen → replay.
 

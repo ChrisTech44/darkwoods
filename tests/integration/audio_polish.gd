@@ -38,7 +38,9 @@ func _run() -> void:
 		enemy.enabled = false
 	var sound: CampSoundscape = level.soundscape
 	await _frames(90)
-	_check(sound.gains["woods"] > 0.9 and sound.gains["music"] > 0.9, "round_ambience_and_music_fade_in")
+	# Music now follows the night's dread: quiet at Dusk, swelling toward the Witching Hour.
+	var music_target := clampf(0.45 + level.night_clock.dread * 0.0055, 0.0, 1.0)
+	_check(sound.gains["woods"] > 0.9 and absf(sound.gains["music"] - music_target) < 0.06 and music_target < 0.6, "round_ambience_and_dread_scaled_music_fade_in")
 	level.player.position = Vector2(300, 448)
 	await _frames(2)
 	var steps_before: int = sound.played_counts.get("footstep", 0)

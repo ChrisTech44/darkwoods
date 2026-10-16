@@ -142,12 +142,44 @@ Voice/microphone capture is not enabled.
 | Mode | Repair objective | Threats and exploration |
 | --- | --- | --- |
 | **Quick Camp** | Battery in the Fern bunk cabin, fuel in Maintenance, key in the Ranger Lodge. | The camp stalker and a shorter three-part objective with randomized camp buildings. Flashlight charge does not drain. |
-| **Woods Expedition** | Battery and key in camp location pools; fuel and two extra parts in themed-area caches. | The stalker plus 48 cryptids, a seeded trail maze, survival supplies, weather, and a draining flashlight. |
+| **Woods Expedition** (40–60 min) | Battery and key in camp location pools; fuel and two extra parts in themed-area caches, revealed by ranger radio as the night deepens. | A 60-minute night that grows more dangerous: the stalker plus 48 cryptids, a seeded trail maze, survival supplies, weather, storms, blackouts and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
 The pack lists the current requirements and location clues. The woods contains nine major regions. Three hold the required caches: **Abandoned Village (northwest)**,
 **Witch's Bog (east)**, and **Old Graveyard (south)**. The mill, orchard, observatory, rail yard, quarry
 and chapel are optional; six smaller ruined landmarks also remain along the trails.
+
+## The night (Woods Expedition)
+
+Each expedition is a **60-minute night** in four phases. The heading shows the
+phase and clock; in the Witching Hour it counts down to dawn.
+
+| Phase | Clock | What happens |
+| --- | --- | --- |
+| **Dusk** | 00:00–10:00 | Battery and key are in camp. Grab tools and supplies, plan routes. The woods are at their calmest. |
+| **Nightfall** | 10:00–25:00 | Ranger radio reveals the **fuel** cache. First storm of the night. |
+| **Deep Night** | 25:00–40:00 | Radio reveals the **first extra part**. The stalker hears farther. A blackout hits camp. |
+| **Witching Hour** | 40:00–60:00 | Radio reveals the **last extra part**. The stalker chases faster. Escape before dawn. |
+
+- **Parts arrive by radio.** Tab lists every required part; unrevealed ones show
+  when the radio will announce them, e.g. `FUEL / RANGER RADIO AT NIGHTFALL (10:00)`.
+  The van can't be finished before 40:00, so most escapes happen between 40 and 60 minutes.
+- **Supply drops.** Each new phase leaves 2 flashlight batteries, a flare and a
+  ration at the Maintenance stash.
+- **The woods get hungrier.** Pressure ("dread") rises with the clock, loud noises
+  and every installed part. Higher dread sends roaming creatures toward your
+  general area more often, never to your exact spot and never into camp. After
+  a chase you get at least 45 seconds of calm. Music swells with dread, and a
+  distant howl marks each new phase.
+- **Storms** (90s): thunder masks noise (creatures hear 40% less far) and
+  lightning briefly lights the trees. Walls still block what you can see.
+- **Blackouts:** camp lamps die until someone restarts the generator by the
+  Maintenance door (**E**, loud). The campfire keeps burning.
+- **Dawn (60:00):** the ranger patrol reaches camp. Survivors standing in camp
+  or aboard the van are rescued; anyone still in the woods is left behind. If
+  the van isn't ready, race home before dawn.
+
+Quick Camp stays a short mode with no night clock.
 
 ## How to escape
 
@@ -171,8 +203,9 @@ escapes, even if they have not been revived. The automated network tests
 use host-only placements for isolated authority checks; human co-op balance is
 still unrecorded.
 
-A round is won when at least one living passenger escapes. The results report
-your own outcome too; living survivors left outside are left behind.
+A round is won when at least one living passenger escapes, or when anyone is
+standing in camp at dawn. The results report your own outcome too; living
+survivors left outside are left behind.
 
 ## Controls
 
@@ -498,8 +531,9 @@ recover units. Vehicle components and cutters remain separate from this limit.
 
 The current implementation includes solo and 1–4 player ENet co-op in both
 modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
-species. Full baseline verification passed **78 steps** with no errors/warnings,
-including the new [navigation suite](docs/evidence/navigation/README.md);
+species. Full baseline verification passed **81 steps** with no errors/warnings,
+including the [navigation](docs/evidence/navigation/README.md) and
+[night phase](docs/evidence/night_phases/README.md) suites;
 final content checks passed **350 assertions**. Current graphical ENet tests passed **654
 assertions across 14 process runs**, including two/four peers and graphical
 host/client windows in both modes. See the

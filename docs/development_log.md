@@ -1,5 +1,48 @@
 # Development log
 
+## 2026-10-16 — Overhaul F2: the 60-minute night
+
+User amendment: expedition rounds should span **40–60 minutes**. Implemented as
+a host-owned `NightClock` (`scripts/core/night_clock.gd`) in Woods Expedition;
+Quick Camp stays short with the clock inactive.
+
+- **Phases by clock:** Dusk 0–10, Nightfall 10–25, Deep Night 25–40, Witching
+  Hour 40–60, dawn at 60:00. The plan's "time or progress, whichever first" rule
+  was replaced; progress feeds dread instead, keeping the 40-minute floor.
+- **Ranger-radio reveals:** battery/key at Dusk, fuel at Nightfall, extra parts at
+  Deep Night and Witching Hour (`RoundPlan.reveal_phase`). Sealed caches are hidden
+  and unavailable; Tab shows each part's radio time.
+- **Dread and director:** dread = phase base + progress through the phase +
+  decaying noise heat + 3 per installed part. Every 75→25s (by dread) the director
+  steers 1–2 patrolling roamers 700–1,800 px away, never within 400 px of any
+  survivor, never guardians, to a point 150–300 px from a woods survivor. It never
+  targets camp and skips anyone chased in the last 45 s.
+- **Events and supplies:** seeded storm (Nightfall), blackout (Deep Night) and
+  a random third in the Witching Hour. Storms scale all AI hearing ×0.6 for 90 s
+  with lightning flashes; blackouts disable camp lamps (the campfire keeps
+  burning) until E at the Maintenance generator (450 px noise). Each phase drops
+  2 batteries, a flare and a ration at Maintenance.
+- **Escalation and audio:** stalker hearing ×1.1 at Deep Night and Witching Hour,
+  chase speed ×1.08 at Witching Hour. Music gain and pitch follow dread; a
+  distant howl on the Music bus marks each phase. It is a score stinger, not a
+  positional creature call, so the proximity-call rule still holds.
+- **Dawn:** survivors in camp or aboard are rescued (downed in camp too, if anyone
+  is); anyone in the woods is left behind.
+- Snapshots carry the night state; clients don't simulate it. Rules `lnac-net-5`.
+
+Test updates: the replay test now checks fuel is sealed until Nightfall, then
+advances; the full-expedition bot uses `reveal_all()` with the director off, so
+it stays a route regression. The audio test expects dread-scaled music. The
+network test adds a host-advanced Nightfall stage. Diagnostics showed a client
+HUD lagging the snapshot by a frame, so the stage now waits three frames.
+
+**Verification:** `python3 tools/verify.py` 81/81 steps, no errors or warnings
+(new `night_phases`: 40 headless / 41 graphical assertions).
+`verify_network.py --mode all`: 2 peers 251 assertions, 4 peers 421, all passing.
+Evidence: [night phases](evidence/night_phases/README.md). Not verified: a human
+40–60 minute night, light/supply balance over a full night, graphical network
+windows, other platforms.
+
 ## 2026-10-16 — Overhaul F1: navigation aids, team pins and spare lock tools
 
 Continued the user's gameplay overhaul with slice F1 to cut "puzzling, tedious"

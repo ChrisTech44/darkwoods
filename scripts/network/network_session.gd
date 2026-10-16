@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-4"
+const RULES := "lnac-net-5"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -224,13 +224,14 @@ func attach_world(level: Node2D) -> void:
 			actor.sprint_noise_emitted.connect(func(origin: Vector2):
 				if multiplayer.is_server():
 					for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
-						enemy.hear_stimulus(origin,enemy.config.hearing_radius*actor.sprint_hearing))
+						enemy.hear_stimulus(origin,enemy.config.hearing_radius*actor.sprint_hearing*level.night_clock.hearing_scale()))
 		if not multiplayer.is_server(): actor.set_physics_process(false)
 	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 		enemy.enabled=false
 		if not multiplayer.is_server(): enemy.set_physics_process(false)
 	if not multiplayer.is_server():
 		for site in level.camp_map.sites: site.set_physics_process(false)
+		level.night_clock.set_physics_process(false)
 	if multiplayer.is_server(): _accept_loaded(local_id,round_id)
 	else: _world_loaded.rpc_id(1,round_id)
 

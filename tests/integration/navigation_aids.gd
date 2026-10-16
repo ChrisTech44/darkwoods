@@ -105,6 +105,7 @@ func _level_checks() -> void:
 
 
 func _tool_checks() -> void:
+	level.night_clock.reveal_all()
 	var cutters: Array[CampPickup] = []
 	var crowbar: CampPickup
 	var cache: CampPickup

@@ -120,7 +120,7 @@ host-recorded stats (rescues, hides, flares, distance, time downed). Shared on t
 4. **Human gate.** Record normal-speed play with every archetype and the current
    giant forest: route length, supplies remaining, chase escapes, objective time,
    down/death causes and whether the bonus changed a decision. Compare repeated
-   seeds before tuning; automation does not establish fun or 15–25 minute pacing.
+   seeds before tuning; automation does not establish fun or 40–60 minute pacing.
 
 ## M2: turn selection into an authoritative lobby
 

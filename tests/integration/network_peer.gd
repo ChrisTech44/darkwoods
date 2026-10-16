@@ -109,6 +109,12 @@ func _host() -> void:
 	if not await _reports(peers-1): return
 	_check(level.pins.size()==1 and level.pins[0]["owner"]==guest,"guest_pin_accepted_by_host")
 	for report: Dictionary in harness.reports.values(): _check(report.get("pin",false),"guest_pin_replicated_to_clients")
+	if selected_mode=="woods":
+		# The host owns the night clock; clients see the phase and the radio-revealed fuel cache.
+		level.night_clock.skip_to(NightClock.PHASE_STARTS[1])
+		harness.advance.rpc("night_phase")
+		if not await _reports(peers-1): return
+		for report: Dictionary in harness.reports.values(): _check(report.get("night",false),"nightfall_and_fuel_reveal_replicated")
 	for actor: CampPlayer in net.actors.values():
 		actor.flashlight_on=false
 		actor.position=Vector2(140,430)
@@ -308,6 +314,15 @@ func _client() -> void:
 				await _until(func(): return net.actors[harness.data["guest"]].notice.contains("Nothing to use"),5)
 				var personal_actor: CampPlayer=net.world.player
 				harness.report.rpc_id(1,handled,{"private":personal_actor.notice.contains("Nothing to use") if get_multiplayer().get_unique_id()==harness.data["guest"] else personal_actor.notice_time==0})
+			"night_phase":
+				var fuel: CampPickup
+				for pickup: CampPickup in net.world.pickups:
+					if pickup.kind=="fuel": fuel=pickup
+				await _until(func(): return net.world.night_clock.phase==1 and fuel.available,5)
+				for frame in range(3): await process_frame
+				var night_ok: bool=net.world.night_clock.phase==1 and net.world.night_clock.elapsed>=600 and fuel.available and fuel.visible and net.world.hud.title.text.contains("NIGHTFALL")
+				if not night_ok: print(JSON.stringify({"event":"night_replica","phase":net.world.night_clock.phase,"elapsed":net.world.night_clock.elapsed,"fuel":fuel.available,"visible":fuel.visible,"title":net.world.hud.title.text}))
+				harness.report.rpc_id(1,handled,{"night":night_ok})
 			"map_pin":
 				if mine==harness.data["guest"]: net.action("pin")
 				await _until(func(): return net.world.pins.size()==1,5)

@@ -22,6 +22,7 @@ var plan := RoundPlan.new()
 var soundscape: CampSoundscape
 var sight: WoodsVisibility
 var pins: Array[Dictionary] = []
+var night_clock: NightClock
 const PINS_PER_PLAYER := 3
 
 
@@ -30,7 +31,7 @@ func _ready() -> void:
 	var session: Node = get_node("/root/Session")
 	plan.generate(session.begin_run(), session.mode)
 	if plan.expedition:
-		message = "Find cutters in Maintenance. Search woods caches for 3 of 5 van parts."
+		message = "DUSK. Grab tools and supplies. The ranger radio reveals more parts as the night deepens."
 	world_objects = Node2D.new()
 	world_objects.name = "WorldObjects"
 	world_objects.y_sort_enabled = true
@@ -68,6 +69,7 @@ func _ready() -> void:
 	_apply_weather()
 	var night := preload("res://scripts/ui/night_overlay.gd").new()
 	night.player = player
+	night.level = self
 	night.weather = plan.weather
 	add_child(night)
 	var weather := preload("res://scripts/ui/weather.gd").new()
@@ -88,6 +90,10 @@ func _ready() -> void:
 		pickup.locked = item["locked"]
 		pickups.append(pickup)
 		add_child(pickup)
+	night_clock = NightClock.new()
+	night_clock.name = "NightClock"
+	night_clock.level = self
+	add_child(night_clock)
 	hud = preload("res://scenes/ui/hud.tscn").instantiate()
 	add_child(hud)
 	hud.chart.camp_map = camp_map
@@ -121,6 +127,9 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	var heading := "VAN %d/%d · %s" % [van.installed.size(), plan.required.size(), plan.weather.to_upper() + " NIGHT" if plan.expedition else "SEARCH CAMP"]
+	if plan.expedition:
+		var clock := night_clock
+		heading = "VAN %d/%d · %s %s · %s" % [van.installed.size(), plan.required.size(), NightClock.PHASES[clock.phase], NightClock.clock_text(clock.elapsed), "DAWN IN " + NightClock.clock_text(NightClock.DAWN - clock.elapsed) if clock.phase == 3 else plan.weather.to_upper()]
 	if van.installed.size() == plan.required.size():
 		heading = "VAN REPAIRED  ·  HOLD E AT THE REAR TO START"
 	if van.running:
@@ -143,7 +152,7 @@ func _process(_delta: float) -> void:
 		detail = message + "\n" + detail
 	hud.set_status(heading, detail, player.stamina / player.config.stamina_max)
 	hud.inventory_label.text = "NIGHT %d / %s\nQ FLARE %d · R BATTERY %d · C FOOD %d\n" % [plan.seed_value, plan.weather.to_upper(), player.supplies["flare"], player.supplies["battery_pack"], player.supplies["rations"]]
-	hud.inventory_label.text += plan.pack_description(van.installed)
+	hud.inventory_label.text += plan.pack_description(van.installed, night_clock.phase if plan.expedition else 3)
 	if plan.expedition:
 		hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINT./%s WOODS BOX" % plan.toolbox_hint) + (" +BAR" if "crowbar" in player.inventory else "") + " · TAB CLOSE"
 	else:
@@ -160,6 +169,8 @@ func _process(_delta: float) -> void:
 			hud.threat_label.text = enemy.species.replace("_", " ").to_upper() + " NEARBY"
 	if player.hex_remaining > 0:
 		hud.threat_label.text = "HEXED %.1fs / SLOWED!" % player.hex_remaining
+	for lamp in camp_map.camp_lamps:
+		lamp.enabled = not night_clock.blackout
 
 
 
@@ -249,6 +260,8 @@ func try_interact(actor: CampPlayer) -> bool:
 	for site in camp_map.sites:
 		if not site.nearby(actor).is_empty():
 			return site.interact(actor)
+	if near_generator(actor):
+		return night_clock.restart_generator(actor)
 	if van.in_range(actor) and clear_path(actor.global_position, van.interaction_point()):
 		var count := van.deliver(actor)
 		if count > 0:
@@ -293,21 +306,23 @@ func advance_revive(actor: CampPlayer, target: CampPlayer, holding: bool, delta:
 
 func _on_noise(origin: Vector2) -> void:
 	if not paused and not finished:
+		night_clock.note_noise()
 		for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
-			enemy.hear_noise(origin)
+			enemy.hear_stimulus(origin, enemy.config.hearing_radius * night_clock.hearing_scale())
 
 
 func _on_sprint_noise(origin: Vector2) -> void:
 	if not paused and not finished:
 		for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
-			enemy.hear_stimulus(origin, enemy.config.hearing_radius * player.sprint_hearing)
+			enemy.hear_stimulus(origin, enemy.config.hearing_radius * player.sprint_hearing * night_clock.hearing_scale())
 
 
 func loud_noise(origin: Vector2, radius: float) -> void:
 	if paused or finished:
 		return
+	night_clock.note_noise()
 	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
-		enemy.hear_stimulus(origin, radius)
+		enemy.hear_stimulus(origin, radius * night_clock.hearing_scale())
 
 
 func clear_path(from: Vector2, to: Vector2) -> bool:
@@ -337,6 +352,8 @@ func context_prompt() -> String:
 		var action := site.nearby(player)
 		if not action.is_empty():
 			return "E · " + action["label"] if site.cooldown <= 0 else "LET THE ECHO FADE..."
+	if near_generator(player):
+		return "E · RESTART GENERATOR (LOUD)"
 	if van.in_range(player):
 		if van.running:
 			return "E · ENTER VAN  —  Board before the countdown ends!"
@@ -380,6 +397,28 @@ func pin_place(point: Vector2) -> String:
 		if point.distance_to(landmark["position"]) < 160:
 			return landmark["label"]
 	return "THE WOODS"
+
+
+func near_generator(actor: CampPlayer) -> bool:
+	return night_clock.blackout and actor.global_position.distance_to(night_clock.generator_point()) <= config.interact_radius * 1.5 and clear_path(actor.global_position, night_clock.generator_point())
+
+
+## First light: the ranger patrol reaches camp. Survivors in camp or aboard are rescued.
+func dawn() -> void:
+	if finished:
+		return
+	var rescued := 0
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if actor.status == CampPlayer.Status.BOARDED or (actor.status == CampPlayer.Status.ALIVE and not CampMap.is_woods(actor.global_position)):
+			actor.set_status(CampPlayer.Status.ESCAPED)
+			rescued += 1
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if actor.status == CampPlayer.Status.DOWNED and rescued > 0 and not CampMap.is_woods(actor.global_position):
+			actor.set_status(CampPlayer.Status.ESCAPED)
+			rescued += 1
+		elif actor.status in [CampPlayer.Status.ALIVE, CampPlayer.Status.DOWNED]:
+			actor.set_status(CampPlayer.Status.LEFT_BEHIND)
+	finish_round(rescued > 0, "Dawn broke. The ranger patrol rescued %d survivor(s) in camp. You: %s." % [rescued, CampPlayer.Status.keys()[player.status].to_lower().replace("_", " ")])
 
 
 func missing_parts() -> Array[String]:

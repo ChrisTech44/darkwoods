@@ -78,7 +78,7 @@ do not stamp all 18 into every night. No runtime count change is implied here.
    original/licensed cues and provenance, not imaginary files in the manifest.
 10. Keep a normal-speed return-time budget. The forest's size is already large;
     measure component round trips, recovery space and supplies before adding
-    traversal burdens. Target 15–25 minute rounds remains unproven. Every region
+    traversal burdens. Target 40–60 minute expedition rounds remain unproven. Every region
     must also work with muted audio and no voice chat.
 
 ## The 18 region designs

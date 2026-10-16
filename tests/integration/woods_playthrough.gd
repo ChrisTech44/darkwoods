@@ -14,6 +14,10 @@ func _run() -> void:
 	await _frames(3)
 	level = current_scene
 	player = level.player
+	# Route/mechanics regression: reveal staged parts now and keep the director out;
+	# night pacing has its own suite (night_phases.gd).
+	level.night_clock.director_enabled = false
+	level.night_clock.reveal_all()
 	print(JSON.stringify({"event": "expedition_start", "seed": level.plan.seed_value, "weather": level.plan.weather, "encounters": level.plan.encounters, "required": level.plan.required}))
 	# Camp preparations first, then choose the nearest remaining cache by path length.
 	var targets: Array[CampPickup] = []

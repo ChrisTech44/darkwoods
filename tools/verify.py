@@ -62,10 +62,13 @@ def main():
     commands.append(("content_expansion", ["--headless", *content]))
     navigation = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/navigation_aids.gd"]
     commands.append(("navigation_aids", ["--headless", *navigation]))
+    nights = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/night_phases.gd"]
+    commands.append(("night_phases", ["--headless", *nights]))
     if args.graphical:
         commands.append(("graphical_player_render", ["--audio-driver", "Dummy", *render]))
         commands.append(("graphical_content", ["--audio-driver", "Dummy", *content, "--", "--capture"]))
         commands.append(("graphical_navigation", ["--audio-driver", "Dummy", *navigation, "--", "--capture"]))
+        commands.append(("graphical_nights", ["--audio-driver", "Dummy", *nights, "--", "--capture"]))
         commands.append(("graphical_surround", [*surround, "--", "--capture"]))
         commands.append(("graphical_visibility", [*visibility, "--", "--capture"]))
         commands.append(("graphical_defaults", [*defaults, "--", "--capture"]))
@@ -99,7 +102,7 @@ def main():
                   if re.search(r"(?:SCRIPT ERROR|ERROR|Parse Error):", line)]
         warnings = [line for line in clean.splitlines() if "WARNING:" in line]
         passed = status == 0 and not errors and not timed_out
-        if name in ("player_render", "graphical_player_render", "content_expansion", "graphical_content", "navigation_aids", "graphical_navigation", "menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
+        if name in ("player_render", "graphical_player_render", "content_expansion", "graphical_content", "navigation_aids", "graphical_navigation", "night_phases", "graphical_nights", "menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
             summaries = []
             for line in clean.splitlines():
                 if line.startswith("{"):

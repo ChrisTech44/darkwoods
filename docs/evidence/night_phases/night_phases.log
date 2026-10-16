@@ -1,0 +1,54 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"assertion","name":"seed_1_night_schedule_reproducible","passed":true}
+{"event":"assertion","name":"seed_1_parts_staged_across_four_phases","passed":true}
+{"event":"assertion","name":"seed_1_events_inside_their_phases","passed":true}
+{"event":"assertion","name":"seed_42_night_schedule_reproducible","passed":true}
+{"event":"assertion","name":"seed_42_parts_staged_across_four_phases","passed":true}
+{"event":"assertion","name":"seed_42_events_inside_their_phases","passed":true}
+{"event":"assertion","name":"seed_2026_night_schedule_reproducible","passed":true}
+{"event":"assertion","name":"seed_2026_parts_staged_across_four_phases","passed":true}
+{"event":"assertion","name":"seed_2026_events_inside_their_phases","passed":true}
+{"event":"assertion","name":"quick_camp_has_no_night_schedule","passed":true}
+{"event":"assertion","name":"phase_boundaries","passed":true}
+{"event":"assertion","name":"clock_text_format","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"night_starts_at_dusk_on_hud","passed":true}
+{"event":"assertion","name":"three_parts_sealed_at_dusk","passed":true}
+{"event":"assertion","name":"pack_lists_radio_times","passed":true}
+{"event":"assertion","name":"dusk_dread_low_5","passed":true}
+{"event":"night_phase","phase":"NIGHTFALL","revealed":["fuel"],"time":600}
+{"event":"assertion","name":"nightfall_radio_names_fuel","passed":true}
+{"event":"assertion","name":"phase_supply_drop_at_maintenance","passed":true}
+{"event":"night_phase","phase":"DEEP NIGHT","revealed":["fuse"],"time":2399}
+{"event":"night_event","kind":"storm","time":2399}
+{"event":"night_event","kind":"blackout","time":2399}
+{"event":"assertion","name":"final_part_sealed_until_40_minutes","passed":true}
+{"event":"assertion","name":"deep_night_dread_rises_64","passed":true}
+{"event":"night_phase","phase":"WITCHING HOUR","revealed":["spark_plug"],"time":2400}
+{"event":"assertion","name":"witching_hour_reveals_last_part","passed":true}
+{"event":"assertion","name":"hud_counts_down_to_dawn","passed":true}
+{"event":"assertion","name":"stalker_grows_bolder","passed":true}
+{"event":"assertion","name":"phase_change_stinger","passed":true}
+{"event":"night_event","kind":"storm","time":2400}
+{"event":"assertion","name":"storm_dampens_ai_hearing","passed":true}
+{"event":"assertion","name":"storm_masks_noise_at_80_percent_range","passed":true}
+{"event":"assertion","name":"storm_lightning_flashes","passed":true}
+{"event":"assertion","name":"clear_weather_hears_same_noise","passed":true}
+{"event":"night_event","kind":"blackout","time":2424}
+{"event":"assertion","name":"blackout_cuts_camp_lamps","passed":true}
+{"event":"assertion","name":"generator_prompt","passed":true}
+{"actor":"","event":"night_generator","time":2424}
+{"event":"assertion","name":"generator_restores_power","passed":true}
+{"event":"assertion","name":"camp_lamps_return","passed":true}
+{"event":"assertion","name":"director_steers_one_distant_roamer","passed":true}
+{"event":"assertion","name":"director_never_uses_creature_within_400px","passed":true}
+{"event":"assertion","name":"director_sends_to_fuzzy_area_not_exact_spot_273","passed":true}
+{"event":"assertion","name":"relief_window_after_chase_blocks_director","passed":true}
+{"event":"assertion","name":"director_ignores_survivors_in_camp","passed":true}
+{"event":"night_event","kind":"blackout","time":3600}
+{"event":"round_finished","result":"Dawn broke. The ranger patrol rescued 1 survivor(s) in camp. You: escaped.","won":true}
+{"event":"assertion","name":"dawn_rescues_survivor_in_camp","passed":true}
+{"event":"assertion","name":"dawn_leaves_woods_survivor_behind","passed":true}
+{"event":"assertion","name":"dawn_result_explained","passed":true}
+{"checks":40,"event":"test_result","failures":0,"suite":"night_phases"}

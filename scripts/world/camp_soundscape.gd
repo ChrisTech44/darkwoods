@@ -20,6 +20,7 @@ var rng := RandomNumberGenerator.new()
 var played_counts: Dictionary = {}
 var last_step_cue := ""
 var survivor_steps := {}
+var heard_phase := 0
 
 
 func _ready() -> void:
@@ -113,7 +114,13 @@ func _physics_process(delta: float) -> void:
 	_mix_loop("woods", (1.0 - swamp_weight * 0.85) * (0.4 if indoor else 1.0), delta)
 	_mix_loop("swamp", swamp_weight * (0.4 if indoor else 1.0), delta)
 	_mix_loop("campfire", 1.0, delta)
-	_mix_loop("music", 1.0 - threat_gain * 0.35, delta)
+	# Music swells with the night's dread; a chase still pulls it under the heartbeat.
+	var dread: float = level.night_clock.dread if level.night_clock.active else 40.0
+	_mix_loop("music", clampf(0.45 + dread * 0.0055, 0.0, 1.0) * (1.0 - threat_gain * 0.35), delta)
+	loops["music"].pitch_scale = lerpf(1.0, 0.9, dread / 100.0)
+	if level.night_clock.phase != heard_phase:
+		heard_phase = level.night_clock.phase
+		stinger("werewolf_howl", -4.0, 0.78)
 	_mix_loop("running_grass", 1.0 if moving and actor.sprinting and not indoor else 0.0, delta, 10.0)
 	_mix_loop("walking_indoor", 1.0 if moving and indoor else 0.0, delta, 10.0)
 	loops["walking_indoor"].pitch_scale = 1.35 if actor.sprinting else 1.0
@@ -208,6 +215,24 @@ func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float =
 	voice.finished.connect(func() -> void:
 		voices.erase(voice)
 		voice.queue_free())
+	voice.play()
+	return true
+
+
+## Non-positional phase stinger: a distant call that marks the night getting worse.
+func stinger(cue: String, gain_db: float, pitch: float) -> bool:
+	if level.finished or not mixer.cues.has(cue) or mixer.stream_for(cue) == null:
+		return false
+	played_counts["phase_stinger"] = played_counts.get("phase_stinger", 0) + 1
+	if not mixer.output_enabled:
+		return true
+	var voice := AudioStreamPlayer.new()
+	voice.stream = mixer.stream_for(cue)
+	voice.bus = "Music"
+	voice.volume_db = float(mixer.cues[cue]["gain_db"]) + gain_db
+	voice.pitch_scale = pitch
+	add_child(voice)
+	voice.finished.connect(voice.queue_free)
 	voice.play()
 	return true
 

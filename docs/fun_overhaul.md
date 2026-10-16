@@ -1,6 +1,6 @@
 # Heart-pounding nights: gameplay overhaul plan
 
-Status: **approved planning direction; F1 navigation aids implemented**
+Status: **approved planning direction; F1 navigation and F2 night phases implemented**
 (signposts, skyline markers, wall-map regions, team pins, spare cutters and
 crowbar; see [evidence](evidence/navigation/README.md)). Everything else in
 this document is still planned until a development-log entry records execution
@@ -47,19 +47,24 @@ Measured from the current code and rules, not from opinion alone:
 5. **Fear is earned and fair.** Threats always telegraph. Close calls happen
    often, and actual downs are rarer. You can hide, slam, vault and outthink the woods.
 
-## Target shape of a night (15–25 minutes)
+## Target shape of a night (40–60 minutes)
 
-| Phase | Clock (default) | Feel | What changes |
+User amendment (16 October): expedition rounds span **40–60 minutes**. A night
+is 60 minutes long, and objectives are staged so the escape lands in the final third.
+
+| Phase | Clock | Feel | What changes |
 | --- | --- | --- | --- |
-| **Dusk** | 0–4 min | Prepare, plan, split up | Camp clues, workbench, low cryptid density, stalker sweeps camp quietly. |
-| **Nightfall** | 4–10 min | Expedition | Full roaming density; stalker tier 2 (hunts noise across the inner ring). |
-| **Deep Night** | 10–16 min | Pressure | Director peaks more often; stalker tier 3 may sabotage once; fog/rain more likely. |
-| **Witching Hour** | 16 min+ | Finale | Stalker tier 4 (faster, longer search memory); camp lights fail unless powered; escape finales become loud set pieces. |
+| **Dusk** | 0–10 min | Prepare, plan, split up | Battery/key in camp, tools, low dread, stalker sweeps camp quietly. |
+| **Nightfall** | 10–25 min | Expedition | Radio reveals fuel; supply drop; first storm; full roaming density. |
+| **Deep Night** | 25–40 min | Pressure | Radio reveals extra part 1; blackout; stalker hears farther; director peaks more often. |
+| **Witching Hour** | 40–60 min | Finale | Radio reveals the last part; stalker chases faster; escape finales; race to camp before dawn. |
+| **Dawn** | 60 min | Resolution | Ranger patrol rescues survivors in camp or aboard; anyone in the woods is left behind. |
 
-Phases advance by **time or progress, whichever is first**. Each required part
-installed, an escape chain step completed, or a loud landmark event adds
-dread. Defaults are config values to tune from playtests. There is no instant
-loss when the clock runs out. Witching Hour keeps getting harsher (configurable
+Phases advance by **clock only**, so no team can finish before 40:00. Installed
+parts, loud actions and chases raise **dread** instead, which drives the
+director, music and event intensity. *(Implemented in F2; the original
+"time or progress" rule was replaced to keep the 40-minute floor.)* There is no
+instant loss before dawn. Witching Hour keeps getting harsher (configurable
 cap) so stalling is never the safe choice.
 
 **Escape finales** make leaving the climax. Starting the van, transmitting the
@@ -243,7 +248,7 @@ Record these per human playtest (automation alone does not prove fun):
 
 | Metric | Target |
 | --- | --- |
-| Round length | 15–25 min |
+| Round length | 40–60 min (expedition) |
 | Time from leaving camp to first threat sighting | ≤ 90s |
 | Chases per survivor | one every 2–4 min in Nightfall and later |
 | Relief window after a chase | ≥ 45s |
@@ -261,8 +266,12 @@ already has ENet authority), logged and pushed before the next one starts.
    wall-map region outlines, team map pins (M), second boltcutters + crowbar.
    Clue chains moved to F4: the pack already names each part's exact cache, so
    vaguer clues only make sense once objective regions rotate.
-2. **F2 Night phases, dread and director**: phase clock, dread, relief windows,
-   build-ups, dynamic music layers, two night events (Blackout, Storm Front).
+2. **F2 Night phases, dread and director** *(implemented)*: 60-minute phase
+   clock, ranger-radio part reveals, dread, director with relief windows,
+   phase supply drops, Storm Front and Blackout/generator, dread-scaled music
+   with phase stingers, modest stalker escalation and dawn rescue. Deferred:
+   distant-call/flicker build-ups, separate chase music layers (needs new
+   licensed audio), and the Lost Camper, Hunt Begins and Stalker's Gift events.
 3. **F3 Chase toolkit**: Wounded state, hiding spots and breath meter, doors,
    vaults, knock-overs, kitless revive, downed crawl/ping, solo self-recovery.
 4. **F4 Ring-and-spoke map**: rework the woods generator into hub/ring/spokes/

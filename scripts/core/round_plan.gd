@@ -12,6 +12,9 @@ var required: Array[String] = ["battery", "fuel", "key"]
 var loot: Array[Dictionary] = []
 var encounters: Array[Dictionary] = []
 var toolbox_hint: String = ""
+## Expedition night schedule: phase that reveals each required part, and seeded events.
+var reveal_phase: Dictionary = {}
+var night_events: Array[Dictionary] = []
 
 
 func generate(value: int, mode: String) -> void:
@@ -22,6 +25,8 @@ func generate(value: int, mode: String) -> void:
 	camp.generate(value, true)
 	loot.clear()
 	encounters.clear()
+	reveal_phase.clear()
+	night_events.clear()
 	required.assign(["battery", "fuel", "key"])
 	var rng := RandomNumberGenerator.new()
 	rng.seed = value + 771
@@ -67,6 +72,7 @@ func generate(value: int, mode: String) -> void:
 		_add("flare", Vector2(1304, 312), "MAINTENANCE FLARE STASH", false)
 	_add("battery_pack", Vector2(168, 356), "CAMPSITE", false)
 	_add_spare_tools(value, battery_pool)
+	_schedule_night(value)
 	for item in loot:
 		item["position"] = camp.remap(item["position"])
 	_encounter("vampire", woods.zones[2]["cell"] + Vector2i(1,1))
@@ -110,6 +116,17 @@ func generate(value: int, mode: String) -> void:
 		if encounters.size()==CRYPTID_COUNT: break
 
 
+## Parts arrive by ranger radio across the night so escapes land in the 40-60 minute window.
+func _schedule_night(value: int) -> void:
+	reveal_phase = {"battery": 0, "key": 0, "fuel": 1, required[3]: 2, required[4]: 3}
+	var rng := RandomNumberGenerator.new()
+	rng.seed = value + 5150
+	var starts: Array[float] = NightClock.PHASE_STARTS
+	night_events.append({"kind": "storm", "time": rng.randf_range(starts[1] + 120, starts[2] - 240)})
+	night_events.append({"kind": "blackout", "time": rng.randf_range(starts[2] + 120, starts[3] - 240)})
+	night_events.append({"kind": "storm" if rng.randf() < 0.5 else "blackout", "time": rng.randf_range(starts[3] + 180, NightClock.DAWN - 600)})
+
+
 ## Extra lock tools so a team can split up. A separate RNG keeps older seeded content unchanged.
 func _add_spare_tools(value: int, battery_pool: Array[Vector2]) -> void:
 	var rng := RandomNumberGenerator.new()
@@ -141,9 +158,13 @@ func _add(kind: String, at: Vector2, hint: String, locked: bool) -> void:
 	loot.append({"kind": kind, "position": at, "hint": hint, "locked": locked})
 
 
-func pack_description(installed: Array[String]) -> String:
+func pack_description(installed: Array[String], phase: int = 3) -> String:
 	var lines: Array[String] = []
 	for kind in required:
+		if reveal_phase.get(kind, 0) > phase:
+			var due: int = reveal_phase[kind]
+			lines.append("· %s / RANGER RADIO AT %s (%s)" % [kind.replace("_", " ").to_upper(), NightClock.PHASES[due], NightClock.clock_text(NightClock.PHASE_STARTS[due])])
+			continue
 		var clue := ""
 		for item in loot:
 			if item["kind"] == kind:

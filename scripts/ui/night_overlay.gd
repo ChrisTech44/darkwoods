@@ -7,6 +7,7 @@ var nearby_glow: PointLight2D
 var survivor_lights := {}
 var ambient: CanvasModulate
 var weather: String = "clear"
+var level: Node2D
 
 
 func _ready() -> void:
@@ -37,6 +38,9 @@ func _process(_delta: float) -> void:
 		return
 	var woods := CampMap.is_woods(player.global_position)
 	ambient.color = player.config.night_ambient.lerp(Color(0.003, 0.008, 0.015, 1), 0.8 if woods else 0.0)
+	if level != null and level.night_clock != null and level.night_clock.lightning > 0.0:
+		# Lightning brightens the world briefly; the sight mask still hides what trees block.
+		ambient.color = ambient.color.lerp(Color(0.42, 0.47, 0.58), 0.55)
 	for old in survivor_lights.keys():
 		if not is_instance_valid(old): survivor_lights.erase(old)
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):

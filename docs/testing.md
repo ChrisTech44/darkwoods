@@ -347,3 +347,22 @@ the crowbar, reachability, a crowbar-pried cache waking a listener 420 px away,
 one-pair-per-survivor, M-key pins (cap of three, place names) and downed
 rejection. `network_peer.gd` adds a guest pin accepted by the host and
 replicated to every client (`lnac-net-4`). Evidence: [navigation](evidence/navigation/README.md).
+
+
+## Night phases (overhaul F2)
+
+Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/night_phases.gd`
+(add `-- --capture` without `--headless` for the Witching Hour HUD capture).
+It checks the seeded reveal schedule and event windows on three seeds, and
+phase boundaries and clock text. It confirms three parts are sealed at Dusk,
+that the pack shows radio times, and that Nightfall announces fuel and drops
+supplies. The final part stays sealed until 40:00, dread rises, the HUD counts
+down to dawn, and the stalker's hearing ×1.21 and speed ×1.08 increase on
+schedule. It also covers storm hearing masking at 80% range plus lightning,
+blackout lamps and the generator restart, and the director: it steers one
+distant roamer to a fuzzy area, never uses a creature within 400 px, honours
+relief windows and ignores survivors in camp. Finally it checks dawn rescue in
+camp versus left-behind in the woods. `network_peer.gd` adds a host-advanced
+Nightfall replicated to clients with the fuel cache visible (`lnac-net-5`).
+Legacy route tests reveal staged parts with `reveal_all()` and disable the
+director. Evidence: [night phases](evidence/night_phases/README.md).

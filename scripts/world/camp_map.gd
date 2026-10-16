@@ -22,6 +22,7 @@ var seed_value: int = 42
 var layout: CampLayout
 var roads: Array[Rect2] = []
 var lake: Rect2 = CampLayout.LAKE
+var camp_lamps: Array[PointLight2D] = []
 
 
 func _ready() -> void:
@@ -65,8 +66,12 @@ func _ready() -> void:
 	_build_sites()
 	_ground()
 	_build_navigation()
+	# Electric camp lamps fail during a blackout; the campfire (added last) keeps burning.
+	for child in get_children():
+		if child is PointLight2D and CAMP_BOUNDS.has_point(child.position):
+			camp_lamps.append(child)
+	camp_lamps.append(CampLights.lamp(self, Vector2(736, 528), 75, Color("d6dca3"), 0.75))
 	CampLights.lamp(self, Vector2(168, 336), 110, Color("ffb266"), 1.3)
-	CampLights.lamp(self, Vector2(736, 528), 75, Color("d6dca3"), 0.75)
 
 
 func _process(delta: float) -> void:

@@ -147,6 +147,9 @@ func _rules() -> void:
 			cache = pickup
 		if pickup.kind == "boltcutters" and not CampMap.is_woods(pickup.position):
 			cutters = pickup
+	_check(not cache.available and not cache.visible and level.plan.reveal_phase["fuel"] == 1, "fuel_sealed_until_nightfall_radio")
+	level.night_clock.skip_to(NightClock.PHASE_STARTS[1])
+	_check(cache.available and level.night_clock.phase == 1, "nightfall_radio_reveals_fuel_cache")
 	player.position = cache.position
 	await _frames(2)
 	_check(not level.try_interact(player) and cache.available, "locked_cache_rejects_missing_tool")

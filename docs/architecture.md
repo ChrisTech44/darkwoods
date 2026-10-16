@@ -45,8 +45,8 @@ navigation, UI, and signal connections together on restart or menu return.
 ## Implementation direction
 
 M1 uses native CharacterBody2D/StaticBody2D physics, NavigationRegion2D and
-NavigationAgent2D. CampMap creates a 3456×1920 world containing the 1536×960
-authored camp and a 1600×1600 seeded woods section. TileMapLayer ground,
+NavigationAgent2D. CampMap creates a 9600×9408 world with the 1536×960 camp exactly at its centre,
+surrounded by 2410 seeded forest clearings. TileMapLayer ground,
 ten furnished buildings, dense pine/birch woods, paths and a docked lakeshore
 remain in the camp.
 One obstacle list drives physics, shadow occluders and the native navigation bake.
@@ -84,8 +84,8 @@ aligned pickup positions. The user's woods request authorizes
 the following replayability work ahead of M2.
 
 RoundPlan uses private seeded RNGs for topology, component pools, cache assignments,
-supplies, weather and the four-cryptid roster. WoodsLayout uses DFS plus extra
-connections across a finite 10×10 trail grid: all 100 clearings connect, with
+supplies, weather and the 24-cryptid population. WoodsLayout uses DFS plus extra
+connections across a finite 50×49 grid with 40 central camp cells excluded: all 2410 forest clearings connect, with
 dead ends, loops and six separated ruins. Solid 32px cells merge into row spans
 for physics, AI sight and complete light-blocking borders; separate octagonal
 trunks add local visual detail.
@@ -127,8 +127,8 @@ or virtual LAN; no relay, NAT traversal, or host migration is promised.
 
 ## Forest hunt follow-up
 
-The same world bounds now contain three larger open sites: a 416×256 abandoned
-village and two 256×256 bog/graveyard clearings. Internal trail links match their
+The same world bounds now contain three larger open sites: a 960×576 abandoned
+village and two 768×768 bog/graveyard clearings. Internal trail links match their
 open footprints. The village adds two furnished CampBuilding huts with native
 walls, roof cutaways and accessible south-facing entrances. CampMap keeps these
 in a separate forest_buildings collection; the original ten camp buildings remain.
@@ -144,7 +144,7 @@ tracking. These are authoritative gameplay stimuli independent of local mixer se
 
 Expeditions guarantee vampire and witch, plus two distinct draws from wolf,
 Sasquatch, moth and briar revenant: four cryptids plus the camp stalker. Home cells
-are closer to travel/objective areas. An eight-waypoint branching trail circuit
+are closer to travel/objective areas. An sixteen-waypoint branching trail circuit
 replaces tiny one-door patrols. The expedition stalker starts at (600,520), visits
 west-camp routes first, and has 150px sight / 220px hearing before weather modifiers.
 Quick Camp retains its original spawn/sensing values.
@@ -213,3 +213,26 @@ change. Native light shadows remain separate from this sight restriction.
 Calls are gated at 160px, steps at 110px, with native quadratic attenuation and
 weak source references that move active emitters with their creature. Menu
 Settings opens the shared saved mixer without interrupting menu ambience.
+
+## Surrounding forest implementation
+
+The finite world bounds are (-4032, -4224) through (5568, 5184); the camp stays
+at its existing authored coordinates and its centre (768,480) matches the world.
+Four explicit forest connectors meet reserved camp roads. DFS/loops connect
+2410 cells at 192px spacing; trails are 128px wide. Three large, grid-aligned
+regions include 32px approach aprons; short graph approach routes connect their
+objectives to nearby camp exits. Outer paths remain a deep seeded maze.
+
+32px occupancy gives constant-time terrain queries and merges adjacent solids
+into collision/shadow rectangles. Native navigation bakes in 49 bounded regions,
+with 7px agent clearance and 16px edge connection margin; initial synchronization
+is explicit. This avoids giant-polygon convex partition failures on random seeds.
+All collision stays active. `woods_terrain.gd` draws only the camera vicinity,
+retaining 16px art detail during normal play/inspection and redrawing on quantized
+view/focus changes. Camp still uses native TileMapLayer. Local field notes pan
+with the survivor and display camp direction; they never show enemy positions.
+
+24 creatures populate near and deep rings on all four sides, with 16-point
+roaming routes. 96 seeded supply pickups supplement the camp tools. Sight,
+flashlight drain, fog, location labels and map logic use camp bounds rather than
+an east-only x-coordinate threshold. Quick Camp keeps its three-part local round.

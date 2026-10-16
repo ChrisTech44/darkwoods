@@ -1,5 +1,61 @@
 # Development log
 
+## 2026-10-16 — Massive forest around central camp and spacious region approaches
+
+Completed the same request after the verified sight/audio/Settings increment
+`ae1c5b0` was published. World is now **9600×9408**, centred exactly on the existing
+camp at (768,480), with **2410 connected forest clearings**, four camp exits and
+128px trails. Forest area is about 35× the former 1600×1600 woods. A finite
+50×49 grid excludes the 40 central camp cells; loops and seeded approach routes
+connect northwest village, east bog and south graveyard without flattening the
+deep outer maze. Village is 960×576; bog/graveyard each 768×768 with clear 32px
+aprons. Huts, required cache and props use the expanded layout; bog has a long
+boardwalk and graves leave a clear central approach.
+
+24 cryptids (four per species) populate near and deep rings on all four sides,
+with 16-waypoint roaming routes, alongside the stalker. Added 96 seeded forest
+supplies. Camera limits, light drain, fog, labels, sensing and local chart handle
+all directions/negative coordinates. Field notes pan over explored nearby trails
+and indicate camp direction. Quick Camp keeps its three-part objective. The
+previous sight mask, near-only creature calls and menu Settings remain active.
+
+32px occupancy provides constant-time terrain lookup and merged collision/shadow
+spans. Forest scenery renders only around the camera, at native art detail;
+quantized view/focus updates avoid regenerating all drawing each frame. Camp
+retains native TileMapLayer and all collision/AI remain active across the world.
+
+**Failures resolved:** a giant single navigation polygon occasionally failed
+convex partition on random seeds. Bakes now use 49 bounded native regions with
+7px clearance and 16px edge connections. Explicit synchronous initial map/region
+updates avoid querying an unfinished asynchronous merge. Twelve deterministic
+seed stress runs check every pickup and four exits. Door checks allow the native
+7px seam projection; real input still traverses collision. Density fixtures now
+check solid forest mass rather than thousands of obsolete sprite nodes. Dense
+region links needed a 16-point route to retain patrol spread. Inspection captures
+use exact quarter scale to avoid nearest-neighbour minification moire.
+
+**Final verification:** `python3 tools/verify.py --graphical` exit 0, **77 steps**,
+zero engine errors/warnings. Required import/startup/all parses, fourteen suites
+headlessly (one stress suite headless only) and thirteen graphical suites pass.
+Surrounding-world checks: 55 headless / 59 graphical assertions. Woods replay:
+413/429; camp layout: 1009/1011 across eight seeds, every door/pickup reachable.
+Region/AI/spell checks: 56/61. Full woods expedition: 192/193 assertions; all 25
+enemies active, five parts collected/installed through input, two real stashes
+used, about 12,499px/38 clearings traversed and successful extraction. Normal camp
+escape/loss/restart also pass. Sight, four border-light probes, native MP3 decode/
+loops, nearby cues, menu Settings/random defaults and lifecycle cleanup pass.
+
+Opened/inspected final whole-world schematic, enlarged village/bog/graveyard,
+normal woods light, local field notes, masked/unmasked sight and active escape.
+[Full report](evidence/surround_forest/summary.json),
+[evidence notes](evidence/surround_forest/README.md). Final region-only refresh
+passed 59 assertions; import/startup rechecks were clean. Source audio hashes are
+unchanged; documentation links/images and `git diff --check` pass. All 54 Word
+requirements match Markdown. DOCX render attempt again failed on missing
+`pdf2image`; LibreOffice is unavailable, so Word visual QA remains unverified.
+macOS arm64/Godot 4.7.2 only. Human balance/listening, Windows/Linux/exports and
+networked audio/gameplay/voice acceptance remain open. No microphone capture.
+
 ## 2026-10-16 — Opaque woods sight, nearby creature cues and menu Settings
 
 First verified increment of the new forest-surround request. Added a 256-ray,

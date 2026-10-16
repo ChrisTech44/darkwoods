@@ -45,8 +45,10 @@ func _ready() -> void:
 	world_objects.add_child(player)
 	camp_map.focus = player
 	player.get_node("Camera2D").enabled = true
-	player.get_node("Camera2D").limit_right = int(CampMap.WORLD_SIZE.x)
-	player.get_node("Camera2D").limit_bottom = int(CampMap.WORLD_SIZE.y)
+	player.get_node("Camera2D").limit_left = int(CampMap.WORLD_BOUNDS.position.x)
+	player.get_node("Camera2D").limit_top = int(CampMap.WORLD_BOUNDS.position.y)
+	player.get_node("Camera2D").limit_right = int(CampMap.WORLD_BOUNDS.end.x)
+	player.get_node("Camera2D").limit_bottom = int(CampMap.WORLD_BOUNDS.end.y)
 	player.noise_emitted.connect(_on_noise)
 	killer = preload("res://scenes/actors/killer.tscn").instantiate()
 	killer.config = config

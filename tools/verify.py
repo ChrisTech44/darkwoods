@@ -42,6 +42,10 @@ def main():
     commands.append(("woods_playthrough", ["--headless", *expedition]))
     hunt = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/forest_hunt.gd"]
     commands.append(("forest_hunt", ["--headless", *hunt]))
+    seeds = ["--headless", "--path", str(ROOT), "--script", "res://tests/integration/navigation_seeds.gd"]
+    commands.append(("navigation_seeds", seeds))
+    surround = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/surround_world.gd"]
+    commands.append(("surround_world", ["--headless", *surround]))
     visibility = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/woods_visibility.gd"]
     commands.append(("woods_visibility", ["--headless", *visibility]))
     defaults = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/menu_defaults.gd"]
@@ -53,6 +57,7 @@ def main():
     polish = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/layout_polish.gd"]
     commands.append(("layout_polish", ["--headless", *polish]))
     if args.graphical:
+        commands.append(("graphical_surround", [*surround, "--", "--capture"]))
         commands.append(("graphical_visibility", [*visibility, "--", "--capture"]))
         commands.append(("graphical_defaults", [*defaults, "--", "--capture"]))
         commands.append(("graphical_shadows", [*shadows, "--", "--capture"]))
@@ -69,7 +74,7 @@ def main():
     for name, arguments in commands:
         command = [engine, *arguments]
         timed_out = False
-        timeout = 120 if name == "graphical_expedition" else 60
+        timeout = 240 if name in ("graphical_expedition", "woods_playthrough", "graphical_polish", "layout_polish", "woods_replay", "graphical_woods", "menu_defaults", "graphical_defaults", "surround_world", "graphical_surround", "navigation_seeds") else 90
         try:
             result = subprocess.run(command, cwd=ROOT, stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT, text=True, timeout=timeout)
@@ -85,7 +90,7 @@ def main():
                   if re.search(r"(?:SCRIPT ERROR|ERROR|Parse Error):", line)]
         warnings = [line for line in clean.splitlines() if "WARNING:" in line]
         passed = status == 0 and not errors and not timed_out
-        if name in ("menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility"):
+        if name in ("menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
             summaries = []
             for line in clean.splitlines():
                 if line.startswith("{"):

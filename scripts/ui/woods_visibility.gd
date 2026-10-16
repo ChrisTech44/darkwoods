@@ -13,7 +13,7 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	visible = enabled and CampMap.is_woods(player.global_position)
 	global_position = player.global_position
-	if visible:
+	if visible and DisplayServer.get_name() != "headless":
 		boundary.clear()
 		for index in range(RAYS):
 			var target := global_position + Vector2.from_angle(index * TAU / RAYS) * RANGE

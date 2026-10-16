@@ -26,9 +26,9 @@ func _run() -> void:
 		if ready_path.size() > 1:
 			break
 		await physics_frame
-	_check(CampMap.WORLD_SIZE.x * CampMap.WORLD_SIZE.y == 18.0 * 768 * 480, "map_has_eighteen_times_original_area")
+	_check(CampMap.WORLD_SIZE == Vector2(9600,9408), "massive_world_surrounds_camp")
 	_check(level.camp_map.buildings.size() == 10, "ten_authored_buildings")
-	_check(level.camp_map.trees.size() > 100, "dense_forest_layout")
+	_check(level.camp_map.trees.size() > 70 and level.plan.woods.walls.size() > 1000, "dense_forest_layout")
 	_check(level.camp_map.get_node("GroundTiles") is TileMapLayer, "native_pixel_tile_ground")
 	for pickup: CampPickup in level.pickups:
 		var path := NavigationServer2D.map_get_path(level.get_world_2d().navigation_map, player.global_position, pickup.global_position, true)

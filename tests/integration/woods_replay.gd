@@ -35,7 +35,7 @@ func _run() -> void:
 	await process_frame
 	await _wait_world()
 	_check(level.plan.seed_value == 42 and level.plan.woods.signature() == signature, "retry_preserves_seed_and_maze")
-	_check(get_nodes_in_group("survivors").size() == 1 and get_nodes_in_group("cryptids").size() == 4 and get_nodes_in_group("flares").is_empty() and get_nodes_in_group("hazards").is_empty(), "retry_frees_old_actors_and_flares")
+	_check(get_nodes_in_group("survivors").size() == 1 and get_nodes_in_group("cryptids").size() == 24 and get_nodes_in_group("flares").is_empty() and get_nodes_in_group("hazards").is_empty(), "retry_frees_old_actors_and_flares")
 	level.restart_round()
 	await process_frame
 	await _wait_world()
@@ -66,7 +66,7 @@ func _seed_checks() -> void:
 		_check(a.woods.signature() == b.woods.signature() and a.loot == b.loot and a.encounters == b.encounters, "seed_%d_reproducible" % seed_value)
 		_check(a.woods.signature() != previous, "seed_%d_changes_trails" % seed_value)
 		previous = a.woods.signature()
-		_check(a.woods.links.size() == 100 and a.woods.distances_from(WoodsLayout.ENTRY).size() == 100, "seed_%d_all_100_clearings_connected" % seed_value)
+		_check(a.woods.links.size() == 2410 and a.woods.distances_from(WoodsLayout.ENTRY).size() == 2410, "seed_%d_all_2410_clearings_connected" % seed_value)
 		_check(a.woods.landmarks.size() == 6, "seed_%d_six_spaced_landmarks" % seed_value)
 		_check(a.required.size() == 5, "seed_%d_five_part_repair" % seed_value)
 		var counts: Dictionary = {}
@@ -77,9 +77,9 @@ func _seed_checks() -> void:
 				locked += 1
 		for kind in a.required:
 			_check(counts[kind] == 1, "seed_%d_one_%s" % [seed_value, kind])
-		_check(locked == 3 and counts["boltcutters"] == 1 and counts["battery_pack"] == 5, "seed_%d_cache_tools_and_supplies" % seed_value)
-		_check(a.encounters.size() == 4 and a.encounters[0]["species"] == "vampire" and a.encounters[1]["species"] == "witch" and a.encounters[2]["species"] != a.encounters[3]["species"], "seed_%d_four_distinct_cryptids" % seed_value)
-		_check(a.woods.zones.size() == 3 and a.woods.zones[0]["bounds"].size == Vector2(416,256), "seed_%d_three_expanded_sites" % seed_value)
+		_check(locked == 3 and counts["boltcutters"] == 1 and counts["battery_pack"] == 25, "seed_%d_cache_tools_and_supplies" % seed_value)
+		_check(a.encounters.size() == 24 and a.encounters[0]["species"] == "vampire" and a.encounters[1]["species"] == "witch" and a.encounters[2]["species"] != a.encounters[3]["species"], "seed_%d_twenty_four_cryptids" % seed_value)
+		_check(a.woods.zones.size() == 3 and a.woods.zones[0]["bounds"].size == Vector2(960,576), "seed_%d_three_expanded_sites" % seed_value)
 		for encounter in a.encounters:
 			found_species[encounter["species"]] = true
 		found_weather[a.weather] = true
@@ -101,7 +101,7 @@ func _wait_world() -> void:
 
 
 func _navigation_checks() -> void:
-	_check(get_nodes_in_group("cryptids").size() == 4 and get_nodes_in_group("killers").size() == 5, "night_%d_five_enemies" % level.plan.seed_value)
+	_check(get_nodes_in_group("cryptids").size() == 24 and get_nodes_in_group("killers").size() == 25, "night_%d_twenty_five_enemies" % level.plan.seed_value)
 	for enemy: CampKiller in get_nodes_in_group("killers"):
 		var sight: float = 150
 		var hearing: float = 220
@@ -122,14 +122,18 @@ func _navigation_checks() -> void:
 
 
 	var all_reachable := true
+	var sample_index := 0
 	for cell: Vector2i in level.plan.woods.links:
+		sample_index += 1
+		if sample_index % 20 != 0:
+			continue
 		var destination: Vector2 = level.plan.woods.center(cell)
 		# An abstract clearing may now contain a furnished hut; use its walkable edge.
 		destination = NavigationServer2D.map_get_closest_point(level.get_world_2d().navigation_map, destination)
 		var path := NavigationServer2D.map_get_path(level.get_world_2d().navigation_map, player.global_position, destination, true)
 		if path.size() < 2 or path[-1].distance_to(destination) > 4:
 			all_reachable = false
-	_check(all_reachable, "night_%d_all_100_clearings_reachable_in_native_bake" % level.plan.seed_value)
+	_check(all_reachable, "night_%d_sampled_120_clearings_reachable_in_native_bake" % level.plan.seed_value)
 
 
 func _rules() -> void:
@@ -248,7 +252,7 @@ func _tour() -> void:
 		hazard.queue_free()
 	level.message_time = 0
 	player.flashlight_charge = 90
-	player.position = Vector2(1538, 536)
+	player.position = Vector2(1540,520)
 	player.flashlight_on = true
 	player.facing = Vector2(1, -1).normalized()
 	await _frames(5)

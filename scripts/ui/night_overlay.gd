@@ -27,7 +27,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if not is_instance_valid(player):
 		return
-	var woods := player.global_position.x >= 1536
+	var woods := CampMap.is_woods(player.global_position)
 	ambient.color = player.config.night_ambient.lerp(Color(0.003, 0.008, 0.015, 1), 0.8 if woods else 0.0)
 	nearby_glow.texture_scale = (25.0 if woods else 38.0) / 128.0
 	flashlight.position = _safe_emitter(Vector2(0, -12) + player.facing * 8.0)

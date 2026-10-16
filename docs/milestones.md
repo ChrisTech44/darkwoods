@@ -85,3 +85,9 @@ the synchronized M2-A gate or any voice/platform/export gate.
 Menu/defaults amendment: pre-game music/mixer, random camps in both modes by
 default, wider seeded offsets/compatible building swaps, and solid woods shadow
 borders now precede networking/voice. Explicit seed/retry still reproduces runs.
+
+The forest-surround amendment adds a finite 9600×9408 central-camp world, 2410
+forest clearings, four camp exits, spacious region aprons, 24 surrounding
+creatures, local field-map navigation and opaque woods sight. Native navigation
+uses bounded bakes and explicit readiness; random-seed/global-connection evidence
+is required before publishing. This remains offline polish ahead of M2.

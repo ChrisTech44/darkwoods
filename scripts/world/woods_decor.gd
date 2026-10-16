@@ -4,7 +4,7 @@ var woods: WoodsLayout
 
 
 func _draw() -> void:
-	# Warning gate, broken fencing and footprints at the only safe approach.
+	# Warning gate, broken fencing and footprints at the east approach.
 	draw_rect(Rect2(1552, 488, 7, 24), Color("70654c"))
 	draw_rect(Rect2(1552, 536, 7, 42), Color("70654c"))
 	draw_rect(Rect2(1544, 490, 50, 18), Color("947e53"))
@@ -12,20 +12,6 @@ func _draw() -> void:
 	draw_string(ThemeDB.fallback_font, Vector2(1547, 503), "THE WOODS", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("242f28"))
 	for index in range(6):
 		draw_rect(Rect2(1590 + index * 20, 518 + (index % 2) * 7, 3, 5), Color("4c5a43"))
-	for cell: Vector2i in woods.links:
-		var center := woods.center(cell)
-		# Nonblocking roots, mushrooms and abandoned trail markers.
-		for root_index in range(3):
-			var root_at := center + Vector2(-39 + root_index * 5, 23 + cell.x % 7)
-			draw_line(root_at, root_at + Vector2(13, -3), Color("4a4c34"), 2)
-		if (cell.x * 3 + cell.y) % 5 == 0:
-			for mushroom in range(3):
-				var at := center + Vector2(29 + mushroom * 4, -28 + mushroom % 2 * 3)
-				draw_rect(Rect2(at, Vector2(1, 4)), Color("8e9a7c"))
-				draw_rect(Rect2(at - Vector2(1, 1), Vector2(4, 2)), Color("a37f58"))
-		if (cell.x + cell.y * 7) % 11 == 0:
-			draw_rect(Rect2(center + Vector2(-36, -30), Vector2(3, 22)), Color("6e6248"))
-			draw_line(center + Vector2(-38, -25), center + Vector2(-31, -25), Color("b8a772"), 2)
 	for index in range(woods.landmarks.size()):
 		var landmark: Dictionary = woods.landmarks[index]
 		var at: Vector2 = landmark["position"] + Vector2(0, -24)

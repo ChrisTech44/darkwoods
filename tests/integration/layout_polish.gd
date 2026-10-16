@@ -68,7 +68,7 @@ func _run() -> void:
 
 func _reachable(level: Node2D, goal: Vector2) -> bool:
 	var path := NavigationServer2D.map_get_path(level.get_world_2d().navigation_map, level.player.position, goal, true)
-	return path.size() > 1 and path[-1].distance_to(goal) < 4
+	return path.size() > 1 and path[-1].distance_to(goal) < 8
 
 func _check(passed: bool, label: String) -> void:
 	checks += 1

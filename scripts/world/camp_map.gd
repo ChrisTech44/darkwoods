@@ -3,7 +3,8 @@ extends Node2D
 ## Seeded camp lots: one obstacle list drives collision, shadows and navigation.
 
 const CAMP_BOUNDS := Rect2(0, 0, 1536, 960)
-const WORLD_SIZE := Vector2(3456, 1920)
+const WORLD_SIZE := Vector2(9600, 9408)
+const WORLD_BOUNDS := WoodsLayout.WORLD_BOUNDS
 const PICKUP_POSITIONS: Array[Vector2] = [Vector2(228, 120), Vector2(1304, 272), Vector2(696, 680)]
 const PICKUP_HINTS: Array[String] = ["Battery · Fern bunk cabin", "Fuel · maintenance workshop", "Key · ranger lodge office"]
 const ATLAS := preload("res://assets/tiles/camp_tiles.png")
@@ -30,18 +31,10 @@ func _ready() -> void:
 	if woods == null:
 		woods = WoodsLayout.new()
 		woods.generate(seed_value)
-	add_wall(Rect2(0, 0, 3456, 24))
-	add_wall(Rect2(0, 1896, 3456, 24))
-	add_wall(Rect2(0, 0, 24, 1920))
-	add_wall(Rect2(3432, 0, 24, 1920))
-	add_wall(Rect2(0, 936, 1536, 984))
-	add_wall(Rect2(1512, 24, 24, 464))
-	add_wall(Rect2(1512, 552, 24, 384))
-	add_wall(Rect2(1536, 24, 160, 464))
-	add_wall(Rect2(1536, 552, 160, 1344))
-	add_wall(Rect2(1696, 24, 1600, 96))
-	add_wall(Rect2(1696, 1720, 1600, 176))
-	add_wall(Rect2(3296, 24, 136, 1872))
+	add_wall(Rect2(WORLD_BOUNDS.position,Vector2(WORLD_SIZE.x,24)))
+	add_wall(Rect2(WORLD_BOUNDS.position.x,WORLD_BOUNDS.end.y-24,WORLD_SIZE.x,24))
+	add_wall(Rect2(WORLD_BOUNDS.position,Vector2(24,WORLD_SIZE.y)))
+	add_wall(Rect2(WORLD_BOUNDS.end.x-24,WORLD_BOUNDS.position.y,24,WORLD_SIZE.y))
 	if layout == null:
 		layout = CampLayout.new()
 		layout.generate(seed_value, false)
@@ -89,7 +82,7 @@ func _process(delta: float) -> void:
 
 
 func location_label(point: Vector2) -> String:
-	if point.x >= 1536:
+	if is_woods(point):
 		for building in forest_buildings:
 			if building.bounds.grow(5).has_point(point):
 				return "ABANDONED VILLAGE / " + building.label
@@ -148,12 +141,13 @@ func _canopy(at: Vector2, variant: int) -> void:
 
 func _build_woods() -> void:
 	for wall in woods.walls:
-		# The solid tree border blocks light across paths; small trunks alone leak.
-		add_wall(wall, true)
-		for x in range(int(wall.position.x) + 12, int(wall.end.x), 40):
-			_canopy(Vector2(x, wall.get_center().y + 8), (x / 40 + int(wall.position.y)) % 3)
-			if (x / 40 + int(wall.position.y / 32)) % 2 == 0:
-				CampLights.trunk(self, Vector2(x, wall.get_center().y + 6))
+		add_wall(wall,true)
+	for canopy in [false,true]:
+		var renderer := preload("res://scripts/world/woods_terrain.gd").new()
+		renderer.camp_map = self
+		renderer.canopy_only = canopy
+		renderer.z_index = 5 if canopy else -20
+		add_child(renderer)
 	var decor := preload("res://scripts/world/woods_decor.gd").new()
 	decor.woods = woods
 	add_child(decor)
@@ -213,7 +207,7 @@ func _build_sites() -> void:
 			var origin: Vector2 = definition["bounds"].position
 			for index in range(2):
 				var building := CampBuilding.new()
-				building.configure(Rect2(origin + Vector2(16 + index * 224, 16), Vector2(144, 96)), "cabin", "SURVEYOR HUT" if index == 0 else "LOOTED COTTAGE")
+				building.configure(Rect2(origin + Vector2(64 if index == 0 else definition["bounds"].size.x - 208, 64), Vector2(144, 96)), "cabin", "SURVEYOR HUT" if index == 0 else "LOOTED COTTAGE")
 				forest_buildings.append(building)
 				add_child(building)
 				for wall in building.walls:
@@ -248,35 +242,42 @@ func _ground() -> void:
 	layer.tile_set = tile_set
 	layer.z_index = -20
 	add_child(layer)
-	for y in range(120):
-		for x in range(216):
+	for y in range(60):
+		for x in range(96):
 			var center := Vector2(x * 16 + 8, y * 16 + 8)
 			var tile := Vector2i((x * 7 + y * 11) % 4, 0)
 			for road in roads:
 				if road.has_point(center):
 					tile = Vector2i(4 + (x + y) % 3, 0)
-			if center.x >= 1536:
-				tile = Vector2i(2 + (x + y) % 2, 1) if woods.walkable(center) else Vector2i((x + y) % 2, 1)
-				var zone := woods.zone_at(center)
-				if not zone.is_empty():
-					tile = Vector2i(2 + (x + y) % 2, 3) if zone["kind"] == "village" else Vector2i(0 if zone["kind"] == "bog" else 7, 1)
 			if lake.has_point(center):
 				tile = Vector2i((x + y) % 2, 2)
 			layer.set_cell(Vector2i(x, y), 0, tile)
 
 
 func _build_navigation() -> void:
-	var polygon := NavigationPolygon.new()
-	polygon.agent_radius = 7.0
-	var source := NavigationMeshSourceGeometryData2D.new()
-	source.add_traversable_outline(_outline(Rect2(Vector2.ZERO, WORLD_SIZE)))
-	for obstacle in obstacles:
-		source.add_obstruction_outline(_outline(obstacle))
-	source.add_obstruction_outline(_outline(Rect2(81, 278, 30, 40)))
-	NavigationServer2D.bake_from_source_geometry_data(polygon, source)
-	navigation_region = NavigationRegion2D.new()
-	navigation_region.navigation_polygon = polygon
-	add_child(navigation_region)
+	# Bounded native bakes avoid unstable convex partitioning of one giant maze.
+	NavigationServer2D.map_set_use_async_iterations(get_world_2d().navigation_map,false)
+	NavigationServer2D.map_set_edge_connection_margin(get_world_2d().navigation_map,16.0)
+	for y in range(int(WORLD_BOUNDS.position.y),int(WORLD_BOUNDS.end.y),1536):
+		for x in range(int(WORLD_BOUNDS.position.x),int(WORLD_BOUNDS.end.x),1536):
+			var bounds := Rect2(x,y,1536,1536).intersection(WORLD_BOUNDS)
+			var polygon := NavigationPolygon.new()
+			polygon.agent_radius = 7.0
+			var source := NavigationMeshSourceGeometryData2D.new()
+			source.add_traversable_outline(_outline(bounds))
+			for obstacle in obstacles:
+				if bounds.grow(8).intersects(obstacle):
+					source.add_obstruction_outline(_outline(obstacle))
+			if bounds.intersects(Rect2(81,278,30,40)):
+				source.add_obstruction_outline(_outline(Rect2(81,278,30,40)))
+			NavigationServer2D.bake_from_source_geometry_data(polygon,source)
+			var region := NavigationRegion2D.new()
+			region.navigation_polygon = polygon
+			add_child(region)
+			NavigationServer2D.region_set_use_async_iterations(region.get_rid(),false)
+			if navigation_region == null:
+				navigation_region = region
+	NavigationServer2D.map_force_update(get_world_2d().navigation_map)
 
 
 func _outline(rect: Rect2) -> PackedVector2Array:

@@ -168,3 +168,8 @@ results in the development log; online/microphone tests have not been executed y
 The main menu now owns ominous music and subdued forest ambience, with the same
 saved mixer controls available before Play. Its channels stop/free on departure;
 round channels remain separate. This adds no microphone capture or permissions.
+
+The surrounding-forest build keeps the same bounded local audio pool for 24
+creatures: calls are gated at 160px, enemy steps at 110px and moving emitters
+attenuate quadratically. Native sound assets, AI hearing and optional future
+network voice remain separate.

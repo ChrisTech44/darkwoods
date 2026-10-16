@@ -94,8 +94,8 @@ func _draw() -> void:
 			draw_arc(at, 16, 0, PI, 12, Color("497258"))
 			draw_line(at + Vector2(18, 4), at + Vector2(21, -13), Color("72825a"))
 		# Planks keep the central ritual space readable.
-		for y in range(-56, 78, 9):
-			draw_rect(Rect2(center + Vector2(-31, y), Vector2(62, 7)), Color("766443"))
+		for y in range(-int(bounds.size.y/2)+48, int(bounds.size.y/2)-48, 9):
+			draw_rect(Rect2(center + Vector2(-40, y), Vector2(80, 7)), Color("766443"))
 		draw_circle(center + Vector2(0, -12), 19, Color("152c2c"))
 		draw_arc(center + Vector2(0, -12), 18, PI, TAU, 18, Color("879a7a"), 3)
 		draw_circle(center + Vector2(0, -15), 13, Color("6b9861"))
@@ -104,8 +104,9 @@ func _draw() -> void:
 		draw_line(center + Vector2(-25, -34), center + Vector2(22, 22), Color("a18c58"), 3)
 	else:
 		# Crooked headstones, broken iron fences and a searchable stone crypt.
-		for index in range(10):
-			var at := bounds.position + Vector2(28 + index % 5 * 45, 29 + index / 5 * 145)
+		for index in range(24):
+			var row := index / 6
+			var at := bounds.position + Vector2(64 + index % 6 * (bounds.size.x-128)/5, 64 + row * (bounds.size.y-128)/3)
 			draw_rect(Rect2(at, Vector2(15, 23)), Color("6f8178"))
 			draw_arc(at + Vector2(7, 1), 7, PI, TAU, 12, Color("a0a68a"), 2)
 			draw_line(at + Vector2(3, 9), at + Vector2(12, 9), Color("c2baa0"))

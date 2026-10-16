@@ -209,3 +209,21 @@ tree borders, nearby-only creature calls and native falloff/source following.
 Graphical positive controls use fully bright ambient light and disable the sight
 mask, proving that black occluded paths are hidden by sight, not merely darkness.
 Menu-default checks also open/close Settings and save gain from its controls.
+
+## Massive surrounding forest
+
+`surround_world.gd` checks centred bounds, >30× old forest area, 2410 connected
+cells across three seeds, creatures on all four sides, clear region aprons,
+native paths to four exits/all homes/region centres and real movement through
+each exit. Its schematic overview is labelled inspection; region overviews use
+a wider camera/brighter ambient and disable sight only for layout QA.
+
+`navigation_seeds.gd` bakes twelve deterministic worlds and checks every pickup
+and all four exits. This regression covers the random-seed giant navigation
+partition failure; bounded native regions explicitly synchronize before queries.
+The woods replay suite checks graph connectivity for all 2410 cells and native
+paths for about 120 sampled clearings, all pickups and all six remote landmarks.
+Doorway navigation assertions allow the native 7px clearance at region seams;
+separate actual-input traversal and complete rounds retain physical collisions.
+No balance/visibility assumptions are replaced with AI disablement in the active
+escape suites. Human balance and other desktop targets remain unverified.

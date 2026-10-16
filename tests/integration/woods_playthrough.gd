@@ -18,7 +18,7 @@ func _run() -> void:
 	var targets: Array[CampPickup] = []
 	for kind in ["battery_pack", "battery", "flare", "boltcutters", "key"]:
 		for pickup: CampPickup in level.pickups:
-			if pickup.kind == kind and pickup.position.x < 1536:
+			if pickup.kind == kind and not CampMap.is_woods(pickup.position):
 				targets.append(pickup)
 	for target in targets:
 		if not await _collect(target):

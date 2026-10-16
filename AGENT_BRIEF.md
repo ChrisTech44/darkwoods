@@ -21,7 +21,7 @@ flashlight spill into adjacent paths.
 16 October forest-surround amendment: hide terrain and creatures outside current
 line of sight in the woods; creature calls start nearby and fade by proximity.
 Keep title-screen mixer controls behind Settings. Enlarge the finite forest
-substantially around all sides of a central camp, with wider, clean connections
+to 9,600×9,408 around all sides of a central camp, with wider, clean connections
 to enlarged village/bog/graveyard regions and monsters around the camp.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
@@ -40,7 +40,7 @@ to enlarged village/bog/graveyard regions and monsters around the camp.
 
 - Core loop: host/join lobby → spawn at campsite → investigate cabins and wooded trails → collect randomized objective items → avoid/disrupt killer → repair and start escape vehicle → surviving players extract → show outcome screen → replay.
 
-- Replayability systems (introduce after core loop): randomized objective item placements; several possible cabin locks and blocked paths; alternate extraction methods; risk/reward optional loot; killer patrol variations and memory of recent sound/sightings. Do not make "infinite procedural maps" the MVP. Both modes default to fresh random camps; only explicit seed entry/retry repeats a recipe. Keep loot, doors and the chart aligned with seeded building placements. The latest approved forest expansion surrounds a central camp with a massive finite woods, wider trails, spacious themed regions and clean approach transitions.
+- Replayability systems (introduce after core loop): randomized objective item placements; several possible cabin locks and blocked paths; alternate extraction methods; risk/reward optional loot; killer patrol variations and memory of recent sound/sightings. Do not make "infinite procedural maps" the MVP. Both modes default to fresh random camps; only explicit seed entry/retry repeats a recipe. Keep loot, doors and the chart aligned with seeded building placements. The latest approved forest expansion surrounds a central camp with a finite 9,600×9,408 woods, 2,410 forest clearings, four exits, 128px trails, spacious themed regions, clean approach transitions and 24 roaming cryptids in expedition mode.
 
 ## MVP gameplay rules
 

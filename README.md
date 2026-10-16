@@ -14,25 +14,26 @@ prototype from source; standalone desktop packages are a later milestone.
 
 ![The forest menu with Woods Expedition and optional seed selection](docs/evidence/sight_audio/menu_defaults.png)
 
-## The first major update
+## The surrounding forest update
 
-The world now spans **3456×1920**, combining ten furnished camp buildings, two enterable village huts, and a
-**1600×1600 woods maze**: 100 connected clearings, loops, dead ends, and six ruined
-landmarks. Roofs cut away inside buildings. Native flashlight shadows, cabin
-lamps, flares, and headlights provide local light in a nearly black forest.
-Solid woods borders block the flashlight from reaching neighboring paths.
-An opaque sight mask hides trails and monsters behind those borders, even if
-another light illuminates them.
-Soft mist and trunk-shaped shadows keep the current path readable; foreground canopy fades
-when it covers the camper.
+Fernwood camp now sits at the exact centre of a **9,600×9,408** world, with a
+massive forest on every side—about **35 times the previous woods area**.
+**2,410 connected forest clearings**, loops and six remote ruins surround the
+ten furnished camp buildings. Four exits lead north, east, south and west.
+Trails are **128 pixels wide**, and the village, bog and graveyard have larger
+clearings and clear approach aprons. Roofs cut away inside buildings.
 
-Woods expeditions add five-part repairs, locked caches, survival supplies,
-weather, and four cryptids: vampire and witch plus two chosen from werewolf,
-Sasquatch, lantern moth, and briar revenant.
-Seeded camp building positions, trails, loot, required extra parts, creature roster, and camp patrols make
-each night different. Broader patrols and searches make encounters more frequent.
-The menu, loading card, field guide, and results share the
-new forest palette.
+In Woods Expedition, **24 cryptids—four of each species—plus the stalker** patrol
+the inner forest and deeper woods. A true sight mask hides occluded terrain and
+creatures; nearby footsteps and calls provide audible warnings without revealing
+the whole maze. The local field map follows you, records explored trails and
+points back toward camp. The village lies northwest, bog east and graveyard south.
+
+Both modes default to fresh randomized camp layouts. Loot, required extra parts,
+weather, creature homes and trails use the run seed. Music plays on the menu;
+**Settings** holds the saved mixer before Play. Foreground canopies fade when
+they cover the camper, and view-local scenery rendering keeps distant forest
+active for gameplay without drawing thousands of tree sprites at once.
 
 ## Play from source
 
@@ -67,12 +68,12 @@ Set `GODOT_BIN` to another executable if needed. Use
 | Mode | Repair objective | Threats and exploration |
 | --- | --- | --- |
 | **Quick Camp** | Battery in the Fern bunk cabin, fuel in Maintenance, key in the Ranger Lodge. | The camp stalker and a shorter three-part objective with randomized camp buildings. Flashlight charge does not drain. |
-| **Woods Expedition** | Battery and key in camp location pools; fuel and two extra parts in themed-area caches. | The stalker plus four cryptids, a seeded trail maze, survival supplies, weather, and a draining flashlight. |
+| **Woods Expedition** | Battery and key in camp location pools; fuel and two extra parts in themed-area caches. | The stalker plus 24 cryptids, a seeded trail maze, survival supplies, weather, and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
 The pack lists the current requirements and location clues. The woods contains
-three larger areas with a required cache in each: **Abandoned Village**,
-**Witch's Bog**, and **Old Graveyard**. Six smaller ruined landmarks remain along
+three larger areas with a required cache in each: **Abandoned Village (northwest)**,
+**Witch's Bog (east)**, and **Old Graveyard (south)**. Six smaller ruined landmarks remain along
 the trails for exploration.
 
 ## How to escape
@@ -150,8 +151,8 @@ being downed.
 | **Witch** | Keeps casting distance, shows a wind-up, then fires a fixed-trajectory hex bolt. | Sidestep the bolt or put a wall between you. A hit briefly slows movement and drains stamina. |
 | **Briar revenant** | Senses movement, with close-range detection even if you stand still. | Freeze at a distance or break sight; do not wait for it to get close. |
 
-Each expedition spawns **four different cryptid species alongside the stalker**.
-The stalker starts nearer the camp routes; cryptids roam wider trail circuits and
+Each expedition spawns **24 cryptids across all six species alongside the stalker**.
+The stalker starts nearer the camp routes; cryptids roam 16-point trail circuits around all sides of camp and
 visit the objective areas. Enemies lead visible moving targets briefly and sweep
 reachable points around their last sensed location after losing sight.
 Creature calls and footsteps complement the visual threat cues. A heartbeat fades
@@ -202,10 +203,14 @@ Both modes vary building positions and surrounding trees within reserved camp
 lots. Bunk cabins can trade places, as can the bathhouse and first aid building. Door paths, loot and field-map markers move together. Roof footprints
 and main trails stay separate. Retrying a seed reproduces the camp too.
 
+![Inspection map of the massive forest surrounding central camp](docs/evidence/surround_forest/surround_overview.png)
+
 ## Screenshots
 
 Actual Godot viewport captures. The camp images show Quick Camp; the woods images
-show the current expedition. Close creature shots are inspection fixtures with
+include current region/woods captures. Region overviews deliberately raise ambient
+light and disable the sight mask to inspect entrances; normal play keeps both
+night lighting and sight restrictions. Close creature shots are inspection fixtures with
 AI disabled and the camera offset for composition. The escape result comes from
 a complete automated expedition with all enemies active.
 
@@ -215,7 +220,7 @@ a complete automated expedition with all enemies active.
 
 | Dark woods and flashlight | Field notes and explored trails |
 | --- | --- |
-| ![A narrow flashlight beam reveals trees in otherwise dark woods](docs/evidence/forest_hunt/woods_light_on.png) | ![Five-part objective clues beside the partially explored woods map](docs/evidence/forest_hunt/woods_field_notes.png) |
+| ![A narrow flashlight beam reveals trees in otherwise dark woods](docs/evidence/surround_forest/woods_light_on.png) | ![Five-part objective clues beside the partially explored woods map](docs/evidence/surround_forest/woods_field_notes.png) |
 
 | Werewolf | Sasquatch (Bigfoot) | Lantern moth |
 | --- | --- | --- |
@@ -227,20 +232,21 @@ a complete automated expedition with all enemies active.
 
 | Abandoned village | Witch's bog | Old graveyard |
 | --- | --- | --- |
-| ![Village huts, bell frame and well](docs/evidence/forest_hunt/hunt_village.png) | ![Glowing cauldron in a marsh clearing](docs/evidence/forest_hunt/hunt_bog.png) | ![Crypt and crooked gravestones](docs/evidence/forest_hunt/hunt_graveyard.png) |
+| ![Village huts, bell frame and well](docs/evidence/surround_forest/surround_village.png) | ![Glowing cauldron in a marsh clearing](docs/evidence/surround_forest/surround_bog.png) | ![Crypt and crooked gravestones](docs/evidence/surround_forest/surround_graveyard.png) |
 
 | Loading the next night | Successful extraction |
 | --- | --- |
-| ![Forest loading card before preparing the next night](docs/evidence/woods_replay/woods_loading.png) | ![Successful extraction after a complete active woods expedition](docs/evidence/forest_hunt/woods_playthrough_win.png) |
+| ![Forest loading card before preparing the next night](docs/evidence/woods_replay/woods_loading.png) | ![Successful extraction after a complete active woods expedition](docs/evidence/surround_forest/woods_playthrough_win.png) |
 
 ## Development and verification
 
-The current implementation is **M1 plus the requested woods/replayability and
-visual expansion**. Recorded forest-hunt verification passed all 50 steps,
-including import/startup, every GDScript parse, gameplay suites headlessly and
-graphically, and complete camp/woods escape playthroughs, with zero engine errors
-or warnings. See the [recorded report](docs/evidence/forest_hunt/summary.json)
-and [evidence notes](docs/evidence/forest_hunt/README.md).
+The current implementation is **M1 plus the requested surrounding forest, sight,
+audio and replayability expansions**. Latest full graphical verification passed
+**77 steps** with zero engine errors/warnings, including import/startup, every
+GDScript parse, complete active camp/woods rounds, native audio, twelve-seed
+navigation stress and region/visibility checks. See the
+[current report](docs/evidence/surround_forest/summary.json) and
+[evidence notes](docs/evidence/surround_forest/README.md).
 
 ```sh
 python3 tools/verify.py             # Import, parse, and headless gameplay checks

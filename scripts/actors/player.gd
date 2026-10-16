@@ -34,7 +34,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	hex_remaining = maxf(0, hex_remaining - delta)
-	if expedition and global_position.x >= 1536 and flashlight_on and status == Status.ALIVE:
+	if expedition and CampMap.is_woods(global_position) and flashlight_on and status == Status.ALIVE:
 		flashlight_charge = maxf(0.0, flashlight_charge - delta)
 		if flashlight_charge <= 0:
 			flashlight_on = false

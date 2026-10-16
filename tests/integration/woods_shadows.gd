@@ -84,7 +84,7 @@ func _render_cases() -> void:
 			_check(near_gain > 0.025 and far_gain < 0.003, "own_path_lit_adjacent_path_blocked_%d" % cases)
 			# Positive control: disabling these borders reproduces light leakage.
 			for node in level.camp_map.get_children():
-				if node is LightOccluder2D and node.position.x >= 1696:
+				if node is LightOccluder2D:
 					node.visible = false
 			var leaking := await _image()
 			var leak_gain := _patch(leaking, far_point) - _patch(dark, far_point)

@@ -39,7 +39,7 @@ func generate(value: int, mode: String) -> void:
 	_add("key", key_pool[rng.randi_range(0, 1)], "LODGE / FIRST AID", false)
 	_add("boltcutters", Vector2(1304, 272), "MAINTENANCE", false)
 	var caches: Array = [
-		{"position": woods.zones[0]["bounds"].position + Vector2(108, 68), "label": "VILLAGE / SURVEYOR HUT"},
+		{"position": woods.zones[0]["bounds"].position + Vector2(156, 116), "label": "VILLAGE / SURVEYOR HUT"},
 		{"position": woods.zones[1]["position"] + Vector2(70, 60), "label": "WITCH'S BOG / STASH"},
 		{"position": woods.zones[2]["position"] + Vector2(64, 70), "label": "OLD GRAVEYARD / CACHE"}
 	]
@@ -52,8 +52,10 @@ func generate(value: int, mode: String) -> void:
 		var kind := "fuel" if index == 0 else required[index + 2]
 		_add(kind, caches[index]["position"], caches[index]["label"], true)
 	var supply_types: Array[String] = ["flare", "battery_pack", "rations", "medkit"]
-	for index in range(16):
-		var cell := Vector2i(rng.randi_range(0, 9), rng.randi_range(0, 9))
+	for index in range(96):
+		var cell := Vector2i(rng.randi_range(0, WoodsLayout.SIZE.x-1), rng.randi_range(0, WoodsLayout.SIZE.y-1))
+		while not woods.valid(cell):
+			cell = Vector2i(rng.randi_range(0, WoodsLayout.SIZE.x-1), rng.randi_range(0, WoodsLayout.SIZE.y-1))
 		var at := woods.center(cell) + Vector2(16, 12)
 		var zone := woods.zone_at(at)
 		if not zone.is_empty() and zone["kind"] == "village":
@@ -63,13 +65,17 @@ func generate(value: int, mode: String) -> void:
 	_add("battery_pack", Vector2(168, 356), "CAMPSITE", false)
 	for item in loot:
 		item["position"] = camp.remap(item["position"])
-	_encounter("vampire", woods.zones[2]["cell"] + Vector2i(1, 1))
-	_encounter("witch", woods.zones[1]["cell"] + Vector2i(1, 0))
-	var species: Array[String] = ["werewolf", "bigfoot", "lantern_moth", "briar_revenant"]
-	for index in range(2):
-		var chosen := rng.randi_range(0, species.size() - 1)
-		_encounter(species[chosen], Vector2i(1 + index * 3, 3))
-		species.remove_at(chosen)
+	_encounter("vampire", woods.zones[2]["cell"] + Vector2i(1,1))
+	_encounter("witch", woods.zones[1]["cell"] + Vector2i(1,1))
+	_encounter("werewolf", Vector2i(24,18))
+	_encounter("bigfoot", Vector2i(18,24))
+	_encounter("lantern_moth", Vector2i(25,30))
+	_encounter("briar_revenant", Vector2i(32,26))
+	var species: Array[String] = ["werewolf","bigfoot","lantern_moth","vampire","witch","briar_revenant"]
+	var homes: Array[Vector2i] = [Vector2i(19,19),Vector2i(30,19),Vector2i(32,28),Vector2i(28,29),Vector2i(20,28),Vector2i(18,22),Vector2i(6,10),Vector2i(17,6),Vector2i(32,6),Vector2i(44,12),Vector2i(44,25),Vector2i(42,40),Vector2i(32,42),Vector2i(20,42),Vector2i(6,38),Vector2i(6,25),Vector2i(10,16),Vector2i(35,36)]
+	for index in range(homes.size()):
+		_encounter(species[(index + posmod(value,6)) % 6],homes[index])
+
 
 
 func _encounter(species: String, cell: Vector2i) -> void:

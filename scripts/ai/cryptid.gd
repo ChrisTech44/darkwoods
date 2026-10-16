@@ -70,8 +70,6 @@ func _physics_process(delta: float) -> void:
 
 
 func can_sense(actor: CampPlayer) -> bool:
-	if actor.global_position.x < 1540:
-		return false
 	if species == "briar_revenant":
 		return actor.velocity.length() > 10 or global_position.distance_to(actor.global_position) < 55
 	return species != "lantern_moth" or actor.flashlight_on or global_position.distance_to(actor.global_position) < 45

@@ -105,6 +105,8 @@ Version 1.0 — 15 October 2026 — Codex Sol (medium effort)
 
 - Use git commits at verified milestone boundaries. Do not delete unrelated files or use destructive shell commands without approval. Avoid installing unvetted community assets/plugins. Do not use copyrighted Pokémon assets, franchise names, or recognizable R.E.P.O. content in the released game.
 
+- Keep GitHub current after every coherent, verified increment: update the development log and relevant README content, commit the intended changes, push the current branch to `origin`, and confirm the remote commit before finishing. Follow `AGENTS.md` for this user-authorized ongoing publishing workflow; never force-push or publish credentials/unverified changes.
+
 - When a command cannot run due to environment limitations, state exactly what was not tested and provide a reproducible command for a human. Never fabricate screenshots, logs, passed tests, or binary artifacts.
 
 - First task: inspect system and repository, determine Godot version/CLI path, create project structure and minimal Godot opening screen, run import/startup checks, then begin M1. Do not attempt every milestone in a single Codex turn.

@@ -1,5 +1,38 @@
 # Development log
 
+## 2026-10-15 — First major update README and ongoing GitHub publishing rule
+
+**Requested scope:** keep GitHub continuously updated and explain the current
+game, rules and screenshots in the README. Added a root `AGENTS.md` workflow and
+an explicit publishing rule to the authoritative brief: after each coherent,
+verified increment, update documentation/logs, commit, push the current branch
+to origin, and confirm the remote commit. Routine pushes are user-authorized;
+force pushes, unrelated changes and publishing credentials remain excluded.
+
+Reworked README into a player introduction with source setup, both modes,
+step-by-step escape/boarding rules, controls, survival supplies, damage/revive,
+weather, all four threat types, seeds/replay, roadmap and verification links.
+Ten actual engine screenshots show the menu, campsite, lodge, dark woods, field
+notes, three cryptids, loading card and successful extraction. Reused committed
+woods evidence and preserved two unedited camp tour captures under
+`docs/screenshots`, with provenance. Clearly labeled offline-only availability,
+fixture creature shots, pending networking/exports and platform/balance limits.
+
+**Verification:** checked gameplay claims against configuration, round recipe,
+van/supply/player/AI scripts and existing evidence. All 20 local Markdown links
+resolve; all 10 embedded images are valid 384×216 PNGs. Copied camp shots match
+the previous verified graphical captures byte-for-byte. `git diff --check`
+exited 0. `godot --headless --path . --import` and
+`godot --headless --path . --quit-after 5` each exited 0, with no engine errors or
+warnings. No gameplay code changed, so the existing 45-step graphical acceptance
+report remains the gameplay evidence; full gameplay suites were not rerun for
+this documentation-only increment.
+
+**Publishing:** `git fetch origin` exited 0. Before this increment, `main` was
+four verified game commits ahead of `origin/main`, with no remote-only commits.
+This delivery publishes those M0/M1/woods commits together with the README and
+workflow rule using a normal push, followed by remote/local commit comparison.
+
 ## 2026-10-15 — Requested woods expeditions, cryptids, replayability and UI
 
 **Selected scope:** the user requested a better loading/menu experience, a much

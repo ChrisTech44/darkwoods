@@ -1,8 +1,10 @@
 # Incremental implementation plan
 
-This pass selects **M0 only**: detect engine, scaffold project/menu, configure
-input/rendering, add launch/check scripts, verify, and commit the boundary.
-The final initial instruction in `AGENT_BRIEF.md` asks to plan M1 after M0.
+M0 passed and was committed as `ef180d0`. At the user's instruction, the next pass
+implements M1. All five steps below are implemented and covered by automated
+engine checks. Full input-driven win/loss/restart runs pass headlessly and in a
+real graphical session. A human playtest at normal speed remains unrecorded;
+do not describe that manual gate as executed. Multiplayer remains M2.
 
 ## M1: offline vertical slice, one verified pass per step
 

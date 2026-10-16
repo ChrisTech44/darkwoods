@@ -1,5 +1,5 @@
 extends Control
-## M0 boot screen. Gameplay and network entry points arrive in M1/M2.
+## Boot screen. Offline gameplay is available; networking arrives in M2.
 
 @onready var controls_button: Button = $Menu/Controls
 @onready var controls_panel: PanelContainer = $ControlsPanel
@@ -20,10 +20,12 @@ func _ready() -> void:
 	menu_theme.set_stylebox("panel", "PanelContainer", _box("101e22", "6d8060"))
 	theme = menu_theme
 	controls_button.pressed.connect(_show_controls)
+	$Menu/Play.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/world/forest_level.tscn"))
 	back_button.pressed.connect(_hide_controls)
 	$Menu/Quit.pressed.connect(get_tree().quit)
 	controls_button.grab_focus()
-	print(JSON.stringify({"event": "menu_ready", "milestone": "M0"}))
+	print(JSON.stringify({"event": "menu_ready", "milestone": "M1"}))
 
 
 func _unhandled_input(event: InputEvent) -> void:

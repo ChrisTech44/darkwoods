@@ -39,7 +39,7 @@ func _run() -> void:
 	root.add_child(menu)
 	await process_frame
 	_check(menu.is_visible_in_tree(), "menu_visible")
-	_check(menu.get_node("Menu/Play").disabled, "unfinished_play_disabled")
+	_check(not menu.get_node("Menu/Play").disabled, "solo_play_enabled")
 	_check(menu.get_node("Menu/Controls").has_focus(), "keyboard_focus_on_controls")
 	var capture := "--capture" in OS.get_cmdline_user_args()
 	if capture:
@@ -80,7 +80,8 @@ func _capture(label: String) -> void:
 	if DisplayServer.get_name() == "headless":
 		_check(false, "capture_requires_graphical_display")
 		return
-	await RenderingServer.frame_post_draw
+	await process_frame
+	RenderingServer.force_draw(true)
 	DirAccess.make_dir_recursive_absolute("res://artifacts/verification")
 	var image := root.get_texture().get_image()
 	var path := "res://artifacts/verification/%s.png" % label

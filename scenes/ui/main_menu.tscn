@@ -59,8 +59,7 @@ theme_override_constants/separation = 6
 [node name="Play" type="Button" parent="Menu"]
 custom_minimum_size = Vector2(112, 27)
 layout_mode = 2
-disabled = true
-text = "PLAY · SOON"
+text = "PLAY SOLO"
 
 [node name="Controls" type="Button" parent="Menu"]
 custom_minimum_size = Vector2(112, 27)
@@ -79,7 +78,7 @@ offset_right = 364.0
 offset_bottom = 206.0
 theme_override_colors/font_color = Color(0.66, 0.72, 0.65, 1)
 theme_override_font_sizes/font_size = 8
-text = "EARLY PROTOTYPE  /  M0     •     GAMEPLAY & CO-OP IN DEVELOPMENT"
+text = "EARLY PROTOTYPE  /  M1     •     OFFLINE SOLO  /  CO-OP COMING NEXT"
 
 [node name="ControlsPanel" type="PanelContainer" parent="."]
 visible = false
@@ -113,7 +112,7 @@ text = "WASD / Arrows     Walk\nShift                       Sprint\nE           
 layout_mode = 2
 theme_override_colors/font_color = Color(0.64, 0.7, 0.61, 1)
 theme_override_font_sizes/font_size = 8
-text = "Planned gameplay controls. Available in the next milestones."
+text = "Collect supplies, repair the van, and survive until you escape."
 
 [node name="Back" type="Button" parent="ControlsPanel/Margin/Content"]
 custom_minimum_size = Vector2(0, 23)

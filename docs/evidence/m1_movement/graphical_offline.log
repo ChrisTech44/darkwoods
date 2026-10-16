@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"walk_speed_real_physics","passed":true}
+{"event":"assertion","name":"diagonal_speed_normalized","passed":true}
+{"event":"assertion","name":"visible_facing_tracks_movement","passed":true}
+{"event":"assertion","name":"world_boundary_blocks_player","passed":true}
+{"event":"assertion","name":"cabin_door_allows_entry","passed":true}
+{"event":"assertion","name":"cabin_wall_blocks_player","passed":true}
+{"event":"assertion","name":"sprint_faster_than_walk","passed":true}
+{"event":"assertion","name":"sprint_consumes_stamina","passed":true}
+{"event":"assertion","name":"exhaustion_blocks_sprint_bursts","passed":true}
+{"event":"assertion","name":"stamina_recovers","passed":true}
+{"event":"assertion","name":"paused_player_stays_put","passed":true}
+{"event":"assertion","name":"capture_camp","passed":true}
+{"checks":12,"event":"test_result","failures":0,"suite":"offline_slice"}

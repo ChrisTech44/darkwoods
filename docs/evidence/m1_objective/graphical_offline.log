@@ -1,0 +1,41 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"walk_speed_real_physics","passed":true}
+{"event":"assertion","name":"diagonal_speed_normalized","passed":true}
+{"event":"assertion","name":"visible_facing_tracks_movement","passed":true}
+{"event":"assertion","name":"world_boundary_blocks_player","passed":true}
+{"event":"assertion","name":"cabin_door_allows_entry","passed":true}
+{"event":"assertion","name":"cabin_wall_blocks_player","passed":true}
+{"event":"assertion","name":"sprint_faster_than_walk","passed":true}
+{"event":"assertion","name":"sprint_consumes_stamina","passed":true}
+{"event":"assertion","name":"exhaustion_blocks_sprint_bursts","passed":true}
+{"event":"assertion","name":"stamina_recovers","passed":true}
+{"event":"assertion","name":"paused_player_stays_put","passed":true}
+{"event":"assertion","name":"capture_camp","passed":true}
+{"event":"assertion","name":"distant_pickup_rejected","passed":true}
+{"event":"assertion","name":"pickup_battery","passed":true}
+{"event":"assertion","name":"duplicate_pickup_rejected_battery","passed":true}
+{"event":"assertion","name":"pickup_fuel","passed":true}
+{"event":"assertion","name":"duplicate_pickup_rejected_fuel","passed":true}
+{"event":"assertion","name":"pickup_key","passed":true}
+{"event":"assertion","name":"duplicate_pickup_rejected_key","passed":true}
+{"event":"assertion","name":"three_distinct_components_carried","passed":true}
+{"event":"assertion","name":"distant_delivery_rejected","passed":true}
+{"event":"assertion","name":"nearby_delivery_accepted","passed":true}
+{"event":"assertion","name":"parts_transferred_once","passed":true}
+{"event":"assertion","name":"duplicate_delivery_rejected","passed":true}
+{"event":"assertion","name":"released_hold_resets_start","passed":true}
+{"event":"assertion","name":"full_hold_starts_countdown","passed":true}
+{"event":"assertion","name":"capture_van_countdown","passed":true}
+{"event":"round_finished","result":"You escaped the camp.","won":true}
+{"event":"assertion","name":"living_survivor_wins_round","passed":true}
+{"event":"assertion","name":"per_player_escape_recorded","passed":true}
+{"event":"assertion","name":"capture_win","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"restart_frees_old_round","passed":true}
+{"event":"assertion","name":"restart_has_one_player","passed":true}
+{"event":"assertion","name":"restart_resets_objective_and_phase","passed":true}
+{"event":"assertion","name":"restart_restores_pickups","passed":true}
+{"checks":34,"event":"test_result","failures":0,"suite":"offline_slice"}

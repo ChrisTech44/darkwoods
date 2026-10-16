@@ -79,7 +79,7 @@ func _physics_process(delta: float) -> void:
 			move_and_slide()
 			# Charge follows the locked visible lane, collides with ordinary walls.
 			for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
-				if actor.status == CampPlayer.Status.ALIVE and global_position.distance_to(actor.global_position) < 14 and has_line_of_sight(actor.global_position):
+				if actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and global_position.distance_to(actor.global_position) < 14 and has_line_of_sight(actor.global_position):
 					actor.receive_hit()
 					dash_remaining = 0
 			queue_redraw()

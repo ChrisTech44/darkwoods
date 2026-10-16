@@ -1,6 +1,6 @@
 # Heart-pounding nights: gameplay overhaul plan
 
-Status: **approved planning direction; F1 navigation, F2 night phases and F3a chase toolkit (wounds, revives, flash) implemented**
+Status: **approved planning direction; F1 navigation, F2 night phases and F3 chase toolkit implemented**
 (signposts, skyline markers, wall-map regions, team pins, spare cutters and
 crowbar; see [evidence](evidence/navigation/README.md)). Everything else in
 this document is still planned until a development-log entry records execution
@@ -272,9 +272,10 @@ already has ENet authority), logged and pushed before the next one starts.
    with phase stingers, modest stalker escalation and dawn rescue. Deferred:
    distant-call/flicker build-ups, separate chase music layers (needs new
    licensed audio), and the Lost Camper, Hunt Begins and Stalker's Gift events.
-3. **F3 Chase toolkit** *(F3a implemented: Wounded state, blood trail, medkit
+3. **F3 Chase toolkit** *(implemented: F3a Wounded state, blood trail, medkit
    patch, kitless revive, downed crawl/help ping, solo self-recovery, flash-stun;
-   F3b next: hiding spots, doors, knock-overs; vaults move to F4 with fences)*: Wounded state, hiding spots and breath meter, doors,
+   F3b hiding spots with breath and witnesses, slam/break doors, knock-overs.
+   Vaults move to F4 with fences)*: Wounded state, hiding spots and breath meter, doors,
    vaults, knock-overs, kitless revive, downed crawl/ping, solo self-recovery.
 4. **F4 Ring-and-spoke map**: rework the woods generator into hub/ring/spokes/
    thickets with unlockable shortcuts, rotating objective regions and the

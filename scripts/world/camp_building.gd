@@ -9,6 +9,7 @@ var label: String = "CABIN"
 var walls: Array[Rect2] = []
 var furnishings: Array[Dictionary] = []
 var door: Vector2
+var door_rect: Rect2
 var roof: Node2D
 
 
@@ -20,6 +21,7 @@ func configure(rect: Rect2, type: String, title: String) -> void:
 	var door_offset := 48.0 if rect.size.x <= 176 else 96.0
 	var door_width := 24.0 if rect.size.y <= 128 else 32.0
 	door = Vector2(rect.position.x + door_offset + door_width * 0.5, rect.end.y)
+	door_rect = Rect2(rect.position.x + door_offset, rect.end.y - thickness, door_width, thickness)
 	walls.assign([
 		Rect2(rect.position, Vector2(rect.size.x, thickness)),
 		Rect2(rect.position, Vector2(thickness, rect.size.y)),

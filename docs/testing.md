@@ -385,3 +385,23 @@ Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tes
 defeat. `network_peer.gd` checks that kitless revives are slower than kit time,
 and that a guest flash stuns on the host and replicates (`lnac-net-6`).
 Evidence: [chase toolkit](evidence/chase_toolkit/README.md).
+
+## Hiding, doors and knock-overs (overhaul F3b)
+
+Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/chase_props.gd`
+(add `-- --capture` without `--headless` for three captures). It covers:
+
+- spot, door and knock-over counts, and that every spot is reachable on the
+  native nav bake;
+- hiding: snap-in, invisibility, hit immunity and no movement while hidden;
+- breath drain, the gasp ejection a creature hears, and recovery;
+- light restored on leaving, and a chasing witness dragging the survivor out;
+- door slam blocking the path, a fixture break at 2.5 s, the smash window and the
+  doorway guard;
+- a **live AI** stalker routing to a noise behind a closed door, breaking in and
+  reaching it;
+- knock-over stun, lane block, expiry and one use.
+
+`network_peer.gd` adds a guest hiding via interact and a host door slam, both
+replicated, with the client door collision checked by raycast (`lnac-net-7`).
+Evidence: [hiding/doors](evidence/chase_props/README.md).

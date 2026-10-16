@@ -1,7 +1,7 @@
 class_name WorldSync
 extends RefCounted
 ## Host snapshots contain plain data only. Clients render, never simulate outcomes.
-const PLAYER_FIELDS := ["notice","notice_time","velocity","status","stamina","exhausted","sprinting","flashlight_on","flashlight_charge","bleedout","invulnerability","hex_remaining","ward_remaining","selected_slot","facing","stride","wounded","flash_time","flash_cooldown","self_recovery_used","help_cooldown"]
+const PLAYER_FIELDS := ["notice","notice_time","velocity","status","stamina","exhausted","sprinting","flashlight_on","flashlight_charge","bleedout","invulnerability","hex_remaining","ward_remaining","selected_slot","facing","stride","wounded","flash_time","flash_cooldown","self_recovery_used","help_cooldown","hidden_spot","breath"]
 const ENEMY_FIELDS := ["enabled","velocity","facing","stride","state","stun_remaining"]
 const CRYPTID_FIELDS := ["power_tell","power_aim","dash_remaining","casting","cast_remaining","cast_aim","hunt_clock"]
 
@@ -51,7 +51,7 @@ static func capture(net: Node) -> Dictionary:
 		entities[entity.get_meta("network_id")]=row
 	return {"players":players,"enemies":enemies,"items":items,"sites":sites,"entities":entities,
 		"van":{"installed":level.van.installed,"progress":level.van.start_progress,"running":level.van.running,"remaining":level.van.remaining},
-		"pins":level.pins,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"revive":level.revive_progress,"finished":level.finished,"won":level.won,"message":level.message,"message_time":level.message_time}
+		"pins":level.pins,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"props":level.props.snapshot(),"revive":level.revive_progress,"finished":level.finished,"won":level.won,"message":level.message,"message_time":level.message_time}
 
 static func apply(net: Node, state: Dictionary) -> void:
 	var level: Node2D=net.world
@@ -145,6 +145,7 @@ static func apply(net: Node, state: Dictionary) -> void:
 	level.self_recovery_progress=state["self_recovery"]
 	level.revive_duration=state["revive_duration"]
 	level.night_clock.restore(state["night"])
+	level.props.restore(state["props"])
 	level.revive_progress=state["revive"]
 	level.message=state["message"]
 	level.message_time=state["message_time"]

@@ -129,6 +129,22 @@ func _host() -> void:
 	dazzled.stun_immunity=0.0
 	dazzled.enabled=dazzled_was
 	flasher.ward_remaining=0.0
+	# Hiding is a host-validated interact; door state and collision replicate to clients.
+	var hider: CampPlayer=net.actors[guest]
+	var spot_index := -1
+	for index in range(level.props.spots.size()):
+		if not level.props.spots[index]["woods"]:
+			spot_index=index
+			break
+	hider.position=level.props.spots[spot_index]["position"]+Vector2(0,6)
+	var slammed: Dictionary=level.props.doors[0]
+	level.props.toggle_door(level.player,0)
+	harness.advance.rpc("hide_door",{"guest":guest,"door":slammed["rect"]})
+	if not await _reports(peers-1): return
+	_check(hider.hidden_spot==spot_index and not slammed["open"],"guest_hides_and_host_door_closed")
+	for report: Dictionary in harness.reports.values(): _check(report.get("hidden",false) and report.get("door",false),"hiding_and_door_replicated_with_collision")
+	level.props.leave(hider)
+	level.props.toggle_door(level.player,0)
 	if selected_mode=="woods":
 		# The host owns the night clock; clients see the phase and the radio-revealed fuel cache.
 		level.night_clock.skip_to(NightClock.PHASE_STARTS[1])
@@ -337,6 +353,15 @@ func _client() -> void:
 				await _until(func(): return net.actors[harness.data["guest"]].notice.contains("Nothing to use"),5)
 				var personal_actor: CampPlayer=net.world.player
 				harness.report.rpc_id(1,handled,{"private":personal_actor.notice.contains("Nothing to use") if get_multiplayer().get_unique_id()==harness.data["guest"] else personal_actor.notice_time==0})
+			"hide_door":
+				if mine==harness.data["guest"]:
+					await create_timer(0.4).timeout
+					net.action("interact")
+				await _until(func(): return net.actors[harness.data["guest"]].hidden_spot>=0 and not net.world.props.doors[0]["open"],5)
+				for frame in range(3): await physics_frame
+				var door_rect: Rect2=harness.data["door"]
+				var blocked: bool=not net.world.clear_path(door_rect.get_center()+Vector2(0,20),door_rect.get_center()-Vector2(0,30))
+				harness.report.rpc_id(1,handled,{"hidden":net.actors[harness.data["guest"]].hidden_spot>=0,"door":not net.world.props.doors[0]["open"] and blocked})
 			"flash":
 				if mine==harness.data["guest"]: net.action("flash")
 				var stunned := func() -> bool:

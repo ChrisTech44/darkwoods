@@ -25,7 +25,7 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 		return
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
-		if actor.status == CampPlayer.Status.ALIVE and Geometry2D.get_closest_point_to_segment(actor.global_position, from, to).distance_to(actor.global_position) <= 9:
+		if actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and Geometry2D.get_closest_point_to_segment(actor.global_position, from, to).distance_to(actor.global_position) <= 9:
 			actor.apply_hex(1.6)
 			queue_free()
 			return

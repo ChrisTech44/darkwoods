@@ -52,6 +52,8 @@ var self_recovery_used: bool = false
 var help_cooldown: float = 0.0
 var blood: Array[Vector2] = []
 var blood_distance: float = 0.0
+var hidden_spot: int = -1
+var breath: float = 1.0
 
 
 func _ready() -> void:
@@ -87,6 +89,10 @@ func _physics_process(delta: float) -> void:
 
 func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 	velocity = Vector2.ZERO
+	if hidden_spot >= 0:
+		sprinting = false
+		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery)
+		return
 	if status == Status.DOWNED:
 		# Downed survivors drag themselves slowly toward cover or a teammate.
 		sprinting = false
@@ -140,7 +146,7 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 func receive_hit() -> void:
 	if invulnerability > 0.0 or ward_remaining > 0.0:
 		return
-	if status != Status.ALIVE:
+	if status != Status.ALIVE or hidden_spot >= 0:
 		return
 	if not wounded:
 		# First hit wounds: a brief grace window to run before a second hit downs.
@@ -166,6 +172,8 @@ func set_status(next: Status) -> void:
 	if status == next: return
 	status = next
 	velocity = Vector2.ZERO
+	if status != Status.ALIVE:
+		hidden_spot = -1
 	if status == Status.DOWNED:
 		bleedout = 0
 		get_tree().call_group("round_world", "on_survivor_downed", self)
@@ -180,6 +188,11 @@ func set_status(next: Status) -> void:
 
 func _draw() -> void:
 	if status in [Status.ESCAPED, Status.BOARDED]:
+		return
+	if hidden_spot >= 0:
+		# Only a pair of eyes in the dark gives a hidden survivor away to teammates.
+		draw_rect(Rect2(-3, -8, 2, 1), Color("d9e6c8"))
+		draw_rect(Rect2(1, -8, 2, 1), Color("d9e6c8"))
 		return
 	if not peer_name.is_empty():
 		draw_string(ThemeDB.fallback_font,name_origin(),peer_name,HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("b9d4b2"))

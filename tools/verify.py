@@ -66,12 +66,15 @@ def main():
     commands.append(("night_phases", ["--headless", *nights]))
     chase = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/chase_toolkit.gd"]
     commands.append(("chase_toolkit", ["--headless", *chase]))
+    chase_props = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/chase_props.gd"]
+    commands.append(("chase_props", ["--headless", *chase_props]))
     if args.graphical:
         commands.append(("graphical_player_render", ["--audio-driver", "Dummy", *render]))
         commands.append(("graphical_content", ["--audio-driver", "Dummy", *content, "--", "--capture"]))
         commands.append(("graphical_navigation", ["--audio-driver", "Dummy", *navigation, "--", "--capture"]))
         commands.append(("graphical_nights", ["--audio-driver", "Dummy", *nights, "--", "--capture"]))
         commands.append(("graphical_chase", ["--audio-driver", "Dummy", *chase, "--", "--capture"]))
+        commands.append(("graphical_props", ["--audio-driver", "Dummy", *chase_props, "--", "--capture"]))
         commands.append(("graphical_surround", [*surround, "--", "--capture"]))
         commands.append(("graphical_visibility", [*visibility, "--", "--capture"]))
         commands.append(("graphical_defaults", [*defaults, "--", "--capture"]))
@@ -89,7 +92,7 @@ def main():
     for name, arguments in commands:
         command = [engine, *arguments]
         timed_out = False
-        timeout = 240 if name in ("graphical_expedition", "woods_playthrough", "graphical_polish", "layout_polish", "woods_replay", "graphical_woods", "menu_defaults", "graphical_defaults", "surround_world", "graphical_surround", "navigation_seeds") else 90
+        timeout = 240 if name in ("graphical_expedition", "woods_playthrough", "graphical_polish", "layout_polish", "chase_props", "woods_replay", "graphical_woods", "menu_defaults", "graphical_defaults", "surround_world", "graphical_surround", "navigation_seeds") else 90
         try:
             result = subprocess.run(command, cwd=ROOT, stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT, text=True, timeout=timeout)
@@ -105,7 +108,7 @@ def main():
                   if re.search(r"(?:SCRIPT ERROR|ERROR|Parse Error):", line)]
         warnings = [line for line in clean.splitlines() if "WARNING:" in line]
         passed = status == 0 and not errors and not timed_out
-        if name in ("player_render", "graphical_player_render", "content_expansion", "graphical_content", "navigation_aids", "graphical_navigation", "night_phases", "graphical_nights", "chase_toolkit", "graphical_chase", "menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
+        if name in ("player_render", "graphical_player_render", "content_expansion", "graphical_content", "navigation_aids", "graphical_navigation", "night_phases", "graphical_nights", "chase_toolkit", "graphical_chase", "chase_props", "graphical_props", "menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
             summaries = []
             for line in clean.splitlines():
                 if line.startswith("{"):

@@ -155,7 +155,7 @@ func sense_visible_target() -> CampPlayer:
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if not can_sense(actor):
 			continue
-		if actor.status != CampPlayer.Status.ALIVE:
+		if actor.status != CampPlayer.Status.ALIVE or actor.hidden_spot >= 0:
 			continue
 		var candidate_distance := global_position.distance_to(actor.global_position)
 		if candidate_distance <= distance and has_line_of_sight(actor.global_position):

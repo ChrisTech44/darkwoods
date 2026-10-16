@@ -1,5 +1,45 @@
 # Development log
 
+## 2026-10-16 — Overhaul F3b: hiding spots, doors and knock-overs
+
+Second half of the chase toolkit, in a host-owned `ChaseProps` node
+(`scripts/world/chase_props.gd`).
+
+- **Hiding:** one or two spots per building, placed beside bunks, cots,
+  lockers, crates, canoes, tables or desks on clear interior ground. About 100+
+  brush spots on woods corridors (separate RNG, spaced 520 px). Hidden survivors
+  snap in, can't move, are skipped by AI senses, dashes, hazards and bolts, and
+  their light switches off (restored on leaving). Breath drains 0.25/s within
+  120 px of a creature and recovers 0.2/s; at zero they gasp (220 px noise) and
+  pop out. Creatures chasing or seeing the survivor at entry become witnesses
+  for 15 s: they investigate the spot and drag the survivor out on arrival.
+- **Doors:** every building gets a door body in its wall gap (`door_rect` added
+  to `CampBuilding`). E slams (120 px noise) or opens it; it won't close on a
+  survivor or creature. Closed doors block movement, sight raycasts and
+  flashlight light (a light occluder was added after a graphical capture showed
+  the beam leaking through). Creatures pressing within 18 px break it in 2.5 s
+  (300 px crash); it stays smashed for 20 s.
+- **Knock-overs:** woodpiles beside camp doors and up to 60 deadfalls (spaced
+  900 px). E topples one along your facing, blocking a 44×12 lane for 6 s and
+  stunning creatures in it for 2 s (stun immunity applies). It is never solid if
+  that would trap a survivor. One use.
+- Snapshot carries door/knock state and per-player hide/breath. Clients apply
+  door collision so their sight raycasts match. Rules `lnac-net-7`.
+
+Bugs caught by tests before commit:
+- Door reach measured from the centre missed thick cabin walls; it's now
+  measured from the door edge.
+- A live-AI test showed the crash noise overwrote the breaker's own target, so
+  it investigated its own noise and wandered off. The breaker now keeps its goal
+  and only other creatures turn toward the crash.
+
+**Verification:** `python3 tools/verify.py` 87/87 steps, no errors or warnings
+(new `chase_props`: 33 headless / 36 graphical assertions).
+`verify_network.py --mode all`: 2 peers 269 assertions, 4 peers 455, all
+passing. Evidence: [hiding/doors](evidence/chase_props/README.md). Not
+verified: human feel of breath timing and door break time, graphical network
+windows, other platforms.
+
 ## 2026-10-16 — Overhaul F3a: wounds, revives, crawl, self-recovery, flash-stun
 
 First half of the chase toolkit, aimed at more close calls and fewer instant downs.

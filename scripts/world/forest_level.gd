@@ -31,6 +31,7 @@ var soundscape: CampSoundscape
 var sight: WoodsVisibility
 var pins: Array[Dictionary] = []
 var night_clock: NightClock
+var props: ChaseProps
 const PINS_PER_PLAYER := 3
 
 
@@ -101,6 +102,10 @@ func _ready() -> void:
 	var trail := preload("res://scripts/world/blood_trail.gd").new()
 	trail.z_index = -1
 	add_child(trail)
+	props = ChaseProps.new()
+	props.name = "ChaseProps"
+	props.level = self
+	add_child(props)
 	night_clock = NightClock.new()
 	night_clock.name = "NightClock"
 	night_clock.level = self
@@ -159,6 +164,9 @@ func _process(_delta: float) -> void:
 	hud.threat_label.text = ""
 	if player.wounded and player.status == CampPlayer.Status.ALIVE:
 		hud.threat_label.text = "WOUNDED · MEDKIT (V) PATCHES"
+	if player.hidden_spot >= 0:
+		hud.threat_label.text = "HOLD YOUR BREATH" if player.breath < 0.999 else "HIDDEN"
+		hud.stamina.value = player.breath * 100.0
 	if not finished and killer.global_position.distance_to(player.global_position) < 155.0:
 		hud.threat_label.text = "SPOTTED · RUN!" if killer.state == CampKiller.State.CHASE else "FOOTSTEPS NEARBY · KEEP QUIET"
 	if player.notice_time > 0.0:
@@ -237,6 +245,8 @@ func _physics_process(delta: float) -> void:
 func try_interact(actor: CampPlayer) -> bool:
 	if paused or finished or actor.status != CampPlayer.Status.ALIVE or not actor.is_in_group("survivors"):
 		return false
+	if actor.hidden_spot >= 0:
+		return props.interact(actor)
 	if van.can_board(actor):
 		var entered := van.board(actor)
 		if entered:
@@ -282,6 +292,8 @@ func try_interact(actor: CampPlayer) -> bool:
 			return site.interact(actor)
 	if near_generator(actor):
 		return night_clock.restart_generator(actor)
+	if props.interact(actor):
+		return true
 	if van.in_range(actor) and clear_path(actor.global_position, van.interaction_point()):
 		var count := van.deliver(actor)
 		if count > 0:
@@ -435,6 +447,8 @@ func context_prompt() -> String:
 		return "YOU ARE ABOARD · Safe inside the van. Departure is automatic."
 	if van.can_board(player):
 		return "E · ENTER VAN  —  Board before the countdown ends!"
+	if player.hidden_spot >= 0:
+		return props.prompt(player)
 	if player.status == CampPlayer.Status.DOWNED:
 		if solo_recovery_available(player):
 			return "HOLD E (8s) · DRAG YOURSELF UP · ONCE PER NIGHT, LOUD"
@@ -452,6 +466,9 @@ func context_prompt() -> String:
 			return "E · " + action["label"] if site.cooldown <= 0 else "LET THE ECHO FADE..."
 	if near_generator(player):
 		return "E · RESTART GENERATOR (LOUD)"
+	var prop_prompt := props.prompt(player)
+	if not prop_prompt.is_empty() and not van.in_range(player):
+		return prop_prompt
 	if van.in_range(player):
 		if van.running:
 			return "E · ENTER VAN  —  Board before the countdown ends!"

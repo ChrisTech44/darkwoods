@@ -1,0 +1,37 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"hiding_spots_in_camp_18_and_woods_195","passed":true}
+{"event":"assertion","name":"every_building_has_a_door","passed":true}
+{"event":"assertion","name":"woodpiles_and_deadfalls_9_60","passed":true}
+{"event":"assertion","name":"every_hiding_spot_reachable","passed":true}
+{"event":"assertion","name":"doors_start_open","passed":true}
+{"event":"assertion","name":"hide_prompt_UNDER BUNK","passed":true}
+{"event":"assertion","name":"hide_snaps_into_spot","passed":true}
+{"event":"assertion","name":"unseen_hiding_has_no_witness","passed":true}
+{"event":"assertion","name":"hidden_survivor_invisible_to_hunter","passed":true}
+{"event":"assertion","name":"hidden_survivor_cannot_be_hit","passed":true}
+{"event":"assertion","name":"hidden_survivor_cannot_move","passed":true}
+{"event":"assertion","name":"breath_drains_with_hunter_close","passed":true}
+{"event":"assertion","name":"out_of_breath_gasps_and_is_heard","passed":true}
+{"event":"assertion","name":"hide_again","passed":true}
+{"event":"assertion","name":"breath_recovers_when_safe","passed":true}
+{"event":"assertion","name":"e_leaves_hiding_and_restores_light","passed":true}
+{"event":"assertion","name":"chasing_hunter_witnesses_hiding","passed":true}
+{"event":"assertion","name":"witness_drags_survivor_out","passed":true}
+{"event":"assertion","name":"slam_prompt","passed":true}
+{"event":"assertion","name":"door_slams","passed":true}
+{"event":"assertion","name":"closed_door_blocks_movement_and_sight","passed":true}
+{"event":"assertion","name":"door_holds_for_a_while","passed":true}
+{"event":"assertion","name":"hunter_breaks_door","passed":true}
+{"event":"assertion","name":"broken_door_is_open","passed":true}
+{"event":"assertion","name":"smashed_door_cannot_close","passed":true}
+{"event":"assertion","name":"door_closed_again_after_repair_window","passed":true}
+{"event":"assertion","name":"live_hunter_breaks_in_and_reaches_noise","passed":true}
+{"event":"assertion","name":"cannot_close_on_someone_in_doorway","passed":true}
+{"event":"assertion","name":"knock_prompt","passed":true}
+{"event":"assertion","name":"knock_over_stuns_pursuer","passed":true}
+{"event":"assertion","name":"fallen_pile_blocks_lane","passed":true}
+{"event":"assertion","name":"block_clears_after_six_seconds","passed":true}
+{"event":"assertion","name":"knock_over_is_one_use","passed":true}
+{"checks":33,"event":"test_result","failures":0,"suite":"chase_props"}

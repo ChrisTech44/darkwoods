@@ -13,7 +13,7 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 		return
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
-		if actor.status != CampPlayer.Status.ALIVE or affected.has(actor.get_instance_id()):
+		if actor.status != CampPlayer.Status.ALIVE or actor.hidden_spot >= 0 or affected.has(actor.get_instance_id()):
 			continue
 		if actor.global_position.distance_to(global_position) <= 23 and source.has_line_of_sight(actor.global_position):
 			if thorns and not actor.sprinting:

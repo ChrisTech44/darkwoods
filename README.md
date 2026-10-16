@@ -213,7 +213,7 @@ survivors left outside are left behind.
 | --- | --- |
 | **WASD / arrow keys** | Walk and face a direction |
 | **Shift** | Sprint while stamina lasts; sprinting makes noise |
-| **E** | Take items, open caches with cutters or a crowbar, install parts, enter a running van |
+| **E** | Take items, open caches with cutters or a crowbar, install parts, enter a running van, hide/leave a hiding spot, slam/open doors, knock over woodpiles and deadfall |
 | **Hold E** | Start the repaired van, revive a nearby downed teammate, or (solo, downed) get back up once |
 | **Space** | Flash-stun creatures close in your beam (costs light, 8 s cooldown) |
 | **F** | Toggle the flashlight |
@@ -335,6 +335,24 @@ where teammates can recover them with E.
 - **Flash-stun:** press **Space** to flare your flashlight. Creatures in the beam
   within 90 px freeze for 1.5 s. It costs 15 light charge (expedition), has an 8 s
   cooldown, and the same creature can't be stunned again for 6 s.
+
+**Hide, slam, topple.**
+
+- **Hiding spots:** under bunks and cots, in lockers, behind crates, under
+  canoes and tables in camp buildings, and in thick brush along woods trails.
+  Press **E** beside one to slip in; you can't move or be hit, and creatures
+  can't see you. Your **breath** (the stamina bar while hidden) drains while
+  anything is within 120 px and refills when it's clear. Run out and you gasp
+  loudly and tumble out. If a creature *saw* you hide, it comes to that spot and
+  drags you out, so break line of sight first. E leaves; your flashlight comes
+  back on.
+- **Doors:** every building door can be slammed shut with **E** (a small noise).
+  Closed doors block movement, sight and light. A creature pressing on one breaks
+  through in about **2.5 s** with a loud crash, and a smashed door can't be closed
+  again for 20 s.
+- **Knock-overs:** woodpiles beside camp buildings and deadfall logs along the
+  trails. Press **E** to topple one in the direction you face: it blocks the lane
+  for **6 s**, stuns anything it lands on for 2 s, and is loud. Each works once.
 
 If everyone is down (and no solo last chance remains), the round ends in defeat.
 Successful revivals do not accumulate toward defeat; the round continues while
@@ -546,10 +564,11 @@ recover units. Vehicle components and cutters remain separate from this limit.
 
 The current implementation includes solo and 1–4 player ENet co-op in both
 modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
-species. Full baseline verification passed **84 steps** with no errors/warnings,
+species. Full baseline verification passed **87 steps** with no errors/warnings,
 including the [navigation](docs/evidence/navigation/README.md),
 [night phase](docs/evidence/night_phases/README.md) and
-[chase toolkit](docs/evidence/chase_toolkit/README.md) suites;
+[chase toolkit](docs/evidence/chase_toolkit/README.md) and
+[hiding/doors](docs/evidence/chase_props/README.md) suites;
 final content checks passed **350 assertions**. Current graphical ENet tests passed **654
 assertions across 14 process runs**, including two/four peers and graphical
 host/client windows in both modes. See the

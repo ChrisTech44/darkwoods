@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-6"
+const RULES := "lnac-net-7"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -232,6 +232,7 @@ func attach_world(level: Node2D) -> void:
 	if not multiplayer.is_server():
 		for site in level.camp_map.sites: site.set_physics_process(false)
 		level.night_clock.set_physics_process(false)
+		level.props.set_physics_process(false)
 	if multiplayer.is_server(): _accept_loaded(local_id,round_id)
 	else: _world_loaded.rpc_id(1,round_id)
 

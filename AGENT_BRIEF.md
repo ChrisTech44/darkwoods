@@ -118,7 +118,19 @@ time, or at role time with a medkit (consumed), and revived survivors return
 wounded. A lone survivor gets a 20s last chance to self-recover once (8s hold,
 loud) before all-down defeat. Space flash-stun costs 15 charge, has an 8s
 cooldown, freezes creatures in the beam within 90px for 1.5s, then 6s immunity.
-Rules `lnac-net-6`. F3b (hiding, doors, knock-overs) follows.
+Rules `lnac-net-6`. F3b is implemented:
+- hiding spots in camp furniture and woods brush, where hidden survivors are
+  untargetable and immobile;
+- a breath meter that drains within 120px of a creature, with a loud gasp
+  ejection at zero;
+- creatures that saw you enter mark the spot and drag you out;
+- slam-shut doors on every building that block movement, sight and light, which
+  a creature pressing them breaks in 2.5s with a crash (the breaker keeps its
+  goal) and stay smashed for 20s;
+- one-use woodpile/deadfall knock-overs that block 6s and stun 2s, never walling
+  in a survivor.
+
+Rules `lnac-net-7`. Vaults move to F4 with fences.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 

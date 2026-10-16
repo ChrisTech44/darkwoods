@@ -133,7 +133,8 @@ func _host() -> void:
 	var hider: CampPlayer=net.actors[guest]
 	var spot_index := -1
 	for index in range(level.props.spots.size()):
-		if not level.props.spots[index]["woods"]:
+		var free: bool=level.pickups.all(func(pickup: CampPickup) -> bool: return not pickup.available or pickup.position.distance_to(level.props.spots[index]["position"])>40)
+		if not level.props.spots[index]["woods"] and free:
 			spot_index=index
 			break
 	hider.position=level.props.spots[spot_index]["position"]+Vector2(0,6)

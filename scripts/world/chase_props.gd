@@ -8,12 +8,14 @@ const BREATH_DRAIN := 0.25
 const BREATH_RECOVER := 0.2
 const BREATH_THREAT := 120.0
 const WITNESS_SECONDS := 15.0
-const DOOR_REACH := 18.0
+const DOOR_REACH := 22.0
 const DOOR_BREAK_SECONDS := 2.5
 const DOOR_BROKEN_SECONDS := 20.0
 const KNOCK_RADIUS := 24.0
 const KNOCK_BLOCK_SECONDS := 6.0
 const KNOCK_STUN := 2.0
+const KNOCK_MAX_SPAN := 180.0
+const CAMP_PILES := 4
 const SPOT_LABELS := {"bed": "UNDER BUNK", "medical": "UNDER COT", "shelf": "IN LOCKER", "crate": "BEHIND CRATES", "canoe": "UNDER CANOE", "shower": "IN SHOWER STALL", "table": "UNDER TABLE", "desk": "UNDER DESK", "bench": "UNDER BENCH"}
 var level: Node2D
 var spots: Array[Dictionary] = []
@@ -39,7 +41,7 @@ func _add_building(building: CampBuilding, camp_map: CampMap) -> void:
 		var rect: Rect2 = furnishing["rect"]
 		for side in [Vector2.DOWN, Vector2.RIGHT, Vector2.LEFT, Vector2.UP]:
 			var at: Vector2 = (rect.get_center() + side * (rect.size * 0.5 + Vector2.ONE * 9)).round()
-			if interior.has_point(at) and _clear(at, camp_map, 7):
+			if interior.has_point(at) and _clear(at, camp_map, 7) and not building.door_rect.grow(30).has_point(at):
 				spots.append({"position": at, "label": SPOT_LABELS[furnishing["type"]], "woods": false})
 				added += 1
 				break
@@ -53,9 +55,6 @@ func _add_building(building: CampBuilding, camp_map: CampMap) -> void:
 	occluder.visible = false
 	body.add_child(occluder)
 	doors.append({"rect": building.door_rect, "body": body, "open": true, "progress": 0.0, "broken": 0.0, "label": building.label})
-	var pile: Vector2 = building.door + Vector2(-40, 30)
-	if CampMap.CAMP_BOUNDS.has_point(pile) and _clear(pile, camp_map, 14) and not building.bounds.grow(8).has_point(pile):
-		_add_knock(pile, "WOODPILE")
 
 
 func _add_woods(woods: WoodsLayout, seed_value: int) -> void:
@@ -74,19 +73,62 @@ func _add_woods(woods: WoodsLayout, seed_value: int) -> void:
 		corridors[swap] = cell
 	var brush: Array[Vector2] = []
 	var logs: Array[Vector2] = []
+	# Woodpiles on the first straight stretches of the trails leading out of camp.
+	var approaches := corridors.filter(func(cell: Vector2i) -> bool:
+		var distance := woods.center(cell).distance_to(CampMap.CAMP_BOUNDS.get_center())
+		return distance > 750 and distance < 1300)
+	approaches.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		var da := woods.center(a).distance_to(CampMap.CAMP_BOUNDS.get_center())
+		var db := woods.center(b).distance_to(CampMap.CAMP_BOUNDS.get_center())
+		return da < db if da != db else a.y * WoodsLayout.SIZE.x + a.x < b.y * WoodsLayout.SIZE.x + b.x)
+	var piles := 0
+	for cell: Vector2i in approaches:
+		if piles >= CAMP_PILES:
+			break
+		var middle := _straight_middle(woods, cell)
+		if middle != Vector2.INF and _spaced(middle, logs, 500) and _add_knock(woods, middle, _across(woods, cell), "WOODPILE"):
+			logs.append(middle)
+			piles += 1
 	for cell in corridors:
 		var bush := woods.center(cell) + Vector2(rng.randi_range(-36, 36), rng.randi_range(-36, 36))
 		if _spaced(bush, brush, 520) and woods.signpost_near(bush, 120).is_empty():
 			brush.append(bush)
 			spots.append({"position": bush.round(), "label": "IN THICK BRUSH", "woods": true})
-		var deadfall := woods.center(cell) + Vector2(30, -30)
-		if logs.size() < 60 and _spaced(deadfall, logs, 900) and deadfall.distance_to(bush) > 40:
-			logs.append(deadfall)
-			_add_knock(deadfall.round(), "DEADFALL")
+		# Deadfalls go on straight stretches, across the connecting trail segment.
+		var middle := _straight_middle(woods, cell)
+		if middle != Vector2.INF and logs.size() < 60 + piles and _spaced(middle, logs, 900) and middle.distance_to(bush) > 60 and _add_knock(woods, middle, _across(woods, cell), "DEADFALL"):
+			logs.append(middle)
 
 
-func _add_knock(at: Vector2, label: String) -> void:
-	knocks.append({"position": at, "label": label, "state": 0, "remaining": 0.0, "rect": Rect2(), "body": _body(Rect2(at, Vector2.ONE * 4))})
+## Midpoint of a straight corridor's trail segment, or INF if the cell bends.
+func _straight_middle(woods: WoodsLayout, cell: Vector2i) -> Vector2:
+	var ends: Array = woods.links[cell]
+	if ends.size() != 2 or ends[0] - cell != -(ends[1] - cell):
+		return Vector2.INF
+	return woods.center(cell) + Vector2(ends[0] - cell) * WoodsLayout.CELL * 0.5
+
+
+func _across(woods: WoodsLayout, cell: Vector2i) -> Vector2:
+	return Vector2(woods.links[cell][0] - cell).orthogonal().abs()
+
+
+## Measure the open trail across `axis` and lay the fall line wall to wall.
+## Rejects spots wider than a chokepoint so a pile always truly closes the route.
+func _add_knock(woods: WoodsLayout, at: Vector2, axis: Vector2, label: String) -> bool:
+	var reach: Array[float] = [0.0, 0.0]
+	for side in range(2):
+		var direction := axis * (1.0 if side == 0 else -1.0)
+		while reach[side] < KNOCK_MAX_SPAN and woods.walkable(at + direction * (reach[side] + 4.0)):
+			reach[side] += 4.0
+	if reach[0] + reach[1] > KNOCK_MAX_SPAN or reach[0] < 24.0 or reach[1] < 24.0:
+		return false
+	var start: Vector2 = at - axis * (reach[1] + 8.0)
+	var finish: Vector2 = at + axis * (reach[0] + 8.0)
+	var thickness := Vector2.ONE * 16.0 - axis * 16.0
+	var block := Rect2(start.min(finish) - thickness * 0.5, (finish - start).abs() + thickness)
+	var pile: Vector2 = (at + axis * (reach[0] - 14.0)).round()
+	knocks.append({"position": pile, "label": label, "state": 0, "remaining": 0.0, "rect": Rect2(), "block": block, "travel": axis.orthogonal().abs(), "body": _body(Rect2(pile, Vector2.ONE * 4))})
+	return true
 
 
 func _body(rect: Rect2) -> StaticBody2D:
@@ -215,6 +257,17 @@ func knock_near(actor: CampPlayer) -> int:
 	return -1
 
 
+## A door wins when you're in or beside its gap, unless a hiding spot is right under you.
+func _door_first(actor: CampPlayer) -> int:
+	var door := door_near(actor)
+	var spot := spot_near(actor)
+	if door >= 0 and spot >= 0 and not doors[door]["rect"].grow(4).has_point(actor.global_position):
+		var edge: Vector2 = actor.global_position.clamp(doors[door]["rect"].position, doors[door]["rect"].end)
+		if actor.global_position.distance_to(spots[spot]["position"]) < actor.global_position.distance_to(edge):
+			return -1
+	return door
+
+
 func _occupied(index: int) -> bool:
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if actor.hidden_spot == index:
@@ -225,17 +278,17 @@ func _occupied(index: int) -> bool:
 func prompt(actor: CampPlayer) -> String:
 	if actor.hidden_spot >= 0:
 		return "HIDING %s · E LEAVE · BREATH %d%%" % [spots[actor.hidden_spot]["label"], int(actor.breath * 100)]
+	var door := _door_first(actor)
+	if door >= 0:
+		if doors[door]["broken"] > 0.0:
+			return "DOOR SMASHED"
+		return "E · SLAM DOOR SHUT" if doors[door]["open"] else "E · OPEN DOOR"
 	var spot := spot_near(actor)
 	if spot >= 0:
 		return "E · HIDE " + spots[spot]["label"]
 	var knock := knock_near(actor)
 	if knock >= 0:
-		return "E · KNOCK OVER %s (LOUD, BLOCKS 6s)" % knocks[knock]["label"]
-	var door := door_near(actor)
-	if door >= 0:
-		if doors[door]["broken"] > 0.0:
-			return "DOOR SMASHED"
-		return "E · SLAM DOOR SHUT" if doors[door]["open"] else "E · OPEN DOOR"
+		return "E · KNOCK OVER %s ACROSS THE TRAIL (LOUD, 6s)" % knocks[knock]["label"]
 	return ""
 
 
@@ -243,15 +296,15 @@ func interact(actor: CampPlayer) -> bool:
 	if actor.hidden_spot >= 0:
 		leave(actor)
 		return true
+	var door := _door_first(actor)
+	if door >= 0:
+		return toggle_door(actor, door)
 	var spot := spot_near(actor)
 	if spot >= 0:
 		return hide_actor(actor, spot)
 	var knock := knock_near(actor)
 	if knock >= 0:
 		return knock_over(actor, knock)
-	var door := door_near(actor)
-	if door >= 0:
-		return toggle_door(actor, door)
 	return false
 
 
@@ -292,11 +345,15 @@ func toggle_door(actor: CampPlayer, index: int) -> bool:
 		level.announce("The door is smashed off its hinges.", actor)
 		return false
 	if door["open"]:
-		var blocked: Rect2 = door["rect"].grow(3)
+		var gap: Rect2 = door["rect"]
 		for node in get_tree().get_nodes_in_group("survivors") + get_tree().get_nodes_in_group("killers"):
-			if blocked.has_point(node.global_position):
+			if node != actor and gap.grow(3).has_point(node.global_position):
 				level.announce("Something is in the doorway.", actor)
 				return false
+		if gap.grow(4).has_point(actor.global_position):
+			# Slamming it while running through: finish the step toward where you're headed.
+			var inward: bool = actor.facing.y < 0.0 if absf(actor.facing.y) > 0.2 else actor.global_position.y < gap.get_center().y
+			actor.position.y = gap.position.y - 9.0 if inward else gap.end.y + 9.0
 		door["open"] = false
 		door["progress"] = 0.0
 		_shape(door["body"], door["rect"], true)
@@ -311,10 +368,20 @@ func toggle_door(actor: CampPlayer, index: int) -> bool:
 
 func knock_over(actor: CampPlayer, index: int) -> bool:
 	var knock: Dictionary = knocks[index]
-	var toward := actor.facing.normalized()
-	var center: Vector2 = knock["position"] + toward * 22
-	var size := Vector2(12, 44) if absf(toward.x) > absf(toward.y) else Vector2(44, 12)
-	var rect := Rect2(center - size * 0.5, size)
+	var rect: Rect2 = knock["block"]
+	var travel: Vector2 = knock["travel"]
+	# Land on the far side of the pile from whatever is closest behind you.
+	var line := rect.get_center()
+	var side := signf((actor.global_position - line).dot(travel))
+	var hunter := _nearest_hunter(actor.global_position, 320.0)
+	if hunter != null:
+		side = -signf((hunter.global_position - line).dot(travel))
+	if side == 0.0:
+		side = 1.0
+	if rect.grow(6).has_point(actor.global_position):
+		var target := actor.global_position - travel * (actor.global_position - line).dot(travel) + travel * side * 18.0
+		if level.clear_path(actor.global_position, target):
+			actor.position = target
 	var stunned := 0
 	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 		if enemy.enabled and rect.grow(10).has_point(enemy.global_position) and enemy.stun(KNOCK_STUN):
@@ -332,6 +399,14 @@ func knock_over(actor: CampPlayer, index: int) -> bool:
 	level.announce("%s down! %s" % [knocks[index]["label"], "%d stunned." % stunned if stunned > 0 else "The lane is blocked for a few seconds."], actor)
 	queue_redraw()
 	return true
+
+
+func _nearest_hunter(from: Vector2, radius: float) -> CampKiller:
+	var best: CampKiller
+	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
+		if enemy.enabled and enemy.global_position.distance_to(from) <= radius and (best == null or enemy.global_position.distance_to(from) < best.global_position.distance_to(from)):
+			best = enemy
+	return best
 
 
 func snapshot() -> Dictionary:
@@ -400,11 +475,21 @@ func _draw() -> void:
 						draw_circle(at + Vector2(-8 + column * 8 + row * 4, -row * 6), 2, Color("b3926a"))
 			1:
 				var rect: Rect2 = knock["rect"]
-				draw_rect(rect, Color("6e5034"))
 				var long := rect.size.x > rect.size.y
-				for step in range(0, int(rect.size.x if long else rect.size.y), 8):
-					var mark := rect.position + (Vector2(step + 4, rect.size.y * 0.5) if long else Vector2(rect.size.x * 0.5, step + 4))
-					draw_circle(mark, 2, Color("b3926a"))
+				draw_rect(Rect2(rect.position + Vector2(2, 3), rect.size), Color(0, 0, 0, 0.35))
+				draw_rect(rect.grow(1), Color("2e2318"))
+				draw_rect(rect, Color("8a6440"))
+				# Bark grain along the log, with cut rings at both ends.
+				var span := int(rect.size.x if long else rect.size.y)
+				for step in range(3, span - 3, 5):
+					var a := rect.position + (Vector2(step, 3) if long else Vector2(3, step))
+					var b := a + (Vector2(3, 0) if long else Vector2(0, 3))
+					draw_line(a, b, Color("5e4229"))
+					draw_line(a + (Vector2(0, 8) if long else Vector2(8, 0)), b + (Vector2(0, 8) if long else Vector2(8, 0)), Color("5e4229"))
+				draw_line(rect.position, rect.position + (Vector2(rect.size.x, 0) if long else Vector2(0, rect.size.y)), Color("b08a5c"))
+				for end in [rect.position + rect.size * (Vector2(0, 0.5) if long else Vector2(0.5, 0)), rect.end - rect.size * (Vector2(0, 0.5) if long else Vector2(0.5, 0))]:
+					draw_circle(end, 6, Color("c9a575"))
+					draw_arc(end, 3, 0, TAU, 10, Color("8a6440"), 1)
 			2:
 				for index in range(5):
 					draw_rect(Rect2(at + Vector2(-12 + index * 6, index % 2 * 4), Vector2(5, 2)), Color("5d4630"))

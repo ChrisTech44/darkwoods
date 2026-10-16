@@ -3,10 +3,9 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 {"event":"round_ready","milestone":"M1"}
 {"event":"assertion","name":"hiding_spots_in_camp_18_and_woods_195","passed":true}
 {"event":"assertion","name":"every_building_has_a_door","passed":true}
-{"event":"assertion","name":"woodpiles_and_deadfalls_9_60","passed":true}
 {"event":"assertion","name":"every_hiding_spot_reachable","passed":true}
 {"event":"assertion","name":"doors_start_open","passed":true}
-{"event":"assertion","name":"hide_prompt_UNDER BUNK","passed":true}
+{"event":"assertion","name":"hide_prompt_UNDER DESK","passed":true}
 {"event":"assertion","name":"hide_snaps_into_spot","passed":true}
 {"event":"assertion","name":"unseen_hiding_has_no_witness","passed":true}
 {"event":"assertion","name":"hidden_survivor_invisible_to_hunter","passed":true}
@@ -28,10 +27,21 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 {"event":"assertion","name":"smashed_door_cannot_close","passed":true}
 {"event":"assertion","name":"door_closed_again_after_repair_window","passed":true}
 {"event":"assertion","name":"live_hunter_breaks_in_and_reaches_noise","passed":true}
-{"event":"assertion","name":"cannot_close_on_someone_in_doorway","passed":true}
-{"event":"assertion","name":"knock_prompt","passed":true}
-{"event":"assertion","name":"knock_over_stuns_pursuer","passed":true}
-{"event":"assertion","name":"fallen_pile_blocks_lane","passed":true}
-{"event":"assertion","name":"block_clears_after_six_seconds","passed":true}
-{"event":"assertion","name":"knock_over_is_one_use","passed":true}
-{"checks":33,"event":"test_result","failures":0,"suite":"chase_props"}
+{"event":"assertion","name":"doorway_prompt_prefers_door","passed":true}
+{"event":"assertion","name":"slam_from_doorway_steps_inside","passed":true}
+{"event":"assertion","name":"door_reopens","passed":true}
+{"event":"assertion","name":"cannot_close_on_someone_else_in_doorway","passed":true}
+{"event":"assertion","name":"piles_at_camp_exits_4_and_deadfalls_60","passed":true}
+{"event":"assertion","name":"woodpile_prompt","passed":true}
+{"event":"assertion","name":"woodpile_falls_and_stuns_pursuer","passed":true}
+{"event":"assertion","name":"woodpile_puts_survivor_on_far_side","passed":true}
+{"event":"assertion","name":"woodpile_closes_full_trail_width_15_lanes","passed":true}
+{"event":"assertion","name":"woodpile_clears_after_six_seconds","passed":true}
+{"event":"assertion","name":"woodpile_is_one_use","passed":true}
+{"event":"assertion","name":"deadfall_prompt","passed":true}
+{"event":"assertion","name":"deadfall_falls_and_stuns_pursuer","passed":true}
+{"event":"assertion","name":"deadfall_puts_survivor_on_far_side","passed":true}
+{"event":"assertion","name":"deadfall_closes_full_trail_width_15_lanes","passed":true}
+{"event":"assertion","name":"deadfall_clears_after_six_seconds","passed":true}
+{"event":"assertion","name":"deadfall_is_one_use","passed":true}
+{"checks":43,"event":"test_result","failures":0,"suite":"chase_props"}

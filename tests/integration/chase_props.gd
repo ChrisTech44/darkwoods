@@ -47,8 +47,6 @@ func _layout_checks() -> void:
 	var woods_spots := props.spots.filter(func(spot: Dictionary) -> bool: return spot["woods"])
 	_check(camp_spots.size() >= 10 and woods_spots.size() >= 60, "hiding_spots_in_camp_%d_and_woods_%d" % [camp_spots.size(), woods_spots.size()])
 	_check(props.doors.size() == level.camp_map.buildings.size() + level.camp_map.forest_buildings.size(), "every_building_has_a_door")
-	var camp_knocks := props.knocks.filter(func(knock: Dictionary) -> bool: return not CampMap.is_woods(knock["position"]))
-	_check(camp_knocks.size() >= 4 and props.knocks.size() - camp_knocks.size() >= 20, "woodpiles_and_deadfalls_%d_%d" % [camp_knocks.size(), props.knocks.size() - camp_knocks.size()])
 	var reachable := true
 	for spot: Dictionary in props.spots:
 		var path := NavigationServer2D.map_get_path(level.get_world_2d().navigation_map, Vector2(96, 384), spot["position"], true)
@@ -62,7 +60,8 @@ func _layout_checks() -> void:
 
 func _spot_in_camp() -> int:
 	for index in range(props.spots.size()):
-		if not props.spots[index]["woods"]:
+		var clear: bool = level.pickups.all(func(pickup: CampPickup) -> bool: return not pickup.available or pickup.position.distance_to(props.spots[index]["position"]) > 40)
+		if not props.spots[index]["woods"] and clear:
 			return index
 	return -1
 
@@ -172,42 +171,76 @@ func _door_checks() -> void:
 	hunter.enabled = false
 	hunter.position = Vector2(600, 520)
 	props.advance(ChaseProps.DOOR_BROKEN_SECONDS)
+	# Running in: E while still in the doorway steps you inside and shuts it.
 	player.position = building.door_rect.get_center()
-	_check(not props.toggle_door(player, index) and door["open"], "cannot_close_on_someone_in_doorway")
+	player.facing = Vector2.UP
+	await _frames(1)
+	_check(level.context_prompt().contains("SLAM DOOR"), "doorway_prompt_prefers_door")
+	_check(level.try_interact(player) and not door["open"] and player.position.y < building.door_rect.position.y, "slam_from_doorway_steps_inside")
+	_check(props.toggle_door(player, index) and door["open"], "door_reopens")
+	var blocker: CampPlayer = load("res://scenes/actors/player.tscn").instantiate()
+	blocker.local_input = false
+	blocker.position = building.door_rect.get_center()
+	level.world_objects.add_child(blocker)
+	await _frames(1)
+	_check(not props.toggle_door(player, index) and door["open"], "cannot_close_on_someone_else_in_doorway")
+	blocker.queue_free()
+	await _frames(1)
 
 
 func _knock_checks() -> void:
-	var index := -1
-	for candidate in range(props.knocks.size()):
-		if not CampMap.is_woods(props.knocks[candidate]["position"]):
-			index = candidate
-			break
-	var knock: Dictionary = props.knocks[index]
-	var at: Vector2 = knock["position"]
-	player.position = at - Vector2(10, 0)
-	player.facing = Vector2.RIGHT
-	player.flashlight_on = true
+	var exits := props.knocks.filter(func(knock: Dictionary) -> bool: return knock["label"] == "WOODPILE")
+	var deadfalls := props.knocks.filter(func(knock: Dictionary) -> bool: return knock["label"] == "DEADFALL")
+	_check(exits.size() >= 3 and deadfalls.size() >= 20, "piles_at_camp_exits_%d_and_deadfalls_%d" % [exits.size(), deadfalls.size()])
 	var hunter: CampCryptid = get_nodes_in_group("cryptids")[0]
-	hunter.position = at + Vector2(22, 0)
-	hunter.enabled = true
-	hunter.stun_remaining = 0.0
-	hunter.stun_immunity = 0.0
-	await _frames(2)
-	_check(level.context_prompt().contains("KNOCK OVER"), "knock_prompt")
-	_check(level.try_interact(player) and knock["state"] == 1 and hunter.stun_remaining > 0.0, "knock_over_stuns_pursuer")
-	hunter.enabled = false
-	hunter.position = at + Vector2(200, 0)
-	await physics_frame
-	await physics_frame
-	var rect: Rect2 = knock["rect"]
-	_check(not level.clear_path(rect.get_center() - Vector2(20, 0), rect.get_center() + Vector2(20, 0)), "fallen_pile_blocks_lane")
-	if capture:
-		await _snapshot("props_knockover")
-	props.advance(ChaseProps.KNOCK_BLOCK_SECONDS + 0.1)
-	await physics_frame
-	await physics_frame
-	_check(knock["state"] == 2 and level.clear_path(rect.get_center() - Vector2(20, 0), rect.get_center() + Vector2(20, 0)), "block_clears_after_six_seconds")
-	_check(props.knock_near(player) != index, "knock_over_is_one_use")
+	for knock: Dictionary in [exits[0], deadfalls[0]]:
+		var label: String = knock["label"].to_lower()
+		var travel: Vector2 = knock["travel"]
+		var block: Rect2 = knock["block"]
+		var line := block.get_center()
+		var across := travel.orthogonal().abs()
+		var half: float = (block.size * across).length() * 0.5
+		player.position = knock["position"] + travel * 10.0
+		player.facing = -travel
+		player.flashlight_on = true
+		hunter.position = line - travel * 40.0
+		hunter.enabled = true
+		hunter.stun_remaining = 0.0
+		hunter.stun_immunity = 0.0
+		await _frames(2)
+		_check(level.context_prompt().contains("KNOCK OVER"), "%s_prompt" % label)
+		var index := props.knocks.find(knock)
+		hunter.position = line - travel * 6.0
+		_check(level.try_interact(player) and knock["state"] == 1 and hunter.stun_remaining > 0.0, "%s_falls_and_stuns_pursuer" % label)
+		_check(signf((player.global_position - line).dot(travel)) == -signf((hunter.global_position - line).dot(travel)), "%s_puts_survivor_on_far_side" % label)
+		hunter.enabled = false
+		hunter.position = line + travel * 400.0
+		await physics_frame
+		await physics_frame
+		# Every lane across the trail is closed, wall to wall.
+		var closed := true
+		var lanes := 0
+		for offset in range(-int(half) + 14, int(half) - 13, 8):
+			var from := line + across * offset - travel * 22.0
+			var to := line + across * offset + travel * 22.0
+			if level.plan.woods.walkable(from) and level.plan.woods.walkable(to):
+				lanes += 1
+				closed = closed and not level.clear_path(from, to)
+		_check(lanes >= 8 and closed, "%s_closes_full_trail_width_%d_lanes" % [label, lanes])
+		if capture and label == "deadfall":
+			# Inspection capture: raised ambient and no sight mask so the whole fall line shows.
+			var ambient: Color = player.config.night_ambient
+			player.facing = (line - player.global_position).normalized()
+			player.config.night_ambient = Color(0.55, 0.58, 0.6)
+			level.sight.enabled = false
+			await _snapshot("props_knockover")
+			player.config.night_ambient = ambient
+			level.sight.enabled = true
+		props.advance(ChaseProps.KNOCK_BLOCK_SECONDS + 0.1)
+		await physics_frame
+		await physics_frame
+		_check(knock["state"] == 2 and level.clear_path(line - travel * 22.0, line + travel * 22.0), "%s_clears_after_six_seconds" % label)
+		_check(props.knock_near(player) != index, "%s_is_one_use" % label)
 
 
 func _frames(count: int) -> void:

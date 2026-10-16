@@ -1,5 +1,38 @@
 # Development log
 
+## 2026-10-16 — Playtest fixes: knock-overs close the trail; doors close on the run
+
+User playtest feedback, three points:
+
+1. **"The woodpiles don't exactly block the path."** Confirmed. A 44 px log fell
+   along the player's facing, but woods trails are 128 px wide and camp piles
+   sat in open ground. Knock-overs now sit only on straight trail stretches.
+   Each measures the open trail across its axis (walkable tiles, up to 180 px)
+   and precomputes a fall line 8 px into both walls. Woodpiles are the first 4
+   such stretches 750–1,300 px from camp; deadfalls are up to 60 deeper in. The
+   survivor who topples it is placed on the far side from the nearest creature
+   (else their own side). The log never solidifies over another survivor. The
+   fallen-log art is now chunkier.
+2. **"Are you supposed to be able to move when downed?"** Yes: the planned
+   20 px/s crawl. Left unchanged pending the user's call.
+3. **"The doors aren't that easy to close when you run in."** Cause: pressing E
+   while still in the 24 px thick doorway hit the "Something is in the doorway"
+   guard, because the acting player counted as a blocker. Now the actor is
+   excluded and stepped through toward their heading. Reach went from 18 to
+   22 px. Door prompts win over nearby hiding spots and piles (the nearer target
+   wins unless you're in the gap). Hiding spots are no longer placed within
+   30 px of a door.
+
+Tests: `chase_props` now proves full-width closure (15 parallel lanes blocked
+across both a woodpile and a deadfall), far-side placement, slamming from the
+doorway, and refusal only when someone else is in it. The network hide stage
+picks an item-free spot. The knock-over capture is an inspection shot (raised
+ambient, no sight mask).
+
+**Verification:** `python3 tools/verify.py` 87/87 steps, no errors or warnings
+(`chase_props`: 43 headless / 46 graphical). `verify_network.py --mode all`:
+2 peers 269 and 4 peers 455 assertions, all passing.
+
 ## 2026-10-16 — Overhaul F3b: hiding spots, doors and knock-overs
 
 Second half of the chase toolkit, in a host-owned `ChaseProps` node

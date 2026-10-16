@@ -346,13 +346,17 @@ where teammates can recover them with E.
   loudly and tumble out. If a creature *saw* you hide, it comes to that spot and
   drags you out, so break line of sight first. E leaves; your flashlight comes
   back on.
-- **Doors:** every building door can be slammed shut with **E** (a small noise).
+- **Doors:** every building door can be slammed shut with **E** (a small noise),
+  even while you're still running through the doorway: you finish the step in
+  the direction you're heading and the door shuts behind you.
   Closed doors block movement, sight and light. A creature pressing on one breaks
   through in about **2.5 s** with a loud crash, and a smashed door can't be closed
   again for 20 s.
-- **Knock-overs:** woodpiles beside camp buildings and deadfall logs along the
-  trails. Press **E** to topple one in the direction you face: it blocks the lane
-  for **6 s**, stuns anything it lands on for 2 s, and is loud. Each works once.
+- **Knock-overs:** woodpiles on the straight trail stretches just outside camp,
+  and deadfall logs on straight stretches deeper in the woods. Press **E** to
+  topple one: it falls **across the whole trail, wall to wall**, closing it for
+  **6 s**. You land on the far side from whatever is chasing you, and anything it
+  lands on is stunned for 2 s. Loud, and each works once.
 
 If everyone is down (and no solo last chance remains), the round ends in defeat.
 Successful revivals do not accumulate toward defeat; the round continues while

@@ -34,7 +34,7 @@
           "event": "test_result",
           "failures": 0,
           "largest_snapshot_payload": 1000,
-          "snapshot_bytes": 1036,
+          "snapshot_bytes": 1032,
           "suite": "network_host_camp_4"
         }
       ],
@@ -72,7 +72,7 @@
           "event": "test_result",
           "failures": 0,
           "largest_snapshot_payload": 0,
-          "snapshot_bytes": 1036,
+          "snapshot_bytes": 1032,
           "suite": "network_client_camp_4"
         }
       ],
@@ -106,11 +106,11 @@
       "errors": [],
       "result": [
         {
-          "checks": 26,
+          "checks": 27,
           "event": "test_result",
           "failures": 0,
           "largest_snapshot_payload": 0,
-          "snapshot_bytes": 1436,
+          "snapshot_bytes": 1032,
           "suite": "network_client_camp_4"
         }
       ],
@@ -144,11 +144,11 @@
       "errors": [],
       "result": [
         {
-          "checks": 27,
+          "checks": 26,
           "event": "test_result",
           "failures": 0,
           "largest_snapshot_payload": 0,
-          "snapshot_bytes": 1036,
+          "snapshot_bytes": 1439,
           "suite": "network_client_camp_4"
         }
       ],
@@ -224,7 +224,7 @@
           "event": "test_result",
           "failures": 0,
           "largest_snapshot_payload": 0,
-          "snapshot_bytes": 2375,
+          "snapshot_bytes": 2373,
           "suite": "network_client_woods_4"
         }
       ],
@@ -262,7 +262,7 @@
           "event": "test_result",
           "failures": 0,
           "largest_snapshot_payload": 0,
-          "snapshot_bytes": 3164,
+          "snapshot_bytes": 3158,
           "suite": "network_client_woods_4"
         }
       ],

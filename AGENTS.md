@@ -4,6 +4,11 @@ Read `AGENT_BRIEF.md` as the authoritative project specification. Apply subseque
 user instructions as amendments, work in verified increments, keep the game
 runnable, and maintain `docs/development_log.md`.
 
+Read `docs/audio_multiplayer_design.md` before future audio/online voice work.
+Keep the Markdown and Word briefs aligned when requirements change. Audio assets,
+networking and proximity voice are planned features until their acceptance gates
+have execution evidence; document platform and microphone-permission limits.
+
 ## Keep GitHub current
 
 The user has authorized ongoing GitHub updates. After each coherent, verified

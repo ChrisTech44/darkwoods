@@ -34,6 +34,7 @@ func _ready() -> void:
 	camp_map.objects = world_objects
 	camp_map.woods = plan.woods
 	camp_map.seed_value = plan.seed_value
+	camp_map.layout = plan.camp
 	add_child(camp_map)
 	player = PLAYER_SCENE.instantiate()
 	player.position = Vector2(96, 384)

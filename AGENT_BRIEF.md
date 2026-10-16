@@ -1,7 +1,16 @@
 # LAST NIGHT AT CAMP
 **Godot 4 multiplayer horror game — agent implementation brief**
 
-Version 1.0 — 15 October 2026 — Codex Sol (medium effort)
+Version 1.2 — 16 October 2026 — Codex Sol (medium effort)
+
+User amendment: online proximity voice chat and an original/licensed audio-file
+pipeline are planned after synchronized multiplayer gameplay. This supersedes
+the original voice-chat exclusion. See [audio/multiplayer design](docs/audio_multiplayer_design.md).
+16 October priority amendment: correct visual/map defects, increase seeded camp
+layout variety, and implement the user-supplied audio files **before** online
+multiplayer and proximity voice. Offline audio has its own local checks; the
+networked M2-A and M3-V acceptance gates still require future execution evidence.
+Current gameplay is offline; voice capture and networking are not implemented. The adjacent Word brief mirrors these requirements.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 
@@ -47,7 +56,7 @@ Version 1.0 — 15 October 2026 — Codex Sol (medium effort)
 
 ## Multiplayer protocol & trust boundaries
 
-- Use Godot high-level ENet multiplayer with a listen-server host in MVP. One host runs server authority and also plays; 1–3 remote clients join by host IP/port. A LAN or virtual LAN (for example Tailscale) is acceptable for early external tests. NAT traversal, relays, Steam integration, matchmaking, and voice chat are out of scope.
+- Use Godot high-level ENet multiplayer with a listen-server host in MVP. One host runs server authority and also plays; 1–3 remote clients join by host IP/port. A LAN or virtual LAN (for example Tailscale) is acceptable for early external tests. Later online acceptance requires two separate machines across networks, using documented direct-IP/port-forwarding or virtual-LAN setup. Automatic NAT traversal, managed relay services, Steam integration and matchmaking remain out of scope; proximity voice chat is planned after core network gameplay passes.
 
 - Authoritative host owns round lifecycle, killer AI, player health/downed/death status, item availability, repair progress, escape outcome, random seed, and authoritative positions. Clients send input/intents (move, sprint, interact, use flashlight); server validates and applies world-changing actions.
 
@@ -56,6 +65,17 @@ Version 1.0 — 15 October 2026 — Codex Sol (medium effort)
 - Provide movement synchronization with an intentionally simple first pass; interpolation is desirable for remote entities. Avoid allowing clients to choose item rewards, damage, teleport locations, or objective completion. Separate server-only logic from visuals so a headless host is feasible.
 
 - If host disconnects, terminate the session gracefully with an explanatory UI message (no host migration for MVP). Ensure disconnected players are removed, and round reset does not leak orphan nodes/RPCs.
+
+## Audio files and proximity voice — planned
+
+- Implement local AudioManager playback now, ahead of M2 per the priority amendment, with separate master, effects, ambience/music and voice volume controls. Use original or redistributable files with documented source/license and stable cue IDs; track asset provenance in `assets/audio`. Never claim audio exists while only visual/noise-event cues are implemented.
+- Prioritize footsteps, monster approach/attack cues, witch wind-up/bolt/hex, interaction/cache/cutters, flare/flashlight, revive/damage, van start/departure, village bell and environmental loops. Keep visual cues available; muted or unavailable audio must not prevent play.
+- Synchronize world sounds from authoritative gameplay events with event IDs, source positions and variant seeds. Avoid duplicate host/local playback and reject client requests to invent trusted monster, objective or damage cues. Hearing for AI remains a host gameplay decision independent of local mixer volume.
+- After M2 and the M2-A audio foundation, add online proximity voice in M3-V: opt-in microphone enablement, push-to-talk by default, device/permission feedback, mic/output gain, per-peer mute/volume and a speaking indicator. Never capture on boot, offline, or after leaving a session; microphone failure must not block joining or playing.
+- In active rounds, attenuate nearby survivor voices by distance and apply simple wall muffling; lobby/results use session-wide chat. Dead/escaped/left-behind players use a separate spectator voice group so they cannot relay unrestricted information to living survivors. No audio recording or microphone payloads in logs.
+- Host-approved peer identity, position and round state determine voice recipients. Use bounded, compressed low-latency frames on a path isolated from reliable gameplay traffic; drop stale frames rather than building a backlog. Choose/verify the codec, transport, dependency licenses and Internet encryption design in an implementation spike before making performance/platform claims.
+- Voice does not attract AI by default. Any later speech-to-game-noise option needs separate balance work and host validation. Clear capture/playback buffers on disconnect, restart and host loss. Test proximity boundaries, occlusion, mute/PTT, denial/no-device behavior, spectator isolation, jitter/load and cross-machine audio.
+- Implementation order: visual/map fixes and seeded camp variety → offline audio cues/assets → M2 gameplay and M2-A synchronized audio → M3 reliability plus M3-V proximity voice → M4 packaged audio/permissions. Online acceptance gates remain future work.
 
 ## Killer AI contract
 
@@ -81,11 +101,15 @@ Version 1.0 — 15 October 2026 — Codex Sol (medium effort)
 
 - M2 – Networked slice: host/join lobby, 2 local clients, synchronized positions, item pickups, killer, objective progress, death and extraction. Gate: deterministic automated two-client test plus manual two-window smoke test. Do not substitute local split screen.
 
+- M2-A – Synchronized audio foundation (after M2; local playback first): original/licensed audio files, AudioManager/buses, positional cues and synchronized world sound events. Gate: two real clients hear one appropriate cue per accepted event, controls/loops/cleanup work, and audio failure leaves gameplay usable.
+
 - M3 – Reliability: up to 4 players, concurrent interactions, disconnect paths, late join policy (either support or explicitly disallow once round begins), synchronized restart, latency simulation where practical. Gate: no known state divergence in specified scenarios.
 
-- M4 – Distribution: exported packages for available desktop targets and clear launch instructions. Gate: build artifacts checked and tested on any available platform; untested target platforms labeled unverified.
+- M3-V – Online proximity voice (after M2-A): opt-in push-to-talk, distance/occlusion, mute/device settings, spectator separation and bounded transport. Gate: two separate machines complete a round with working voice, followed by four-peer/jitter/disconnect checks; denied microphone access does not block gameplay. Record the actual direct-IP/virtual-LAN connection method.
 
-- M5 – Replayability/polish (after approval): objective location pools, randomized patrol route seeds, sound cues, additional tools, balance, improved sprite sheets and lighting.
+- M4 – Distribution: exported packages for available desktop targets and clear launch instructions, including audio files, codec dependencies and microphone permission behavior once voice is implemented. Gate: packaged audio/voice and builds checked on available platforms; untested target platforms labeled unverified.
+
+- M5 – Replayability/polish (after approval): objective location pools, randomized patrol route seeds, expanded ambience/music, additional tools, balance, improved sprite sheets and lighting. Baseline audio cues and voice have their own M2-A/M3-V gates.
 
 ## Testing, verification & evidence
 

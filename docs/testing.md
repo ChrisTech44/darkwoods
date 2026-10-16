@@ -164,3 +164,11 @@ swept projectile wall collision, blocked casting, dodging, pause and cleanup.
 Its graphical variant captures the three sites, witch telegraph and moving bolt.
 Site/creature screenshots use deliberate actor placement and camera composition;
 they are distinct from the complete active playthrough evidence.
+
+## Camp layout polish
+
+`tests/integration/layout_polish.gd` checks eight distinct/reproducible expedition
+camps, road/building reservations, native paths to every camp entrance and every
+pickup. The graphical version captures seed 42 and 2026 overviews with an
+inspection camera/raised ambient light; normal play retains its usual camera and
+lighting. Quick Camp remains the fixed tutorial route.

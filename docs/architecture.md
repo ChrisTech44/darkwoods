@@ -165,3 +165,13 @@ without instantly downing them. Witch melee still uses the normal damage rules.
 Hexed survivors get a violet ring and priority HUD countdown. Pause freezes
 actor hex timers, spell cooldown/wind-up and projectiles; scene replacement
 owns hazard cleanup. New authority paths remain local until M2 networking.
+
+## Seeded camp lots
+
+`CampLayout` reserves main roads before selecting pixel-aligned building offsets
+inside finite authored camp lots. It rejects water, neighboring roofs, road and
+door-approach conflicts. Quick Camp uses the corrected authored layout; Woods
+Expedition uses seeded offsets. `RoundPlan.camp` remaps indoor loot from authored
+coordinates, and `CampMap` uses that same recipe for walls, roofs, lights, door
+paths and the field chart. Tree placement excludes roads and building clearances.
+Native navigation uses the resulting collision rectangles.

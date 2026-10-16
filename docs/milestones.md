@@ -1,7 +1,7 @@
 # Incremental implementation plan
 
-M0 passed and was committed as `ef180d0`. At the user's instruction, the next pass
-implements M1. All five steps below are implemented and covered by automated
+M0 passed and was committed as `ef180d0`. M1's offline implementation and the
+requested forest expansions are complete. All five steps below are covered by automated
 engine checks. Full input-driven win/loss/restart runs pass headlessly and in a
 real graphical session. A human playtest at normal speed remains unrecorded;
 do not describe that manual gate as executed. Multiplayer remains M2.
@@ -47,10 +47,32 @@ for mechanics and add tests when they validate real rules. Commit at M1 acceptan
 
 - M2: ENet listen-server lobby, two local clients, synchronized mechanics,
   deterministic two-client assertions and manual two-window smoke test.
+- M2-A (after M2): audio-file/provenance pipeline, AudioManager and mixer buses,
+  positional footsteps/monster/spell/objective cues and ambience. Replicate
+  authoritative sound events once per receiver; keep AI hearing independent of
+  device volume. Gate: two-client cue/cleanup checks and a real listening session.
 - M3: four players, simultaneous interactions, disconnect/host loss, lobby-only
   late join, shared restart, and practical latency checks.
+- M3-V (after M2-A, alongside M3 reliability): online proximity voice with opt-in
+  microphone enablement, push-to-talk, distance falloff, wall muffling, per-peer
+  mute/volume, device feedback and separate spectator speech. Gate: a complete
+  two-machine round across networks using a documented connection method, then
+  four-peer/load/jitter/reset checks; no-mic/denied-permission players can join.
 - M4: desktop export templates/presets, verified available builds, platform status
-  and launch notes. No exports before the applicable milestone passes.
+  and launch notes. Package actual audio files and any codec dependencies; verify
+  microphone permissions and playback/capture on each claimed target. No exports
+  before the applicable milestone passes.
 - M5: additional replayability/polish after approval. The woods/UI/supplies pass
   is explicitly approved by the user's current request; alternate extraction,
-  audio, larger balance studies and further modes remain future work.
+  expanded ambience/music, larger balance studies and further modes remain future work.
+
+The user has approved including future online voice and audio files in the
+design. This does not mark them implemented or collapse the incremental gates.
+See [audio and multiplayer design](audio_multiplayer_design.md) for proposed
+defaults, event/voice boundaries, content priorities and acceptance criteria.
+
+## 16 October priority amendment
+
+Before networking or voice: correct visual/map bugs, add seeded camp building
+variation with aligned loot/door paths, and integrate the supplied MP3 cues.
+Verify local audio independently; M2-A still requires future two-client evidence.

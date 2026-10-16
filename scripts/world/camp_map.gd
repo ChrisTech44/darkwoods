@@ -1,6 +1,6 @@
 class_name CampMap
 extends Node2D
-## Fixed authored camp: one obstacle list drives collision, shadows and navigation.
+## Seeded camp lots: one obstacle list drives collision, shadows and navigation.
 
 const WORLD_SIZE := Vector2(3456, 1920)
 const PICKUP_POSITIONS: Array[Vector2] = [Vector2(228, 120), Vector2(1304, 272), Vector2(696, 680)]
@@ -17,8 +17,9 @@ var objects: Node2D
 var focus: CampPlayer
 var woods: WoodsLayout
 var seed_value: int = 42
-var roads: Array[Rect2] = [Rect2(36, 192, 1476, 48), Rect2(72, 216, 48, 696), Rect2(96, 496, 1352, 48), Rect2(784, 240, 32, 656), Rect2(96, 864, 1250, 32)]
-var lake: Rect2 = Rect2(1056, 800, 448, 128)
+var layout: CampLayout
+var roads: Array[Rect2] = []
+var lake: Rect2 = CampLayout.LAKE
 
 
 func _ready() -> void:
@@ -40,19 +41,11 @@ func _ready() -> void:
 	add_wall(Rect2(1696, 24, 1600, 96))
 	add_wall(Rect2(1696, 1720, 1600, 176))
 	add_wall(Rect2(3296, 24, 136, 1872))
-	var layout := [
-		[Rect2(144, 72, 144, 96), "cabin", "FERN BUNK CABIN"],
-		[Rect2(480, 72, 144, 96), "cabin", "PINE BUNK CABIN"],
-		[Rect2(408, 312, 120, 96), "cabin", "OLD STORAGE"],
-		[Rect2(800, 64, 208, 160), "bunkhouse", "CEDAR BUNKHOUSE"],
-		[Rect2(1136, 184, 240, 192), "workshop", "MAINTENANCE"],
-		[Rect2(832, 320, 256, 192), "mess", "MESS HALL"],
-		[Rect2(480, 600, 288, 224), "ranger", "RANGER LODGE"],
-		[Rect2(256, 608, 176, 176), "bath", "BATHHOUSE"],
-		[Rect2(960, 640, 176, 160), "infirmary", "FIRST AID"],
-		[Rect2(1200, 624, 224, 160), "boat", "BOATHOUSE"]
-	]
-	for entry in layout:
+	if layout == null:
+		layout = CampLayout.new()
+		layout.generate(seed_value, false)
+	roads.assign(layout.roads)
+	for entry in layout.entries:
 		var building := CampBuilding.new()
 		building.configure(entry[0], entry[1], entry[2])
 		buildings.append(building)
@@ -66,8 +59,6 @@ func _ready() -> void:
 		roof.z_index = 8
 		building.roof = roof
 		add_child(roof)
-		var end_y := 216.0 if building.bounds.end.y <= 240 else (520.0 if building.bounds.end.y <= 520 else 880.0)
-		roads.append(Rect2(building.door.x - 16, building.door.y, 32, maxf(24, end_y - building.door.y)))
 		var tint := Color("c2ded4") if building.kind in ["bath", "infirmary"] else Color("ffbe7c")
 		CampLights.lamp(self, building.bounds.position + Vector2(42, 36), 90, tint, 1.1)
 		CampLights.lamp(self, building.door + Vector2(0, -8), 60, Color("ffc57e"), 0.9)
@@ -171,29 +162,24 @@ func _seed_forest() -> void:
 	# Preserve the tested collision layout around the original campsite.
 	for cell in [Vector2(2, 2), Vector2(4, 3), Vector2(15, 2), Vector2(17, 4), Vector2(28, 3), Vector2(29, 7), Vector2(3, 8), Vector2(5, 10), Vector2(9, 9), Vector2(13, 11), Vector2(23, 10), Vector2(26, 13), Vector2(28, 17), Vector2(4, 17), Vector2(10, 17), Vector2(14, 16), Vector2(30, 11)]:
 		var rect := Rect2(cell * 24, Vector2(24, 24))
-		_tree(rect.get_center(), int(cell.x) % 4, rect)
+		if _tree_clear(rect.get_center(), 14):
+			_tree(rect.get_center(), int(cell.x) % 4, rect)
 	var rng := RandomNumberGenerator.new()
-	rng.seed = 18313
+	rng.seed = seed_value + 18313
 	for y in range(40, 936, 44):
 		for x in range(40, 1512, 44):
 			var at := Vector2(x + rng.randi_range(-7, 7), y + rng.randi_range(-7, 7))
 			if at.x < 744 and at.y < 456:
 				continue
-			var clear := true
-			for road in roads:
-				if road.grow(26).has_point(at):
-					clear = false
-			for building in buildings:
-				if building.bounds.grow(30).has_point(at):
-					clear = false
-			if lake.grow(24).has_point(at):
-				clear = false
-			if clear:
+			if _tree_clear(at, 30):
 				_tree(at, rng.randi_range(0, 3))
 	# Low nonblocking undergrowth along routes and around clearings.
 	for index in range(180):
 		var at := Vector2(rng.randf_range(32, 1504), rng.randf_range(32, 928))
 		var clear := not lake.has_point(at)
+		for road in roads:
+			if road.grow(8).has_point(at):
+				clear = false
 		for building in buildings:
 			if building.bounds.grow(12).has_point(at):
 				clear = false
@@ -203,6 +189,16 @@ func _seed_forest() -> void:
 			sprite.position = at
 			sprite.offset.y = -8
 			objects.add_child(sprite)
+
+
+func _tree_clear(at: Vector2, clearance: float) -> bool:
+	for road in roads:
+		if road.grow(clearance).has_point(at):
+			return false
+	for building in buildings:
+		if building.bounds.grow(clearance).has_point(at):
+			return false
+	return not lake.grow(clearance).has_point(at)
 
 
 func _build_sites() -> void:

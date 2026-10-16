@@ -1,5 +1,38 @@
 # Development log
 
+## 2026-10-16 — Camp path fixes and seeded building lots
+
+User amendment prioritizes visual/map fixes, camp variation and supplied sounds
+before networking/voice. Updated Markdown/Word requirements and audio design;
+future synchronized audio/voice gates remain unclaimed. Preserved pre-existing
+project-rule/design edits as part of this requested amendment.
+
+Rerouted the north trail below Cedar and west of Maintenance, shortened the mess
+hall footprint to clear the middle trail, and reserved road/roof/door space.
+Woods Expedition chooses seeded 16px building offsets within finite camp lots;
+loot, walls, lights, roofs, door paths and chart share the recipe. Trees now
+respect all building/road clearances and vary by seed. Quick Camp retains the
+familiar objective buildings. No arbitrary unbounded procedural camp generation.
+
+Verification: initial full `python3 tools/verify.py --graphical` passed existing
+suites, including active camp/woods escape and graphical lighting checks. Final
+`python3 tools/verify.py` runs import/startup, all scripts and all eight headless
+suites on the final layout. New native layout tests: 361 assertions headless and
+363 graphical, zero failures across eight seeds, every door/pickup reachable.
+The first new test queried navigation before its bake completed (272 failures);
+waiting for an actual route fixed the fixture without changing game rules.
+Opened and inspected both seeded camp overviews, field notes and gameplay views.
+[Layout evidence](evidence/layout_polish/layout_headless.log),
+[graphical evidence](evidence/layout_polish/layout_graphical.log).
+
+Initial sandbox import encountered macOS certificate/settings access errors;
+required checks reran with normal host access. Word requirements structurally
+match all 54 Markdown requirements and preserve existing paragraph formatting.
+DOCX render attempt failed because `pdf2image` is absent; LibreOffice is also
+unavailable, so document visual QA is unverified. macOS arm64 / Godot 4.7.2
+only; Windows/Linux, exports, network/voice and human playtesting unverified.
+Local sound integration is the next increment in this same task.
+
 ## 2026-10-15 — Forest hunt expansion: themed sites, six species and smarter AI
 
 **Authorized scope:** continue the user's request after the separately verified

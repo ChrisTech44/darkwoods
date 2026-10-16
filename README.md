@@ -8,7 +8,8 @@ van while a stalker and roaming cryptids hunt by sight, sound, and light.
 
 **Playable now:** an offline solo prototype with two modes and complete
 escape/defeat/replay loops. The intended game is 1–4 player online co-op;
-networking is the next milestone and is **not implemented yet**. Run this
+visual polish and local sound are the current priorities. Networking and voice
+are **not implemented yet**. Run this
 prototype from source; standalone desktop packages are a later milestone.
 
 ![The forest menu with Woods Expedition and optional seed selection](docs/evidence/woods_replay/menu.png)
@@ -25,7 +26,7 @@ when it covers the camper.
 Woods expeditions add five-part repairs, locked caches, survival supplies,
 weather, and four cryptids: vampire and witch plus two chosen from werewolf,
 Sasquatch, lantern moth, and briar revenant.
-Seeded trails, loot, required extra parts, creature roster, and camp patrols make
+Seeded camp building positions, trails, loot, required extra parts, creature roster, and camp patrols make
 each night different. Broader patrols and searches make encounters more frequent.
 The menu, loading card, field guide, and results share the
 new forest palette.
@@ -174,7 +175,10 @@ After a round:
 - **Retry This Seed** starts over with the same layout and fresh items/supplies.
 - **Main Menu** returns to mode selection.
 
-Quick Camp retains its fixed three-part objective route when restarted.
+Quick Camp retains its fixed three-part objective route when restarted. Woods
+Expedition also varies building positions and surrounding trees within reserved
+camp lots; door paths, loot and field-map markers move together. Roof footprints
+and main trails stay separate. Retrying a seed reproduces the camp too.
 
 ## Screenshots
 

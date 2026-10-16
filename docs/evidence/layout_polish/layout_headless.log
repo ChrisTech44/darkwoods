@@ -1,0 +1,372 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"assertion","name":"seed_1_camp_reproducible","passed":true}
+{"event":"assertion","name":"seed_1_building_0_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_1_building_1_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_1_building_2_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_1_building_3_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_1_building_4_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_1_building_5_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_1_building_6_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_1_building_7_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_1_building_8_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_1_building_9_clear_of_paths_and_roofs","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"seed_1_door_FERN BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_1_door_PINE BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_1_door_OLD STORAGE_reachable","passed":true}
+{"event":"assertion","name":"seed_1_door_CEDAR BUNKHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_1_door_MAINTENANCE_reachable","passed":true}
+{"event":"assertion","name":"seed_1_door_MESS HALL_reachable","passed":true}
+{"event":"assertion","name":"seed_1_door_RANGER LODGE_reachable","passed":true}
+{"event":"assertion","name":"seed_1_door_BATHHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_1_door_FIRST AID_reachable","passed":true}
+{"event":"assertion","name":"seed_1_door_BOATHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_battery_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_key_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_boltcutters_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_fuel_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_spark_plug_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_belt_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_1_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_7_camp_reproducible","passed":true}
+{"event":"assertion","name":"seed_7_building_0_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_7_building_1_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_7_building_2_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_7_building_3_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_7_building_4_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_7_building_5_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_7_building_6_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_7_building_7_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_7_building_8_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_7_building_9_clear_of_paths_and_roofs","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"seed_7_door_FERN BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_7_door_PINE BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_7_door_OLD STORAGE_reachable","passed":true}
+{"event":"assertion","name":"seed_7_door_CEDAR BUNKHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_7_door_MAINTENANCE_reachable","passed":true}
+{"event":"assertion","name":"seed_7_door_MESS HALL_reachable","passed":true}
+{"event":"assertion","name":"seed_7_door_RANGER LODGE_reachable","passed":true}
+{"event":"assertion","name":"seed_7_door_BATHHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_7_door_FIRST AID_reachable","passed":true}
+{"event":"assertion","name":"seed_7_door_BOATHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_battery_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_key_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_boltcutters_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_fuel_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_belt_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_spark_plug_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_7_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_42_camp_reproducible","passed":true}
+{"event":"assertion","name":"seed_42_building_0_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_42_building_1_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_42_building_2_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_42_building_3_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_42_building_4_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_42_building_5_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_42_building_6_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_42_building_7_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_42_building_8_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_42_building_9_clear_of_paths_and_roofs","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"seed_42_door_FERN BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_42_door_PINE BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_42_door_OLD STORAGE_reachable","passed":true}
+{"event":"assertion","name":"seed_42_door_CEDAR BUNKHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_42_door_MAINTENANCE_reachable","passed":true}
+{"event":"assertion","name":"seed_42_door_MESS HALL_reachable","passed":true}
+{"event":"assertion","name":"seed_42_door_RANGER LODGE_reachable","passed":true}
+{"event":"assertion","name":"seed_42_door_BATHHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_42_door_FIRST AID_reachable","passed":true}
+{"event":"assertion","name":"seed_42_door_BOATHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_battery_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_key_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_boltcutters_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_fuel_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_fuse_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_spark_plug_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_42_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_99_camp_reproducible","passed":true}
+{"event":"assertion","name":"seed_99_building_0_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_99_building_1_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_99_building_2_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_99_building_3_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_99_building_4_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_99_building_5_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_99_building_6_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_99_building_7_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_99_building_8_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_99_building_9_clear_of_paths_and_roofs","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"seed_99_door_FERN BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_99_door_PINE BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_99_door_OLD STORAGE_reachable","passed":true}
+{"event":"assertion","name":"seed_99_door_CEDAR BUNKHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_99_door_MAINTENANCE_reachable","passed":true}
+{"event":"assertion","name":"seed_99_door_MESS HALL_reachable","passed":true}
+{"event":"assertion","name":"seed_99_door_RANGER LODGE_reachable","passed":true}
+{"event":"assertion","name":"seed_99_door_BATHHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_99_door_FIRST AID_reachable","passed":true}
+{"event":"assertion","name":"seed_99_door_BOATHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_battery_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_key_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_boltcutters_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_fuel_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_spark_plug_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_tire_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_99_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_camp_reproducible","passed":true}
+{"event":"assertion","name":"seed_2026_building_0_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_2026_building_1_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_2026_building_2_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_2026_building_3_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_2026_building_4_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_2026_building_5_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_2026_building_6_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_2026_building_7_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_2026_building_8_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_2026_building_9_clear_of_paths_and_roofs","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"seed_2026_door_FERN BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_door_PINE BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_door_OLD STORAGE_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_door_CEDAR BUNKHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_door_MAINTENANCE_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_door_MESS HALL_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_door_RANGER LODGE_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_door_BATHHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_door_FIRST AID_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_door_BOATHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_battery_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_key_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_boltcutters_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_fuel_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_tire_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_belt_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_2026_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_camp_reproducible","passed":true}
+{"event":"assertion","name":"seed_6789_building_0_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_6789_building_1_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_6789_building_2_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_6789_building_3_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_6789_building_4_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_6789_building_5_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_6789_building_6_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_6789_building_7_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_6789_building_8_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_6789_building_9_clear_of_paths_and_roofs","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"seed_6789_door_FERN BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_door_PINE BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_door_OLD STORAGE_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_door_CEDAR BUNKHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_door_MAINTENANCE_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_door_MESS HALL_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_door_RANGER LODGE_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_door_BATHHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_door_FIRST AID_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_door_BOATHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_battery_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_key_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_boltcutters_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_fuel_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_spark_plug_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_belt_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_6789_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_camp_reproducible","passed":true}
+{"event":"assertion","name":"seed_12345_building_0_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_12345_building_1_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_12345_building_2_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_12345_building_3_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_12345_building_4_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_12345_building_5_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_12345_building_6_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_12345_building_7_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_12345_building_8_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_12345_building_9_clear_of_paths_and_roofs","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"seed_12345_door_FERN BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_door_PINE BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_door_OLD STORAGE_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_door_CEDAR BUNKHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_door_MAINTENANCE_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_door_MESS HALL_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_door_RANGER LODGE_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_door_BATHHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_door_FIRST AID_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_door_BOATHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_battery_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_key_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_boltcutters_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_fuel_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_belt_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_fuse_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_12345_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_camp_reproducible","passed":true}
+{"event":"assertion","name":"seed_76543_building_0_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_76543_building_1_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_76543_building_2_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_76543_building_3_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_76543_building_4_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_76543_building_5_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_76543_building_6_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_76543_building_7_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_76543_building_8_clear_of_paths_and_roofs","passed":true}
+{"event":"assertion","name":"seed_76543_building_9_clear_of_paths_and_roofs","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"seed_76543_door_FERN BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_door_PINE BUNK CABIN_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_door_OLD STORAGE_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_door_CEDAR BUNKHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_door_MAINTENANCE_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_door_MESS HALL_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_door_RANGER LODGE_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_door_BATHHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_door_FIRST AID_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_door_BOATHOUSE_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_battery_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_key_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_boltcutters_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_fuel_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_tire_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_spark_plug_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_rations_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_medkit_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_flare_reachable","passed":true}
+{"event":"assertion","name":"seed_76543_loot_battery_pack_reachable","passed":true}
+{"event":"assertion","name":"eight_different_camp_layouts","passed":true}
+{"checks":361,"event":"test_result","failures":0,"suite":"layout_polish"}

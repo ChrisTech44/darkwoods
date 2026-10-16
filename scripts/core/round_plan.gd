@@ -6,6 +6,7 @@ var seed_value: int
 var expedition: bool
 var weather: String = "clear"
 var woods := WoodsLayout.new()
+var camp := CampLayout.new()
 var required: Array[String] = ["battery", "fuel", "key"]
 var loot: Array[Dictionary] = []
 var encounters: Array[Dictionary] = []
@@ -16,6 +17,7 @@ func generate(value: int, mode: String) -> void:
 	expedition = mode == "woods"
 	weather = "clear"
 	woods.generate(value)
+	camp.generate(value, expedition)
 	loot.clear()
 	encounters.clear()
 	required.assign(["battery", "fuel", "key"])
@@ -59,6 +61,8 @@ func generate(value: int, mode: String) -> void:
 		_add(supply_types[index % 4], at, "WOODS SUPPLIES", false)
 	_add("flare", Vector2(1304, 312), "MAINTENANCE", false)
 	_add("battery_pack", Vector2(168, 356), "CAMPSITE", false)
+	for item in loot:
+		item["position"] = camp.remap(item["position"])
 	_encounter("vampire", woods.zones[2]["cell"] + Vector2i(1, 1))
 	_encounter("witch", woods.zones[1]["cell"] + Vector2i(1, 0))
 	var species: Array[String] = ["werewolf", "bigfoot", "lantern_moth", "briar_revenant"]

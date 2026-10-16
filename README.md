@@ -19,6 +19,8 @@ The world now spans **3456×1920**, combining ten furnished camp buildings with 
 **1600×1600 woods maze**: 100 connected clearings, loops, dead ends, and six ruined
 landmarks. Roofs cut away inside buildings. Native flashlight shadows, cabin
 lamps, flares, and headlights provide local light in a nearly black forest.
+Soft mist and trunk-shaped shadows keep paths readable; foreground canopy fades
+when it covers the camper.
 
 Woods expeditions add five-part repairs, locked caches, survival supplies,
 weather, and two cryptids chosen from werewolf, Bigfoot, and lantern moth.

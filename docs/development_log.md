@@ -1,5 +1,22 @@
 # Development log
 
+## 2026-10-15 — Path visibility correction
+
+First verified pass of the requested hunt expansion. Investigated dark blocks:
+fog used hard rectangular screen strips, while merged woods collision spans and
+legacy square tree bounds cast rectangular shadows unrelated to visible trunks.
+Replaced fog strips with soft radial mist, retained collision/AI obstruction
+spans but used small octagonal trunk occluders for tree shadows, and faded canopy
+locally when it covers the camper. Building wall shadows remain.
+
+`python3 tools/verify.py --graphical` exited 0: all 45 steps passed without engine
+errors/warnings, including both complete active escapes. Opened the matched woods
+captures: mist has no hard strip edges and illumination follows trunks.
+`git diff --check` exited 0. Evidence: [path_visibility](evidence/path_visibility/summary.json).
+
+Continuing the same request with themed sites, roaming/search AI, vampire/witch/
+revenant encounters and a Sasquatch redesign.
+
 ## 2026-10-15 — First major update README and ongoing GitHub publishing rule
 
 **Requested scope:** keep GitHub continuously updated and explain the current

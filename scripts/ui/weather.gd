@@ -23,6 +23,6 @@ func _draw() -> void:
 			var at := Vector2(fposmod(index * 73 - elapsed * 24, 384), fposmod(index * 29 + elapsed * 150, 216)).floor()
 			draw_line(at, at + Vector2(-2, 6), Color(0.58, 0.70, 0.71, 0.13))
 	elif level.plan.weather == "fog" and level.player.global_position.x >= 1536:
-		for index in range(16):
-			var at := Vector2(fposmod(index * 43 + elapsed * 5, 440) - 56, index * 15 - 5)
-			draw_rect(Rect2(at, Vector2(92, 2 + index % 3)), Color(0.53, 0.63, 0.57, 0.055))
+		for index in range(6):
+			var at := Vector2(fposmod(index * 91 + elapsed * 5, 560) - 176, index * 43 - 56)
+			draw_texture_rect(CampLights.texture(), Rect2(at, Vector2(220, 96)), false, Color(0.53, 0.63, 0.57, 0.035))

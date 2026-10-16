@@ -47,3 +47,15 @@ static func occluder(parent: Node, rect: Rect2) -> void:
 	polygon.polygon = PackedVector2Array([Vector2.ZERO, Vector2(rect.size.x, 0), rect.size, Vector2(0, rect.size.y)])
 	node.occluder = polygon
 	parent.add_child(node)
+
+
+static func trunk(parent: Node, at: Vector2, radius: float = 5.0) -> void:
+	var node := LightOccluder2D.new()
+	node.position = at
+	var polygon := OccluderPolygon2D.new()
+	var points := PackedVector2Array()
+	for index in range(8):
+		points.append(Vector2.from_angle(index * TAU / 8) * Vector2(radius, radius * 0.7))
+	polygon.polygon = points
+	node.occluder = polygon
+	parent.add_child(node)

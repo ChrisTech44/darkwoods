@@ -8,6 +8,7 @@ const PICKUP_HINTS: Array[String] = ["Battery · west bunk cabin", "Fuel · main
 const ATLAS := preload("res://assets/tiles/camp_tiles.png")
 var obstacles: Array[Rect2] = []
 var trees: Array[Rect2] = []
+var canopies: Array[Sprite2D] = []
 var buildings: Array[CampBuilding] = []
 var navigation_region: NavigationRegion2D
 var objects: Node2D
@@ -80,9 +81,14 @@ func _ready() -> void:
 	CampLights.lamp(self, Vector2(736, 528), 75, Color("d6dca3"), 0.75)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	for building in buildings:
 		building.roof.focus = focus
+	if is_instance_valid(focus):
+		for canopy in canopies:
+			var offset := canopy.global_position - focus.global_position
+			var covers_player := absf(offset.x) < 30 and offset.y > -4 and offset.y < 70
+			canopy.modulate.a = move_toward(canopy.modulate.a, 0.28 if covers_player else 1.0, delta * 6)
 
 
 func location_label(point: Vector2) -> String:
@@ -122,7 +128,8 @@ func add_wall(rect: Rect2, shadow: bool = true) -> void:
 func _tree(at: Vector2, variant: int, legacy_rect: Rect2 = Rect2()) -> void:
 	var rect := Rect2(at - Vector2(5, 6), Vector2(10, 12)) if legacy_rect.size == Vector2.ZERO else legacy_rect
 	trees.append(rect)
-	add_wall(rect)
+	add_wall(rect, false)
+	CampLights.trunk(self, at)
 	_canopy(at, variant)
 
 
@@ -133,13 +140,17 @@ func _canopy(at: Vector2, variant: int) -> void:
 	sprite.offset = Vector2(0, -32)
 	sprite.modulate = Color(0.85, 0.90, 0.83) if variant == 2 else Color.WHITE
 	objects.add_child(sprite)
+	canopies.append(sprite)
 
 
 func _build_woods() -> void:
 	for wall in woods.walls:
-		add_wall(wall)
+		# Merged collision spans are not visible tree silhouettes.
+		add_wall(wall, false)
 		for x in range(int(wall.position.x) + 12, int(wall.end.x), 40):
 			_canopy(Vector2(x, wall.get_center().y + 8), (x / 40 + int(wall.position.y)) % 3)
+			if (x / 40 + int(wall.position.y / 32)) % 2 == 0:
+				CampLights.trunk(self, Vector2(x, wall.get_center().y + 6))
 	var decor := preload("res://scripts/world/woods_decor.gd").new()
 	decor.woods = woods
 	add_child(decor)

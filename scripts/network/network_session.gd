@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-1"
+const RULES := "lnac-net-2"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -225,8 +225,6 @@ func attach_world(level: Node2D) -> void:
 				if multiplayer.is_server():
 					for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 						enemy.hear_stimulus(origin,enemy.config.hearing_radius*actor.sprint_hearing))
-		actor.status_changed.connect(func():
-			if multiplayer.is_server() and actor.status==CampPlayer.Status.DEAD: _drop_objectives(actor))
 		if not multiplayer.is_server(): actor.set_physics_process(false)
 	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 		enemy.enabled=false
@@ -440,9 +438,7 @@ func _peer_disconnected(id: int) -> void:
 
 func _drop_objectives(actor: CampPlayer) -> void:
 	if world==null: return
-	for kind: String in actor.inventory:
-		world.spawn_dropped(kind,actor.position)
-	actor.inventory.clear()
+	world.drop_all_items(actor)
 
 func leave(reason: String = "Left the camp.") -> void:
 	if active: multiplayer.multiplayer_peer.close()

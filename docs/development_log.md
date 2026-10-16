@@ -1,5 +1,46 @@
 # Development log
 
+## 2026-10-16 — Center names, indefinite downs and shared survivor lighting
+
+Applied the user's rescue/lighting amendment. Names now center by measured font
+width. Removed second-hit elimination and timed bleed-out; repeated downs are
+idempotent. A down drops every objective/tool/supply unit once, clears the belt,
+and searches wall-clear reachable ground at least 32px from the body. Pickups
+render above actors as a cramped-space fallback. Disconnect drops all gear too.
+A medkit is mandatory for revival, consumed only after the full hold (3s, medic
+2.25s); no bonus refresh. Any successful passenger escape rescues connected
+downed teammates. Living survivors still board; all-down ends defeat without
+permanent death. HUD/selection text and player guides explain these rules.
+
+The replicated flashlight toggle/facing already existed, but NightOverlay only
+created the local actor's light. It now maintains a native shadow-casting beam
+and glow for every survivor on every peer, using their replicated state and
+safe emitter offsets. Ambient adaptation and woods sight remain viewpoint-local.
+Flare replicas retain native lamps; graphical regressions verify real terrain
+illumination, excluding HUD/sprites/sparks from before/after pixel comparisons.
+Network rules advanced to `lnac-net-2` so both copies must update.
+
+Verification on macOS arm64 / Godot 4.7.2:
+
+- Two graphical peers, both modes: **177 assertions**, all pass.
+- Four graphical peers, both modes: **303 assertions**, all pass.
+- **14 independent ENet process runs / 480 assertions**, zero errors/warnings.
+  Includes all-gear single drop, offset loot, repeated hits/120s persistence,
+  mandatory kit, revive supply nonduplication, shared flashlight/flare terrain
+  brightness, rescue at departure, plus prior authority/lifecycle coverage.
+- Full `python3 tools/verify.py`: **75 steps passed**, zero errors/warnings,
+  including required import/startup and active solo escape regressions.
+- Content: **350 assertions**, all pass across six roles/both modes. Initial
+  fixture failures expected retained supplies after downing; corrected to check
+  starting bonuses before down, full gear drop, then no refresh after revival.
+- Representative engine captures opened: centered teammate names, shared beams/
+  flares and gear beside the prone player. Documentation links and whitespace
+  checked before publication. No human or separate-machine Internet test claimed.
+
+[Durable reports/logs/screenshots](evidence/rescue_lighting/README.md) and the
+[connection/rescue guide](multiplayer_guide.md) record execution and limits.
+Voice remains a separate future feature; no microphone changes.
+
 ## 2026-10-16 — ENet host/join co-op in Quick Camp and Woods Expedition
 
 Following published rendering/denser-roaming commit `3bc1203`, implemented

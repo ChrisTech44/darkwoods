@@ -70,14 +70,13 @@ records the emitted location; lost targets do not update hidden positions.
 
 Defaults live in CampConfig: walking 70 px/s, sprint 110 px/s, four stamina seconds,
 two-second van start, eight-second departure, three-second revive, two-second attack
-cooldown/revive grace, sixteen-second bleed-out. First hit downs; second eliminates.
+cooldown/revive grace. First hit downs indefinitely; further hits do not kill.
 Starting automatically boards the driver. CampVan validates other survivors'
 proximity and unobstructed access to a side/rear boarding point before E enters
-them. BOARDED survivors cannot move or receive hits. At departure only recorded
-passengers escape; unboarded survivors are left behind. At least one escape wins;
-results still report the local player's actual escaped/left-behind/dead status.
-If all are dead, the round loses. Solo downing waits for the second hit or
-bleed-out; no self-revive. Multiple-survivor rules remain fixture-tested only.
+them. BOARDED survivors cannot move or receive hits. At departure recorded passengers escape and rescue connected downed teammates;
+unboarded living survivors are left behind. At least one escape wins;
+results still report the local player's actual outcome. If all survivors are down,
+the round loses. No self-revive. Co-op rules have real local-process ENet coverage.
 
 F toggles a native shadow-casting PointLight2D flashlight, Tab shows inventory and
 a field map, and Esc freezes actor physics and round timers. CanvasModulate uses
@@ -105,8 +104,8 @@ Expeditions require battery/fuel/key and two parts chosen from belt/fuse/tire/sp
 plug. Battery/key use camp location pools; three parts occupy locked caches in the village hut, witch's bog and graveyard.
 One reusable boltcutters pickup in Maintenance unlocks caches. Q throws a 9-second
 flare, R consumes a spare battery (+70s, maximum 90s), C consumes rations (full
-stamina). Woods flashlight use drains charge; camp use does not. Medkits reduce
-teammate revive holds to 1.2s and are consumed only on completion. All awards/use
+stamina). Woods flashlight use drains charge; camp use does not. Medkits are required for
+teammate revive holds (3s, or medic 2.25s) and are consumed only on completion. All awards/use
 validate alive status, membership, availability, proximity and clear access as
 applicable. Pause freezes actors, battery drain, flares and round timers.
 
@@ -256,7 +255,7 @@ world construction before the host releases simulation. New joins are lobby-only
 Reliable channel 0 carries lobby/start/validated action intents. Unreliable
 ordered channel 2 carries sequenced movement/sprint/hold intents; direction is
 finite/normalized and stale controls expire after 400ms. Only the host moves
-actors, advances senses/AI, injury/bleedout/revive, supplies, item availability,
+actors, advances senses/AI, injury/indefinite downs/revive, supplies, item availability,
 site rewards, ignition/countdown and results. Action requests never contain
 positions, inventory rewards, health or arbitrary cue payloads. Actions are
 allowlisted/rate-limited and scoped to the current round. No client-selected
@@ -278,7 +277,7 @@ are round-scoped and cleared on retry/leave. Local sight/light/map/mixer and
 positional audio derive from the local survivor and replicated sources.
 
 The host selects one deterministic actor for each hold; changing actor resets
-progress. Objective inventory drops once on death/disconnect, preserving routes
+progress. All carried gear drops once on down/disconnect on reachable ground beside the body, preserving routes
 to victory. Disconnect removes the actor/passenger/input/roster; host loss closes
 clients to a clean main menu. Host-chosen results replay returns everyone to a
 clean lobby. Local pause menus stop that player's input, never the shared clock.
@@ -288,3 +287,22 @@ state. Gameplay channels are separated, but ENet does not itself provide the
 planned encrypted, compressed microphone transport. No capture/voice packets or
 permission requests exist. See [connection guide](multiplayer_guide.md) and
 [audio/voice design](audio_multiplayer_design.md).
+
+
+## Shared lighting and rescue amendment
+
+NightOverlay creates one shadow-casting beam and nearby glow per survivor on
+every peer, updating each from replicated facing, flashlight toggle, position
+and status. Only the local survivor controls ambient/viewpoint adaptation.
+Flare replicas retain native lights; the woods line-of-sight mask stays local.
+Graphical network assertions compare rendered pixel brightness before/after a
+remote beam and flare, beyond checking their replicated flags/node existence.
+Names use measured font width to center the draw origin above the actor.
+
+Downing is idempotent and host-owned. ForestLevel drops all inventory and each
+supply unit once, clears the belt and finds wall-clear drop positions at least
+32px away from the prone actor. Dropped pickups render above actors as a fallback
+for extremely cramped geometry. Repeated hits/timers never remove a downed peer.
+A medkit is mandatory; completed holds consume one. Successful van departure
+rescues downed connected teammates, while all-down ends defeat without permanent
+death. Network rules version is now `lnac-net-2`; both peers must update.

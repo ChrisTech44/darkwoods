@@ -27,7 +27,7 @@ faster; Quiet Kid reduces sprint hearing; Overprepared starts with extra supplie
 | **The Jock** | 5s sprint stamina instead of 4s; unchanged speed/recovery | Save the longer burst for reaching cover. |
 | **Grease Monkey** | 1.5s engine ignition instead of 2s; +1 spare battery | Bring all parts home before starting; departure still takes 8s. |
 | **The Scout** | Woods light drain 0.8 charge/s instead of 1; +1 ration | Stretch batteries on long trips; beam range stays unchanged. |
-| **First-Aid Kid** | Ordinary teammate revive 2.25s instead of 3s; +1 medkit and +1 flare | Extra flare helps solo; the revive bonus needs a teammate. No self-revive. |
+| **First-Aid Kid** | Medkit teammate revive 2.25s instead of 3s; +1 medkit and +1 flare | Extra flare helps solo; the revive bonus needs a teammate. No self-revive. |
 | **The Quiet Kid** | Sprint AI hearing reach ×0.75 after weather | Walk after breaking sight. Interactions and flare noise keep their normal reach. |
 | **Overprepared** | +1 flare, +1 spare battery and +1 ration | Use the extra margin to explore, then keep room for rare tools. |
 
@@ -142,14 +142,14 @@ and chapel are optional; six smaller ruined landmarks also remain along the trai
 5. **Stay aboard.** Starting automatically seats the driver. The van departs
    after **eight seconds**, and passengers are safe inside.
 
-Only boarded survivors extract. Teammates board with
-**E beside the running van**; standing nearby does not count, and downed survivors
-cannot board. Connected teammates can revive and board together. The automated network tests
+Living survivors board with **E beside the running van**; standing nearby does
+not count. Downed survivors are rescued automatically when at least one passenger
+escapes, even if they have not been revived. The automated network tests
 use host-only placements for isolated authority checks; human co-op balance is
 still unrecorded.
 
 A round is won when at least one living passenger escapes. The results report
-your own outcome too; survivors left outside are left behind.
+your own outcome too; living survivors left outside are left behind.
 
 ## Controls
 
@@ -180,7 +180,7 @@ sight; losing line of sight helps break pursuit.
 | **Spare battery — R** | Restores up to 70 seconds, capped at 90, and switches the light on. |
 | **Flare — Q** | Burns for nine seconds. Repels nearby stalker/cryptids with sight to it except moths and candle grazers; moths follow it and grazers consume it. |
 | **Rations — C** | Restore full stamina and clear exhaustion. |
-| **Medkit** | Automatically consumed on a completed teammate revive, shortening the hold from three seconds to 1.2 seconds. It does not provide a solo self-revive. |
+| **Medkit** | Required and consumed on a completed teammate revive: three seconds, or 2.25 seconds as First-Aid Kid. It does not provide a solo self-revive. |
 | **Noise tin — select, V** | Drops a lure ahead of you. Rattles after 1.5s, 3.5s and 5.5s with 480px hearing reach. Leave before investigators arrive. |
 | **Salt ward — select, V** | Protects from physical hits for 4s. Does not heal or remove hexes. |
 | **Glow moss — select, V** | Restores 35 light charge, capped at 90, and removes your current hex. |
@@ -189,12 +189,16 @@ sight; losing line of sight helps break pursuit.
 
 Baseline supplies are two flares, one spare battery, and one ration pack; survivor bonuses add to these.
 Search for additional supplies in camp, woods clearings, and themed sites.
-Tools and supplies cannot be used while paused or downed.
+Tools and supplies cannot be used while paused or downed. Every survivor’s
+flashlight, nearby glow and deployed flares illuminate the shared world on each
+connected screen; walls and the viewer’s woods line of sight still block visibility.
 
-The first hit **downs** a survivor. A second hit or **16 seconds of bleeding out**
-eliminates them. A living teammate can hold E nearby to revive, with a short grace
-period after revival. In solo play nobody can revive you. In co-op, call for a living teammate and
-avoid enemies that can deliver a second hit.
+The first hit **downs** a survivor indefinitely. Further hits and elapsed time
+do not kill them. All carried parts, tools and supplies drop on reachable ground
+beside the body, where teammates can recover them with E. A living teammate
+**with a medkit** can hold E nearby to revive; one kit is consumed only on
+completion, followed by a short grace period. If everyone is down, the round
+ends in defeat. In solo play nobody can revive you.
 
 ### Know what is following you
 
@@ -403,11 +407,11 @@ recover units. Vehicle components and cutters remain separate from this limit.
 The current implementation includes solo and 1–4 player ENet co-op in both
 modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
 species. Full baseline verification passed **75 steps** with no errors/warnings;
-final content checks passed **326 assertions**. Real ENet tests passed **685
-assertions across 24 process runs**, including two/four peers and graphical
+final content checks passed **350 assertions**. Current graphical ENet tests passed **480
+assertions across 14 process runs**, including two/four peers and graphical
 host/client windows in both modes. See the
-[current network report](docs/evidence/multiplayer/summary.json),
-[evidence notes](docs/evidence/multiplayer/README.md), and
+[current network report](docs/evidence/rescue_lighting/summary.json),
+[evidence notes](docs/evidence/rescue_lighting/README.md), and
 [rendering/denser-forest evidence](docs/evidence/denser_forest/README.md).
 Earlier graphical baselines remain preserved separately.
 

@@ -63,10 +63,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity = Vector2.ZERO
 		sprinting = false
-	if status == Status.DOWNED:
-		bleedout -= delta
-		if bleedout <= 0.0:
-			set_status(Status.DEAD)
 	queue_redraw()
 
 
@@ -108,8 +104,6 @@ func receive_hit() -> void:
 		return
 	if status == Status.ALIVE:
 		set_status(Status.DOWNED)
-	elif status == Status.DOWNED:
-		set_status(Status.DEAD)
 
 
 func apply_hex(seconds: float) -> void:
@@ -121,10 +115,14 @@ func apply_hex(seconds: float) -> void:
 
 
 func set_status(next: Status) -> void:
+	# DEAD is retained only for old serialized/status indices. Downs never become deaths.
+	if next == Status.DEAD: next = Status.DOWNED
+	if status == next: return
 	status = next
 	velocity = Vector2.ZERO
 	if status == Status.DOWNED:
-		bleedout = config.bleedout_seconds
+		bleedout = 0
+		get_tree().call_group("round_world", "on_survivor_downed", self)
 	if status == Status.ALIVE:
 		stamina = config.stamina_max * 0.5
 		invulnerability = config.revive_grace_seconds
@@ -136,7 +134,7 @@ func _draw() -> void:
 	if status in [Status.ESCAPED, Status.BOARDED]:
 		return
 	if not peer_name.is_empty():
-		draw_string(ThemeDB.fallback_font,Vector2(-18,-34),peer_name,HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("b9d4b2"))
+		draw_string(ThemeDB.fallback_font,name_origin(),peer_name,HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("b9d4b2"))
 	draw_circle(Vector2(0, 1), 7, Color(0, 0, 0, 0.35))
 	if hex_remaining > 0 and status == Status.ALIVE:
 		draw_arc(Vector2(0,-2), 11, 0, TAU, 16, Color("b4a3d3"), 1)
@@ -209,3 +207,7 @@ func tidy_belt() -> void:
 
 func held_item() -> String:
 	return belt[selected_slot]
+
+
+func name_origin() -> Vector2:
+	return Vector2(-ThemeDB.fallback_font.get_string_size(peer_name,HORIZONTAL_ALIGNMENT_LEFT,-1,7).x * 0.5,-34)

@@ -1,0 +1,28 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"assertion","name":"join_button_starts_connection","passed":true}
+{"event":"assertion","name":"wait_client_","passed":true}
+{"event":"assertion","name":"wait_client_ready_check","passed":true}
+{"event":"assertion","name":"client_receives_changed_rules_and_unready","passed":true}
+{"event":"loading_started"}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"wait_client_movement","passed":true}
+{"event":"assertion","name":"client_receives_exact_roster","passed":true}
+{"event":"assertion","name":"client_is_replica_with_shared_seed","passed":true}
+{"event":"assertion","name":"wait_client_movement","passed":true}
+{"event":"assertion","name":"wait_client_movement","passed":true}
+{"event":"assertion","name":"wait_client_light_off","passed":true}
+{"event":"assertion","name":"wait_client_light_on","passed":true}
+{"event":"assertion","name":"wait_client_packet_gap","passed":true}
+{"event":"assertion","name":"wait_client_packet_recovery","passed":true}
+{"event":"assertion","name":"wait_client_pickup","passed":true}
+{"event":"assertion","name":"wait_client_down","passed":true}
+{"event":"assertion","name":"wait_client_flare","passed":true}
+{"event":"assertion","name":"wait_client_hazards","passed":true}
+{"event":"assertion","name":"wait_client_result","passed":true}
+{"event":"loading_started"}
+{"event":"round_ready","milestone":"M1"}
+{"event":"menu_ready","milestone":"M1"}
+{"event":"assertion","name":"guest_leave_cleans_up","passed":true}
+{"checks":19,"event":"test_result","failures":0,"largest_snapshot_payload":0,"snapshot_bytes":2217,"suite":"network_client_woods_4"}

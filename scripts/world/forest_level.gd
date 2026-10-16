@@ -24,6 +24,7 @@ var sight: WoodsVisibility
 
 
 func _ready() -> void:
+	add_to_group("round_world")
 	var session: Node = get_node("/root/Session")
 	plan.generate(session.begin_run(), session.mode)
 	if plan.expedition:
@@ -125,10 +126,10 @@ func _process(_delta: float) -> void:
 	elif player.status == CampPlayer.Status.DEAD:
 		heading = "ELIMINATED / WAITING FOR SURVIVORS"
 	elif player.status == CampPlayer.Status.DOWNED:
-		heading = "DOWNED  ·  BLEEDING OUT IN %.1fs" % player.bleedout
+		heading = "DOWNED · NEED A MEDKIT"
 	var detail := context_prompt()
 	if revive_progress > 0.0:
-		detail = "HOLD E · REVIVE  %d%%" % int(revive_progress / (1.2 if player.supplies["medkit"] > 0 else player.config.revive_seconds) * 100)
+		detail = "HOLD E · REVIVE  %d%%" % int(revive_progress / (revive_actor.config.revive_seconds if is_instance_valid(revive_actor) else player.config.revive_seconds) * 100)
 	hud.threat_label.text = ""
 	if not finished and killer.global_position.distance_to(player.global_position) < 155.0:
 		hud.threat_label.text = "SPOTTED · RUN!" if killer.state == CampKiller.State.CHASE else "FOOTSTEPS NEARBY · KEEP QUIET"
@@ -170,7 +171,7 @@ func _physics_process(delta: float) -> void:
 			announce("Engine started. Driver boarded automatically. Others: E to enter.")
 	var living := false
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
-		if actor.status in [CampPlayer.Status.ALIVE, CampPlayer.Status.DOWNED, CampPlayer.Status.BOARDED]:
+		if actor.status in [CampPlayer.Status.ALIVE, CampPlayer.Status.BOARDED]:
 			living = true
 	if not living:
 		finish_round(false, "No survivor made it out. You were caught in the woods.")
@@ -178,7 +179,7 @@ func _physics_process(delta: float) -> void:
 	if van.running and van.remaining <= 0.0:
 		var escaped := 0
 		for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
-			if actor.status == CampPlayer.Status.BOARDED and actor in van.passengers:
+			if (actor.status == CampPlayer.Status.BOARDED and actor in van.passengers) or (actor.status == CampPlayer.Status.DOWNED and not van.passengers.is_empty()):
 				actor.set_status(CampPlayer.Status.ESCAPED)
 				escaped += 1
 			elif actor.status in [CampPlayer.Status.ALIVE, CampPlayer.Status.DOWNED]:
@@ -247,7 +248,7 @@ func nearby_downed(actor: CampPlayer) -> CampPlayer:
 
 
 func advance_revive(actor: CampPlayer, target: CampPlayer, holding: bool, delta: float) -> void:
-	if paused or finished or not holding or target == null or not actor.is_in_group("survivors") or not target.is_in_group("survivors") or actor.status != CampPlayer.Status.ALIVE or target.status != CampPlayer.Status.DOWNED or actor.global_position.distance_to(target.global_position) > config.interact_radius or not clear_path(actor.global_position, target.global_position):
+	if paused or finished or not holding or target == null or not actor.is_in_group("survivors") or not target.is_in_group("survivors") or actor.status != CampPlayer.Status.ALIVE or actor.supplies.get("medkit",0) <= 0 or target.status != CampPlayer.Status.DOWNED or actor.global_position.distance_to(target.global_position) > config.interact_radius or not clear_path(actor.global_position, target.global_position):
 		revive_target = null
 		revive_progress = 0.0
 		return
@@ -256,7 +257,7 @@ func advance_revive(actor: CampPlayer, target: CampPlayer, holding: bool, delta:
 		revive_target = target
 		revive_progress = 0.0
 	revive_progress += delta
-	var duration := 1.2 if actor.supplies["medkit"] > 0 else actor.config.revive_seconds
+	var duration := actor.config.revive_seconds
 	if revive_progress >= duration:
 		if actor.supplies["medkit"] > 0:
 			actor.supplies["medkit"] -= 1
@@ -301,9 +302,9 @@ func context_prompt() -> String:
 	if van.can_board(player):
 		return "E · ENTER VAN  —  Board before the countdown ends!"
 	if player.status == CampPlayer.Status.DOWNED:
-		return "A teammate can hold E nearby to revive. Alone, no one can help."
-	if nearby_downed(player) != null:
-		return "HOLD E · REVIVE TEAMMATE"
+		return "Need a teammate with a medkit. Your gear is beside you; van escape rescues you."
+	if nearby_downed(player) != null and player.supplies.get("medkit",0)>0:
+		return "HOLD E · REVIVE TEAMMATE (MEDKIT)"
 	for pickup in pickups:
 		if pickup.available and player.global_position.distance_to(pickup.global_position) <= config.interact_radius and clear_path(player.global_position, pickup.global_position):
 			return "E · LOCKED CACHE / NEED BOLTCUTTERS" if pickup.locked and "boltcutters" not in player.inventory else "E · TAKE " + pickup.kind.replace("_", " ").to_upper()
@@ -317,6 +318,7 @@ func context_prompt() -> String:
 		if van.installed.size() == plan.required.size():
 			return "HOLD E · START VAN  %d%%" % int(van.start_progress / player.config.start_hold_seconds * 100)
 		return "E · INSTALL SUPPLIES   |   NEED: " + ", ".join(missing_parts()).to_upper()
+	if nearby_downed(player) != null: return "MEDKIT NEEDED · Recover nearby gear with E."
 	return "1-6 select · V use · G drop · E interact · Tab notes" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
 
 
@@ -552,9 +554,45 @@ func spawn_dropped(kind: String, at: Vector2) -> CampPickup:
 		pickups.append(pickup)
 		add_child(pickup)
 	pickup.kind=kind
+	pickup.z_index=1
 	pickup.position=at
 	pickup.locked=false
 	pickup.available=true
 	pickup.show()
 	pickup.queue_redraw()
 	return pickup
+
+
+func on_survivor_downed(actor: CampPlayer) -> void:
+	if get_node("/root/Net").active and not multiplayer.is_server(): return
+	drop_all_items(actor)
+	announce("Survivor down! Gear dropped nearby. Hold E with a medkit to revive.")
+
+
+func drop_all_items(actor: CampPlayer) -> void:
+	var kinds: Array[String]=[]
+	kinds.assign(actor.inventory)
+	actor.inventory.clear()
+	for kind: String in actor.supplies:
+		for unit in range(actor.supplies[kind]): kinds.append(kind)
+		actor.supplies[kind]=0
+	actor.tidy_belt()
+	for index in range(kinds.size()):
+		spawn_dropped(kinds[index],_drop_position(actor.position,index))
+
+
+func _drop_position(origin: Vector2, index: int) -> Vector2:
+	# Keep gear outside the prone sprite, on reachable ground rather than through walls.
+	var shape := CircleShape2D.new()
+	shape.radius=5
+	for radius in [32,40,48,56]:
+		for step in range(32):
+			var at: Vector2=origin+Vector2.from_angle((step+index*7)*TAU/32)*radius
+			if not clear_path(origin,at): continue
+			var query := PhysicsShapeQueryParameters2D.new()
+			query.shape=shape
+			query.transform=Transform2D(0,at)
+			query.collision_mask=1
+			if get_world_2d().direct_space_state.intersect_shape(query,1).is_empty(): return at
+	# Extremely cramped geometry: draw the pickup above the body so it remains visible.
+	return origin

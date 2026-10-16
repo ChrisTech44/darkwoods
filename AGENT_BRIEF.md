@@ -1,7 +1,7 @@
 # LAST NIGHT AT CAMP
 **Godot 4 multiplayer horror game — agent implementation brief**
 
-Version 1.8 — 16 October 2026 — Codex Sol (medium effort)
+Version 1.9 — 16 October 2026 — Codex Sol (medium effort)
 
 User amendment: online proximity voice chat and an original/licensed audio-file
 pipeline are planned after synchronized multiplayer gameplay. This supersedes
@@ -66,6 +66,15 @@ Voice is next: stable peer/round IDs, host-owned positions/status and separated
 input/world channels are provided; no microphone or voice transport is active.
 Human M1-S, real two-machine M2/Internet and M2-A/M3-V gates are not implied by
 loopback processes or scripted graphical windows.
+
+Latest rescue/lighting amendment (supersedes earlier death/revive rules): players
+never permanently die. Hits down them indefinitely; a teammate must spend a
+medkit to revive (3s, or 2.25s as First-Aid Kid). On down/disconnect all parts,
+tools and supply units drop once on reachable ground beside the body. All-down
+ends the round in defeat. Any successful van passenger escape also rescues
+connected downed teammates. Living survivors must still board. Center name
+labels by measured text width. Render every actor's authoritative flashlight/
+glow and temporary flare lights on every peer, preserving wall/sight occlusion.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 

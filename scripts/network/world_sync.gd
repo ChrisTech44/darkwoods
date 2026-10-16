@@ -95,6 +95,7 @@ static func apply(net: Node, state: Dictionary) -> void:
 			level.add_child(pickup)
 		var pickup: CampPickup=level.pickups[index]
 		pickup.kind=row[0]
+		pickup.z_index=1 if index>=level.plan.loot.size() else 0
 		pickup.position=row[1]
 		pickup.queue_redraw()
 		pickup.available=row[2]

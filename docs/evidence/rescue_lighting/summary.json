@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "environment": "macOS arm64 / Godot 4.7.2",
+  "transport": "ENet UDP loopback, independent graphical processes",
+  "network_process_runs": 14,
+  "network_checks": 480,
+  "errors": 0,
+  "warnings": 0,
+  "reports": [
+    "summary_all_2_graphical.json",
+    "summary_all_4_graphical.json"
+  ],
+  "content_checks": 350,
+  "limitations": [
+    "No real cross-machine LAN/Wi-Fi/Internet/VPN test",
+    "Scripted graphical fixtures; no human co-op balance or other-platform acceptance"
+  ],
+  "offline": {
+    "report": "offline_summary.json",
+    "steps": 75,
+    "passed": true
+  }
+}

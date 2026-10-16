@@ -41,7 +41,9 @@ of the van and hold E for two seconds. This automatically boards the driver and
 displays YOU ARE ABOARD. Other living survivors press E beside the running van
 to enter during the eight-second departure countdown. Passengers cannot move out
 or be hit. Survivors who stay outside are left behind even if they stand nearby.
-A first killer hit downs you; a second or bleed-out eliminates you.
+A first killer hit downs you indefinitely; repeated hits/time do not kill.
+All gear drops beside the body, medkits are mandatory to revive, and a teammate
+van escape also rescues downed players. All-down is defeat.
 Solo has no self-revive. Woods Expedition instead requires five parts, including
 three locked woods caches opened with boltcutters from Maintenance. Tab reveals
 woods trails as you explore. Torch charge drains in the woods; collect spare
@@ -95,8 +97,8 @@ keyboard focus, Controls/Back/Escape, and enabled solo Play.
 `offline_slice.gd` uses explicit isolated placements to test real movement,
 collision and cabin entry, stamina, proximity/availability/occlusion checks,
 delivery and interrupted start holds, extraction, restart cleanup, killer
-sight/hearing/memory/navigation, attack cooldown, timed revive/grace, second-hit
-elimination and bleed-out. Teammates are fixtures, not connected human clients.
+sight/hearing/memory/navigation, attack cooldown, timed revive/grace, repeat-hit and
+elapsed-time down persistence. Teammates are fixtures, not connected human clients.
 
 `offline_playthrough.gd` starts at the real menu and uses normal input only.
 It walks to all three supply buildings with collision enabled, collects/delivers every
@@ -285,7 +287,7 @@ errors/warnings, nonzero exits or failed assertions and enforces a timeout.
 
 Checks cover roster/readiness/rule changes, locked seed/role/private bonuses,
 two-way movement, contested single-award pickup, rejected forged role/action/
-nonfinite input, injury/revive/one-time kit consumption, death/drop/disconnect
+nonfinite input, injury/revive/one-time kit consumption, down/drop/disconnect
 objective recovery, flares and woods bolts/patches, remote ignition, boarding,
 shared extraction, same-seed restart and host-loss cleanup. A deliberately
 incomplete snapshot proves that partial state is not applied and a later
@@ -306,3 +308,15 @@ high-latency/jitter, other desktop platforms and exports remain unverified.
 No microphone is opened and no voice acceptance is implied. Follow
 [connection instructions](multiplayer_guide.md) for a separate-device test and
 [audio/voice design](audio_multiplayer_design.md) for the next feature's gates.
+
+
+## Current rescue and shared-light regressions
+
+The latest [report](evidence/rescue_lighting/summary.json) preserves two/four
+actual graphical ENet peers in both modes: **14 process runs / 480 assertions**,
+all passing. Terrain-only pixel comparisons prove remote beams and flares light
+the other screen. Down tests cover all gear dropping once away from the body,
+repeat-hit/time persistence, mandatory medkits, no spawn-bonus refresh and van
+rescue of an unrevived downed peer. The latest offline suite passed **75 steps**,
+including **350 content assertions**. Earlier multiplayer reports above describe
+their historical pre-amendment rules; the current player guide is authoritative.

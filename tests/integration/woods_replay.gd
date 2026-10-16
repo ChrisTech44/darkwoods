@@ -205,8 +205,8 @@ func _rules() -> void:
 	level.advance_revive(player, teammate, true, 0.6)
 	level.advance_revive(player, teammate, false, 0.0)
 	_check(player.supplies["medkit"] == 1 and teammate.status == CampPlayer.Status.DOWNED, "interrupted_revive_does_not_consume_medkit")
-	level.advance_revive(player, teammate, true, 1.21)
-	_check(player.supplies["medkit"] == 0 and teammate.status == CampPlayer.Status.ALIVE, "medkit_shortens_completed_revive_and_consumes_once")
+	level.advance_revive(player, teammate, true, player.config.revive_seconds+0.01)
+	_check(player.supplies["medkit"] == 0 and teammate.status == CampPlayer.Status.ALIVE, "medkit_completes_revive_and_consumes_once")
 	teammate.queue_free()
 	await _frames(1)
 

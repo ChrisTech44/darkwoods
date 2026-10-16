@@ -48,13 +48,17 @@ The host validates movement, pickups, supply use, damage, revives, AI and the
 vehicle. A contested pickup awards once. One survivor owns a revive/ignition
 hold; changing actor resets progress. Everyone can install every component.
 The starter boards automatically; others press E beside the running van before
-its eight-second countdown ends. Only boarded survivors extract.
+its eight-second countdown ends. Downed teammates are also rescued when at least one passenger escapes; living
+survivors outside the van are left behind.
 
 **Esc opens your local settings/menu; it does not pause the shared world.**
 Your survivor stops sending movement while that menu is open and can still be
-caught. A downed teammate can be rescued; an eliminated survivor waits for the
-round's result. Carried objective objects drop on death or disconnect so another
-survivor can recover them. Leaving does not grant fresh supplies or permit an
+caught. A downed teammate stays down indefinitely and requires a medkit to revive
+(hold E for 3s, or 2.25s as First-Aid Kid). Further hits never permanently kill
+them. All parts, tools and supplies drop beside their body on down or disconnect,
+so teammates can recover them with E. When everyone is down the round is lost.
+Every survivor’s flashlight and flare lights render on all peers, with local
+wall shadows and woods sight occlusion. Leaving does not grant fresh supplies or permit an
 active-round rejoin.
 
 The host chooses **Return to Lobby** or **Retry Seed / Lobby** on the results
@@ -62,6 +66,12 @@ screen. All remaining peers return together, with readiness cleared. Retry keeps
 the seed; another night uses a fresh seed. Roles may be changed before the next
 start. A host disconnect ends the session and returns clients to the menu; there
 is no host migration. Leaving from the pause/results menu disconnects you.
+
+## Rescue and shared lighting examples
+
+![Downed survivor with gear placed beside the body](evidence/rescue_lighting/downed_gear_camp_2_1.png)
+![A remote survivor's flashlight on the client screen](evidence/rescue_lighting/shared_flashlight_camp_2_1.png)
+![Shared flare light on the client screen](evidence/rescue_lighting/shared_flare_camp_2_1.png)
 
 ## Screenshots
 

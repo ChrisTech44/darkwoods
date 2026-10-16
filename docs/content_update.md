@@ -34,12 +34,14 @@ Retry preserves role/seed. Another Night returns to the menu for fresh selection
 | Jock | 5s stamina instead of 4s; same recovery/speed |
 | Grease Monkey | 1.5s ignition instead of 2s; +1 spare battery |
 | Scout | 0.8 light drain/s instead of 1 in woods; +1 ration |
-| First-Aid Kid | 2.25s ordinary teammate revive instead of 3s; +1 medkit, +1 flare |
+| First-Aid Kid | 2.25s medkit teammate revive instead of 3s; +1 medkit, +1 flare |
 | Quiet Kid | Sprint AI hearing reach ×0.75 after weather; playback/sight unchanged |
 | Overprepared | +1 flare, +1 battery, +1 ration |
 
 All roles can collect every part and escape alone. No self-revive. Configurations
-are private copies and spawn bonuses apply once. Medkit revive remains 1.2s.
+are private copies and spawn bonuses apply once. A medkit is required for every revive (3s, or 2.25s as First-Aid Kid).
+Downs last indefinitely, drop all gear beside the body, and are rescued by a
+successful teammate van escape. All-down is defeat.
 The van still departs after 8s; changing the ignition/revive actor resets progress.
 
 The belt holds **six supply types**, with same-type stacks. Select using **1–6

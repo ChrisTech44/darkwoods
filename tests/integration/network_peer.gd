@@ -1,5 +1,6 @@
 extends SceneTree
 ## Real ENet processes. Host-only placements isolate contested authority/lifecycle checks.
+var light_dark: Image
 var checks := 0
 var failures := 0
 var net: Node
@@ -96,6 +97,19 @@ func _host() -> void:
 		await process_frame
 		RenderingServer.force_draw(true)
 		root.get_texture().get_image().save_png("res://artifacts/network/host_%s_%d.png"%[selected_mode,peers])
+	for actor: CampPlayer in net.actors.values():
+		actor.flashlight_on=false
+		actor.position=Vector2(140,430)
+	level.player.position=Vector2(120,400)
+	level.player.facing=Vector2.DOWN
+	harness.advance.rpc("light_off")
+	if not await _reports(peers-1): return
+	level.player.flashlight_on=true
+	harness.advance.rpc("light_on")
+	if not await _reports(peers-1): return
+	for report: Dictionary in harness.reports.values():
+		_check(report.get("beam",false),"remote_flashlight_node_enabled")
+		if capture: _check(report.get("pixels",false),"remote_flashlight_illuminates_client_pixels")
 	# Deliberately omit snapshot pieces. Clients must keep old state and recover on the next complete sequence.
 	net.snapshot_clock=1000
 	net.snapshot_sequence+=1
@@ -130,14 +144,19 @@ func _host() -> void:
 	if not await _reports(peers-1): return
 	_check(net.actors[guest].role=="mechanic" and net.roster[guest]["role"]=="mechanic","round_role_lock_rejects_forgery")
 	_check(not "forged" in net.actors[guest].inventory,"client_cannot_grant_items")
-	# A corpse must release carried objective objects exactly once.
+	# A down releases every objective and supply once, offset from the prone sprite.
 	var before_death: int=level.pickups.size()
 	var body: CampPlayer=net.actors[guest]
 	var carried_before: int=body.inventory.size()+1
+	for kind in body.supplies: carried_before+=body.supplies[kind]
 	body.inventory.append("fuse")
-	body.set_status(CampPlayer.Status.DEAD)
-	body.set_status(CampPlayer.Status.DEAD)
-	_check(level.pickups.size()==before_death+carried_before and body.inventory.is_empty(),"death_releases_objectives_once")
+	body.set_status(CampPlayer.Status.DOWNED)
+	body.set_status(CampPlayer.Status.DOWNED)
+	_check(level.pickups.size()==before_death+carried_before and body.inventory.is_empty(),"down_releases_all_gear_once")
+	_check(level.pickups.slice(before_death).all(func(item): return item.position.distance_to(body.position)>=30),"down_loot_clear_of_body")
+	body.receive_hit()
+	body._physics_process(120)
+	_check(body.status==CampPlayer.Status.DOWNED,"down_survives_repeat_hits_and_time")
 	body.set_status(CampPlayer.Status.ALIVE)
 
 	_check(net.actors[guest].position.is_finite(),"nonfinite_input_rejected")
@@ -149,19 +168,30 @@ func _host() -> void:
 	harness.advance.rpc("down",{"guest":guest})
 	if not await _reports(peers-1): return
 	for report: Dictionary in harness.reports.values(): _check(report.get("downed",false),"downed_state_shared")
+	level.player.supplies["medkit"]=0
+	level.advance_revive(level.player,injured,true,10)
+	_check(injured.status==CampPlayer.Status.DOWNED and level.revive_progress==0,"revive_without_medkit_rejected")
+	level.player.pack("medkit")
 	Input.action_press("interact")
-	await create_timer(1.5).timeout
+	await create_timer(2.6).timeout
 	Input.action_release("interact")
 	_check(injured.status==CampPlayer.Status.ALIVE and level.player.supplies["medkit"]==0,"timed_host_revive_consumes_one_kit")
-	_check(injured.supplies["battery_pack"]==2,"revive_does_not_refresh_role_supplies")
-	for slot in range(ids.size()): net.actors[ids[slot]].position=Vector2(120+slot*16,400)
+	_check(injured.supplies["battery_pack"]==0,"revive_does_not_refresh_role_supplies")
+	for slot in range(ids.size()):
+		net.actors[ids[slot]].position=Vector2(120+slot*16,400)
+		net.actors[ids[slot]].pack("flare")
 	harness.advance.rpc("drop")
 	if not await _reports(peers-1): return
 	_check(level.pickups.size()>level.plan.loot.size(),"dropped_items_replicate_as_host_objects")
+	harness.advance.rpc("flare_dark")
+	if not await _reports(peers-1): return
 	harness.advance.rpc("flare")
 	if not await _reports(peers-1): return
 	_check(not get_nodes_in_group("flares").is_empty(),"accepted_flare_spawned_on_host")
-	for report: Dictionary in harness.reports.values(): _check(report.get("flare",false),"accepted_flare_visible_on_clients")
+	for report: Dictionary in harness.reports.values():
+		_check(report.get("flare",false),"accepted_flare_visible_on_clients")
+		_check(report.get("lamp",false),"replica_flare_has_active_light")
+		if capture: _check(report.get("pixels",false),"replica_flare_illuminates_client_pixels")
 	if selected_mode=="woods":
 		var bolt := HexBolt.new()
 		bolt.position=Vector2(300,400)
@@ -187,12 +217,15 @@ func _host() -> void:
 	harness.advance.rpc("ignite",{"guest":guest})
 	if not await _until(func(): return level.van.running,5): return
 	_check(level.van.start_actor==injured and injured.status==CampPlayer.Status.BOARDED,"remote_mechanic_ignites_and_boards")
+	# Leave one teammate down away from the van: departure must rescue them too.
+	level.player.position=Vector2(180,420)
+	level.player.invulnerability=0
+	level.player.receive_hit()
 	harness.advance.rpc("board")
-	net.action("interact")
 	if not await _reports(peers-1): return
-	_check(level.van.passengers.size()==peers,"all_survivors_board_shared_van")
+	_check(level.van.passengers.size()==peers-1,"living_survivors_board_while_teammate_downed")
 	if not await _until(func(): return level.finished,12): return
-	_check(level.won and net.actors.values().all(func(actor): return actor.status==CampPlayer.Status.ESCAPED),"shared_escape_results")
+	_check(level.won and net.actors.values().all(func(actor): return actor.status==CampPlayer.Status.ESCAPED),"van_escape_also_rescues_downed_teammate")
 	harness.advance.rpc("result")
 	if not await _reports(peers-1): return
 	for report: Dictionary in harness.reports.values(): _check(report.get("escaped",false),"client_escape_result_matches")
@@ -213,10 +246,12 @@ func _host() -> void:
 	if peers>2:
 		var departing: int=ids.back()
 		net.actors[departing].inventory.append("battery")
+		var dropped_count := 1
+		for kind in net.actors[departing].supplies: dropped_count+=int(net.actors[departing].supplies[kind])
 		var initial_items: int=net.world.pickups.size()
 		harness.advance.rpc("guest_leave",{"departing":departing})
 		if not await _until(func(): return not net.actors.has(departing),5): return
-		_check(net.world.pickups.size()==initial_items+1 and net.roster.size()==peers-1,"disconnect_drops_objective_and_removes_actor")
+		_check(net.world.pickups.size()==initial_items+dropped_count and net.roster.size()==peers-1,"disconnect_drops_objective_and_removes_actor")
 	harness.advance.rpc("host_loss")
 	await create_timer(0.3).timeout
 	net.leave("Host closed test camp.")
@@ -255,6 +290,25 @@ func _client() -> void:
 					RenderingServer.force_draw(true)
 					root.get_texture().get_image().save_png("res://artifacts/network/client_%s_%d_%d.png"%[selected_mode,peers,index])
 				harness.report.rpc_id(1,handled,{"host_moved":net.actors[1].position.x>125,"own_moved":net.world.player.position.y>410})
+			"light_off":
+				await _until(func(): return not net.actors[1].flashlight_on,5)
+				await create_timer(0.15).timeout
+				if capture: light_dark=await _light_image()
+				harness.report.rpc_id(1,handled,{})
+			"light_on":
+				await _until(func(): return net.actors[1].flashlight_on,5)
+				await create_timer(0.15).timeout
+				var beam: bool=net.actors[1].get_children().any(func(node): return node is PointLight2D and node.texture==CampLights.texture(true) and node.enabled)
+				var pixels := false
+				if capture:
+					var bright := await _light_image()
+					pixels=_brighter(bright,light_dark)
+					bright.save_png("res://artifacts/network/shared_flashlight_%s_%d_%d.png"%[selected_mode,peers,index])
+				harness.report.rpc_id(1,handled,{"beam":beam,"pixels":pixels})
+			"flare_dark":
+				await create_timer(0.15).timeout
+				if capture: light_dark=await _light_image()
+				harness.report.rpc_id(1,handled,{})
 			"packet_gap":
 				await _until(func(): return net.assembling_sequence>=harness.data["sequence"],5)
 				harness.report.rpc_id(1,handled,{"partial_rejected":net.last_snapshot<harness.data["sequence"]})
@@ -274,6 +328,10 @@ func _client() -> void:
 				harness.report.rpc_id(1,handled,{})
 			"down":
 				await _until(func(): return net.actors[harness.data["guest"]].status==CampPlayer.Status.DOWNED,5)
+				if capture:
+					await create_timer(0.1).timeout
+					var image := await _light_image()
+					image.save_png("res://artifacts/network/downed_gear_%s_%d_%d.png"%[selected_mode,peers,index])
 				harness.report.rpc_id(1,handled,{"downed":net.actors[harness.data["guest"]].status==CampPlayer.Status.DOWNED})
 			"drop":
 				net.action("select",0)
@@ -285,7 +343,14 @@ func _client() -> void:
 			"flare":
 				net.action("flare")
 				await _until(func(): return not get_nodes_in_group("flares").is_empty(),5)
-				harness.report.rpc_id(1,handled,{"flare":not get_nodes_in_group("flares").is_empty()})
+				await create_timer(0.15).timeout
+				var lamp := get_nodes_in_group("flares").any(func(node): return node.get_children().any(func(child): return child is PointLight2D and child.enabled))
+				var pixels := false
+				if capture:
+					var bright := await _light_image()
+					pixels=_brighter(bright,light_dark)
+					bright.save_png("res://artifacts/network/shared_flare_%s_%d_%d.png"%[selected_mode,peers,index])
+				harness.report.rpc_id(1,handled,{"flare":not get_nodes_in_group("flares").is_empty(),"lamp":lamp,"pixels":pixels})
 			"hazards":
 				await _until(func(): return get_nodes_in_group("hazards").size()>=2,5)
 				harness.report.rpc_id(1,handled,{"hazards":get_nodes_in_group("hazards").size()>=2 and get_nodes_in_group("hazards").all(func(node): return not node.is_physics_processing())})
@@ -337,3 +402,26 @@ func _finish() -> void:
 	print(JSON.stringify({"event":"test_result","suite":"network_%s_%s_%d"%[side,selected_mode,peers],"checks":checks,"failures":failures,"snapshot_bytes":net.latest_snapshot_bytes,"largest_snapshot_payload":net.largest_snapshot_payload}))
 	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures==0 else 1)
+
+
+func _light_image() -> Image:
+	await process_frame
+	RenderingServer.force_draw(true)
+	return root.get_texture().get_image()
+
+
+func _brighter(bright: Image, dark: Image) -> bool:
+	var gain := 0.0
+	# Compare terrain, excluding HUD, survivor sprites and the flare's own sparks.
+	var sources: Array=get_nodes_in_group("survivors")
+	sources.append_array(get_nodes_in_group("flares"))
+	var centers: Array[Vector2]=[]
+	for source: Node2D in sources: centers.append(root.get_canvas_transform()*source.global_position)
+	for y in range(40,mini(145,bright.get_height())):
+		for x in range(bright.get_width()):
+			var point := Vector2(x,y)
+			if centers.any(func(center): return center.distance_to(point)<30): continue
+			var a := bright.get_pixel(x,y)
+			var b := dark.get_pixel(x,y)
+			gain+=maxf(0,(a.r+a.g+a.b)-(b.r+b.g+b.b))
+	return gain>20

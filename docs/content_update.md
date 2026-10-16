@@ -79,6 +79,16 @@ with the existing proximity/attenuation limits; bespoke calls are not claimed.
 The deeper catalog powers (pipe networks, authored rail-signal activation,
 flare-feeding glow, junction threads) are not implemented by these first versions.
 
+## Illustrated player guide
+
+The [README monster guide](../README.md#know-what-is-following-you) now lists
+all 13 cryptid species and the stalker, with habitat, visible tells and responses.
+Its [new monster close-ups](../README.md#new-monster-close-ups) show all seven
+new species, and the [forest-site guide](../README.md#use-the-forest-sites)
+explains all nine major regions, approximate directions and optional rewards.
+The [biome gallery](../README.md#new-optional-biomes) embeds all six new region
+screenshots directly in the README.
+
 ## Rendered evidence and limits
 
 ![Selection with animated outfit preview](evidence/content_expansion/survivor_selection.png)

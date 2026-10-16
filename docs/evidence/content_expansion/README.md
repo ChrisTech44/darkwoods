@@ -25,3 +25,12 @@ play or balance. Dedicated visibility/navigation regressions pass separately.
 
 macOS arm64 / Godot 4.7.2 only. No Windows/Linux/export/network/voice or microphone
 permission acceptance is implied. See [implemented rules](../../content_update.md).
+
+
+The follow-up README guide correction adds `monster_*.png`: seven native-zoom
+close-ups of the new species, captured with AI disabled, brightened ambient,
+sight masking disabled and the camper hidden with its local lights disabled for an unobstructed monster portrait.
+`guide_graphical.log` records the refreshed graphical tour: **316 assertions,
+zero failures, 15 PNG captures**. The original 309-assertion content run above
+remains preserved separately. The close-ups are inspection fixtures, not combat
+or human-play evidence. All seven were opened and visually inspected.

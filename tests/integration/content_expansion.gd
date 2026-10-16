@@ -208,6 +208,31 @@ func _tour() -> void:
 				enemy.position=zone["position"]+Vector2(50,15)
 		await _frames(3)
 		await _snapshot("biome_"+zone["kind"])
+	# Remove local light overexposure for the brightened portrait inspection.
+	for child in level.get_children():
+		if child.get_script()==load("res://scripts/ui/night_overlay.gd"):
+			child.flashlight.enabled=false
+			child.nearby_glow.enabled=false
+	level.player.hide()
+	# Dedicated guide portraits: original in-engine creatures at native gameplay zoom.
+	var camera: Camera2D = level.player.get_node("Camera2D")
+	camera.zoom=Vector2.ONE
+	camera.offset=Vector2(0,-32)
+	level.player.position=level.plan.woods.center(Vector2i(4,4))+Vector2(0,28)
+	level.player.facing=Vector2.UP
+	for species in ["switchback_hound","boiler_saint","bramble_seamstress","shutter_wraith","last_car_conductor","stoneback_ram","candle_grazer"]:
+		var portrait: CampCryptid=load("res://scenes/actors/cryptid.tscn").instantiate()
+		portrait.species=species
+		portrait.enabled=false
+		portrait.position=level.player.position+Vector2(0,-42)
+		level.world_objects.add_child(portrait)
+		camera.reset_smoothing()
+		await _frames(5)
+		await _snapshot("monster_"+species)
+		portrait.queue_free()
+		await _frames(1)
+	camera.offset=Vector2.ZERO
+	level.player.show()
 func _frames(count: int) -> void:
 	for i in range(count): await process_frame
 func _tap(code: Key) -> void:

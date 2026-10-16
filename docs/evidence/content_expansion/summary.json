@@ -1287,5 +1287,14 @@
     "checks": 309,
     "failures": 0,
     "log": "docs/evidence/content_expansion/graphical_content.log"
+  },
+  "guide_update": {
+    "command": "godot --path . --audio-driver Dummy --fixed-fps 60 --script res://tests/integration/content_expansion.gd -- --capture",
+    "exit_code": 0,
+    "checks": 316,
+    "failures": 0,
+    "screenshots": 15,
+    "log": "docs/evidence/content_expansion/guide_graphical.log",
+    "purpose": "Seven additional native-zoom monster portraits for the README player guide; no gameplay rules changed."
   }
 }

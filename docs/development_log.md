@@ -1,5 +1,36 @@
 # Development log
 
+## 2026-10-16 — Complete the README player guide and illustrated content gallery
+
+Corrected the incomplete player-facing documentation from the prior content
+increment. The README had linked to a separate content page while its main
+monster table/site guide/gallery still omitted the new additions and retained a
+six-species claim. The main guide now covers the stalker and all 13 cryptid
+species, including habitat, warning/attack timings, light/flare responses,
+roaming versus territorial pursuit and counterplay. All nine major regions now
+have directions, landmarks, reward/risk and approach explanations. Added exact
+six-role bonuses, rare consumables, belt-full behavior, and accurate replay flow.
+Updated the current verification summary instead of presenting the older full
+graphical baseline as the latest content report.
+
+Embedded all six existing new-biome screenshots directly into the README,
+alongside the belt capture. Extended only the graphical art tour to capture
+seven new monster close-ups at native gameplay zoom. Bright ambient, disabled
+AI/sight masking, hidden camper and disabled player lights are explicit inspection fixtures;
+no combat or human-play evidence is claimed. All seven unedited viewport PNGs
+were opened and visually inspected. The game rules are unchanged.
+
+Verification: Godot 4.7.2 macOS arm64 headless import and five-frame startup
+exited 0 without errors/warnings. Graphical `content_expansion.gd -- --capture`
+with Dummy audio exited 0: **316 assertions, zero failures, 15 captures**.
+Documentation links/image paths and local heading anchors were checked, guide
+rules compared with the implemented roster/AI/hazards/layout/items, and
+`git diff --check` passed. Preserved [guide run](evidence/content_expansion/guide_graphical.log)
+and appended the [report](evidence/content_expansion/summary.json); prior execution
+evidence remains intact. Human balance and online/cross-platform gates remain
+unverified. Fetch before publication; publish this documentation/capture increment
+to the authorized origin/main and confirm the remote commit.
+
 ## 2026-10-16 — Offline survivors, item belt and six landmark biomes
 
 Implemented the user's priority amendment: substantial player/monster/biome

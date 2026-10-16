@@ -21,6 +21,18 @@ preview, saved choice, Random Survivor and Settings. The Jock has 5s stamina;
 Grease Monkey starts the engine in 1.5s; Scout saves light; First-Aid Kid rescues
 faster; Quiet Kid reduces sprint hearing; Overprepared starts with extra supplies.
 
+| Survivor | Advantage | Survival tip |
+| --- | --- | --- |
+| **The Jock** | 5s sprint stamina instead of 4s; unchanged speed/recovery | Save the longer burst for reaching cover. |
+| **Grease Monkey** | 1.5s engine ignition instead of 2s; +1 spare battery | Bring all parts home before starting; departure still takes 8s. |
+| **The Scout** | Woods light drain 0.8 charge/s instead of 1; +1 ration | Stretch batteries on long trips; beam range stays unchanged. |
+| **First-Aid Kid** | Ordinary teammate revive 2.25s instead of 3s; +1 medkit and +1 flare | Extra flare helps solo; the revive bonus needs a teammate. No self-revive. |
+| **The Quiet Kid** | Sprint AI hearing reach ×0.75 after weather | Walk after breaking sight. Interactions and flare noise keep their normal reach. |
+| **Overprepared** | +1 flare, +1 spare battery and +1 ration | Use the extra margin to explore, then keep room for rare tools. |
+
+Your choice is remembered. **Random Survivor** reveals a role before confirmation;
+it is independent of **Random Night**. All roles can collect every part and escape.
+
 **1–6 or keypad 1–6** selects one of six belt slots. **V** uses the held supply;
 **G** drops its whole stack; **E** picks it back up. Each supply type takes one
 slot, with same-type items stacking. Vehicle components and cutters are carried
@@ -96,10 +108,9 @@ Set `GODOT_BIN` to another executable if needed. Use
 | **Woods Expedition** | Battery and key in camp location pools; fuel and two extra parts in themed-area caches. | The stalker plus 24 cryptids, a seeded trail maze, survival supplies, weather, and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
-The pack lists the current requirements and location clues. The woods contains
-three larger areas with a required cache in each: **Abandoned Village (northwest)**,
-**Witch's Bog (east)**, and **Old Graveyard (south)**. Six smaller ruined landmarks remain along
-the trails for exploration.
+The pack lists the current requirements and location clues. The woods contains nine major regions. Three hold the required caches: **Abandoned Village (northwest)**,
+**Witch's Bog (east)**, and **Old Graveyard (south)**. The mill, orchard, observatory, rail yard, quarry
+and chapel are optional; six smaller ruined landmarks also remain along the trails.
 
 ## How to escape
 
@@ -154,6 +165,9 @@ sight; losing line of sight helps break pursuit.
 | **Flare — Q** | Burns for nine seconds. Repels nearby stalker/cryptids with sight to it except moths and candle grazers; moths follow it and grazers consume it. |
 | **Rations — C** | Restore full stamina and clear exhaustion. |
 | **Medkit** | Automatically consumed on a completed teammate revive, shortening the hold from three seconds to 1.2 seconds. It does not provide a solo self-revive. |
+| **Noise tin — select, V** | Drops a lure ahead of you. Rattles after 1.5s, 3.5s and 5.5s with 480px hearing reach. Leave before investigators arrive. |
+| **Salt ward — select, V** | Protects from physical hits for 4s. Does not heal or remove hexes. |
+| **Glow moss — select, V** | Restores 35 light charge, capped at 90, and removes your current hex. |
 | **Fog** | Shortens enemy sight and the woods flashlight beam. |
 | **Rain** | Reduces enemy hearing. |
 
@@ -178,9 +192,32 @@ being downed.
 | **Witch** | Keeps casting distance, shows a wind-up, then fires a fixed-trajectory hex bolt. | Sidestep the bolt or put a wall between you. A hit briefly slows movement and drains stamina. |
 | **Briar revenant** | Senses movement, with close-range detection even if you stand still. | Freeze at a distance or break sight; do not wait for it to get close. |
 
-Each expedition spawns **24 cryptids across all six species alongside the stalker**.
-The stalker starts nearer the camp routes; cryptids roam 16-point trail circuits around all sides of camp and
-visit the objective areas. Enemies lead visible moving targets briefly and sweep
+Each expedition spawns **24 cryptids across 13 species, plus the stalker**.
+The stalker starts on camp routes. Roaming cryptids follow trail circuits and
+investigate sensed activity; six landmark guardians stay within their home zones.
+The new threats below are playable first versions of the larger design catalog.
+
+| New threat | Where and how it hunts | Tell and useful response |
+| --- | --- | --- |
+| **Switchback Hound** | Roams forest trails; hears up to 320px before rain/Quiet Kid modifiers and searches last sensed areas for 12s. | A **CHARGE** cue, line and target ring warn for 1.2s before a 0.55s straight dash. Sidestep after it commits, break sight and walk away. |
+| **Boiler Saint** | Territorial guardian of the **Flooded Mill**. Places a steam patch at your observed position. | A **DANGER** ring warns for 1.2s. Leave the 23px disk; the patch lasts 2.2s and briefly hexes/slows rather than dealing direct damage. |
+| **Bramble Seamstress** | Territorial guardian of the **Bramble Orchard**. Marks a temporary thorn patch after seeing you. | Step out of the warning ring or **walk** through the active thorns. Sprinting through applies a brief hex/slow; the patch expires after 2.2s. |
+| **Shutter Wraith** | Territorial guardian of the **Starless Observatory**. Moves faster when not held in your visible flashlight beam. | Aim directly at it within 145px to stop its chase movement, then back away. It can still hit at contact range; do not approach while holding the beam. |
+| **Last-Car Conductor** | Territorial guardian of the **Rail Yard**. Marks an inspection patch at your observed position. | Leave its **DANGER** ring during the 1.2s warning. The temporary patch slows/hexes; use the other track lane or retreat out of the yard. |
+| **Stoneback Ram** | Territorial guardian of the **White Stone Quarry**. Commits to a straight charge toward the warned position. | Sidestep the **CHARGE** line during its 1.2s tell. The 0.55s dash collides with walls; reposition during the cooldown. |
+| **Candle Grazer** | Territorial guardian of the **Drowned Chapel**. Sees lit survivors, detects dark survivors at close range, and follows visible flares. | Switch off your beam at a distance or leave a flare and move away. It **consumes flares on contact** and is not repelled by them. |
+
+**Hunters versus zones:** Hounds can follow sensed activity along ordinary trails;
+landmark guardians reject survivor targets and noises outside their home bounds.
+Leave the landmark, break sight and stop sprinting to reduce pursuit. Required
+woods caches remain in the village/bog/graveyard; the six new zones are optional.
+Every guardian can still attack on contact. Steam, thorns and inspection patches
+expire, affect each survivor once per patch and never block an exit or change
+collision. Each patch hit applies a 1.2s hex (movement at 60% speed) and drains
+1.5 stamina; walking avoids the Seamstress's thorns. New monsters currently reuse an existing nearby revenant call; their
+appearance and visible cues identify them more reliably than their sound.
+
+Enemies lead visible moving targets briefly and sweep
 reachable points around their last sensed location after losing sight.
 Creature calls and footsteps complement the visual threat cues. A heartbeat fades
 in when the stalker or a cryptid sees you, then fades away after pursuit.
@@ -211,6 +248,19 @@ Stand close and press **E**, with a clear path to the interaction point.
 | **Abandoned Village** | Enter two furnished huts and search the required cache. Ring the square's bell to draw nearby enemies toward it, then slip away; the bell has a cooldown. The well stash awards two flares, a battery, and food once. |
 | **Witch's Bog** | Search the ritual stash. The cauldron restores full flashlight charge once, but hexes your movement briefly and makes noise. |
 | **Old Graveyard** | Search the repair cache among the graves. The crypt yields two flares once, with a loud stone-moving noise. |
+| **Flooded Mill (west)** | Follow shallow channels and plank crossings around the waterwheel and gauge boiler. Its rare-tool altar is optional; watch the Boiler Saint's marked steam disk. |
+| **Bramble Orchard (southwest)** | Fruit rows, trellises and vines mark the clearing. Search the rare-tool altar, then walk around the Seamstress's thorn patches or leave by another approach. |
+| **Starless Observatory (northeast)** | A slit dome, telescope and radial tiled court identify the site. Hold the Wraith in your beam while retreating from the optional altar. |
+| **Last-Car Rail Yard (southeast)** | Paired tracks, sleepers, switches, signal and scrap carts provide orientation. Cross away from the Conductor's inspection marker; the altar is optional. |
+| **White Stone Quarry (far northwest)** | Stepped stone outlines, ladder markings, boulder clusters and survey rings surround the altar. Keep sideways space to dodge the Ram's locked charge. |
+| **Drowned Chapel (deep south)** | Broken column bases, candle pews and a cross mosaic mark the court. Search the altar cautiously; flares attract its Candle Grazer instead of driving it away. |
+
+The six new regions each offer **one rare tool per round**. Searching an altar
+makes a 650px noise stimulus, so plan your exit first. If the belt is full and
+the reward needs a new supply-type slot, nothing is consumed: drop a stack with
+**G** and try again. These pockets have multiple entrances and open internal
+routes. Their channels, floor markings and decorative props are walkable; they
+do not introduce swimming, climbing, impassable machinery or new required parts.
 
 Searching expedition items makes noise. Treat the stashes as preparation for the
 next encounter, and plan a return route rather than spending every flare at once.
@@ -222,8 +272,8 @@ to reproduce the camp, trails, item recipe, weather, and
 encounter roster. The seed is also displayed in field notes and results.
 After a round:
 
-- **Try Another Night** selects a fresh seed and camp in either mode.
-- **Retry This Seed** starts over with the same layout and fresh items/supplies.
+- **Try Another Night** returns to the menu. Choose/confirm a survivor and start a fresh random night in either mode.
+- **Retry This Seed** keeps your survivor and seed, with the same layout and fresh items/supplies.
 - **Main Menu** returns to mode selection.
 
 Both modes vary building positions and surrounding trees within reserved camp
@@ -234,8 +284,9 @@ and main trails stay separate. Retrying a seed reproduces the camp too.
 
 ## Screenshots
 
-Actual Godot viewport captures. The camp images show Quick Camp; the woods images
-include current region/woods captures. Region overviews deliberately raise ambient
+Actual Godot viewport captures. The original camp/forest screenshots below are
+from the earlier verified baseline; the new-monster and optional-biome galleries
+show the content update. The camp images use Quick Camp. Region overviews deliberately raise ambient
 light and disable the sight mask to inspect entrances; normal play keeps both
 night lighting and sight restrictions. Close creature shots are inspection fixtures with
 AI disabled and the camera offset for composition. The escape result comes from
@@ -261,19 +312,64 @@ a complete automated expedition with all enemies active.
 | --- | --- | --- |
 | ![Village huts, bell frame and well](docs/evidence/surround_forest/surround_village.png) | ![Glowing cauldron in a marsh clearing](docs/evidence/surround_forest/surround_bog.png) | ![Crypt and crooked gravestones](docs/evidence/surround_forest/surround_graveyard.png) |
 
+### New monster close-ups
+
+These are dedicated engine captures of the seven new species, with AI disabled
+and brightened lighting for inspection. They show the implemented sprites rather
+than concept art; the monster table above explains their current powers.
+
+| Switchback Hound | Boiler Saint | Bramble Seamstress |
+| --- | --- | --- |
+| ![Switchback Hound with exposed teeth and long clawed legs](docs/evidence/content_expansion/monster_switchback_hound.png) | ![Boiler Saint with brass body gauge and pipe equipment](docs/evidence/content_expansion/monster_boiler_saint.png) | ![Bramble Seamstress with twig crown and long needle](docs/evidence/content_expansion/monster_bramble_seamstress.png) |
+
+| Shutter Wraith | Last-Car Conductor | Stoneback Ram |
+| --- | --- | --- |
+| ![Shutter Wraith with lens face and layered shroud](docs/evidence/content_expansion/monster_shutter_wraith.png) | ![Last-Car Conductor with uniform cap and hand lamp](docs/evidence/content_expansion/monster_last_car_conductor.png) | ![Stoneback Ram with stone plates and curved horns](docs/evidence/content_expansion/monster_stoneback_ram.png) |
+
+![Candle Grazer with burning candles along its back](docs/evidence/content_expansion/monster_candle_grazer.png)
+
+### New optional biomes
+
+The following captures show each new region and its local guardian. Lighting is
+brightened and sight masking disabled for the inspection tour; normal play keeps
+night lighting and occlusion. The forest-site table above covers rewards, risks
+and how to navigate each site.
+
+| Flooded Mill — waterwheel, boiler and plank crossings | Bramble Orchard — fruit rows and trellises |
+| --- | --- |
+| ![Flooded Mill with waterwheel, gauge boiler, channels and bridges](docs/evidence/content_expansion/biome_mill.png) | ![Bramble Orchard with trellis, fruit trees and vine rows](docs/evidence/content_expansion/biome_orchard.png) |
+
+| Starless Observatory — dome and telescope | Last-Car Rail Yard — tracks and switches |
+| --- | --- |
+| ![Observatory dome and telescope above a radial tiled court](docs/evidence/content_expansion/biome_observatory.png) | ![Rail Yard with paired tracks, sleepers, switch and signal](docs/evidence/content_expansion/biome_rail.png) |
+
+| White Stone Quarry — terraces and survey rings | Drowned Chapel — columns and cross mosaic |
+| --- | --- |
+| ![Quarry with stepped terrace markings, ladders and stone clusters](docs/evidence/content_expansion/biome_quarry.png) | ![Chapel court with broken columns, candle pews and a cross mosaic](docs/evidence/content_expansion/biome_chapel.png) |
+
+### Supply belt
+
+![All six supply-type slots with a noise tin selected in ordinary night lighting](docs/evidence/content_expansion/item_belt.png)
+
+The selected slot is highlighted and its supply appears in the survivor's hand.
+Use **1–6/keypad** to select, **V** to use, **G** to drop the stack and **E** to
+recover units. Vehicle components and cutters remain separate from this limit.
+
 | Loading the next night | Successful extraction |
 | --- | --- |
 | ![Forest loading card before preparing the next night](docs/evidence/woods_replay/woods_loading.png) | ![Successful extraction after a complete active woods expedition](docs/evidence/surround_forest/woods_playthrough_win.png) |
 
 ## Development and verification
 
-The current implementation is **M1 plus the requested surrounding forest, sight,
-audio and replayability expansions**. Latest full graphical verification passed
-**77 steps** with zero engine errors/warnings, including import/startup, every
-GDScript parse, complete active camp/woods rounds, native audio, twelve-seed
-navigation stress and region/visibility checks. See the
-[current report](docs/evidence/surround_forest/summary.json) and
-[evidence notes](docs/evidence/surround_forest/README.md).
+The current implementation includes offline survivor selection, six roles,
+the supply belt, nine major forest regions and 13 cryptid species. The latest
+full headless verification passed **69 steps** with zero errors/warnings;
+focused final content checks passed **301 assertions**. The expanded graphical
+guide tour passed **316 assertions**, including 15 image captures. Graphical content captures
+and checks are recorded in the [content report](docs/evidence/content_expansion/summary.json)
+and [evidence notes](docs/evidence/content_expansion/README.md). The earlier full
+graphical forest baseline remains preserved in the
+[surrounding-forest report](docs/evidence/surround_forest/summary.json).
 
 ```sh
 python3 tools/verify.py             # Import, parse, and headless gameplay checks

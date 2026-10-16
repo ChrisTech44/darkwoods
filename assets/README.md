@@ -49,3 +49,7 @@ and four directions. It uses the same deterministic standard-library painter.
 The expanded biome floors, machinery, trellises, rail switches, quarry terraces
 and chapel mosaics are native GDScript drawing in `forest_site.gd`. No external
 visual assets or new dependencies are used.
+
+The denser roaming update adds three original 64px directional sheets in
+`build_content_art.py`: tall-eared Relay Jackal, patterned Ration Moth and iris-faced
+Lens Eater. No external assets or dependencies were added.

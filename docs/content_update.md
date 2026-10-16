@@ -5,6 +5,21 @@ seven additional cryptid species and a six-slot supply belt before multiplayer,
 as requested. It is an offline prototype; full human balance acceptance,
 networking, synchronized audio and proximity voice remain pending.
 
+## Rendering and denser roaming update
+
+Survivors now retain their texture for the actor lifetime instead of loading a
+temporary texture during drawing. All six roles pass an actual rendered-pixel
+check, addressing the white-block bug. The belt keeps selection keys and names
+but removes trailing counts; stacks and the six-type limit are unchanged.
+
+The population is now 48 cryptids plus the stalker, with 24 additional seeded
+roamers around camp approaches (outside camp/major landmark footprints).
+Relay Jackals flank only visible targets and search longer; Ration Moths hear
+ration use at its original location; Lens Eaters telegraph a capped light-charge
+attack that you can avoid by turning away or using cover. These encounters are
+not biome-bound. Flares interrupt pending charges, and Maintenance offers a
+three-flare preparation stash. Human difficulty tuning remains pending.
+
 ## Survivors and belt
 
 The menu opens selection before loading. Each card shows its exact advantage
@@ -41,7 +56,7 @@ holding E at a downed teammate, rather than V. The hand displays the held supply
 
 ## Regions and encounters
 
-![Current Night 42 forest atlas with nine labeled regions, central camp and cryptid spawns](evidence/content_expansion/full_map.png)
+![Current Night 42 forest atlas with nine labeled regions, central camp and cryptid spawns](evidence/denser_forest/full_map.png)
 
 The full-map example is generated from the current Night 42 world recipe.
 Numbers identify all nine regions; C marks camp and coral dots show cryptid
@@ -77,7 +92,7 @@ and search longer (12s). Sight/noise triggers pursuit; their locked straight
 charge has a visible 1.2s warning and collides with walls. Turn aside during the
 tell and walk after breaking sight. There is no hidden position tracking.
 
-The population remains **24 cryptids plus one stalker**, across **13 cryptid
+The population remains **48 cryptids plus one stalker**, across **16 cryptid
 species**. The six prior species retain their core behaviors and receive visual
 trim/detail; the stalker receives coat seams and belt detail. Original directional
 pixel sheets add silhouettes, equipment, fur, stone plates, brass gauges, lenses,
@@ -99,13 +114,13 @@ screenshots directly in the README.
 ## Rendered evidence and limits
 
 ![Selection with animated outfit preview](evidence/content_expansion/survivor_selection.png)
-![Six supply-type belt in normal night lighting](evidence/content_expansion/item_belt.png)
-![Flooded Mill inspection](evidence/content_expansion/biome_mill.png)
-![Observatory inspection](evidence/content_expansion/biome_observatory.png)
-![Orchard inspection](evidence/content_expansion/biome_orchard.png)
-![Rail Yard inspection](evidence/content_expansion/biome_rail.png)
-![Quarry inspection](evidence/content_expansion/biome_quarry.png)
-![Chapel inspection](evidence/content_expansion/biome_chapel.png)
+![Six supply-type belt in normal night lighting](evidence/denser_forest/item_belt.png)
+![Flooded Mill inspection](evidence/denser_forest/biome_mill.png)
+![Observatory inspection](evidence/denser_forest/biome_observatory.png)
+![Orchard inspection](evidence/denser_forest/biome_orchard.png)
+![Rail Yard inspection](evidence/denser_forest/biome_rail.png)
+![Quarry inspection](evidence/denser_forest/biome_quarry.png)
+![Chapel inspection](evidence/denser_forest/biome_chapel.png)
 
 These are unedited engine viewport captures from `content_expansion.gd`.
 The biome tour disables sight masking, brightens ambient light and positions

@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"assertion","name":"retained_sheet_jock","passed":true}
+{"event":"assertion","name":"actual_textured_survivor_jock","passed":true}
+{"event":"assertion","name":"retained_sheet_mechanic","passed":true}
+{"event":"assertion","name":"actual_textured_survivor_mechanic","passed":true}
+{"event":"assertion","name":"retained_sheet_scout","passed":true}
+{"event":"assertion","name":"actual_textured_survivor_scout","passed":true}
+{"event":"assertion","name":"retained_sheet_medic","passed":true}
+{"event":"assertion","name":"actual_textured_survivor_medic","passed":true}
+{"event":"assertion","name":"retained_sheet_quiet","passed":true}
+{"event":"assertion","name":"actual_textured_survivor_quiet","passed":true}
+{"event":"assertion","name":"retained_sheet_quartermaster","passed":true}
+{"event":"assertion","name":"actual_textured_survivor_quartermaster","passed":true}
+{"event":"assertion","name":"belt_has_no_trailing_count","passed":true}
+{"checks":13,"event":"test_result","failures":0,"suite":"player_render"}

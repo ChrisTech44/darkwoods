@@ -160,5 +160,5 @@ func update_belt(actor: CampPlayer) -> void:
 	var short := {"flare":"FLARE", "battery_pack":"CELL", "rations":"FOOD", "medkit":"MEDKIT", "noise_tin":"TIN", "salt_ward":"SALT", "glow_moss":"MOSS"}
 	for index in range(6):
 		var kind := actor.belt[index]
-		belt_labels[index].text = "%s%d %s %s" % [">" if actor.selected_slot == index else "", index+1, short.get(kind, "--"), str(actor.supplies.get(kind, 0)) if not kind.is_empty() else ""]
+		belt_labels[index].text = "%s%d %s" % [">" if actor.selected_slot == index else "", index+1, short.get(kind, "--")]
 		belt_labels[index].modulate = Color("ffe3a3") if actor.selected_slot == index else Color("a0b69e")

@@ -34,7 +34,7 @@ class Overview extends Control:
 		var camp_at: Vector2 = origin+(camp.get_center()-WoodsLayout.ORIGIN)*scale
 		draw_string(ThemeDB.fallback_font,camp_at+Vector2(-3,3),"C",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("17261c"))
 		draw_string(ThemeDB.fallback_font,Vector2(8,12),"FOREST ATLAS / NIGHT %d / 9,600 x 9,408" % plan.seed_value,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("e4d7ad"))
-		draw_string(ThemeDB.fallback_font,Vector2(8,23),"9 REGIONS / 24 CRYPTIDS + CAMP STALKER / NORTH UP",HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("9eae96"))
+		draw_string(ThemeDB.fallback_font,Vector2(8,23),"9 REGIONS / %d CRYPTIDS + CAMP STALKER / NORTH UP" % plan.encounters.size(),HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("9eae96"))
 		var labels := [
 			[7,"8 QUARRY","STONEBACK RAM",Vector2(4,42)],
 			[0,"1 VILLAGE","REQUIRED CACHE",Vector2(4,78)],
@@ -66,7 +66,7 @@ func _run() -> void:
 		var plan := RoundPlan.new()
 		plan.generate(value,"woods")
 		_check(plan.woods.links.size() == 2410 and plan.woods.distances_from(WoodsLayout.ENTRY).size() == 2410,"all_forest_cells_connected_%d"%value)
-		_check(plan.encounters.size() == 24,"twenty_four_surrounding_creatures_%d"%value)
+		_check(plan.encounters.size() == RoundPlan.CRYPTID_COUNT,"twenty_four_surrounding_creatures_%d"%value)
 		var sides := {}
 		for enemy in plan.encounters:
 			var offset: Vector2 = enemy["position"]-CampMap.CAMP_BOUNDS.get_center()

@@ -35,7 +35,7 @@ func _run() -> void:
 	await process_frame
 	await _wait_world()
 	_check(level.plan.seed_value == 42 and level.plan.woods.signature() == signature, "retry_preserves_seed_and_maze")
-	_check(get_nodes_in_group("survivors").size() == 1 and get_nodes_in_group("cryptids").size() == 24 and get_nodes_in_group("flares").is_empty() and get_nodes_in_group("hazards").is_empty(), "retry_frees_old_actors_and_flares")
+	_check(get_nodes_in_group("survivors").size() == 1 and get_nodes_in_group("cryptids").size() == RoundPlan.CRYPTID_COUNT and get_nodes_in_group("flares").is_empty() and get_nodes_in_group("hazards").is_empty(), "retry_frees_old_actors_and_flares")
 	level.restart_round()
 	await _frames(4)
 	current_scene.get_node("Menu/Play").pressed.emit()
@@ -81,12 +81,12 @@ func _seed_checks() -> void:
 		for kind in a.required:
 			_check(counts[kind] == 1, "seed_%d_one_%s" % [seed_value, kind])
 		_check(locked == 3 and counts["boltcutters"] == 1 and counts["battery_pack"] == 15, "seed_%d_cache_tools_and_supplies" % seed_value)
-		_check(a.encounters.size() == 24 and a.encounters[0]["species"] == "vampire" and a.encounters[1]["species"] == "witch" and a.encounters[2]["species"] != a.encounters[3]["species"], "seed_%d_twenty_four_cryptids" % seed_value)
+		_check(a.encounters.size() == RoundPlan.CRYPTID_COUNT and a.encounters[0]["species"] == "vampire" and a.encounters[1]["species"] == "witch" and a.encounters[2]["species"] != a.encounters[3]["species"], "seed_%d_twenty_four_cryptids" % seed_value)
 		_check(a.woods.zones.size() == 9 and a.woods.zones[0]["bounds"].size == Vector2(960,576), "seed_%d_nine_expanded_sites" % seed_value)
 		for encounter in a.encounters:
 			found_species[encounter["species"]] = true
 		found_weather[a.weather] = true
-	_check(found_species.size() == 13 and found_weather.size() == 3, "seeds_vary_all_creatures_and_weather")
+	_check(found_species.size() == 16 and found_weather.size() == 3, "seeds_vary_all_creatures_and_weather")
 
 
 func _wait_world() -> void:
@@ -104,12 +104,12 @@ func _wait_world() -> void:
 
 
 func _navigation_checks() -> void:
-	_check(get_nodes_in_group("cryptids").size() == 24 and get_nodes_in_group("killers").size() == 25, "night_%d_twenty_five_enemies" % level.plan.seed_value)
+	_check(get_nodes_in_group("cryptids").size() == RoundPlan.CRYPTID_COUNT and get_nodes_in_group("killers").size() == RoundPlan.CRYPTID_COUNT+1, "night_%d_twenty_five_enemies" % level.plan.seed_value)
 	for enemy: CampKiller in get_nodes_in_group("killers"):
 		var sight: float = 150
 		var hearing: float = 220
 		if enemy is CampCryptid:
-			sight = {"werewolf": 125.0, "bigfoot": 95.0, "lantern_moth": 220.0, "vampire":165.0, "witch":190.0, "briar_revenant":155.0}.get(enemy.species,190.0)
+			sight = {"werewolf": 125.0, "bigfoot": 95.0, "lantern_moth": 220.0, "vampire":165.0, "witch":190.0, "briar_revenant":155.0,"ration_moth":70.0}.get(enemy.species,190.0)
 			hearing = {"werewolf": 210.0, "bigfoot": 300.0, "lantern_moth": 80.0, "vampire":190.0, "witch":210.0, "briar_revenant":160.0}.get(enemy.species,320.0 if enemy.species=="switchback_hound" else 220.0)
 		if level.plan.weather == "fog":
 			sight *= 0.72

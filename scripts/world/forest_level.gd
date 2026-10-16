@@ -418,6 +418,8 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 			return false
 		actor.stamina = actor.config.stamina_max
 		actor.exhausted = false
+		for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
+			if enemy.species == "ration_moth": enemy.hear_stimulus(actor.global_position,600)
 	elif kind == "noise_tin":
 		var lure := NoiseLure.new()
 		var target := actor.global_position + actor.facing * 52

@@ -35,7 +35,7 @@ it is independent of **Random Night**. All roles can collect every part and esca
 
 **1–6 or keypad 1–6** selects one of six belt slots. **V** uses the held supply;
 **G** drops its whole stack; **E** picks it back up. Each supply type takes one
-slot, with same-type items stacking. Vehicle components and cutters are carried
+slot, with same-type items stacking. Slots show the key and name without trailing quantity numbers; Tab lists the main supply counts. Vehicle components and cutters are carried
 separately. Q/R/C still use flares, batteries and food. Medkits help while holding
 E to revive a teammate; they cannot self-revive.
 
@@ -60,7 +60,7 @@ ten furnished camp buildings. Four exits lead north, east, south and west.
 Trails are **128 pixels wide**, and the village, bog and graveyard have larger
 clearings and clear approach aprons. Roofs cut away inside buildings.
 
-In Woods Expedition, **24 cryptids across 13 species, plus the stalker** patrol
+In Woods Expedition, **48 cryptids across 16 species, plus the stalker** patrol
 the inner forest and deeper woods. A true sight mask hides occluded terrain and
 creatures; nearby footsteps and calls provide audible warnings without revealing
 the whole maze. The local field map follows you, records explored trails and
@@ -105,7 +105,7 @@ Set `GODOT_BIN` to another executable if needed. Use
 | Mode | Repair objective | Threats and exploration |
 | --- | --- | --- |
 | **Quick Camp** | Battery in the Fern bunk cabin, fuel in Maintenance, key in the Ranger Lodge. | The camp stalker and a shorter three-part objective with randomized camp buildings. Flashlight charge does not drain. |
-| **Woods Expedition** | Battery and key in camp location pools; fuel and two extra parts in themed-area caches. | The stalker plus 24 cryptids, a seeded trail maze, survival supplies, weather, and a draining flashlight. |
+| **Woods Expedition** | Battery and key in camp location pools; fuel and two extra parts in themed-area caches. | The stalker plus 48 cryptids, a seeded trail maze, survival supplies, weather, and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
 The pack lists the current requirements and location clues. The woods contains nine major regions. Three hold the required caches: **Abandoned Village (northwest)**,
@@ -192,10 +192,11 @@ being downed.
 | **Witch** | Keeps casting distance, shows a wind-up, then fires a fixed-trajectory hex bolt. | Sidestep the bolt or put a wall between you. A hit briefly slows movement and drains stamina. |
 | **Briar revenant** | Senses movement, with close-range detection even if you stand still. | Freeze at a distance or break sight; do not wait for it to get close. |
 
-Each expedition spawns **24 cryptids across 13 species, plus the stalker**.
+Each expedition spawns **48 cryptids across 16 species, plus the stalker**.
 The stalker starts on camp routes. Roaming cryptids follow trail circuits and
 investigate sensed activity; six landmark guardians stay within their home zones.
-The new threats below are playable first versions of the larger design catalog.
+The denser expedition places additional roaming encounters around camp approaches,
+with a three-flare preparation stash in Maintenance. The new threats below are playable first versions of the larger design catalog.
 
 | New threat | Where and how it hunts | Tell and useful response |
 | --- | --- | --- |
@@ -206,6 +207,9 @@ The new threats below are playable first versions of the larger design catalog.
 | **Last-Car Conductor** | Territorial guardian of the **Rail Yard**. Marks an inspection patch at your observed position. | Leave its **DANGER** ring during the 1.2s warning. The temporary patch slows/hexes; use the other track lane or retreat out of the yard. |
 | **Stoneback Ram** | Territorial guardian of the **White Stone Quarry**. Commits to a straight charge toward the warned position. | Sidestep the **CHARGE** line during its 1.2s tell. The 0.55s dash collides with walls; reposition during the cooldown. |
 | **Candle Grazer** | Territorial guardian of the **Drowned Chapel**. Sees lit survivors, detects dark survivors at close range, and follows visible flares. | Switch off your beam at a distance or leave a flare and move away. It **consumes flares on contact** and is not repelled by them. |
+| **Relay Jackal** | Roams ordinary forest trails and angles toward a flank only while it can see you; searches last sensed areas for 12s. | Break sight, change direction and avoid sprinting back through its investigation route. Flares repel it. |
+| **Ration Moth** | Roams the woods with short 70px sight; ration use attracts it to that sound location from up to 600px away. | Eat before moving, then leave quietly. It investigates the meal location rather than tracking hidden inventory. Flares repel it. |
+| **Lens Eater** | A roaming lens-faced creature that warns before draining up to 8 light charge if you keep aiming directly at it nearby. | Turn your beam away or put a tree/wall between you during its 1.2s **DANGER** warning. The cast has a 6.5s cooldown; it cannot consume spare batteries. |
 
 **Hunters versus zones:** Hounds can follow sensed activity along ordinary trails;
 landmark guardians reject survivor targets and noises outside their home bounds.
@@ -280,10 +284,10 @@ Both modes vary building positions and surrounding trees within reserved camp
 lots. Bunk cabins can trade places, as can the bathhouse and first aid building. Door paths, loot and field-map markers move together. Roof footprints
 and main trails stay separate. Retrying a seed reproduces the camp too.
 
-![Current full-map example for Night 42 with all nine numbered regions, central Fernwood camp and 24 cryptid spawn positions](docs/evidence/content_expansion/full_map.png)
+![Current full-map example for Night 42 with all nine numbered regions, central Fernwood camp and 48 cryptid spawn positions](docs/evidence/denser_forest/full_map.png)
 
 **Full-map example — Night 42.** Numbers match the region names around the map;
-**C** marks Fernwood camp and coral dots mark the 24 cryptid starting positions.
+**C** marks Fernwood camp and coral dots mark the 48 cryptid starting positions.
 The six optional biomes show their resident guardians, alongside the village,
 bog and graveyard required-cache regions. North is up. This is an inspection
 atlas; the in-game field map still reveals only explored trails.
@@ -334,6 +338,14 @@ than concept art; the monster table above explains their current powers.
 
 ![Candle Grazer with burning candles along its back](docs/evidence/content_expansion/monster_candle_grazer.png)
 
+### More roaming encounters
+
+| Relay Jackal | Ration Moth | Lens Eater |
+| --- | --- | --- |
+| ![Relay Jackal with tall ears and curved tail](docs/evidence/denser_forest/monster_relay_jackal.png) | ![Ration Moth with layered paper-like wings](docs/evidence/denser_forest/monster_ration_moth.png) | ![Lens Eater with a large vertical iris](docs/evidence/denser_forest/monster_lens_eater.png) |
+
+These three species roam ordinary trails; they do not require a biome encounter.
+
 ### New optional biomes
 
 The following captures show each new region and its local guardian. Lighting is
@@ -343,19 +355,19 @@ and how to navigate each site.
 
 | Flooded Mill — waterwheel, boiler and plank crossings | Bramble Orchard — fruit rows and trellises |
 | --- | --- |
-| ![Flooded Mill with waterwheel, gauge boiler, channels and bridges](docs/evidence/content_expansion/biome_mill.png) | ![Bramble Orchard with trellis, fruit trees and vine rows](docs/evidence/content_expansion/biome_orchard.png) |
+| ![Flooded Mill with waterwheel, gauge boiler, channels and bridges](docs/evidence/denser_forest/biome_mill.png) | ![Bramble Orchard with trellis, fruit trees and vine rows](docs/evidence/denser_forest/biome_orchard.png) |
 
 | Starless Observatory — dome and telescope | Last-Car Rail Yard — tracks and switches |
 | --- | --- |
-| ![Observatory dome and telescope above a radial tiled court](docs/evidence/content_expansion/biome_observatory.png) | ![Rail Yard with paired tracks, sleepers, switch and signal](docs/evidence/content_expansion/biome_rail.png) |
+| ![Observatory dome and telescope above a radial tiled court](docs/evidence/denser_forest/biome_observatory.png) | ![Rail Yard with paired tracks, sleepers, switch and signal](docs/evidence/denser_forest/biome_rail.png) |
 
 | White Stone Quarry — terraces and survey rings | Drowned Chapel — columns and cross mosaic |
 | --- | --- |
-| ![Quarry with stepped terrace markings, ladders and stone clusters](docs/evidence/content_expansion/biome_quarry.png) | ![Chapel court with broken columns, candle pews and a cross mosaic](docs/evidence/content_expansion/biome_chapel.png) |
+| ![Quarry with stepped terrace markings, ladders and stone clusters](docs/evidence/denser_forest/biome_quarry.png) | ![Chapel court with broken columns, candle pews and a cross mosaic](docs/evidence/denser_forest/biome_chapel.png) |
 
 ### Supply belt
 
-![All six supply-type slots with a noise tin selected in ordinary night lighting](docs/evidence/content_expansion/item_belt.png)
+![All six supply-type slots with a noise tin selected in ordinary night lighting](docs/evidence/denser_forest/item_belt.png)
 
 The selected slot is highlighted and its supply appears in the survivor's hand.
 Use **1–6/keypad** to select, **V** to use, **G** to drop the stack and **E** to
@@ -368,7 +380,7 @@ recover units. Vehicle components and cutters remain separate from this limit.
 ## Development and verification
 
 The current implementation includes offline survivor selection, six roles,
-the supply belt, nine major forest regions and 13 cryptid species. The latest
+the supply belt, nine major forest regions and 16 cryptid species. The latest
 full headless verification passed **69 steps** with zero errors/warnings;
 focused final content checks passed **301 assertions**. The expanded graphical
 guide tour passed **316 assertions**, including 15 image captures. Graphical content captures

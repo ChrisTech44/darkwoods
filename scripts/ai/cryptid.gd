@@ -46,12 +46,13 @@ func _ready() -> void:
 		config.killer_chase_speed = 64
 		config.sight_radius = 155
 		config.hearing_radius = 160
-	elif species in ["boiler_saint", "bramble_seamstress", "shutter_wraith", "last_car_conductor", "stoneback_ram", "candle_grazer", "switchback_hound"]:
+	elif species in ["boiler_saint", "bramble_seamstress", "shutter_wraith", "last_car_conductor", "stoneback_ram", "candle_grazer", "switchback_hound", "relay_jackal", "ration_moth", "lens_eater"]:
 		config.sight_radius = 190
 		config.hearing_radius = 320 if species == "switchback_hound" else 220
 		config.killer_chase_speed = 62
 		config.attack_radius = 12
-		config.search_seconds = 12 if species == "switchback_hound" else 6
+		config.search_seconds = 12 if species in ["switchback_hound","relay_jackal"] else 6
+		if species == "ration_moth": config.sight_radius = 70
 	else:
 		config.sight_radius = 125
 		config.hearing_radius = 210
@@ -62,6 +63,9 @@ func _physics_process(delta: float) -> void:
 		super._physics_process(delta)
 		return
 	if enabled:
+		if nearby_flare() != Vector2.INF:
+			dash_remaining = 0
+			power_tell = 0
 		if home.has_area() and not home.has_point(global_position + dash_direction * 10):
 			dash_remaining = 0
 		if dash_remaining > 0:
@@ -118,6 +122,9 @@ func in_beam(actor: CampPlayer) -> bool:
 
 
 func pursuit_goal(actor: CampPlayer) -> Vector2:
+	if species == "relay_jackal":
+		var flank := actor.global_position + actor.velocity.limit_length(1) * 50 + actor.facing.orthogonal() * 25
+		return flank if has_line_of_sight(flank) else actor.global_position
 	if species == "witch":
 		var distance := global_position.distance_to(actor.global_position)
 		if distance < 85:
@@ -206,6 +213,10 @@ func _advance_power(delta: float) -> void:
 	if power_tell > 0:
 		power_tell -= delta
 		if power_tell <= 0:
+			if species == "lens_eater":
+				if is_instance_valid(visible_target) and has_line_of_sight(visible_target.global_position) and in_beam(visible_target):
+					visible_target.flashlight_charge=maxf(0,visible_target.flashlight_charge-8)
+				return
 			if species in ["switchback_hound", "stoneback_ram"]:
 				dash_direction = global_position.direction_to(power_aim)
 				dash_remaining = 0.55
@@ -218,7 +229,7 @@ func _advance_power(delta: float) -> void:
 		return
 	if power_clock > 0 or not is_instance_valid(visible_target):
 		return
-	if species not in ["switchback_hound", "stoneback_ram", "boiler_saint", "bramble_seamstress", "last_car_conductor"]:
+	if species not in ["switchback_hound", "stoneback_ram", "boiler_saint", "bramble_seamstress", "last_car_conductor", "lens_eater"]:
 		return
 	if not has_line_of_sight(visible_target.global_position):
 		return

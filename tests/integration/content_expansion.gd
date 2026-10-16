@@ -112,7 +112,7 @@ func _run() -> void:
 	player.flashlight_charge=10
 	player.hex_remaining=3
 	_check(level.use_supply(player,"glow_moss") and player.flashlight_charge==45 and player.hex_remaining==0,"moss_restores_light_clears_hex")
-	_check(level.plan.woods.zones.size()==9 and level.plan.encounters.size()==24,"nine_biomes_bounded_roster")
+	_check(level.plan.woods.zones.size()==9 and level.plan.encounters.size()==RoundPlan.CRYPTID_COUNT,"nine_biomes_bounded_roster")
 	for zone in level.plan.woods.zones:
 		var bounds: Rect2 = zone["bounds"]
 		var outside := {}
@@ -220,7 +220,7 @@ func _tour() -> void:
 	camera.offset=Vector2(0,-32)
 	level.player.position=level.plan.woods.center(Vector2i(4,4))+Vector2(0,28)
 	level.player.facing=Vector2.UP
-	for species in ["switchback_hound","boiler_saint","bramble_seamstress","shutter_wraith","last_car_conductor","stoneback_ram","candle_grazer"]:
+	for species in ["switchback_hound","boiler_saint","bramble_seamstress","shutter_wraith","last_car_conductor","stoneback_ram","candle_grazer","relay_jackal","ration_moth","lens_eater"]:
 		var portrait: CampCryptid=load("res://scenes/actors/cryptid.tscn").instantiate()
 		portrait.species=species
 		portrait.enabled=false

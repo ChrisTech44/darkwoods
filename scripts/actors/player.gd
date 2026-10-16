@@ -7,6 +7,7 @@ signal status_changed
 
 enum Status { ALIVE, DOWNED, DEAD, ESCAPED, LEFT_BEHIND, BOARDED }
 
+var sheet: Texture2D
 var config: CampConfig = preload("res://assets/default_config.tres")
 var local_input: bool = true
 var controls_enabled: bool = true
@@ -36,6 +37,7 @@ var hex_remaining: float = 0.0
 
 func _ready() -> void:
 	apply_role()
+	sheet = load("res://assets/sprites/survivor_" + role + ".png")
 	stamina = config.stamina_max
 	flashlight_charge = config.flashlight_capacity
 	add_to_group("survivors")
@@ -130,7 +132,6 @@ func _draw() -> void:
 	draw_circle(Vector2(0, 1), 7, Color(0, 0, 0, 0.35))
 	if hex_remaining > 0 and status == Status.ALIVE:
 		draw_arc(Vector2(0,-2), 11, 0, TAU, 16, Color("b4a3d3"), 1)
-	var sheet: Texture2D = load("res://assets/sprites/survivor_" + role + ".png")
 	var row := 0
 	if absf(facing.x) > absf(facing.y):
 		row = 2 if facing.x > 0 else 3

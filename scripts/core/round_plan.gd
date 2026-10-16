@@ -2,6 +2,7 @@ class_name RoundPlan
 extends RefCounted
 ## Seeded authority-side run recipe. No gameplay relies on global RNG state.
 
+const CRYPTID_COUNT := 48
 var seed_value: int
 var expedition: bool
 var weather: String = "clear"
@@ -61,7 +62,8 @@ func generate(value: int, mode: String) -> void:
 		if not zone.is_empty() and zone["kind"] == "village":
 			at.y = zone["bounds"].end.y - 48
 		_add(supply_types[index % supply_types.size()], at, "WOODS SUPPLIES", false)
-	_add("flare", Vector2(1304, 312), "MAINTENANCE", false)
+	for index in range(3):
+		_add("flare", Vector2(1304, 312), "MAINTENANCE FLARE STASH", false)
 	_add("battery_pack", Vector2(168, 356), "CAMPSITE", false)
 	for item in loot:
 		item["position"] = camp.remap(item["position"])
@@ -79,10 +81,31 @@ func generate(value: int, mode: String) -> void:
 		var cell: Vector2i = zone["cell"] + Vector2i(1,1)
 		_encounter(guardians[index], cell)
 		encounters.back()["home"] = zone["bounds"].grow(48)
-	# Replace a subset of roaming duplicates, retaining a bounded 24-creature population.
+	# Preserve the original core encounters before adding the denser roaming ring.
 	for index in range(homes.size() - 6):
 		_encounter("switchback_hound" if index % 4 == 0 else species[(index + posmod(value,6)) % 6],homes[index])
-
+	# Denser, seeded roaming encounters around the approaches, never inside camp or a landmark.
+	var candidates: Array[Vector2i] = []
+	for cell: Vector2i in woods.links:
+		var at := woods.center(cell)
+		var distance := at.distance_to(CampMap.CAMP_BOUNDS.get_center())
+		if distance > 850 and distance < 2400 and woods.zone_at(at).is_empty():
+			candidates.append(cell)
+	for index in range(candidates.size()-1,0,-1):
+		var swap := rng.randi_range(0,index)
+		var cell := candidates[index]
+		candidates[index] = candidates[swap]
+		candidates[swap] = cell
+	var added: Array[Vector2] = []
+	for cell in candidates:
+		var at := woods.center(cell)
+		var clear := true
+		for existing: Vector2 in added:
+			if at.distance_to(existing)<220: clear=false
+		if not clear: continue
+		_encounter(["relay_jackal","ration_moth","lens_eater","switchback_hound"][added.size()%4],cell)
+		added.append(at)
+		if encounters.size()==CRYPTID_COUNT: break
 
 
 func _encounter(species: String, cell: Vector2i) -> void:

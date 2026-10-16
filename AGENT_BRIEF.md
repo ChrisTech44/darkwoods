@@ -1,7 +1,7 @@
 # LAST NIGHT AT CAMP
 **Godot 4 multiplayer horror game — agent implementation brief**
 
-Version 1.6 — 16 October 2026 — Codex Sol (medium effort)
+Version 1.7 — 16 October 2026 — Codex Sol (medium effort)
 
 User amendment: online proximity voice chat and an original/licensed audio-file
 pipeline are planned after synchronized multiplayer gameplay. This supersedes
@@ -45,6 +45,14 @@ The population stays at 24 cryptids plus the camp stalker. New landmark powers a
 bounded first versions, not full catalog dossiers. See [content update](docs/content_update.md)
 for implemented rules, screenshots and remaining acceptance limits. Human balance,
 all-role full input rounds, networking, synchronized audio and voice remain unverified.
+
+Latest user amendment: fix selected survivors rendering as white blocks; remove
+trailing belt counts; add roaming monsters and more frequent encounters; then
+implement ENet host/join multiplayer for LAN/Wi-Fi and direct-IP or virtual-LAN
+Internet play. Voice chat is the next feature and must remain a separate gated
+opt-in system. The offline encounter update uses 48 cryptids across 16 species,
+including Relay Jackal, Ration Moth and Lens Eater away from landmark biomes.
+Required online cross-machine acceptance still needs execution evidence.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 

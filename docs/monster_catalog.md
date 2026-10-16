@@ -1,16 +1,19 @@
 # Monster catalog: 48 additional encounter concepts
 
 Status: **seven additional offline monster types implemented as first versions**.
-The playable build has the stalker and 13 cryptid species. New additions are
+The playable build has the stalker and 16 cryptid species. New additions are
 Switchback Hound, Bramble Seamstress, Stoneback Ram, Shutter Wraith, Candle
 Grazer, Boiler Saint and Last-Car Conductor. Their bounded current behaviors
 are documented in [content update](content_update.md); the detailed powers below
-remain design targets where they differ. Expedition retains 24 cryptids plus
+remain design targets where they differ. Expedition retains 48 cryptids plus
 the stalker. The rest of these 48 concepts remain backlog, for 55 total designs.
 
 Read [biome design](biome_design.md) for encounter spaces and
 [survivor/co-op plan](survivor_multiplayer_plan.md) for progression. Entries are
 alternatives for seeded encounter sets, not 48 extra simultaneous hunters.
+
+Relay Jackal, Ration Moth and Lens Eater now also have roaming first versions;
+see the current [README monster guide](../README.md#know-what-is-following-you).
 
 ## Rules every monster must obey
 

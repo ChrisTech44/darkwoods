@@ -1,5 +1,36 @@
 # Development log
 
+## 2026-10-16 — Retain survivor textures, clean belt labels and denser roaming threats
+
+Fixed selected survivors rendering as white rectangles by retaining the role
+Texture2D on the actor instead of loading/releasing a temporary resource in
+`_draw`. Added actual SubViewport pixel checks for all six roles; the graphical
+run passed 13 assertions, including the belt text check. Belt slots retain their
+selection key and supply name but no longer append quantity numbers.
+
+Added original Relay Jackal, Ration Moth and Lens Eater sheets/behaviors away
+from biome guardians. Seeded expedition population increases from 24 to 48
+cryptids (16 species) plus the stalker, with 24 additional roamers around camp
+approaches, outside camp and landmark footprints. Jackals flank visible actors
+and search longer, ration moths investigate ration-use noise, and lens eaters
+warn before a capped beam-facing light drain. Flares now cancel pending powers/
+charges, preserving the existing counterplay. Maintenance supplies three flares.
+
+The first denser fixed-seed bot escape failed after exhausting its flares. After
+correcting charge/flare interaction and adding the preparation stash, the
+ordinary-input expedition passed: 200 assertions, all 49 enemies active,
+12,501px walked and one flare left. No AI disabling or player teleports in that
+playthrough. Human difficulty balance is still unrecorded.
+
+Required headless import/startup passed. Full `python3 tools/verify.py` results
+are preserved in the denser-forest report; focused graphical content passed
+343 assertions, map/navigation tour 113, survivor pixel rendering 13, all zero
+failures. Updated the README's monster explanations, full map, biome and belt
+images, current count references, brief and asset provenance. Captures were
+opened for visual inspection; links and `git diff --check` checked before
+publication. [Evidence](evidence/denser_forest/README.md) records commands and
+limits. Networking implementation follows as a separate increment.
+
 ## 2026-10-16 — Refresh the full-map example for the nine-region forest
 
 Replaced the README's earlier three-region atlas with an actual Godot capture

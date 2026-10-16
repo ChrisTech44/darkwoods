@@ -34,8 +34,32 @@ def survivor(role, direction, frame):
         p.rect(8,20,8,3,'8e805a'); p.rect(9,19,2,1,'e1cfa3')
     return p
 
-SPECIES = ['boiler_saint','bramble_seamstress','shutter_wraith','last_car_conductor','stoneback_ram','candle_grazer','switchback_hound']
+SPECIES = ['boiler_saint','bramble_seamstress','shutter_wraith','last_car_conductor','stoneback_ram','candle_grazer','switchback_hound','relay_jackal','ration_moth','lens_eater']
 def monster(kind,direction,frame):
+    if kind in ('relay_jackal','ration_moth','lens_eater'):
+        p=Pixels(64,64); step=(0,-2,2)[frame]
+        if kind=='relay_jackal':
+            p.ellipse(12,26,42,22,'61533c');p.ellipse(18,24,30,17,'ac9160')
+            for x,k in ((15,step),(25,-step),(40,-step),(49,step)):
+                p.rect(x,43+k,4,16,'524533');p.rect(x-1,57+k,7,4,'c9b081')
+            p.ellipse(20,12,25,23,'826a45');p.rect(25,27,20,7,'d3b98a')
+            for x in (20,39):p.rect(x,2,5,19,'ab8a58');p.rect(x+1,4,2,12,'44382c')
+            p.rect(27,21,3,2,'f5db9a');p.rect(38,21,3,2,'f5db9a')
+            for i in range(12):p.rect(7-i//2,26-i,4,5,'a18a59')
+        elif kind=='ration_moth':
+            for x in (3,34):
+                p.ellipse(x,15+step,27,37,'a39c7a');p.ellipse(x+4,19+step,19,25,'5b665b')
+                for y in range(20,49,6):p.rect(x+2,y+step,22,2,'cfbf94')
+            p.ellipse(27,18,10,36,'665c40');p.ellipse(25,9,14,14,'b7ae80')
+            for x in (27,35):p.rect(x,15,2,3,'e9deac')
+            for y in (29,35,41):p.rect(28,y,8,2,'ded0a3')
+        else:
+            for x,k in ((19,step),(39,-step)):p.rect(x,35+k,6,24,'5c6b77')
+            p.ellipse(17,18,31,31,'526572');p.ellipse(19,3,27,31,'b1beb9')
+            p.ellipse(23,7,19,23,'344853');p.ellipse(27,10,11,17,'d2bc83')
+            p.ellipse(30,12,5,13,'263844');p.rect(13,23+step,5,23,'7d8e8c');p.rect(47,23-step,5,23,'7d8e8c')
+            for y in (32,38,44):p.rect(25,y,16,1,'b2b59b')
+        return p
     p=Pixels(64,64); step=(0,-2,2)[frame]
     palettes={'boiler_saint':('754d38','b28b54'),'bramble_seamstress':('3b5645','9fba76'),'shutter_wraith':('343a55','a7a6ba'),'last_car_conductor':('3b4e60','ac9764'),'stoneback_ram':('586367','acaf97'),'candle_grazer':('655b50','eacb86'),'switchback_hound':('604939','b1936b')}
     dark,light=palettes[kind]

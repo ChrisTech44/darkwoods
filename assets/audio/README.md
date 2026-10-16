@@ -48,3 +48,7 @@ crackles before passing through the Ambience control.
 Loop seams and final comfort/balance require human listening; automated PCM
 decode and loop/lifecycle checks are documented in the development log.
 Windows/Linux, exported audio and two-client synchronized sound remain unverified.
+
+Creature calls now start only within 160 pixels and follow their source, with
+quadratic native distance attenuation. Enemy steps use 110 pixels. These local
+limits do not change AI hearing. Menu knobs are accessed through Settings.

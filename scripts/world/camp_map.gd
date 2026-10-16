@@ -2,6 +2,7 @@ class_name CampMap
 extends Node2D
 ## Seeded camp lots: one obstacle list drives collision, shadows and navigation.
 
+const CAMP_BOUNDS := Rect2(0, 0, 1536, 960)
 const WORLD_SIZE := Vector2(3456, 1920)
 const PICKUP_POSITIONS: Array[Vector2] = [Vector2(228, 120), Vector2(1304, 272), Vector2(696, 680)]
 const PICKUP_HINTS: Array[String] = ["Battery · Fern bunk cabin", "Fuel · maintenance workshop", "Key · ranger lodge office"]
@@ -306,3 +307,7 @@ func _draw() -> void:
 	draw_rect(Rect2(48, 340, 18, 25), Color("756349"))
 	draw_rect(Rect2(50, 342, 14, 10), Color("a9976d"))
 	draw_line(Vector2(51, 345), Vector2(60, 345), Color("4b573f"))
+
+
+static func is_woods(point: Vector2) -> bool:
+	return not CAMP_BOUNDS.has_point(point)

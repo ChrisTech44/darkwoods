@@ -49,6 +49,8 @@ func _run() -> void:
 			_check(_reachable(level, item.position), "seed_%d_loot_%s_reachable" % [value, item.kind])
 		if capture and value in [42, 2026]:
 			level.player.position = Vector2(768, 440)
+			level.sight.enabled = false
+			level.sight.hide()
 			level.player.get_node("Camera2D").zoom = Vector2(0.24, 0.24)
 			for child in level.get_children():
 				if child.get_script() == load("res://scripts/ui/night_overlay.gd"):

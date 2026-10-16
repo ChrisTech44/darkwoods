@@ -203,3 +203,9 @@ probes compare flashlight off/on across closed horizontal/vertical trail links.
 Each probe has a positive control with borders disabled, reproducing the leak.
 These controls/teleports are test fixtures; production bounds and rules remain
 active in the separate full playthroughs.
+
+`woods_visibility.gd` verifies current-path visibility, hidden enemies behind
+tree borders, nearby-only creature calls and native falloff/source following.
+Graphical positive controls use fully bright ambient light and disable the sight
+mask, proving that black occluded paths are hidden by sight, not merely darkness.
+Menu-default checks also open/close Settings and save gain from its controls.

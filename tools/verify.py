@@ -42,6 +42,8 @@ def main():
     commands.append(("woods_playthrough", ["--headless", *expedition]))
     hunt = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/forest_hunt.gd"]
     commands.append(("forest_hunt", ["--headless", *hunt]))
+    visibility = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/woods_visibility.gd"]
+    commands.append(("woods_visibility", ["--headless", *visibility]))
     defaults = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/menu_defaults.gd"]
     shadows = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/woods_shadows.gd"]
     commands.append(("menu_defaults", ["--headless", *defaults]))
@@ -51,6 +53,7 @@ def main():
     polish = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/layout_polish.gd"]
     commands.append(("layout_polish", ["--headless", *polish]))
     if args.graphical:
+        commands.append(("graphical_visibility", [*visibility, "--", "--capture"]))
         commands.append(("graphical_defaults", [*defaults, "--", "--capture"]))
         commands.append(("graphical_shadows", [*shadows, "--", "--capture"]))
         commands.append(("graphical_audio", ["--audio-driver", "Dummy", *audio, "--", "--audio-test", "--capture"]))
@@ -82,7 +85,7 @@ def main():
                   if re.search(r"(?:SCRIPT ERROR|ERROR|Parse Error):", line)]
         warnings = [line for line in clean.splitlines() if "WARNING:" in line]
         passed = status == 0 and not errors and not timed_out
-        if name in ("menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows"):
+        if name in ("menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility"):
             summaries = []
             for line in clean.splitlines():
                 if line.startswith("{"):

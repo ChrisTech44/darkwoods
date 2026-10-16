@@ -46,6 +46,8 @@ func _run() -> void:
 	quit(0 if failures == 0 else 1)
 
 func _render_cases() -> void:
+	level.sight.enabled = false
+	level.sight.hide()
 	level.message_time = 0
 	# Disable other light sources to measure only the flashlight contribution.
 	_disable_lights(level)

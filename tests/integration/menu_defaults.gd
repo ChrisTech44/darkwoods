@@ -15,14 +15,17 @@ func _run() -> void:
 	await _frames(4)
 	var menu: Control = current_scene
 	_check(menu.get_node("Menu/RandomNight").button_pressed and not menu.get_node("Menu/Seed").editable, "random_night_default_seed_disabled")
-	_check(menu.get_node("AudioControls").get_child_count() == 4, "four_pre_game_mix_controls_visible")
+	_check(not menu.get_node("SettingsPanel").visible, "knobs_hidden_behind_settings")
+	menu.get_node("Settings").pressed.emit()
+	_check(menu.get_node("SettingsPanel").visible, "settings_opens")
+	_check(menu.get_node("SettingsPanel/Content/AudioControls").get_child_count() == 4, "four_pre_game_mix_controls_visible")
 	var music: AudioStreamPlayer = menu.get_node("MenuAudio/music")
 	_check(music.stream != null and music.bus == "Music" and (not mixer.output_enabled or music.playing), "menu_music_plays_on_music_bus")
 	var audio_ref: WeakRef = weakref(menu.get_node("MenuAudio"))
 	var saved_path: String = mixer.settings_path
 	var saved_volumes: Dictionary = mixer.volumes.duplicate()
 	mixer.settings_path = "user://menu_controls_test.cfg"
-	var music_slider: HSlider = menu.get_node("AudioControls").get_child(3).get_node("Music")
+	var music_slider: HSlider = menu.get_node("SettingsPanel/Content/AudioControls").get_child(3).get_node("Music")
 	music_slider.value = 0
 	_check(AudioServer.is_bus_mute(AudioServer.get_bus_index("Music")), "menu_music_knob_mutes_immediately")
 	music_slider.value = 30
@@ -33,6 +36,9 @@ func _run() -> void:
 	for bus in saved_volumes:
 		mixer.set_volume(bus, saved_volumes[bus], false)
 	music_slider.set_value_no_signal(float(saved_volumes["Music"]) * 100.0)
+	if capture:
+		await _snapshot("menu_settings")
+	menu._hide_settings()
 	if capture:
 		await _snapshot("menu_defaults")
 	for mode_index in [1, 0]:

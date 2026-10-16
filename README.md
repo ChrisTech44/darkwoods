@@ -12,7 +12,7 @@ the latest update fixes camp trails and adds local sound. Networking and voice
 are **not implemented yet**. Run this
 prototype from source; standalone desktop packages are a later milestone.
 
-![The forest menu with Woods Expedition and optional seed selection](docs/evidence/menu_shadows/menu_defaults.png)
+![The forest menu with Woods Expedition and optional seed selection](docs/evidence/sight_audio/menu_defaults.png)
 
 ## The first major update
 
@@ -21,6 +21,8 @@ The world now spans **3456×1920**, combining ten furnished camp buildings, two 
 landmarks. Roofs cut away inside buildings. Native flashlight shadows, cabin
 lamps, flares, and headlights provide local light in a nearly black forest.
 Solid woods borders block the flashlight from reaching neighboring paths.
+An opaque sight mask hides trails and monsters behind those borders, even if
+another light illuminates them.
 Soft mist and trunk-shaped shadows keep the current path readable; foreground canopy fades
 when it covers the camper.
 
@@ -52,7 +54,7 @@ the helper commands. No plugins, Python packages, or export templates are needed
 
 3. Choose **Woods Expedition** or **Quick Camp**, and select **Enter the Night**.
    **Random Night is on by default** in both modes. To repeat a particular night,
-   uncheck it and enter a positive seed. Adjust the volume sliders before playing.
+   uncheck it and enter a positive seed. Open **Settings** to adjust volume before playing.
    **Controls** opens the survivor field guide.
 
 The launcher finds `godot` or `godot4` on PATH, or the macOS app executable.
@@ -159,9 +161,10 @@ in when the stalker or a cryptid sees you, then fades away after pursuit.
 
 The supplied MP3s now provide forest/bog ambience, a positional campfire,
 restrained music, surface-specific walking/running sounds, six creature voices,
-and pursuit heartbeat. Creature calls have cooldowns; visual cues remain usable
+and pursuit heartbeat. Creature calls start only nearby (within 160 pixels), fade with distance and
+follow the moving source; enemy footsteps use a shorter 110-pixel range. Calls have cooldowns; visual cues remain usable
 with sound muted. **Esc** opens Master, Effects, Ambience and Music sliders;
-the same controls are available on the main menu with music and subdued forest
+the same controls are behind **Settings** on the main menu, with music and subdued forest
 ambience playing. Settings persist and zero mutes. Pause suspends round sound, results stop it, and
 replaying creates fresh emitters. Muting does not change monster hearing.
 

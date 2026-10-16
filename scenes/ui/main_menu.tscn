@@ -92,6 +92,13 @@ custom_minimum_size = Vector2(116, 25)
 layout_mode = 2
 text = "QUIT"
 
+[node name="Settings" type="Button" parent="."]
+offset_left = 20.0
+offset_top = 144.0
+offset_right = 232.0
+offset_bottom = 169.0
+text = "SETTINGS"
+
 [node name="Status" type="Label" parent="."]
 offset_left = 20.0
 offset_top = 190.0

@@ -1,5 +1,27 @@
 # Development log
 
+## 2026-10-16 — Opaque woods sight, nearby creature cues and menu Settings
+
+First verified increment of the new forest-surround request. Added a 256-ray,
+260px opaque world mask and whole-monster sight gating. Hidden terrain stays
+black even in fully bright ambient light; visible HUD species cues follow sight.
+AI remains independent. Calls start within 160px and enemy steps within 110px;
+native quadratic attenuation follows moving sources through weak references.
+Menu mixer is behind Settings, with saved gain and uninterrupted menu music.
+
+`python3 tools/verify.py --graphical`: 71 steps passed, zero errors/warnings;
+full active camp/woods escapes, import/startup/all parses, 4 headless / 7 graphical
+sight/proximity assertions and 20/21 menu checks. Rendered bright-ambient paired
+controls prove the mask hides the adjacent path and whole monster, rather than
+relying on darkness. Native emitter range/follow checks pass. Existing lighting
+and overview fixtures explicitly disable the new mask only for isolated QA.
+Inspected menu/Settings and masked/unmasked captures.
+[Report](evidence/sight_audio/summary.json). Markdown/Word requirements aligned,
+source audio unchanged. Human listening, Windows/Linux/exports/network/voice and
+Word visual rendering remain unverified as previously documented. The much larger
+central-camp forest and spacious region transitions are the next increment in
+this same authorized task; they are not claimed complete here.
+
 ## 2026-10-16 — Menu music/mixer, random-default camps and opaque woods borders
 
 **User amendments:** music/volume knobs on the menu before Play, random by

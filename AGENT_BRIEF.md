@@ -1,7 +1,7 @@
 # LAST NIGHT AT CAMP
 **Godot 4 multiplayer horror game — agent implementation brief**
 
-Version 1.3 — 16 October 2026 — Codex Sol (medium effort)
+Version 1.4 — 16 October 2026 — Codex Sol (medium effort)
 
 User amendment: online proximity voice chat and an original/licensed audio-file
 pipeline are planned after synchronized multiplayer gameplay. This supersedes
@@ -17,6 +17,12 @@ verification. Voice capture and networking are not implemented. The adjacent Wor
 default; fixed seeds and same-seed retries are explicit choices. Menu music and
 saved pre-game mix controls are required. Solid woods tree borders must block
 flashlight spill into adjacent paths.
+
+16 October forest-surround amendment: hide terrain and creatures outside current
+line of sight in the woods; creature calls start nearby and fade by proximity.
+Keep title-screen mixer controls behind Settings. Enlarge the finite forest
+substantially around all sides of a central camp, with wider, clean connections
+to enlarged village/bog/graveyard regions and monsters around the camp.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 
@@ -34,13 +40,13 @@ flashlight spill into adjacent paths.
 
 - Core loop: host/join lobby → spawn at campsite → investigate cabins and wooded trails → collect randomized objective items → avoid/disrupt killer → repair and start escape vehicle → surviving players extract → show outcome screen → replay.
 
-- Replayability systems (introduce after core loop): randomized objective item placements; several possible cabin locks and blocked paths; alternate extraction methods; risk/reward optional loot; killer patrol variations and memory of recent sound/sightings. Do not make "infinite procedural maps" the MVP. Both modes default to fresh random camps; only explicit seed entry/retry repeats a recipe. Keep loot, doors and the chart aligned with seeded building placements.
+- Replayability systems (introduce after core loop): randomized objective item placements; several possible cabin locks and blocked paths; alternate extraction methods; risk/reward optional loot; killer patrol variations and memory of recent sound/sightings. Do not make "infinite procedural maps" the MVP. Both modes default to fresh random camps; only explicit seed entry/retry repeats a recipe. Keep loot, doors and the chart aligned with seeded building placements. The latest approved forest expansion surrounds a central camp with a massive finite woods, wider trails, spacious themed regions and clean approach transitions.
 
 ## MVP gameplay rules
 
 - Movement: top-down 8-direction walking, sprinting with stamina, tile/world collision, visible facing direction, interact key, minimal animation using placeholder sprites.
 
-- Vision: nighttime map, character-centered limited visibility or darkness overlay; flashlight toggled by player; build a readable prototype first. Do not let cosmetic darkness prevent testing. Solid woods tree borders must block flashlight spill into adjacent paths, including when a head-height emitter would otherwise cross a nearby border.
+- Vision: nighttime map, character-centered limited visibility or darkness overlay; flashlight toggled by player; build a readable prototype first. Do not let cosmetic darkness prevent testing. Solid woods tree borders must block flashlight spill into adjacent paths, including when a head-height emitter would otherwise cross a nearby border. An opaque line-of-sight mask must hide occluded trails/creatures even when ambient or other lights illuminate them.
 
 - Items: pickups for three distinct vehicle repair components (for example battery, fuel, key); inventory is server-controlled, with simple UI; item pickup requires server validation of proximity and availability.
 
@@ -74,7 +80,7 @@ flashlight spill into adjacent paths.
 
 ## Audio files and planned proximity voice
 
-- Implement local AudioManager playback now, ahead of M2 per the priority amendment, with separate master, effects, ambience/music and voice volume controls. Use original or redistributable files with documented source/license and stable cue IDs; track asset provenance in `assets/audio`. Never claim audio exists while only visual/noise-event cues are implemented. Play ominous music and subdued woods ambience on the menu, with saved Master/Effects/Ambience/Music controls available before Play.
+- Implement local AudioManager playback now, ahead of M2 per the priority amendment, with separate master, effects, ambience/music and voice volume controls. Use original or redistributable files with documented source/license and stable cue IDs; track asset provenance in `assets/audio`. Never claim audio exists while only visual/noise-event cues are implemented. Play ominous music and subdued woods ambience on the menu, with saved Master/Effects/Ambience/Music controls available before Play through Settings. Monster calls must be proximity-gated and attenuate with distance, following moving sources.
 - Prioritize footsteps, monster approach/attack cues, witch wind-up/bolt/hex, interaction/cache/cutters, flare/flashlight, revive/damage, van start/departure, village bell and environmental loops. Keep visual cues available; muted or unavailable audio must not prevent play.
 - Synchronize world sounds from authoritative gameplay events with event IDs, source positions and variant seeds. Avoid duplicate host/local playback and reject client requests to invent trusted monster, objective or damage cues. Hearing for AI remains a host gameplay decision independent of local mixer volume.
 - After M2 and the M2-A audio foundation, add online proximity voice in M3-V: opt-in microphone enablement, push-to-talk by default, device/permission feedback, mic/output gain, per-peer mute/volume and a speaking indicator. Never capture on boot, offline, or after leaving a session; microphone failure must not block joining or playing.

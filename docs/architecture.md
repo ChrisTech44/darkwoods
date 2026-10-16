@@ -202,3 +202,14 @@ cleans them on scene exit and uses the same saved buses as pre-game/pause slider
 Random Night is checked on every menu load; entering a fixed seed is opt-in.
 Both modes use fresh seeds on ordinary start/Another Night and preserve the seed
 only for explicit retry. Network event IDs/deduplication are future M2-A.
+
+## Woods sight and nearby creature cues
+
+`WoodsVisibility` casts 256 collision rays out to 260px and draws an opaque
+mask beyond each first obstruction. It independently hides whole enemy sprites
+whose feet are occluded, preventing head/alert art from leaking through borders.
+AI continues to simulate hidden enemies; only rendering and visible HUD cues
+change. Native light shadows remain separate from this sight restriction.
+Calls are gated at 160px, steps at 110px, with native quadratic attenuation and
+weak source references that move active emitters with their creature. Menu
+Settings opens the shared saved mixer without interrupting menu ambience.

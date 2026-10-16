@@ -3,6 +3,8 @@ extends Node
 ## Round-owned playback. All loops/voices are freed with the round.
 
 const MAX_VOICES := 12
+const MONSTER_RANGE := 160.0
+const ENEMY_STEP_RANGE := 110.0
 const CREATURE_CUES := {"werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl"}
 var level: Node2D
 var mixer: Node
@@ -60,8 +62,15 @@ func _physics_process(delta: float) -> void:
 	var suspended: bool = level.paused or level.finished
 	for node in loops.values():
 		node.stream_paused = suspended
-	for voice in voices:
+	for voice in voices.duplicate():
 		voice.stream_paused = suspended
+		if voice.has_meta("source"):
+			var source: Node2D = voice.get_meta("source").get_ref()
+			if is_instance_valid(source):
+				voice.global_position = source.global_position
+			else:
+				voices.erase(voice)
+				voice.queue_free()
 	if suspended:
 		last_position = actor.global_position
 		return
@@ -90,8 +99,8 @@ func _physics_process(delta: float) -> void:
 			data["distance"] += travel
 			if data["distance"] >= 24.0:
 				data["distance"] = 0.0
-				play_cue("footstep", enemy.global_position, -12.0, 0.72)
-		if enemy is CampCryptid and enemy.enabled and call_timers[id] <= 0 and enemy.global_position.distance_to(actor.global_position) < 310:
+				play_cue("footstep", enemy.global_position, -12.0, 0.72, enemy)
+		if enemy is CampCryptid and enemy.enabled and call_timers[id] <= 0 and enemy.global_position.distance_to(actor.global_position) < MONSTER_RANGE:
 			_creature_call(enemy)
 	for id in enemy_steps.keys():
 		if not active_ids.has(id):
@@ -148,12 +157,14 @@ func _creature_call(enemy: CampCryptid) -> void:
 	var id := enemy.get_instance_id()
 	if call_timers.get(id, 0.0) > 0:
 		return
-	if play_cue(CREATURE_CUES[enemy.species], enemy.global_position):
+	if play_cue(CREATURE_CUES[enemy.species], enemy.global_position, 0, 1, enemy):
 		call_timers[id] = rng.randf_range(8.0, 14.0)
 
 
-func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float = 1.0) -> bool:
-	if level.paused or level.finished or not mixer.cues.has(cue) or origin.distance_to(level.player.global_position) > 430:
+func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float = 1.0, source: Node2D = null) -> bool:
+	var monster := cue in CREATURE_CUES.values()
+	var radius := MONSTER_RANGE if monster else (ENEMY_STEP_RANGE if source is CampKiller else 230.0)
+	if level.paused or level.finished or not mixer.cues.has(cue) or origin.distance_to(level.player.global_position) >= radius:
 		return false
 	# Instrument accepted local cues even with Dummy/headless output; no device needed.
 	if voices.size() >= MAX_VOICES:
@@ -168,10 +179,12 @@ func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float =
 	voice.stream = stream
 	voice.position = origin
 	voice.bus = mixer.cues[cue]["bus"]
-	voice.max_distance = 430.0 if cue != "footstep" else 230.0
-	voice.attenuation = 1.5
+	voice.max_distance = radius
+	voice.attenuation = 2.0
 	voice.volume_db = float(mixer.cues[cue]["gain_db"]) + gain_db
 	voice.pitch_scale = pitch
+	if source != null:
+		voice.set_meta("source", weakref(source))
 	add_child(voice)
 	voices.append(voice)
 	voice.finished.connect(func() -> void:

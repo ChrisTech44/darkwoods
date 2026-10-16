@@ -19,6 +19,7 @@ var revive_progress: float = 0.0
 var world_objects: Node2D
 var plan := RoundPlan.new()
 var soundscape: CampSoundscape
+var sight: WoodsVisibility
 
 
 func _ready() -> void:
@@ -92,6 +93,9 @@ func _ready() -> void:
 	hud.menu_requested.connect(return_to_menu)
 	hud.restart_requested.connect(restart_round)
 	hud.retry_requested.connect(retry_round)
+	sight = WoodsVisibility.new()
+	sight.player = player
+	add_child(sight)
 	soundscape = CampSoundscape.new()
 	soundscape.level = self
 	add_child(soundscape)
@@ -123,7 +127,7 @@ func _process(_delta: float) -> void:
 	hud.location_label.text = camp_map.location_label(player.global_position)
 	hud.supplies_label.text = "LIGHT %ds / FLARES %d" % [int(player.flashlight_charge), player.supplies["flare"]] if plan.expedition else "QUICK CAMP"
 	for enemy: CampKiller in get_tree().get_nodes_in_group("cryptids"):
-		if player.global_position.distance_to(enemy.global_position) < 180:
+		if player.global_position.distance_to(enemy.global_position) < 180 and sight.can_see(enemy.global_position):
 			hud.threat_label.text = enemy.species.replace("_", " ").to_upper() + " NEARBY"
 	if player.hex_remaining > 0:
 		hud.threat_label.text = "HEXED %.1fs / SLOWED!" % player.hex_remaining

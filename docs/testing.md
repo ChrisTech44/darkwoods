@@ -172,3 +172,20 @@ camps, road/building reservations, native paths to every camp entrance and every
 pickup. The graphical version captures seed 42 and 2026 overviews with an
 inspection camera/raised ambient light; normal play retains its usual camera and
 lighting. Quick Camp remains the fixed tutorial route.
+
+## Offline audio verification
+
+`audio_polish.gd` checks all 14 supplied files/loop flags, bus gain/mute and saved
+preferences, movement/surface selection, bog crossfade, spotted/lost heartbeat,
+six species routing/cooldowns, bounded voices, pause, results, retry and menu
+cleanup, no-device events and mute-independent AI hearing. `--audio-test` uses
+an isolated settings file that is removed afterward, preserving player settings.
+The graphical variant uses Dummy output and captures actual native MP3 PCM via
+AudioEffectCapture, with runtime gain and seek-across-end loop checks. It also
+captures the pause mixer. This establishes decode/mixer behavior, not a human
+listening session, seam quality, two-client sound or platform/export acceptance.
+
+Playback never captures or requests a microphone. Windows/Linux and desktop
+exports remain unverified. Before final mix acceptance, a human should listen to
+walking/running indoors/outdoors, campfire near/far, bog boundaries, every creature
+call, heartbeat target loss, mute/restore and pause/retry on headphones/speakers.

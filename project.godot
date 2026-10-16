@@ -9,6 +9,7 @@ config/description="An original cooperative woodland survival horror prototype."
 
 [autoload]
 Session="*res://scripts/core/session.gd"
+AudioManager="*res://scripts/core/audio_manager.gd"
 
 [display]
 window/size/viewport_width=384

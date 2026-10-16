@@ -34,3 +34,9 @@ maroon-lined cloak), witch (pointed hat, braid, staff and layered robes), and
 briar revenant (antlers, exposed ribs, twig limbs and moss) directional sheets.
 All six rebuild with the same standard-library script. Forest site scenery,
 soft radial mist, trunk occluders and projectile effects are native GDScript art.
+
+## Audio
+
+The user supplied the MP3 recordings used for local playback. See
+[audio cue mapping and provenance](audio/README.md) and [manifest](audio/manifest.json).
+These are separate from the repository's reproducible original pixel artwork.

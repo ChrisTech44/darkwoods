@@ -76,3 +76,8 @@ defaults, event/voice boundaries, content priorities and acceptance criteria.
 Before networking or voice: correct visual/map bugs, add seeded camp building
 variation with aligned loot/door paths, and integrate the supplied MP3 cues.
 Verify local audio independently; M2-A still requires future two-client evidence.
+
+Offline layout/audio implementation now includes seeded camp lots and all 14
+user-supplied MP3 cues, saved mix controls and local cleanup/decode tests. Asset
+license documentation and human listening remain unverified; this does not pass
+the synchronized M2-A gate or any voice/platform/export gate.

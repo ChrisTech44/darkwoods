@@ -1,5 +1,64 @@
 # Development log
 
+## 2026-10-16 — Offline supplied audio, adaptive heartbeat and saved mixer
+
+**Scope:** continued the visual/audio-first amendment after publishing the layout
+increment `354ca4e`. Integrated all 14 user-supplied MP3s, including the vampire
+snarl added during work. No downloaded/generated replacement audio, networking
+or microphone capture. Original MP3s remain byte-identical; manifest records cue
+IDs, hashes, durations, bus/loop/gain settings and pending source/license details.
+
+**Playback:** round-owned forest/bog crossfade, positional campfire, restrained
+music, indoor footsteps, outdoor sprint loop and distance-based walking/enemy
+steps. Heartbeat smoothly rises when any enabled enemy actually sees this player
+and chases, then fades after target loss; it never changes AI sensing. All six
+creature species have appropriate named calls on alerts/nearby activity; witch
+wind-up shares the per-source cooldown to prevent stacked cackles. Twelve-voice
+positional pool and seven loop channels are bounded. Surface/collision/boarding
+stop movement sounds; pause suspends playback; results stop it; scene replacement
+frees loops/voices/listener. Headless/no-output operation remains playable.
+
+Master/Effects/Ambience/Music sliders fit the pause panel and save preferences;
+zero mutes. Voice bus is reserved/inactive. Peak/mean analysis revealed large
+recording level differences, especially the fire's ~43dB crest factor. Per-cue
+gains, a fire compressor routed through Ambience, and master limiter keep detail
+audible while bounding peaks. These are initial measured settings; final comfort,
+loop seam quality and balance still need human listening.
+
+**Verification:** `python3 tools/verify.py --graphical` final exit 0: **60 steps**,
+zero engine errors/warnings; import/startup and every script parse, nine suites
+headlessly and graphically, including complete active-enemy camp/woods escapes.
+Audio suite: **46 headless / 68 graphical assertions, zero failures**. Actual
+MP3 decoding and nonzero gain-staged PCM verified for all 14 files through their
+native mixer buses/effects using Dummy output; all seven native loops wrap after
+seeking across the end. Checked mute persistence, all six species/cooldowns,
+heartbeat attack/release, floor/sprint selection, bog crossfade, bounded voices,
+pause/resume, no-device handling, results, retry/menu cleanup and mute-independent
+AI hearing. Normal graphical gameplay suites use the platform output driver,
+but no human listening session is claimed. Eight-seed native layout checks still
+pass 361 headless / 363 graphical assertions.
+
+**Iteration:** initial audio test had an unsupported driver-query API and an
+inferred WeakRef parse error; corrected to the installed API/explicit type.
+Headless streams never start, so their paused flag cannot demonstrate suspension;
+the fixture now tests rejection/no-device behavior there and real suspension
+with output active. Full regression exposed fixture enemies added after round
+initialization; soundscape now registers new enemies and prunes stale IDs safely.
+Final decoder test drains stale samples between cues and taps each real cue bus,
+including fire compression, rather than attributing previous-cue tails to a file.
+
+Opened and inspected final pause mixer, field guide, both camp layouts, campsite,
+field notes and escape/woods views. [Full report](evidence/audio_polish/summary.json),
+[coverage/limits](evidence/audio_polish/README.md). All 14 MP3 hashes match the
+manifest, local Markdown links/images resolve, and `git diff --check` passes.
+Markdown/Word briefs aligned; all 54 requirement bullets match, all DOCX XML
+parses and compatibility namespace declarations are present. DOCX render retry
+failed because `pdf2image` is absent; LibreOffice is unavailable, so Word visual
+QA remains unverified. macOS arm64 / Godot 4.7.2 only. Human listening/balance,
+Windows/Linux, exports, synchronized audio and network/voice gates remain open.
+No microphone permission is requested; future voice must test platform permission
+denial/no-device behavior without blocking gameplay.
+
 ## 2026-10-16 — Camp path fixes and seeded building lots
 
 User amendment prioritizes visual/map fixes, camp variation and supplied sounds

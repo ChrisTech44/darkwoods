@@ -2,6 +2,8 @@ class_name CampKiller
 extends CharacterBody2D
 ## Authority-only senses and FSM. Destinations come from patrol or sensed memory.
 
+signal state_changed(next: State)
+
 enum State { PATROL, INVESTIGATE, CHASE, SEARCH }
 
 var config: CampConfig = preload("res://assets/default_config.tres")
@@ -168,6 +170,7 @@ func transition(next: State) -> void:
 	if state == next:
 		return
 	state = next
+	state_changed.emit(next)
 	path_clock = 0.0
 	if next == State.SEARCH:
 		search_remaining = config.search_seconds

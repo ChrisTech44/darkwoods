@@ -10,7 +10,8 @@ the original voice-chat exclusion. See [audio/multiplayer design](docs/audio_mul
 layout variety, and implement the user-supplied audio files **before** online
 multiplayer and proximity voice. Offline audio has its own local checks; the
 networked M2-A and M3-V acceptance gates still require future execution evidence.
-Current gameplay is offline; voice capture and networking are not implemented. The adjacent Word brief mirrors these requirements.
+Current gameplay is offline; local audio playback is implemented with local
+verification. Voice capture and networking are not implemented. The adjacent Word brief mirrors these requirements.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 
@@ -66,7 +67,7 @@ Current gameplay is offline; voice capture and networking are not implemented. T
 
 - If host disconnects, terminate the session gracefully with an explanatory UI message (no host migration for MVP). Ensure disconnected players are removed, and round reset does not leak orphan nodes/RPCs.
 
-## Audio files and proximity voice — planned
+## Audio files and planned proximity voice
 
 - Implement local AudioManager playback now, ahead of M2 per the priority amendment, with separate master, effects, ambience/music and voice volume controls. Use original or redistributable files with documented source/license and stable cue IDs; track asset provenance in `assets/audio`. Never claim audio exists while only visual/noise-event cues are implemented.
 - Prioritize footsteps, monster approach/attack cues, witch wind-up/bolt/hex, interaction/cache/cutters, flare/flashlight, revive/damage, van start/departure, village bell and environmental loops. Keep visual cues available; muted or unavailable audio must not prevent play.

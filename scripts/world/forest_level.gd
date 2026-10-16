@@ -18,6 +18,7 @@ var revive_target: CampPlayer
 var revive_progress: float = 0.0
 var world_objects: Node2D
 var plan := RoundPlan.new()
+var soundscape: CampSoundscape
 
 
 func _ready() -> void:
@@ -91,6 +92,9 @@ func _ready() -> void:
 	hud.menu_requested.connect(return_to_menu)
 	hud.restart_requested.connect(restart_round)
 	hud.retry_requested.connect(retry_round)
+	soundscape = CampSoundscape.new()
+	soundscape.level = self
+	add_child(soundscape)
 	print(JSON.stringify({"event": "round_ready", "milestone": "M1"}))
 
 
@@ -293,6 +297,7 @@ func announce(text: String) -> void:
 
 func finish_round(success: bool, detail: String) -> void:
 	finished = true
+	soundscape.stop_round()
 	won = success
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		actor.controls_enabled = false

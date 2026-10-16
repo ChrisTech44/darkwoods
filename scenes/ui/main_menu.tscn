@@ -118,7 +118,7 @@ text = "SURVIVOR FIELD GUIDE"
 [node name="Bindings" type="Label" parent="ControlsPanel/Margin/Content"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 9
-text = "WASD / Arrows  Walk    Shift  Sprint (noisy!)\nE  Use / hold to start or revive    F  Flashlight\nQ  Flare    R  Battery    C  Food    Tab  Notes    Esc  Pause"
+text = "WASD / Arrows  Walk    Shift  Sprint (noisy!)\nE  Use / hold to start or revive    F  Flashlight\nQ  Flare    R  Battery    C  Food    Tab  Notes    Esc  Pause / audio"
 
 [node name="Note" type="Label" parent="ControlsPanel/Margin/Content"]
 layout_mode = 2

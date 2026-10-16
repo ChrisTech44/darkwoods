@@ -26,7 +26,7 @@ No external assets, plugins, or package dependencies are required.
 - `scripts/network`: reserved for M2 ENet and authority boundaries.
 - `assets/tiles`, `assets/sprites`: original terrain and directional character/tree
   sheets, reproducible with `tools/build_pixel_art.py` and
-  `tools/build_cryptids.py`; audio remains reserved.
+  `tools/build_cryptids.py`; supplied audio provenance is recorded separately.
 - `tests/integration`: menu, isolated physics/rule fixtures, and full input rounds.
 - `tests/unit`: reserved; current rules are verified with real engine physics.
 - `tools`: Python standard-library launch and verification scripts.
@@ -76,7 +76,8 @@ a field map, and Esc freezes actor physics and round timers. CanvasModulate uses
 very low ambient light; small nearby glow preserves the player silhouette while
 flashlight beams, warm cabin/camp lights and headlights light local terrain.
 Walls/trunks cast visual shadows. The old full-screen darkness shader is removed.
-Footstep hints and the killer's !/? indicators are visual telegraphs; no audio yet.
+Footstep hints and the killer's !/? indicators remain visual telegraphs alongside
+local audio playback.
 Quick Camp retains fixed M1 pickups/patrol. The user's woods request authorizes
 the following replayability work ahead of M2.
 
@@ -136,7 +137,7 @@ emits an event at its own position within 1100px and has a 12s cooldown; the wel
 awards two flares, a battery and rations once. The cauldron refills torch charge
 once at the cost of a 2s hex; the crypt awards two flares once. Stashes and
 expedition pickups emit location-based noise stimuli, with no unsensed player
-tracking. These are AI/visual events; audio remains unimplemented.
+tracking. These are authoritative gameplay stimuli independent of local mixer settings.
 
 Expeditions guarantee vampire and witch, plus two distinct draws from wolf,
 Sasquatch, moth and briar revenant: four cryptids plus the camp stalker. Home cells
@@ -175,3 +176,21 @@ Expedition uses seeded offsets. `RoundPlan.camp` remaps indoor loot from authore
 coordinates, and `CampMap` uses that same recipe for walls, roofs, lights, door
 paths and the field chart. Tree placement excludes roads and building clearances.
 Native navigation uses the resulting collision rectangles.
+
+## Offline audio
+
+`AudioManager` autoload loads the real-file manifest, creates Master/Effects/
+Ambience/Music/Voice buses and a master limiter, caches duplicate MP3 streams,
+compresses the quiet fire recording on a sub-bus routed through Ambience,
+and saves volume preferences to `user://audio_settings.cfg`. Voice is inactive.
+`CampSoundscape` belongs to one round and owns seven loop channels, a local
+AudioListener2D, and a pool of at most 12 positional one-shots. It selects
+footsteps from actual movement/surface, crossfades bog/woods and indoor ambience,
+and smooths heartbeat from sensed-target chase state. Campfire uses native
+distance attenuation. Creature transition/casting signals and nearby calls share
+per-source cooldowns. It never emits AI stimuli or reads a microphone.
+
+Headless mode tracks local accepted cues without starting playback. Missing or
+unrecognized streams fail safely. Pause suspends streams; results stop all audio;
+restart/menu replacement frees the entire soundscape. Persistent mixer settings
+do not retain round playback. Network event IDs/deduplication are future M2-A.

@@ -8,7 +8,7 @@ van while a stalker and roaming cryptids hunt by sight, sound, and light.
 
 **Playable now:** an offline solo prototype with two modes and complete
 escape/defeat/replay loops. The intended game is 1–4 player online co-op;
-visual polish and local sound are the current priorities. Networking and voice
+the latest update fixes camp trails and adds local sound. Networking and voice
 are **not implemented yet**. Run this
 prototype from source; standalone desktop packages are a later milestone.
 
@@ -150,7 +150,23 @@ Each expedition spawns **four different cryptid species alongside the stalker**.
 The stalker starts nearer the camp routes; cryptids roam wider trail circuits and
 visit the objective areas. Enemies lead visible moving targets briefly and sweep
 reachable points around their last sensed location after losing sight.
-Current threat/charge cues are visual; audio is not implemented yet.
+Creature calls and footsteps complement the visual threat cues. A heartbeat fades
+in when the stalker or a cryptid sees you, then fades away after pursuit.
+
+## Sound and volume
+
+The supplied MP3s now provide forest/bog ambience, a positional campfire,
+restrained music, surface-specific walking/running sounds, six creature voices,
+and pursuit heartbeat. Creature calls have cooldowns; visual cues remain usable
+with sound muted. **Esc** opens Master, Effects, Ambience and Music sliders;
+settings persist and zero mutes. Pause suspends sound, results stop it, and
+replaying creates fresh emitters. Muting does not change monster hearing.
+
+No microphone capture, permission prompt or voice chat exists in this offline
+build. See the [cue manifest and provenance notes](assets/audio/README.md).
+Final listening/balance and Windows/Linux/exported audio remain unverified.
+
+![Pause menu with saved Master, Effects, Ambience and Music controls](docs/evidence/audio_polish/audio_pause_mixer.png)
 
 ## Use the forest sites
 
@@ -214,8 +230,8 @@ a complete automated expedition with all enemies active.
 ## Development and verification
 
 The current implementation is **M1 plus the requested woods/replayability and
-visual expansion**. The latest full graphical verification passed all 50 steps,
-including import/startup, every GDScript parse, seven suites headlessly and
+visual expansion**. Recorded forest-hunt verification passed all 50 steps,
+including import/startup, every GDScript parse, gameplay suites headlessly and
 graphically, and complete camp/woods escape playthroughs, with zero engine errors
 or warnings. See the [recorded report](docs/evidence/forest_hunt/summary.json)
 and [evidence notes](docs/evidence/forest_hunt/README.md).
@@ -230,8 +246,9 @@ connected multiplayer, exported packages, and execution on Windows/Linux remain
 unverified. The automated woods player uses navigation paths as a route guide;
 the tests do not establish balance for every seed.
 
-Upcoming milestones cover ENet host/join and synchronized co-op (**M2**),
-four-player reliability (**M3**), and desktop distribution (**M4**).
+Latest layout/audio checks and limits are recorded in the development log.
+Upcoming milestones cover ENet host/join and synchronized co-op/audio (**M2/M2-A**),
+four-player reliability and proximity voice (**M3/M3-V**), and desktop distribution (**M4**).
 
 - [Authoritative project brief](AGENT_BRIEF.md) — requirements and acceptance gates.
 - [Milestones](docs/milestones.md) — implementation plan and remaining work.

@@ -1,6 +1,8 @@
 class_name CampCryptid
 extends CampKiller
 
+signal spell_started
+
 var species: String = "werewolf"
 var hunt_clock: float = 0.0
 var sheet: Texture2D
@@ -105,6 +107,7 @@ func _advance_spell(delta: float) -> void:
 		return
 	if not casting and cast_cooldown <= 0:
 		casting = true
+		spell_started.emit()
 		cast_remaining = 0.8
 		# Lock the aim during the readable wind-up. No late homing.
 		cast_aim = visible_target.global_position + visible_target.velocity * 0.2

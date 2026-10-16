@@ -1,6 +1,6 @@
 # Audio and online proximity voice design
 
-Status: **offline audio prioritized; synchronized audio and proximity voice planned**. This user-approved amendment replaces the
+Status: **offline audio implemented; synchronized audio and proximity voice planned**. This user-approved amendment replaces the
 original voice-chat exclusion in [AGENT_BRIEF.md](../AGENT_BRIEF.md). The build is offline. The 16 October amendment prioritizes visual/map fixes,
 seeded camp variation and user-supplied sound files before networking/voice.
 Local playback does not establish two-client audio or microphone acceptance. Use [milestones](milestones.md) for delivery gates.
@@ -35,7 +35,7 @@ Store runtime assets under [assets/audio](../assets/audio/README.md), grouped as
 effects, ambience and music. Keep editable source material separate from runtime
 exports. Every cue needs a stable ID, relative asset path, creator/source/license,
 edit history, import format/settings, loop information, bus and playback limits.
-Track these in a future manifest; no placeholder path should imply a shipped file.
+Track these in the [local manifest](../assets/audio/manifest.json); no placeholder path should imply a shipped file.
 
 | Priority | Planned cues |
 | --- | --- |
@@ -57,7 +57,8 @@ when audio is muted/unavailable.
 
 ## Audio architecture and event contract
 
-AudioManager is a planned local playback/mix service. Headless authority must run
+AudioManager is now a local playback/mix service; network event handling remains
+planned. Headless authority must run
 without opening output devices. It plays registered assets by cue ID, positions
 world emitters, chooses seeded variants and controls looping emitter lifetimes.
 UI/menu audio stays local and does not generate network events.
@@ -160,4 +161,4 @@ results; do not report real microphone quality from synthetic packets alone.
 Use synthetic deterministic audio for routing/load automation and actual opted-in
 microphones/headphones for listening tests. Log event counts, queue limits and
 latency measurements, never microphone content. Preserve commands and honest
-results in the development log; these tests have not been executed yet.
+results in the development log; online/microphone tests have not been executed yet. Local-only evidence is in the development log.

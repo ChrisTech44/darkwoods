@@ -108,6 +108,8 @@ func _panel(heading: String, detail: String, replay: bool) -> PanelContainer:
 		retry.text = "RETRY THIS SEED"
 		retry.pressed.connect(_retry)
 		column.add_child(retry)
+	if not replay:
+		column.add_child(preload("res://scripts/ui/audio_controls.gd").new())
 	var menu := Button.new()
 	menu.name = "Menu"
 	menu.text = "MAIN MENU"

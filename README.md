@@ -13,6 +13,8 @@ real cross-machine/Internet and other-platform acceptance remains pending.
 **Voice chat is next and is not implemented.** Run from source; standalone
 packages are a later milestone.
 
+See the [item reference](#items) for every item, its location and how to use it.
+
 ![The forest menu with Woods Expedition and optional seed selection](docs/evidence/sight_audio/menu_defaults.png)
 
 ## Survivors, biomes and the item belt
@@ -168,27 +170,90 @@ your own outcome too; living survivors left outside are left behind.
 | **Tab** | Toggle pack, objective clues, and field map |
 | **Esc** | Solo: pause/resume. Co-op: local menu; the shared world continues. |
 
+## Items
+
+Press **E** near an item to collect it. Walls block collection. **Tab** shows the
+current night's required parts and their location clues; exact building and
+woods positions vary with the seed. In co-op, pickups and searchable stashes
+are shared: taking one removes it for everyone.
+
+### Vehicle parts and reusable tools
+
+These go in your pack and **do not use belt slots**. Press **E at the van's rear**
+to install carried required parts. Quick Camp needs battery, fuel and key.
+Woods Expedition needs those three plus **two** parts chosen from drive belt,
+fuse, tire and spark plug; check Tab to see which two your night requires.
+
+| Item | Where to find it | What it does |
+| --- | --- | --- |
+| **Van battery** | Quick Camp: Fern Bunk Cabin. Woods: one of the Fern/Pine bunk cabins or Cedar Bunkhouse. | Required van component in both modes. This is different from a spare flashlight battery. |
+| **Fuel** | Quick Camp: Maintenance. Woods: one of the three locked objective caches listed below. | Required van component in both modes. |
+| **Key** | Quick Camp: Ranger Lodge. Woods: Ranger Lodge or First Aid. | Required van component in both modes. |
+| **Drive belt** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
+| **Fuse** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
+| **Tire** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
+| **Spark plug** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
+| **Boltcutters** | Woods only: Maintenance. | Reusable tool that opens locked caches when you press E. Kept after use; it is not installed in the van. |
+
+The Woods objective caches are in **Village / Surveyor Hut**, **Witch's Bog /
+Stash**, and **Old Graveyard / Cache**. Fuel and the two selected extra parts are
+shuffled among these three caches. Optional landmark biomes are not required to
+complete the van. Building lots move with the seed, so follow the named clues
+rather than memorizing screen coordinates.
+
+### Flashlight and survival supplies
+
+Every survivor has a built-in **flashlight**; it is not a pickup or belt item.
+Toggle it with **F**. It starts with **90 charge**, drains at 1 charge/second
+while lit in expedition woods (Scout: 0.8/second), and switches off at zero.
+Camp use does not drain charge. Teammates see its light too.
+
+**Woods loot** below means seeded supply pickups scattered through forest
+clearings; the 96 scattered pickups include all seven supply types. **Landmark
+reward** means a one-time search in Flooded Mill, Bramble Orchard, Broken
+Observatory, Rail Yard, White Stone Quarry or Candle Chapel. Each landmark gives
+one of noise tin, salt ward or glow moss; the reward depends on its seeded site.
+
+| Supply | Where to find it | What it does / how to use it |
+| --- | --- | --- |
+| **Flare** | Start with 2; Woods loot; 3-flare Maintenance stash; Village well; Graveyard crypt. Medic and Overprepared start with +1. | **Q**, or select + **V**, throws it ahead. Lights the area for up to **9s** and repels enemies with clear sight nearby. Lantern Moths follow it; Candle Grazers can consume it. |
+| **Spare flashlight battery** | Start with 1; Woods loot; extra campsite battery; Village well. Grease Monkey and Overprepared start with +1. | **R**, or select + **V**, restores **70 charge**, capped at 90, and switches the light on. Not consumed if already full. |
+| **Rations** | Start with 1; Woods loot; Village well. Scout and Overprepared start with +1. | **C**, or select + **V**, restores full stamina and clears exhaustion. Not consumed at full stamina. Eating can attract nearby Ration Moths. |
+| **Medkit** | First-Aid Kid starts with 1; Woods loot. | Carry one and **hold E beside a downed teammate**: 3s, or 2.25s as First-Aid Kid. Consumes one kit on completion. Interrupted attempts keep it. No self-revive; V does not use a medkit. |
+| **Noise tin** | Woods loot; landmark reward. | Select + **V** places a lure ahead. It rattles at **1.5s, 3.5s and 5.5s**, drawing noise-sensitive enemies within 480 world pixels. Move away before they investigate. |
+| **Salt ward** | Woods loot; landmark reward. | Select + **V** grants **4s of protection from physical hits**. Does not heal or remove hexes. |
+| **Glow moss** | Woods loot; landmark reward. | Select + **V** restores **35 light charge**, capped at 90, and removes the current hex. Use F if your flashlight was switched off. |
+
+The extra campsite battery, Maintenance flare stash, forest supply pickups and
+searchable biome rewards are **Woods Expedition sources**. Quick Camp has its
+three objective pickups and survivors' starting supplies; no ground medkits or
+extra supply stashes spawn there. A First-Aid Kid can bring a medkit into Quick
+Camp, and downed/disconnected teammates drop their carried gear in either mode.
+
+The **Village well** gives two flares, one spare battery and one ration; the
+**Graveyard crypt** gives two flares. Both are one-time shared rewards and make
+noise. The Bog cauldron is an environmental interaction, not a carried item:
+press E once to refill your light, at the cost of a 2s hex and a loud noise.
+
+### Carrying, selecting and sharing items
+
+The belt holds **six different supply types**; matching units stack in the same
+slot. Select with **1–6 or keypad 1–6**, use with **V** (medkits use hold E), and
+press **G** to drop the selected supply's **whole stack**. The belt labels show
+slot keys and names; Tab shows flare, battery and ration counts. Parts and
+boltcutters stay outside this limit.
+
+On down or disconnect, every carried part, tool and supply unit drops beside
+the survivor for teammates to recover with E. Without a medkit, E still collects
+gear near a downed teammate. Players cannot use supplies while downed.
+
 ## Survive the woods
 
 Walking recovers stamina. Sprint to create distance, then go quiet: enemies
 investigate noises and search where they last sensed you. Walls block their
-sight; losing line of sight helps break pursuit.
+sight; losing line of sight helps break pursuit. **Fog** shortens enemy sight and
+the woods flashlight beam; **rain** reduces enemy hearing.
 
-| Supply or condition | Rule |
-| --- | --- |
-| **Flashlight** | Starts with 90 seconds of charge. In an expedition it drains while lit in the woods, then switches off when empty. Turning it off saves charge. Camp use does not drain it. |
-| **Spare battery — R** | Restores up to 70 seconds, capped at 90, and switches the light on. |
-| **Flare — Q** | Burns for nine seconds. Repels nearby stalker/cryptids with sight to it except moths and candle grazers; moths follow it and grazers consume it. |
-| **Rations — C** | Restore full stamina and clear exhaustion. |
-| **Medkit** | Required and consumed on a completed teammate revive: three seconds, or 2.25 seconds as First-Aid Kid. It does not provide a solo self-revive. |
-| **Noise tin — select, V** | Drops a lure ahead of you. Rattles after 1.5s, 3.5s and 5.5s with 480px hearing reach. Leave before investigators arrive. |
-| **Salt ward — select, V** | Protects from physical hits for 4s. Does not heal or remove hexes. |
-| **Glow moss — select, V** | Restores 35 light charge, capped at 90, and removes your current hex. |
-| **Fog** | Shortens enemy sight and the woods flashlight beam. |
-| **Rain** | Reduces enemy hearing. |
-
-Baseline supplies are two flares, one spare battery, and one ration pack; survivor bonuses add to these.
-Search for additional supplies in camp, woods clearings, and themed sites.
 Tools and supplies cannot be used while paused or downed. Every survivor’s
 flashlight, nearby glow and deployed flares illuminate the shared world on each
 connected screen; walls and the viewer’s woods line of sight still block visibility.

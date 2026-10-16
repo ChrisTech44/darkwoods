@@ -1,5 +1,22 @@
 # Development log
 
+## 2026-10-16 — GitHub item reference with locations and effects
+
+Expanded the README with a linked **Items** section covering all seven van
+components, reusable boltcutters, built-in flashlight and seven supply types.
+Tables distinguish both modes' spawn locations, seeded objective-cache assignment,
+starting-role bonuses, scattered woods loot and optional landmark rewards.
+Documented one-time well/crypt stashes, noisy cauldron interaction, exact supply
+values/controls, six-type belt stacking, automatic medkit use and drop/recovery.
+Explicitly distinguished van battery from flashlight batteries and noted that
+Quick Camp has no ground medkits or extra supply stashes.
+
+Checked rules against RoundPlan, SurvivorRoster, ForestLevel, ForestSite, flare/
+lure behavior and pickup locations. Existing screenshots retained; README image
+paths/local links/heading anchors all resolve. Required Godot headless import
+and five-frame startup both exited 0 with no errors/warnings; `git diff --check`
+passed. Documentation-only change; no gameplay code or new tests.
+
 ## 2026-10-16 — Active enemies through downs and scoped interaction feedback
 
 Confirmed that enemy senses still selected DOWNED actors after the indefinite-

@@ -6,8 +6,9 @@ Second half of the chase toolkit, in a host-owned `ChaseProps` node
 (`scripts/world/chase_props.gd`).
 
 - **Hiding:** one or two spots per building, placed beside bunks, cots,
-  lockers, crates, canoes, tables or desks on clear interior ground. About 100+
-  brush spots on woods corridors (separate RNG, spaced 520 px). Hidden survivors
+  lockers, crates, canoes, tables or desks on clear interior ground, plus brush
+  spots on woods corridors (separate RNG, spaced 520 px). Night 42 has 18 camp
+  spots, 195 brush spots, 9 woodpiles and 60 deadfalls. Hidden survivors
   snap in, can't move, are skipped by AI senses, dashes, hazards and bolts, and
   their light switches off (restored on leaving). Breath drains 0.25/s within
   120 px of a creature and recovers 0.2/s; at zero they gasp (220 px noise) and

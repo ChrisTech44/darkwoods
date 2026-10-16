@@ -9,6 +9,10 @@ enum Status { ALIVE, DOWNED, DEAD, ESCAPED, LEFT_BEHIND, BOARDED }
 
 var sheet: Texture2D
 var config: CampConfig = preload("res://assets/default_config.tres")
+var peer_name := ""
+var net_controlled := false
+var network_direction := Vector2.ZERO
+var network_sprint := false
 var local_input: bool = true
 var controls_enabled: bool = true
 var status: Status = Status.ALIVE
@@ -51,7 +55,9 @@ func _physics_process(delta: float) -> void:
 		if flashlight_charge <= 0:
 			flashlight_on = false
 	invulnerability = maxf(0.0, invulnerability - delta)
-	if local_input and controls_enabled:
+	if net_controlled and controls_enabled:
+		apply_intent(network_direction,network_sprint,delta)
+	elif local_input and controls_enabled:
 		apply_intent(Input.get_vector("move_left", "move_right", "move_up", "move_down"),
 			Input.is_action_pressed("sprint"), delta)
 	else:
@@ -129,6 +135,8 @@ func set_status(next: Status) -> void:
 func _draw() -> void:
 	if status in [Status.ESCAPED, Status.BOARDED]:
 		return
+	if not peer_name.is_empty():
+		draw_string(ThemeDB.fallback_font,Vector2(-18,-34),peer_name,HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("b9d4b2"))
 	draw_circle(Vector2(0, 1), 7, Color(0, 0, 0, 0.35))
 	if hex_remaining > 0 and status == Status.ALIVE:
 		draw_arc(Vector2(0,-2), 11, 0, TAU, 16, Color("b4a3d3"), 1)

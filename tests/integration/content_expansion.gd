@@ -96,6 +96,11 @@ func _run() -> void:
 	_check(player.held_item().is_empty() and player.supplies["noise_tin"]==0,"drop_stack_frees_slot")
 	_check(level.try_interact(player) and player.supplies["noise_tin"]==1,"dropped_item_recovered_once")
 	_check(not level.try_interact(player),"dropped_item_no_duplicate")
+	var bounded_count: int=level.pickups.size()
+	var recycling_ok := true
+	for cycle in range(20):
+		recycling_ok=level.drop_held(player) and level.try_interact(player) and recycling_ok
+	_check(recycling_ok and level.pickups.size()==bounded_count,"twenty_drop_recovery_cycles_reuse_transient_units")
 	_check(level.use_supply(player,"noise_tin"),"tin_lure_usable")
 	var lure: NoiseLure
 	for hazard in get_nodes_in_group("hazards"):

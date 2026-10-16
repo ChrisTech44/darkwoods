@@ -77,10 +77,10 @@ func _ready() -> void:
 
 func _label(at: Vector2, dimensions: Vector2, font_size: int) -> Label:
 	var label := Label.new()
-	label.position = at
-	label.size = dimensions
 	label.add_theme_font_size_override("font_size", font_size)
 	root.add_child(label)
+	label.position = at
+	label.size = dimensions
 	return label
 
 
@@ -153,7 +153,10 @@ func show_result(won: bool, detail: String) -> void:
 	var column := result_panel.get_child(0)
 	column.get_node("Heading").text = "DAWN AWAITS" if won else "LOST IN THE WOODS"
 	column.get_node("Detail").text = detail
-	column.get_node("Restart").grab_focus()
+	if column.get_node("Restart").disabled:
+		column.get_node("Menu").grab_focus()
+	else:
+		column.get_node("Restart").grab_focus()
 
 
 func update_belt(actor: CampPlayer) -> void:

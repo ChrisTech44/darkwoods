@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"assertion","name":"wait_late_","passed":true}
+{"event":"assertion","name":"late_join_refused","passed":true}
+{"event":"menu_ready","milestone":"M1"}
+{"checks":2,"event":"test_result","failures":0,"largest_snapshot_payload":0,"snapshot_bytes":0,"suite":"network_late_woods_2"}

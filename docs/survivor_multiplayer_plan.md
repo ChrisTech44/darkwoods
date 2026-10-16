@@ -3,8 +3,9 @@
 Status: **offline selection and six personal bonuses implemented**. See
 [content update](content_update.md) for the shipped rules and execution evidence.
 The human balance gate and full all-role input-only rounds remain pending.
-Networking and voice are not implemented. The following design remains the
-acceptance target; later online sections are plans. The user's latest amendment
+ENet co-op with role authority is implemented and locally tested; voice is not implemented. The following design remains the
+acceptance target; the current ENet implementation is documented in the
+[multiplayer guide](multiplayer_guide.md), and voice/remaining acceptance are plans. The user's latest amendment
 prioritizes offline content before M2.
 
 ## What the player chooses
@@ -144,7 +145,7 @@ Monster mimic concepts use authored sounds, never captured player speech.
 **M4:** export and actually test available desktop targets; package attribution
 and chosen codec dependencies and verify permissions in packaged builds. Current
 execution evidence is macOS arm64/Godot 4.7.2 only. Windows, Linux, Intel Mac,
-exports, real microphones and networked sessions remain unverified.
+exports, real microphones and cross-machine/network Internet sessions remain unverified.
 
 ## Later content alongside a stable co-op foundation
 

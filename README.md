@@ -6,11 +6,12 @@ An original top-down pixel-art survival horror game built in Godot 4. Explore
 Fernwood's cabins, follow twisting trails into the woods, and repair your escape
 van while a stalker and roaming cryptids hunt by sight, sound, and light.
 
-**Playable now:** an offline solo prototype with two modes and complete
-escape/defeat/replay loops. The intended game is 1–4 player online co-op;
-the latest update adds survivor selection, an item belt, six optional biomes and seven new monster types. Networking and voice
-are **not implemented yet**. Run this
-prototype from source; standalone desktop packages are a later milestone.
+**Playable now:** offline solo and **1–4 player ENet host/join co-op**, with
+Quick Camp and Woods Expedition. Host on LAN/Wi-Fi or a reachable Internet /
+virtual-LAN address. Independent local-process and graphical network tests pass;
+real cross-machine/Internet and other-platform acceptance remains pending.
+**Voice chat is next and is not implemented.** Run from source; standalone
+packages are a later milestone.
 
 ![The forest menu with Woods Expedition and optional seed selection](docs/evidence/sight_audio/menu_defaults.png)
 
@@ -46,7 +47,7 @@ Bramble Orchard, Starless Observatory, Last-Car Rail Yard, White Stone Quarry,
 and Drowned Chapel**. Each has multiple approaches, a one-time rare tool and a
 territorial guardian. Required components still come from the original regions.
 
-![Survivor selection](docs/evidence/content_expansion/survivor_selection.png)
+![Survivor selection](docs/evidence/multiplayer/survivor_selection.png)
 
 [Full content guide and inspection screenshots](docs/content_update.md) covers
 hunter/guardian counterplay and the current prototype limits.
@@ -100,6 +101,20 @@ Set `GODOT_BIN` to another executable if needed. Use
 `python3 tools/run_game.py --editor` to open the editor. On Windows,
 `py -3` can replace `python3`. See [setup and testing](docs/testing.md).
 
+## Play with friends
+
+Open **Host / Join Co-op**, choose your name/survivor, and **Host** or enter the
+host address and **Join**. Default port: **UDP 27840**. Everyone marks **Ready**;
+the host chooses mode/seed and starts. LAN/Wi-Fi uses the host's local IP;
+Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
+
+**[Connection setup, co-op rules and screenshots](docs/multiplayer_guide.md)**
+explains routing, joining, revives, shared escape and replay. New joins are
+lobby-only. **Esc opens a local menu without pausing the shared world.**
+Voice/microphone capture is not enabled.
+
+![Connected co-op lobby](docs/evidence/multiplayer/lobby_camp_2.png)
+
 ## Choose your night
 
 | Mode | Repair objective | Threats and exploration |
@@ -127,10 +142,11 @@ and chapel are optional; six smaller ruined landmarks also remain along the trai
 5. **Stay aboard.** Starting automatically seats the driver. The van departs
    after **eight seconds**, and passengers are safe inside.
 
-Only boarded survivors extract. The implemented teammate boarding rule is
+Only boarded survivors extract. Teammates board with
 **E beside the running van**; standing nearby does not count, and downed survivors
-cannot board. Teammate boarding and revive currently use local test fixtures,
-since connected co-op is still in development.
+cannot board. Connected teammates can revive and board together. The automated network tests
+use host-only placements for isolated authority checks; human co-op balance is
+still unrecorded.
 
 A round is won when at least one living passenger escapes. The results report
 your own outcome too; survivors left outside are left behind.
@@ -150,7 +166,7 @@ your own outcome too; survivors left outside are left behind.
 | **R** | Use a spare flashlight battery |
 | **C** | Eat rations to restore stamina |
 | **Tab** | Toggle pack, objective clues, and field map |
-| **Esc** | Pause or resume; close the menu's field guide |
+| **Esc** | Solo: pause/resume. Co-op: local menu; the shared world continues. |
 
 ## Survive the woods
 
@@ -177,8 +193,8 @@ Tools and supplies cannot be used while paused or downed.
 
 The first hit **downs** a survivor. A second hit or **16 seconds of bleeding out**
 eliminates them. A living teammate can hold E nearby to revive, with a short grace
-period after revival. In the current solo mode, nobody can revive you, so avoid
-being downed.
+period after revival. In solo play nobody can revive you. In co-op, call for a living teammate and
+avoid enemies that can deliver a second hit.
 
 ### Know what is following you
 
@@ -237,8 +253,9 @@ the same controls are behind **Settings** on the main menu, with music and subdu
 ambience playing. Settings persist and zero mutes. Pause suspends round sound, results stop it, and
 replaying creates fresh emitters. Muting does not change monster hearing.
 
-No microphone capture, permission prompt or voice chat exists in this offline
-build. See the [cue manifest and provenance notes](assets/audio/README.md).
+No microphone capture, microphone permission prompt or voice chat exists in
+the current build. Local sound follows replicated world movement; synchronized
+audio event/listening acceptance remains pending. See the [cue manifest and provenance notes](assets/audio/README.md).
 Final listening/balance and Windows/Linux/exported audio remain unverified.
 
 ![Pause menu with saved Master, Effects, Ambience and Music controls](docs/evidence/audio_polish/audio_pause_mixer.png)
@@ -279,6 +296,10 @@ After a round:
 - **Try Another Night** returns to the menu. Choose/confirm a survivor and start a fresh random night in either mode.
 - **Retry This Seed** keeps your survivor and seed, with the same layout and fresh items/supplies.
 - **Main Menu** returns to mode selection.
+
+In co-op, only the host chooses replay: everyone returns to the lobby with
+readiness cleared; Retry Seed retains the world recipe. Guests wait for the host
+or leave. A host disconnect ends the session.
 
 Both modes vary building positions and surrounding trees within reserved camp
 lots. Bunk cabins can trade places, as can the bathhouse and first aid building. Door paths, loot and field-map markers move together. Roof footprints
@@ -367,7 +388,7 @@ and how to navigate each site.
 
 ### Supply belt
 
-![All six supply-type slots with a noise tin selected in ordinary night lighting](docs/evidence/denser_forest/item_belt.png)
+![All six supply-type slots with a noise tin selected in ordinary night lighting](docs/evidence/multiplayer/item_belt.png)
 
 The selected slot is highlighted and its supply appears in the survivor's hand.
 Use **1–6/keypad** to select, **V** to use, **G** to drop the stack and **E** to
@@ -379,33 +400,38 @@ recover units. Vehicle components and cutters remain separate from this limit.
 
 ## Development and verification
 
-The current implementation includes offline survivor selection, six roles,
-the supply belt, nine major forest regions and 16 cryptid species. The latest
-full headless verification passed **69 steps** with zero errors/warnings;
-focused final content checks passed **301 assertions**. The expanded graphical
-guide tour passed **316 assertions**, including 15 image captures. Graphical content captures
-and checks are recorded in the [content report](docs/evidence/content_expansion/summary.json)
-and [evidence notes](docs/evidence/content_expansion/README.md). The earlier full
-graphical forest baseline remains preserved in the
-[surrounding-forest report](docs/evidence/surround_forest/summary.json).
+The current implementation includes solo and 1–4 player ENet co-op in both
+modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
+species. Full baseline verification passed **75 steps** with no errors/warnings;
+final content checks passed **326 assertions**. Real ENet tests passed **685
+assertions across 24 process runs**, including two/four peers and graphical
+host/client windows in both modes. See the
+[current network report](docs/evidence/multiplayer/summary.json),
+[evidence notes](docs/evidence/multiplayer/README.md), and
+[rendering/denser-forest evidence](docs/evidence/denser_forest/README.md).
+Earlier graphical baselines remain preserved separately.
 
 ```sh
 python3 tools/verify.py             # Import, parse, and headless gameplay checks
 python3 tools/verify.py --graphical # Also render, play, and capture screenshots
+python3 tools/verify_network.py --mode all --players 2
+python3 tools/verify_network.py --mode all --players 4
 ```
 
 Verified on **macOS arm64 / Godot 4.7.2**. Human real-time balance testing,
-connected multiplayer, exported packages, and execution on Windows/Linux remain
-unverified. The automated woods player uses navigation paths as a route guide;
+real cross-machine Internet co-op, exported packages, and execution on
+Windows/Linux remain unverified. The automated woods player uses navigation paths as a route guide;
 the tests do not establish balance for every seed.
 
 Latest [offline content rules and captures](docs/content_update.md) include the
 six playable survivor roles, item belt and six new landmark/monster pairs.
-Human balance and full all-role input-only rounds remain pending. Next come
-authoritative ENet co-op/audio (M2/M2-A), reliability, optional proximity voice
-(M3/M3-V), and tested desktop packages (M4).
+ENet co-op is now implemented in both modes. Two/four-peer local execution and
+scripted graphical two-window checks are recorded in the
+[multiplayer guide](docs/multiplayer_guide.md). Human balance, real cross-machine
+Internet, synchronized-audio listening, jitter/other-platform acceptance and
+exports remain pending. Proximity voice is the next feature.
 
-The larger backlog includes 48 monster concepts and 18 biome designs. Seven
+The larger backlog includes 48 monster concepts and 18 biome designs. Ten
 new monster types and six new regions now have first offline versions; deeper
 powers, interiors and the remaining catalog are still planned.
 
@@ -414,6 +440,7 @@ powers, interiors and the remaining catalog are still planned.
 - [Survivor selection and co-op](docs/survivor_multiplayer_plan.md) — six archetypes, selection screens and the transition into voice.
 - [Monster catalog](docs/monster_catalog.md) — 48 additional designs, their abilities and counterplay.
 - [Biome design](docs/biome_design.md) — 18 detailed regions, randomized layouts, encounters and staged delivery.
+- [Play together](docs/multiplayer_guide.md) — LAN/Wi-Fi/Internet setup, co-op controls and execution limits.
 - [Architecture](docs/architecture.md) — world, AI, and authority boundaries.
 - [Testing](docs/testing.md) — commands, coverage, and platform limits.
 - [Development log](docs/development_log.md) — changes, failures, fixes, and evidence.

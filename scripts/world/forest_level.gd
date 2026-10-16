@@ -104,6 +104,13 @@ func _ready() -> void:
 	soundscape = CampSoundscape.new()
 	soundscape.level = self
 	add_child(soundscape)
+	if get_node("/root/Net").active:
+		get_node("/root/Net").attach_world(self)
+		var buttons: VBoxContainer=hud.result_panel.get_child(0)
+		buttons.get_node("Restart").text="RETURN TO LOBBY (HOST)"
+		buttons.get_node("Retry").text="RETRY SEED / LOBBY (HOST)"
+		buttons.get_node("Restart").disabled=not multiplayer.is_server()
+		buttons.get_node("Retry").disabled=not multiplayer.is_server()
 	print(JSON.stringify({"event": "round_ready", "milestone": "M1"}))
 
 
@@ -115,6 +122,8 @@ func _process(_delta: float) -> void:
 		heading = "DEPARTING IN %.1fs  ·  %d ABOARD" % [van.remaining, van.passengers.size()]
 	if finished:
 		heading = "ROUND COMPLETE  ·  ESCAPED" if won else "ROUND COMPLETE  ·  NO ESCAPE"
+	elif player.status == CampPlayer.Status.DEAD:
+		heading = "ELIMINATED / WAITING FOR SURVIVORS"
 	elif player.status == CampPlayer.Status.DOWNED:
 		heading = "DOWNED  ·  BLEEDING OUT IN %.1fs" % player.bleedout
 	var detail := context_prompt()
@@ -141,18 +150,24 @@ func _process(_delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if get_node("/root/Net").active and (not multiplayer.is_server() or get_node("/root/Net").waiting): return
 	if paused or finished:
 		return
 	if plan.woods.valid(plan.woods.cell_at(player.global_position)):
 		plan.woods.visited[plan.woods.cell_at(player.global_position)] = true
 	message_time = maxf(0.0, message_time - delta)
-	var target := nearby_downed(player)
-	advance_revive(player, target, Input.is_action_pressed("interact"), delta)
-	var was_running := van.running
-	van.advance_start(player, Input.is_action_pressed("interact") and clear_path(player.global_position, van.interaction_point()), delta)
-	if van.running and not was_running:
-		van.board(player)
-		announce("Engine started. Driver boarded automatically. Others: E to enter.")
+	var net: Node=get_node("/root/Net")
+	if net.active:
+		if not multiplayer.is_server() or net.waiting: return
+		_advance_network_holds(net,delta)
+	else:
+		var target := nearby_downed(player)
+		advance_revive(player, target, Input.is_action_pressed("interact"), delta)
+		var was_running := van.running
+		van.advance_start(player, Input.is_action_pressed("interact") and clear_path(player.global_position, van.interaction_point()), delta)
+		if van.running and not was_running:
+			van.board(player)
+			announce("Engine started. Driver boarded automatically. Others: E to enter.")
 	var living := false
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if actor.status in [CampPlayer.Status.ALIVE, CampPlayer.Status.DOWNED, CampPlayer.Status.BOARDED]:
@@ -279,6 +294,8 @@ func clear_path(from: Vector2, to: Vector2) -> bool:
 func context_prompt() -> String:
 	if finished:
 		return "Round complete. Replay or return to the menu."
+	if player.status == CampPlayer.Status.DEAD:
+		return "Eliminated. Teammates can still escape; wait for the round result."
 	if player.status == CampPlayer.Status.BOARDED:
 		return "YOU ARE ABOARD · Safe inside the van. Departure is automatic."
 	if van.can_board(player):
@@ -318,6 +335,7 @@ func announce(text: String) -> void:
 
 func finish_round(success: bool, detail: String) -> void:
 	finished = true
+	if get_node("/root/Net").active: get_node("/root/Net").phase="results"
 	soundscape.stop_round()
 	won = success
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
@@ -333,6 +351,9 @@ func finish_round(success: bool, detail: String) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if finished:
+		return
+	if get_node("/root/Net").active:
+		get_node("/root/Net").handle_input(event)
 		return
 	if not paused and event is InputEventKey and event.pressed and not event.echo and player.status == CampPlayer.Status.ALIVE:
 		var keys := [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6]
@@ -385,16 +406,25 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func return_to_menu() -> void:
+	if get_node("/root/Net").active:
+		get_node("/root/Net").leave()
+		return
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 
 
 func restart_round() -> void:
+	if get_node("/root/Net").active:
+		get_node("/root/Net").return_lobby(false)
+		return
 	var session: Node = get_node("/root/Session")
 	session.next_seed = 0
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 
 
 func retry_round() -> void:
+	if get_node("/root/Net").active:
+		get_node("/root/Net").return_lobby(true)
+		return
 	get_node("/root/Session").load_game(true)
 
 
@@ -473,15 +503,58 @@ func drop_held(actor: CampPlayer) -> bool:
 	var kind := actor.held_item()
 	if kind.is_empty() or actor.supplies.get(kind, 0) <= 0:
 		return false
-	# Each physical pickup carries one unit, keeping existing pickup validation intact.
+	# Reuse consumed transient units so repeated drop/recovery never grows state unboundedly.
 	for index in range(actor.supplies[kind]):
-		var pickup: CampPickup = preload("res://scenes/items/pickup.tscn").instantiate()
-		pickup.kind = kind
-		pickup.position = actor.global_position
-		pickups.append(pickup)
-		add_child(pickup)
+		spawn_dropped(kind,actor.global_position)
 	actor.supplies[kind] = 0
 	actor.tidy_belt()
 	loud_noise(actor.global_position, 130)
 	announce("Dropped " + kind.replace("_", " ") + ". E to recover.")
 	return true
+
+
+func _advance_network_holds(net: Node, delta: float) -> void:
+	# A single deterministic actor owns each hold. Never sum work across survivors.
+	var starter: CampPlayer
+	var rescuer: CampPlayer
+	var target: CampPlayer
+	var ids: Array=net.actors.keys()
+	ids.sort()
+	for id: int in ids:
+		var actor: CampPlayer=net.actors[id]
+		if actor.status!=CampPlayer.Status.ALIVE or not net.holding(id): continue
+		var downed := nearby_downed(actor)
+		if downed!=null and rescuer==null:
+			rescuer=actor
+			target=downed
+		elif starter==null and van.in_range(actor) and clear_path(actor.position,van.interaction_point()): starter=actor
+	if rescuer!=null: advance_revive(rescuer,target,true,delta)
+	else:
+		revive_target=null
+		revive_actor=null
+		revive_progress=0
+	var was_running := van.running
+	van.advance_start(starter if starter!=null else player,starter!=null,delta)
+	if not was_running and van.running and starter!=null:
+		van.board(starter)
+		announce("Engine started. Driver boarded. Others: E beside van to enter.")
+
+
+func spawn_dropped(kind: String, at: Vector2) -> CampPickup:
+	var pickup: CampPickup
+	for candidate: CampPickup in pickups:
+		if not candidate.available and candidate.has_meta("dropped_unit"):
+			pickup=candidate
+			break
+	if pickup==null:
+		pickup=preload("res://scenes/items/pickup.tscn").instantiate()
+		pickup.set_meta("dropped_unit",true)
+		pickups.append(pickup)
+		add_child(pickup)
+	pickup.kind=kind
+	pickup.position=at
+	pickup.locked=false
+	pickup.available=true
+	pickup.show()
+	pickup.queue_redraw()
+	return pickup

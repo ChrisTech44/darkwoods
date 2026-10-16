@@ -1,7 +1,7 @@
 # LAST NIGHT AT CAMP
 **Godot 4 multiplayer horror game — agent implementation brief**
 
-Version 1.7 — 16 October 2026 — Codex Sol (medium effort)
+Version 1.8 — 16 October 2026 — Codex Sol (medium effort)
 
 User amendment: online proximity voice chat and an original/licensed audio-file
 pipeline are planned after synchronized multiplayer gameplay. This supersedes
@@ -10,8 +10,9 @@ the original voice-chat exclusion. See [audio/multiplayer design](docs/audio_mul
 layout variety, and implement the user-supplied audio files **before** online
 multiplayer and proximity voice. Offline audio has its own local checks; the
 networked M2-A and M3-V acceptance gates still require future execution evidence.
-Current gameplay is offline; local audio playback is implemented with local
-verification. Voice capture and networking are not implemented. Markdown is the
+Current gameplay supports offline solo and ENet host/join co-op. Two/four independent
+local processes are verified in both modes; real cross-machine Internet acceptance,
+synchronized-audio listening and voice capture remain pending. Markdown is the
 sole maintained specification; the Word brief was removed at the user's request.
 
 16 October menu/defaults amendment: both modes start fresh random camps by
@@ -53,6 +54,18 @@ Internet play. Voice chat is the next feature and must remain a separate gated
 opt-in system. The offline encounter update uses 48 cryptids across 16 species,
 including Relay Jackal, Ration Moth and Lens Eater away from landmark biomes.
 Required online cross-machine acceptance still needs execution evidence.
+
+Network implementation amendment: the current build has a 1–4 peer listen-host
+lobby, authoritative actor/input/item/AI/van state, compressed replica snapshots,
+shared results/retry, late-join refusal and host-loss cleanup in both modes.
+Default UDP port is 27840. Internet requires reachable UDP routing or a virtual
+LAN, without matchmaking/relay/automatic NAT traversal. Local Esc menus do not
+pause the shared world. Carried objectives drop on death/disconnect. See the
+[multiplayer guide](docs/multiplayer_guide.md) and execution evidence for limits.
+Voice is next: stable peer/round IDs, host-owned positions/status and separated
+input/world channels are provided; no microphone or voice transport is active.
+Human M1-S, real two-machine M2/Internet and M2-A/M3-V gates are not implied by
+loopback processes or scripted graphical windows.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 

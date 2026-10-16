@@ -1,14 +1,15 @@
 # Architecture and conventions
 
 `AGENT_BRIEF.md` is the authoritative specification; project design documents
-are maintained in Markdown only. M1 implements an offline survival round. No network
-session or export is implemented yet.
+are maintained in Markdown only. The build implements offline rounds and ENet listen-host sessions in both modes.
+Exports and real cross-machine Internet acceptance remain unverified.
 
-Planned next: [survivor selection and role authority](survivor_multiplayer_plan.md),
-then ENet co-op/audio and optional voice. [Monster](monster_catalog.md) and
-[biome](biome_design.md) catalogs are design backlogs, not current runtime types.
-Future role application must use private effective stats, and new regions must
-reserve one consistent collision/navigation/shadow/sight layout before props.
+[Survivor selection and role authority](survivor_multiplayer_plan.md) and
+[ENet co-op](multiplayer_guide.md) are implemented. Voice is the next feature,
+with synchronized-audio listening and real cross-machine acceptance still
+pending. The [monster](monster_catalog.md) and [biome](biome_design.md) catalogs
+contain both current first versions and larger backlogs. Roles use private
+effective stats; region collision/navigation/shadow/sight share reserved geometry.
 
 Validated engine: **4.7.2.stable.official.ed1daf0bf**, macOS arm64. Use this version
 to reproduce results. Compatibility renderer, 384×216 base viewport, integer
@@ -29,7 +30,7 @@ No external assets, plugins, or package dependencies are required.
 - `scripts/ai`: killer senses, state machine, attacks, and navigation agent.
 - `scripts/core`, `assets/default_config.tres`: gameplay configuration, Session
   autoload and seeded RoundPlan.
-- `scripts/network`: reserved for M2 ENet and authority boundaries.
+- `scripts/network`: persistent ENet lobby/authority endpoint and host snapshot capture/client replica application.
 - `assets/tiles`, `assets/sprites`: original terrain and directional character/tree
   sheets, reproducible with `tools/build_pixel_art.py` and
   `tools/build_cryptids.py`; supplied audio provenance is recorded separately.
@@ -45,7 +46,7 @@ Session retains only mode/current seed/next seed, not actors or inventory. The
 loading card renders before synchronous scene/world preparation; its moving bar
 is an activity indicator, not simulated resource progress. Threaded resource
 loading was removed after Godot 4.7.2 emitted leaked RefCounted warnings on exit.
-ForestLevel owns one offline round. Host/join arrive in M2. Scene replacement frees actors, items,
+ForestLevel owns a solo or listen-host round; network clients render host replicas. Scene replacement frees actors, items,
 navigation, UI, and signal connections together on restart or menu return.
 
 ## Implementation direction
@@ -174,7 +175,7 @@ living survivor applies 1.6s at 60% movement speed and drains 1.5 stamina second
 without instantly downing them. Witch melee still uses the normal damage rules.
 Hexed survivors get a violet ring and priority HUD countdown. Pause freezes
 actor hex timers, spell cooldown/wind-up and projectiles; scene replacement
-owns hazard cleanup. New authority paths remain local until M2 networking.
+owns hazard cleanup. Network authority paths run on the listen host; clients render the accepted snapshot state.
 
 ## Seeded camp lots
 
@@ -242,3 +243,48 @@ with the survivor and display camp direction; they never show enemy positions.
 roaming routes. 96 seeded supply pickups supplement the camp tools. Sight,
 flashlight drain, fog, location labels and map logic use camp bounds rather than
 an east-only x-coordinate threshold. Quick Camp keeps its three-part local round.
+
+
+## Implemented ENet boundary
+
+`Net` is a stable autoload RPC path across lobby/loading/play/results. The host
+validates a rules version, up to four peer identities, allowlisted roles and
+ready state. Rule/role changes clear ready; start locks participants/mode/seed
+and assigns a monotonically increasing round ID. Every participant acknowledges
+world construction before the host releases simulation. New joins are lobby-only.
+
+Reliable channel 0 carries lobby/start/validated action intents. Unreliable
+ordered channel 2 carries sequenced movement/sprint/hold intents; direction is
+finite/normalized and stale controls expire after 400ms. Only the host moves
+actors, advances senses/AI, injury/bleedout/revive, supplies, item availability,
+site rewards, ignition/countdown and results. Action requests never contain
+positions, inventory rewards, health or arbitrary cue payloads. Actions are
+allowlisted/rate-limited and scoped to the current round. No client-selected
+role/stat changes are accepted during play.
+
+`WorldSync` captures plain host state at 20Hz, DEFLATE-compressed into authority-
+only unreliable ordered channel 1 snapshots with round/sequence checks. Compressed
+snapshots are divided into at most 1,000-byte payload pieces to stay below the
+UDP MTU. Clients assemble one bounded current sequence, apply only complete
+snapshots and discard incomplete/stale pieces when a newer sequence arrives.
+Compression is capped at 64KiB and decompression at 1MiB. Clients
+apply actor status/inventory/stamina/animation, NPC senses/telegraphs, pickup
+availability and dynamic dropped objects, site use, van/boarding/results, flares,
+hex bolts, slow patches and tin lures. Clients disable physics for actors/NPCs/
+hazards and interpolate transforms; client prediction/rollback is not implemented.
+Consumed transient drop units are recycled, bounding pickup state across repeated
+drop/recovery cycles. Packet/decompression bounds are enforced. Temporary entity IDs and replica maps
+are round-scoped and cleared on retry/leave. Local sight/light/map/mixer and
+positional audio derive from the local survivor and replicated sources.
+
+The host selects one deterministic actor for each hold; changing actor resets
+progress. Objective inventory drops once on death/disconnect, preserving routes
+to victory. Disconnect removes the actor/passenger/input/roster; host loss closes
+clients to a clean main menu. Host-chosen results replay returns everyone to a
+clean lobby. Local pause menus stop that player's input, never the shared clock.
+
+Voice can later use validated peer/round identity, positions and life/spectator
+state. Gameplay channels are separated, but ENet does not itself provide the
+planned encrypted, compressed microphone transport. No capture/voice packets or
+permission requests exist. See [connection guide](multiplayer_guide.md) and
+[audio/voice design](audio_multiplayer_design.md).

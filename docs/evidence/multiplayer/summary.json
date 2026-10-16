@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "environment": "macOS arm64 / Godot 4.7.2",
+  "transport": "ENet UDP loopback; independent OS processes",
+  "network_process_runs": 24,
+  "network_checks": 685,
+  "errors": 0,
+  "warnings": 0,
+  "headless_two": "summary_all_2.json",
+  "headless_four": "summary_all_4.json",
+  "graphical_two": "summary_all_2_graphical.json",
+  "offline": "offline_summary.json",
+  "final_content": {
+    "checks": 326,
+    "failures": 0,
+    "log": "drop_pool_content.log"
+  },
+  "limitations": [
+    "No real cross-machine LAN/Wi-Fi/Internet/VPN round recorded",
+    "Scripted graphical windows are not human co-op/balance evidence",
+    "No jitter/high-latency or other-platform/export acceptance",
+    "No microphone capture/voice or exactly-once synchronized-audio listening gate"
+  ],
+  "graphical_four": "summary_camp_4_graphical.json",
+  "graphical_content": {
+    "checks": 344,
+    "failures": 0,
+    "log": "graphical_content.log"
+  },
+  "graphical_menu": {
+    "checks": 39,
+    "failures": 0,
+    "log": "graphical_menu.log"
+  }
+}

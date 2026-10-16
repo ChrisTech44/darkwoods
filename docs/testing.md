@@ -261,3 +261,48 @@ now include the survivor confirmation and seven-type supply distribution.
 See [content evidence and limits](content_update.md). Modifier/actor fixtures and
 rendered tours do not pass the human M1-S balance gate or establish all-role
 input-only escape rounds, online play, synchronized sounds or voice.
+
+
+## Real ENet peer verification
+
+The network tests launch separate OS processes using production Host/Join lobby
+button callbacks and actual ENet RPCs. No local actor fixture substitutes for a
+connected peer. Run from the repository root:
+
+```sh
+python3 tools/verify_network.py --mode all --players 2
+python3 tools/verify_network.py --mode all --players 4
+python3 tools/verify_network.py --mode all --players 2 --graphical
+```
+
+`--mode camp` or `--mode woods` restricts the case. Headless tests use UDP
+27943/27945 (camp, two/four peers), 28043/28045 (woods), and graphical cases add
+1000 to isolate concurrent runs. The normal game defaults to UDP 27840.
+Each case runs host plus one/three guests; two-peer cases also attempt a late
+join and verify rejection. Per-process JSON/assertion logs and indexed reports
+are written under `artifacts/network`; the runner rejects missing results,
+errors/warnings, nonzero exits or failed assertions and enforces a timeout.
+
+Checks cover roster/readiness/rule changes, locked seed/role/private bonuses,
+two-way movement, contested single-award pickup, rejected forged role/action/
+nonfinite input, injury/revive/one-time kit consumption, death/drop/disconnect
+objective recovery, flares and woods bolts/patches, remote ignition, boarding,
+shared extraction, same-seed restart and host-loss cleanup. A deliberately
+incomplete snapshot proves that partial state is not applied and a later
+complete sequence recovers. Payload pieces stay at or below 1000 bytes, with
+bounded assembly/decompression. The content suite separately verifies twenty
+drop/recovery cycles do not grow the transient pickup list.
+
+Host-only controlled placements, inventory/damage and paused AI isolate rules;
+these are not human or input-only co-op horror rounds. Graphical cases operate
+real windows with scripted inputs and capture connected lobby/host/client views.
+The [preserved report](evidence/multiplayer/summary.json) records 24 process runs
+and 685 passing network assertions, zero errors/warnings. The baseline full
+runner passed 75 steps; final content passed 326 headless and 344 graphical checks.
+The final four-window Camp test added 124 assertions, including roster layout captures.
+
+Real two-machine LAN/Wi-Fi or cross-network Internet/VPN, human co-op/balance,
+high-latency/jitter, other desktop platforms and exports remain unverified.
+No microphone is opened and no voice acceptance is implied. Follow
+[connection instructions](multiplayer_guide.md) for a separate-device test and
+[audio/voice design](audio_multiplayer_design.md) for the next feature's gates.

@@ -1,6 +1,7 @@
 extends Node
 ## Run selection persists across scene changes; the round owns all gameplay state.
 
+var notice := ""
 var survivor: String = "jock"
 
 func _ready() -> void:

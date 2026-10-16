@@ -1,0 +1,174 @@
+{
+  "passed": true,
+  "graphical": true,
+  "results": [
+    {
+      "name": "camp_4_host_0_graphical",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--position",
+        "0,40",
+        "--resolution",
+        "576x324",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/integration/network_peer.gd",
+        "--",
+        "--side",
+        "host",
+        "--mode",
+        "camp",
+        "--port",
+        "28945",
+        "--peers",
+        "4",
+        "--index",
+        "0",
+        "--capture"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "result": [
+        {
+          "checks": 74,
+          "event": "test_result",
+          "failures": 0,
+          "largest_snapshot_payload": 700,
+          "snapshot_bytes": 700,
+          "suite": "network_host_camp_4"
+        }
+      ],
+      "log": "artifacts/network/camp_4_host_0_graphical.log"
+    },
+    {
+      "name": "camp_4_client_1_graphical",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--position",
+        "600,40",
+        "--resolution",
+        "576x324",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/integration/network_peer.gd",
+        "--",
+        "--side",
+        "client",
+        "--mode",
+        "camp",
+        "--port",
+        "28945",
+        "--peers",
+        "4",
+        "--index",
+        "1",
+        "--capture"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "result": [
+        {
+          "checks": 16,
+          "event": "test_result",
+          "failures": 0,
+          "largest_snapshot_payload": 0,
+          "snapshot_bytes": 799,
+          "suite": "network_client_camp_4"
+        }
+      ],
+      "log": "artifacts/network/camp_4_client_1_graphical.log"
+    },
+    {
+      "name": "camp_4_client_2_graphical",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--position",
+        "1200,40",
+        "--resolution",
+        "576x324",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/integration/network_peer.gd",
+        "--",
+        "--side",
+        "client",
+        "--mode",
+        "camp",
+        "--port",
+        "28945",
+        "--peers",
+        "4",
+        "--index",
+        "2",
+        "--capture"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "result": [
+        {
+          "checks": 17,
+          "event": "test_result",
+          "failures": 0,
+          "largest_snapshot_payload": 0,
+          "snapshot_bytes": 700,
+          "suite": "network_client_camp_4"
+        }
+      ],
+      "log": "artifacts/network/camp_4_client_2_graphical.log"
+    },
+    {
+      "name": "camp_4_client_3_graphical",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--position",
+        "1800,40",
+        "--resolution",
+        "576x324",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/integration/network_peer.gd",
+        "--",
+        "--side",
+        "client",
+        "--mode",
+        "camp",
+        "--port",
+        "28945",
+        "--peers",
+        "4",
+        "--index",
+        "3",
+        "--capture"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "result": [
+        {
+          "checks": 17,
+          "event": "test_result",
+          "failures": 0,
+          "largest_snapshot_payload": 0,
+          "snapshot_bytes": 698,
+          "suite": "network_client_camp_4"
+        }
+      ],
+      "log": "artifacts/network/camp_4_client_3_graphical.log"
+    }
+  ]
+}

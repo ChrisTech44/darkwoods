@@ -2,8 +2,9 @@
 
 This update implements six survivor choices, six additional optional biomes,
 seven additional cryptid species and a six-slot supply belt before multiplayer,
-as requested. It is an offline prototype; full human balance acceptance,
-networking, synchronized audio and proximity voice remain pending.
+as requested. It began as an offline content increment. The current build also includes
+[ENet co-op](multiplayer_guide.md); full human balance, real cross-machine Internet,
+synchronized-audio listening and proximity voice acceptance remain pending.
 
 ## Rendering and denser roaming update
 
@@ -104,7 +105,7 @@ flare-feeding glow, junction threads) are not implemented by these first version
 ## Illustrated player guide
 
 The [README monster guide](../README.md#know-what-is-following-you) now lists
-all 13 cryptid species and the stalker, with habitat, visible tells and responses.
+all 16 cryptid species and the stalker, with habitat, visible tells and responses.
 Its [new monster close-ups](../README.md#new-monster-close-ups) show all seven
 new species, and the [forest-site guide](../README.md#use-the-forest-sites)
 explains all nine major regions, approximate directions and optional rewards.
@@ -113,8 +114,8 @@ screenshots directly in the README.
 
 ## Rendered evidence and limits
 
-![Selection with animated outfit preview](evidence/content_expansion/survivor_selection.png)
-![Six supply-type belt in normal night lighting](evidence/denser_forest/item_belt.png)
+![Selection with animated outfit preview](evidence/multiplayer/survivor_selection.png)
+![Six supply-type belt in normal night lighting](evidence/multiplayer/item_belt.png)
 ![Flooded Mill inspection](evidence/denser_forest/biome_mill.png)
 ![Observatory inspection](evidence/denser_forest/biome_observatory.png)
 ![Orchard inspection](evidence/denser_forest/biome_orchard.png)
@@ -132,5 +133,5 @@ Other regression suites check real native routes, occlusion and complete input
 rounds. Fixtures do not prove all-role normal-speed balance or co-op.
 
 Verified environment: macOS arm64 / Godot 4.7.2. Windows/Linux, exported packages,
-human microphone permissions and online sessions remain unverified. No microphone
+human microphone permissions and real cross-machine Internet sessions remain unverified. No microphone
 capture or permission request is introduced.

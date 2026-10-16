@@ -1,3 +1,12 @@
+# Current network increment
+
+ENet listen-host gameplay is implemented in both modes and exercised with two
+and four independent local peers plus scripted graphical windows. See the
+[multiplayer guide](multiplayer_guide.md). Human baseline, real cross-machine
+Internet, synchronized-audio listening, latency/jitter and voice acceptance are
+still pending; loopback evidence does not pass those gates. The older staged
+plan below is retained as historical milestone/acceptance context.
+
 # Incremental implementation plan
 
 Latest user amendment: the offline content update is implemented ahead of M2;
@@ -17,7 +26,7 @@ replayability and UI polish ahead of M2: a seeded finite trail maze, five-part
 repair/cache objectives, tools/supplies, weather and six original cryptid types
 (originally four creatures per expedition; now 24), interactive village/bog/graveyard sites and richer sensing,
 search, patrol and projectile behavior. Quick Camp retains M1's three-part objective with randomized camp positions.
-This work does not implement or claim M2 networking.
+That earlier content increment did not implement networking; the current ENet increment is described above.
 
 ## M1: offline vertical slice, one verified pass per step
 
@@ -46,7 +55,7 @@ For each step, record commands, results, and remaining gaps in development_log.m
 Run import/startup and applicable tests before advancing; use configuration values
 for mechanics and add tests when they validate real rules. Commit at M1 acceptance.
 
-## Next steps: human content baseline, then co-op
+## Next steps: real cross-machine acceptance and voice
 
 The 16 October planning amendment adds an offline survivor selection milestone
 before networking, plus a deliberately staged content backlog. The detailed

@@ -1,5 +1,78 @@
 # Development log
 
+## 2026-10-16 — ENet host/join co-op in Quick Camp and Woods Expedition
+
+Following published rendering/denser-roaming commit `3bc1203`, implemented
+1–4 survivor listen-server sessions with a dedicated name/role/address/UDP-port
+lobby, Host/Join, ready/unready, host mode/seed selection, Settings/music and
+clear connection/running-camp/host-loss messages. Default UDP port is 27840.
+Rules/role changes clear ready. The host validates version/allowlisted choices,
+locks seed/participants/round identity and waits for all worlds to load. Duplicate
+roles remain allowed. New joins are lobby-only; no active-round supply refresh.
+
+A persistent `Net` RPC endpoint receives only sequenced normalized finite
+movement/sprint/hold controls and allowlisted rate-limited actions. The host owns
+actor physics, role bonuses, damage/bleedout/revive, AI/powers/projectiles,
+pickups/site rewards, supplies, ignition/boarding/countdown and results. One
+actor owns each hold and switching resets progress. Clients disable outcome
+physics and render/interpolate plain host snapshots of actors/NPCs/animation,
+items/dropped units, sites, van, flares, hex bolts, slow patches and tin lures.
+Temporary entity IDs, input, assembly and replica state are cleared on replay.
+
+The initial graphical woods test exposed compressed snapshots above the UDP
+MTU. Corrected this with 1000-byte payload pieces, bounded one-sequence assembly,
+stale/duplicate/incomplete rejection and 64KiB compressed / 1MiB decompressed
+limits. A real-RPC regression deliberately omits pieces and proves the next
+complete state recovers. Transient dropped units are recycled so repeated
+pickup/drop cycles do not expand snapshot state indefinitely. Local Esc menus
+stop that player's controls without pausing the world. Corpses/disconnecting
+survivors release objective inventory once; actors/passengers are removed cleanly.
+The host's results replay returns everyone to an unready lobby with optional
+same-seed retry. Host loss ends clients cleanly; no host migration.
+
+Added teammate name labels, replicated animation/AI-target metadata for correct
+local cues/heartbeat, nearby survivor footfalls and host-only replay controls.
+Stable peer/round IDs, host-owned positions/life states and separated reliable
+control / ordered-unreliable input/world channels prepare the next voice feature.
+No microphone, permission prompt, codec, media transport or voice capture is
+implemented. Local replicated-source audio is not the exactly-once synchronized
+sound-event/listening gate.
+
+Verification on macOS arm64 / Godot 4.7.2:
+
+- Two-peer headless camp + woods: 153 assertions, all pass, including late joins.
+- Four-peer headless camp + woods: 255 assertions, all pass.
+- Two actual graphical windows in both modes: 153 assertions, all pass; lobby,
+  host and client PNGs opened and visually inspected.
+- Four graphical Camp windows: 124 assertions, all pass.
+- Total: **24 process runs / 685 network assertions**, zero errors/warnings.
+  This includes real Host/Join callbacks, readiness/rule reset, two-way movement,
+  contested pickup, forged role/action/nonfinite input rejection, shared injury/
+  revive, no bonus refresh, dropped-item/flare/hazard replication, remote mechanic
+  ignition, all-peer boarding/extraction, retry, death/disconnect objective
+  recovery and host loss. Host fixtures isolate these rules; no human co-op run
+  is claimed. Largest snapshot payload is 1000 bytes.
+- `python3 tools/verify.py`: **75 steps passed**, no errors/warnings; solo round,
+  current 49-enemy expedition, native navigation/visibility, audio and lifecycle
+  regressions remain runnable. Final content regression after drop recycling:
+  **326 assertions, zero failures**. Final required import/startup passed.
+- Final graphical content: **344 assertions**; menu: **39 assertions**, both
+  zero failures. Corrected theme-inherited button sizing, selection-card heights,
+  belt/location spacing and the four-row lobby. Refreshed README/guide images.
+  The first four-window run exposed a test assumption that an unreliable packet
+  must arrive; retrying the same incomplete piece fixed the harness while retaining
+  the partial-state rejection/recovery assertions. The final four-window run passed.
+- Documentation links/image paths/heading anchors and `git diff --check` checked
+  before publication. Remote fetched; preserve remote history when publishing.
+
+[Connection guide](multiplayer_guide.md), updated README/brief/architecture/
+voice design, and [durable evidence](evidence/multiplayer/README.md) distinguish
+implemented routing from acceptance. A real separate-machine LAN/Wi-Fi or
+cross-network Internet/VPN round, human balance, jitter/high latency,
+Windows/Linux/exports and synchronized-audio/voice gates remain unverified.
+Direct Internet hosting requires reachable UDP routing or an existing virtual
+LAN; no automatic NAT traversal, relay or matchmaking was added.
+
 ## 2026-10-16 — Retain survivor textures, clean belt labels and denser roaming threats
 
 Fixed selected survivors rendering as white rectangles by retaining the role

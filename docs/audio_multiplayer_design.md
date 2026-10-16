@@ -1,12 +1,12 @@
 # Audio and online proximity voice design
 
-Status: **offline audio implemented; synchronized audio and proximity voice planned**. This user-approved amendment replaces the
-original voice-chat exclusion in [AGENT_BRIEF.md](../AGENT_BRIEF.md). The build is offline. The 16 October amendment prioritizes visual/map fixes,
+Status: **local and replicated-source audio implemented; host sound-event/listening acceptance and proximity voice pending**. This user-approved amendment replaces the
+original voice-chat exclusion in [AGENT_BRIEF.md](../AGENT_BRIEF.md). The build now includes locally verified ENet co-op; voice is still planned. The 16 October amendment prioritizes visual/map fixes,
 seeded camp variation and user-supplied sound files before networking/voice.
 Local playback does not establish two-client audio or microphone acceptance. Use [milestones](milestones.md) for delivery gates.
 The later survivor/content amendment adds [selection and archetypes](survivor_multiplayer_plan.md)
 before M2 and plans [monsters](monster_catalog.md)/[biomes](biome_design.md) as
-staged content. It does not implement networking, voice or new cue files.
+staged content. Gameplay networking is now implemented; bespoke new cue files and voice remain separate work.
 
 ## Delivery order
 
@@ -89,7 +89,7 @@ arbitrary cue packet. Simultaneous pickup attempts still award/play one accepted
 event. Restore required loop state on scene/session changes without restarting
 every looping sound from scratch each snapshot.
 
-The planned Quiet Kid modifier affects only that actor's sprint-generated AI
+The implemented Quiet Kid modifier affects only that actor's sprint-generated AI
 stimulus reach (×0.75 after weather), not footstep playback, voice gain or
 environmental noise. Role-selection UI sounds stay local. New monster mimicry
 uses authored registered cues, never recorded player speech, peer impersonation
@@ -192,3 +192,23 @@ The surrounding-forest build keeps the same bounded local audio pool for 24
 creatures: calls are gated at 160px, enemy steps at 110px and moving emitters
 attenuate quadratically. Native sound assets, AI hearing and optional future
 network voice remain separate.
+
+
+## ENet foundation now available
+
+The current listen host validates lobby identities/roles/readiness, locks round
+IDs/seed, and owns positions, health/life state, inventory and accepted actions.
+Two/four real local processes exercise both modes and scripted graphical windows
+exercise replication. Snapshots carry round-scoped entity IDs for temporary
+sources; peer IDs persist within the lobby/session. Reliable control and ordered
+unreliable input/world-state channels are separate. No media buffers or microphone
+APIs are initialized, including during hosting/joining.
+
+Client replicas retain local attenuation/mixer behavior, enemy movement/call
+cues, target-dependent heartbeat and nearby survivor footfalls. This is not proof
+of a host-event exactly-once synchronized audio/listening gate. M2-A event-ID
+coverage and listening checks, encrypted codec/transport choice, opt-in PTT,
+devices/permissions, per-peer mute and living/spectator recipient tests remain
+required before claiming voice acceptance. The stable authority/identity/state
+boundaries are intended to support that next increment without trusting client
+positions or routing microphone traffic through reliable gameplay actions.

@@ -11,6 +11,19 @@ var quitting := false
 
 func _ready() -> void:
 	theme = CampStyle.make()
+	var online := Button.new()
+	online.name="Online"
+	online.text="HOST / JOIN CO-OP"
+	online.add_theme_font_size_override("font_size",8)
+	add_child(online)
+	online.position=Vector2(20,170)
+	online.size=Vector2(212,20)
+	online.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/ui/network_lobby.tscn"))
+	if not session.notice.is_empty():
+		$Status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		$Status.size=Vector2(344,24)
+		$Status.text=session.notice
+		session.notice=""
 	$Menu/Mode.add_item("WOODS EXPEDITION")
 	$Menu/Mode.add_item("QUICK CAMP")
 	$Menu/Mode.select(1 if session.mode == "camp" else 0)
@@ -74,6 +87,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _show_controls() -> void:
+	$Online.hide()
 	$Menu.hide()
 	$Settings.hide()
 	controls_panel.show()
@@ -82,6 +96,7 @@ func _show_controls() -> void:
 
 func _hide_controls() -> void:
 	controls_panel.hide()
+	$Online.show()
 	$Menu.show()
 	$Settings.show()
 	controls_button.grab_focus()
@@ -96,6 +111,7 @@ func _quit() -> void:
 
 
 func _show_settings() -> void:
+	$Online.hide()
 	$Menu.hide()
 	$Settings.hide()
 	$SettingsPanel.show()
@@ -103,10 +119,12 @@ func _show_settings() -> void:
 
 func _hide_settings() -> void:
 	$SettingsPanel.hide()
+	$Online.show()
 	$Menu.show()
 	$Settings.show()
 	$Settings.grab_focus()
 	if has_node("SurvivorSelection"):
+		$Online.hide()
 		$Menu.hide()
 		$Settings.hide()
 		$SurvivorSelection.show()
@@ -114,6 +132,7 @@ func _hide_settings() -> void:
 
 
 func _show_survivors() -> void:
+	$Online.hide()
 	$Menu.hide()
 	$Settings.hide()
 	if has_node("SurvivorSelection"):
@@ -151,22 +170,25 @@ func _show_survivors() -> void:
 		var button := Button.new()
 		button.name = SurvivorRoster.IDS[index]
 		button.text = SurvivorRoster.NAMES[index]
+		selection.add_child(button)
+		button.add_theme_font_size_override("font_size",10)
 		button.position = Vector2(14, 34 + index * 24)
 		button.size = Vector2(132, 23)
 		button.add_theme_font_size_override("font_size", 10)
 		button.pressed.connect(_select_survivor.bind(index))
-		selection.add_child(button)
 	var labels := ["BACK", "RANDOM SURVIVOR", "START NIGHT", "SETTINGS"]
 	for index in range(4):
 		var button := Button.new()
 		button.name = ["Back", "Random", "Start", "Settings"][index]
 		button.text = labels[index]
+		selection.add_child(button)
+		button.add_theme_font_size_override("font_size",10)
 		button.position = [Vector2(14,184), Vector2(155,157), Vector2(155,184), Vector2(285,184)][index]
 		button.size = Vector2(126 if index < 3 else 88, 23)
 		button.add_theme_font_size_override("font_size", 10)
-		selection.add_child(button)
 	selection.get_node("Back").pressed.connect(func():
 		selection.hide()
+		$Online.show()
 		$Menu.show()
 		$Settings.show()
 		$Menu/Play.grab_focus())

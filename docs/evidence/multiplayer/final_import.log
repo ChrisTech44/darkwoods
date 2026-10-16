@@ -1,0 +1,129 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (5 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  16% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  66% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started Scanning actions... (31 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | client_camp_2_1.png[39m[0m
+[   3% ] [90m[1m_update_scan_actions[22m | client_camp_4_1.png[39m[0m
+[   6% ] [90m[1m_update_scan_actions[22m | client_camp_4_2.png[39m[0m
+[   9% ] [90m[1m_update_scan_actions[22m | client_camp_4_3.png[39m[0m
+[  12% ] [90m[1m_update_scan_actions[22m | client_woods_2_1.png[39m[0m
+[  15% ] [90m[1m_update_scan_actions[22m | host_camp_2.png[39m[0m
+[  18% ] [90m[1m_update_scan_actions[22m | host_camp_4.png[39m[0m
+[  21% ] [90m[1m_update_scan_actions[22m | host_woods_2.png[39m[0m
+[  25% ] [90m[1m_update_scan_actions[22m | lobby_camp_2.png[39m[0m
+[  28% ] [90m[1m_update_scan_actions[22m | lobby_camp_4.png[39m[0m
+[  31% ] [90m[1m_update_scan_actions[22m | lobby_woods_2.png[39m[0m
+[  34% ] [90m[1m_update_scan_actions[22m | biome_chapel.png[39m[0m
+[  37% ] [90m[1m_update_scan_actions[22m | biome_mill.png[39m[0m
+[  40% ] [90m[1m_update_scan_actions[22m | biome_observatory.png[39m[0m
+[  43% ] [90m[1m_update_scan_actions[22m | biome_orchard.png[39m[0m
+[  46% ] [90m[1m_update_scan_actions[22m | biome_quarry.png[39m[0m
+[  50% ] [90m[1m_update_scan_actions[22m | biome_rail.png[39m[0m
+[  53% ] [90m[1m_update_scan_actions[22m | controls.png[39m[0m
+[  56% ] [90m[1m_update_scan_actions[22m | item_belt.png[39m[0m
+[  59% ] [90m[1m_update_scan_actions[22m | menu.png[39m[0m
+[  62% ] [90m[1m_update_scan_actions[22m | monster_boiler_saint.png[39m[0m
+[  65% ] [90m[1m_update_scan_actions[22m | monster_bramble_seamstress.png[39m[0m
+[  68% ] [90m[1m_update_scan_actions[22m | monster_candle_grazer.png[39m[0m
+[  71% ] [90m[1m_update_scan_actions[22m | monster_last_car_conductor.png[39m[0m
+[  75% ] [90m[1m_update_scan_actions[22m | monster_lens_eater.png[39m[0m
+[  78% ] [90m[1m_update_scan_actions[22m | monster_ration_moth.png[39m[0m
+[  81% ] [90m[1m_update_scan_actions[22m | monster_relay_jackal.png[39m[0m
+[  84% ] [90m[1m_update_scan_actions[22m | monster_shutter_wraith.png[39m[0m
+[  87% ] [90m[1m_update_scan_actions[22m | monster_stoneback_ram.png[39m[0m
+[  90% ] [90m[1m_update_scan_actions[22m | monster_switchback_hound.png[39m[0m
+[  93% ] [90m[1m_update_scan_actions[22m | survivor_selection.png[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (31 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   3% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   6% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   9% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  12% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  15% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  18% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  21% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  25% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  28% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  31% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  34% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  37% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  40% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  43% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  46% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  50% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  53% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  56% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  59% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  62% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  65% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  68% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  71% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  75% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  78% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  81% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  84% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  87% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  90% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  93% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | survivor_selection.png[39m[0m
+[   3% ] [90m[1mreimport[22m | monster_switchback_hound.png[39m[0m
+[   6% ] [90m[1mreimport[22m | monster_stoneback_ram.png[39m[0m
+[   9% ] [90m[1mreimport[22m | monster_shutter_wraith.png[39m[0m
+[  12% ] [90m[1mreimport[22m | monster_relay_jackal.png[39m[0m
+[  15% ] [90m[1mreimport[22m | monster_ration_moth.png[39m[0m
+[  18% ] [90m[1mreimport[22m | monster_lens_eater.png[39m[0m
+[  21% ] [90m[1mreimport[22m | monster_last_car_conductor.png[39m[0m
+[  25% ] [90m[1mreimport[22m | monster_candle_grazer.png[39m[0m
+[  28% ] [90m[1mreimport[22m | monster_bramble_seamstress.png[39m[0m
+[  31% ] [90m[1mreimport[22m | monster_boiler_saint.png[39m[0m
+[  34% ] [90m[1mreimport[22m | menu.png[39m[0m
+[  37% ] [90m[1mreimport[22m | item_belt.png[39m[0m
+[  40% ] [90m[1mreimport[22m | controls.png[39m[0m
+[  43% ] [90m[1mreimport[22m | biome_rail.png[39m[0m
+[  46% ] [90m[1mreimport[22m | biome_quarry.png[39m[0m
+[  50% ] [90m[1mreimport[22m | biome_orchard.png[39m[0m
+[  53% ] [90m[1mreimport[22m | biome_observatory.png[39m[0m
+[  56% ] [90m[1mreimport[22m | biome_mill.png[39m[0m
+[  59% ] [90m[1mreimport[22m | biome_chapel.png[39m[0m
+[  62% ] [90m[1mreimport[22m | lobby_woods_2.png[39m[0m
+[  65% ] [90m[1mreimport[22m | lobby_camp_4.png[39m[0m
+[  68% ] [90m[1mreimport[22m | lobby_camp_2.png[39m[0m
+[  71% ] [90m[1mreimport[22m | host_woods_2.png[39m[0m
+[  75% ] [90m[1mreimport[22m | host_camp_4.png[39m[0m
+[  78% ] [90m[1mreimport[22m | host_camp_2.png[39m[0m
+[  81% ] [90m[1mreimport[22m | client_woods_2_1.png[39m[0m
+[  84% ] [90m[1mreimport[22m | client_camp_4_3.png[39m[0m
+[  87% ] [90m[1mreimport[22m | client_camp_4_2.png[39m[0m
+[  90% ] [90m[1mreimport[22m | client_camp_4_1.png[39m[0m
+[  93% ] [90m[1mreimport[22m | client_camp_2_1.png[39m[0m
+[  96% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (31 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m

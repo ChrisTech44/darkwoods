@@ -19,6 +19,7 @@ var threat_gain := 0.0
 var rng := RandomNumberGenerator.new()
 var played_counts: Dictionary = {}
 var last_step_cue := ""
+var survivor_steps := {}
 
 
 func _ready() -> void:
@@ -124,6 +125,23 @@ func _physics_process(delta: float) -> void:
 			play_cue("footstep", actor.global_position, 0.0, rng.randf_range(0.94, 1.06))
 	else:
 		step_distance = 0.0
+	# Remote survivors use local positional playback from accepted host movement.
+	var active_survivors := {}
+	for other: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if other==actor: continue
+		var id := other.get_instance_id()
+		active_survivors[id]=true
+		var data: Dictionary=survivor_steps.get(id,{"position":other.position,"distance":0.0})
+		var traveled: float=other.position.distance_to(data["position"])
+		data["position"]=other.position
+		if other.status==CampPlayer.Status.ALIVE and traveled>0.05 and traveled<8:
+			data["distance"]+=traveled
+			if data["distance"]>=24:
+				data["distance"]=0.0
+				play_cue("footstep",other.position,-8.0,1.12 if other.sprinting else 1.0,other)
+		survivor_steps[id]=data
+	for id in survivor_steps.keys():
+		if not active_survivors.has(id): survivor_steps.erase(id)
 
 
 func _indoors(point: Vector2) -> bool:

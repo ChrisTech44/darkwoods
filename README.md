@@ -259,11 +259,25 @@ unverified. The automated woods player uses navigation paths as a route guide;
 the tests do not establish balance for every seed.
 
 Latest layout/audio checks and limits are recorded in the development log.
-Upcoming milestones cover ENet host/join and synchronized co-op/audio (**M2/M2-A**),
-four-player reliability and proximity voice (**M3/M3-V**), and desktop distribution (**M4**).
+The next planned step is **survivor selection (M1-S)**: six camp archetypes with
+advantages in stamina, ignition, light efficiency, rescue, stealth or supplies.
+Then come authoritative ENet co-op/audio (**M2/M2-A**), four-player reliability,
+optional proximity voice (**M3/M3-V**) and tested desktop packages (**M4**).
+Selection and bonuses are not playable yet; every role is planned to support
+solo escape and duplicate team choices.
+
+The content backlog now includes **48 additional monster concepts** with unique
+abilities, warnings and counterplay, plus **18 detailed biome designs**: deeper
+graveyard/village/bog regions and 15 new locations such as a flooded sawmill,
+glasshouse, quarry, rail yard, observatory and ruined apiary. These are plans,
+not newly added enemies/maps. Verified content slices will enter the existing
+maze gradually; the current objective recipe and enemy population remain as above.
 
 - [Authoritative project brief](AGENT_BRIEF.md) — requirements and acceptance gates.
 - [Milestones](docs/milestones.md) — implementation plan and remaining work.
+- [Survivor selection and co-op](docs/survivor_multiplayer_plan.md) — six archetypes, selection screens and the transition into voice.
+- [Monster catalog](docs/monster_catalog.md) — 48 additional designs, their abilities and counterplay.
+- [Biome design](docs/biome_design.md) — 18 detailed regions, randomized layouts, encounters and staged delivery.
 - [Architecture](docs/architecture.md) — world, AI, and authority boundaries.
 - [Testing](docs/testing.md) — commands, coverage, and platform limits.
 - [Development log](docs/development_log.md) — changes, failures, fixes, and evidence.
@@ -271,4 +285,4 @@ four-player reliability and proximity voice (**M3/M3-V**), and desktop distribut
 
 Project rules in [AGENTS.md](AGENTS.md) require verified incremental commits and
 ongoing pushes to GitHub, with a development log update for each increment.
-The original supplied Word brief is retained alongside the Markdown specification.
+The brief and design documents are maintained in Markdown only.

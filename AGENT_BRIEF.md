@@ -1,7 +1,7 @@
 # LAST NIGHT AT CAMP
 **Godot 4 multiplayer horror game — agent implementation brief**
 
-Version 1.4 — 16 October 2026 — Codex Sol (medium effort)
+Version 1.5 — 16 October 2026 — Codex Sol (medium effort)
 
 User amendment: online proximity voice chat and an original/licensed audio-file
 pipeline are planned after synchronized multiplayer gameplay. This supersedes
@@ -11,7 +11,8 @@ layout variety, and implement the user-supplied audio files **before** online
 multiplayer and proximity voice. Offline audio has its own local checks; the
 networked M2-A and M3-V acceptance gates still require future execution evidence.
 Current gameplay is offline; local audio playback is implemented with local
-verification. Voice capture and networking are not implemented. The adjacent Word brief mirrors these requirements.
+verification. Voice capture and networking are not implemented. Markdown is the
+sole maintained specification; the Word brief was removed at the user's request.
 
 16 October menu/defaults amendment: both modes start fresh random camps by
 default; fixed seeds and same-seed retries are explicit choices. Menu music and
@@ -23,6 +24,15 @@ line of sight in the woods; creature calls start nearby and fade by proximity.
 Keep title-screen mixer controls behind Settings. Enlarge the finite forest
 to 9,600×9,408 around all sides of a central camp, with wider, clean connections
 to enlarged village/bog/graveyard regions and monsters around the camp.
+
+16 October survivor/content planning amendment: plan a player selection screen
+and six camp-personality archetypes with meaningful escape advantages before
+transitioning into authoritative multiplayer, synchronized audio and optional
+voice. Expand the design backlog with 48 additional monster concepts and 18
+detailed biomes (three existing-region expansions plus 15 new regions).
+These are plans, not implemented features or a requirement to ship the whole
+catalog before co-op. See [survivor/co-op plan](docs/survivor_multiplayer_plan.md),
+[monster catalog](docs/monster_catalog.md) and [biome design](docs/biome_design.md).
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 
@@ -38,7 +48,7 @@ to enlarged village/bog/graveyard regions and monsters around the camp.
 
 - Fantasy: friends arrive at an isolated campsite at night; a slasher stalks them as they search for supplies, repair a getaway vehicle, and escape together. Intended tone: tense and scary but allows emergent comedic mishaps. Target rounds for eventual game: 15–25 minutes; the MVP may be shorter.
 
-- Core loop: host/join lobby → spawn at campsite → investigate cabins and wooded trails → collect randomized objective items → avoid/disrupt killer → repair and start escape vehicle → surviving players extract → show outcome screen → replay.
+- Core loop: choose survivor offline or host/join a lobby with survivor selection → confirm/ready → spawn at campsite → investigate cabins and wooded trails → collect randomized objective items → avoid/disrupt killer → repair and start escape vehicle → surviving players extract → show outcome screen → replay.
 
 - Replayability systems (introduce after core loop): randomized objective item placements; several possible cabin locks and blocked paths; alternate extraction methods; risk/reward optional loot; killer patrol variations and memory of recent sound/sightings. Do not make "infinite procedural maps" the MVP. Both modes default to fresh random camps; only explicit seed entry/retry repeats a recipe. Keep loot, doors and the chart aligned with seeded building placements. The latest approved forest expansion surrounds a central camp with a finite 9,600×9,408 woods, 2,410 forest clearings, four exits, 128px trails, spacious themed regions, clean approach transitions and 24 roaming cryptids in expedition mode.
 
@@ -55,6 +65,26 @@ to enlarged village/bog/graveyard regions and monsters around the camp.
 - Killer: autonomous AI with patrol, investigate noise, chase on valid line of sight, search last known location, and disengage to patrol. Killer catches/injures players; simple MVP: one hit downs and a second hit eliminates, with a timed teammate revive interaction. Exact values should be config constants.
 
 - Tension: sprinting, interaction failures, or dropped objects may emit noise events. AI responds to recent sounds but does not automatically know all player locations. Give players telegraphing (footstep audio cue, visible alert animation, or debug indicators).
+
+## Survivor selection and expanded content — planned
+
+- Add M1-S before M2: a dedicated offline survivor selection screen with six readable cards, original preview art, exact advantages, keyboard/mouse navigation, Back/Start and saved choice. Keep menu music and Settings available. Random Night remains on by default; Random Survivor is a separate explicit choice. Retry preserves role; another night offers selection again.
+
+- Use six original camp/slasher personality archetypes independent of appearance or identity. All survivors can collect every part, use tools, revive and start/board the van. Duplicate roles are allowed; every role must remain solo-viable and no team composition is mandatory. Numbers below are proposed tuning defaults, not current stats.
+
+- The Jock (`jock`): stamina capacity 5s instead of 4s; unchanged movement speed and stamina recovery. The Grease Monkey (`mechanic`): engine-start hold 1.5s instead of 2s and one extra spare battery; parts still deliver instantly and departure remains 8s.
+
+- The Scout (`scout`): expedition flashlight drain 0.8 charge/s instead of 1, unchanged 90-charge capacity/+70 recharge/sight, and one extra ration. The First-Aid Kid (`medic`): ordinary teammate revive 2.25s instead of 3s, one starting medkit and one extra flare; medkit revive remains 1.2s, no self-revive.
+
+- The Quiet Kid (`quiet`): personal sprint AI-noise reach ×0.75 after weather, without changing sight, actual playback, microphone gain or environmental noise. The Overprepared One (`quartermaster`): one extra flare, one extra spare battery and one extra ration. Bonuses apply once at fresh round spawn, never on ready toggles, revive or reconnect.
+
+- Role data uses allowlisted stable IDs and private effective per-player configuration; never mutate the shared baseline. The future host validates choices, derives bonuses and locks choices/seed/rules at start. Lobby changes clear ready, initial late join is lobby-only, and disconnect cannot refresh supplies. One host-owned actor advances a revive/ignition hold; changing actor resets progress.
+
+- Expand the planning pool by 48 distinct monster concepts, each with a trigger, nearby visual/audio tell, counterplay, habitat and bounded authority/lifecycle rules. Together with the seven current enemy designs this is a 55-design catalog, not a simultaneous spawn count. No microphone recordings or forged player voices for mimic monsters; no hidden omniscient targeting or unavoidable route locks.
+
+- Plan 18 detailed biome designs: expanded graveyard/village/bog plus 15 new modular regions within the existing massive maze. Each major region reserves collision/navigation/shadow/sight geometry and at least two distinct entrances, an internal loop, clear aprons, optional risk/reward, seeded safe variants and one-time rewards. Keep current objective regions/recipe initially; new deep landmarks remain optional.
+
+- Introduce content one verified slice at a time: Flooded Mill/Boiler Saint, Orchard/Bramble Seamstress, Observatory/Shutter Wraith, then Rail Yard/Last-Car Conductor. Prototype after M1-S and a recorded human baseline; integrate after M2/M2-A stabilize. The remaining catalog is a backlog, not a prerequisite for voice or first distribution.
 
 ## Godot implementation & project layout
 
@@ -87,7 +117,7 @@ to enlarged village/bog/graveyard regions and monsters around the camp.
 - In active rounds, attenuate nearby survivor voices by distance and apply simple wall muffling; lobby/results use session-wide chat. Dead/escaped/left-behind players use a separate spectator voice group so they cannot relay unrestricted information to living survivors. No audio recording or microphone payloads in logs.
 - Host-approved peer identity, position and round state determine voice recipients. Use bounded, compressed low-latency frames on a path isolated from reliable gameplay traffic; drop stale frames rather than building a backlog. Choose/verify the codec, transport, dependency licenses and Internet encryption design in an implementation spike before making performance/platform claims.
 - Voice does not attract AI by default. Any later speech-to-game-noise option needs separate balance work and host validation. Clear capture/playback buffers on disconnect, restart and host loss. Test proximity boundaries, occlusion, mute/PTT, denial/no-device behavior, spectator isolation, jitter/load and cross-machine audio.
-- Implementation order: visual/map fixes and seeded camp variety → offline audio cues/assets → M2 gameplay and M2-A synchronized audio → M3 reliability plus M3-V proximity voice → M4 packaged audio/permissions. Online acceptance gates remain future work.
+- Implementation order: visual/map fixes and seeded camp variety → offline audio cues/assets → M1-S survivor selection/bonuses and recorded human baseline → M2 gameplay with role authority and M2-A synchronized audio → M3 reliability → M3-V proximity voice → M4 packaged audio/permissions. New biome/monster slices follow stable foundations; online acceptance gates remain future work.
 
 ## Killer AI contract
 
@@ -111,17 +141,19 @@ to enlarged village/bog/graveyard regions and monsters around the camp.
 
 - M1 – Offline vertical slice: controllable player, forest collisions, pickup and interact mechanics, vehicle repair/escape, killer patrol/chase/search, down/revive/death and round restart. Gate: a human can complete or lose one entire round locally.
 
-- M2 – Networked slice: host/join lobby, 2 local clients, synchronized positions, item pickups, killer, objective progress, death and extraction. Gate: deterministic automated two-client test plus manual two-window smoke test. Do not substitute local split screen.
+- M1-S – Survivor selection: offline selection UI, six personal archetype bonuses, private effective stats, accurate HUD and clean lifecycle. Gate: all-role/both-mode input rounds and modifier boundaries, no bonus duplication/cross-player contamination, graphical UI checks and recorded normal-speed human balance/escape evidence. Teammate fixtures do not prove co-op.
+
+- M2 – Networked slice: host/join lobby with authoritative role selection/ready lock, 2 local clients, synchronized positions, item pickups, killer, objective progress, death and extraction. Start with Quick Camp; verify existing expedition mechanics before claiming Woods co-op. Gate: deterministic automated two-client test plus manual two-window smoke test, including role validation and contested interactions. Do not substitute local split screen.
 
 - M2-A – Synchronized audio foundation (after M2; local playback first): original/licensed audio files, AudioManager/buses, positional cues and synchronized world sound events. Gate: two real clients hear one appropriate cue per accepted event, controls/loops/cleanup work, and audio failure leaves gameplay usable.
 
 - M3 – Reliability: up to 4 players, concurrent interactions, disconnect paths, late join policy (either support or explicitly disallow once round begins), synchronized restart, latency simulation where practical. Gate: no known state divergence in specified scenarios.
 
-- M3-V – Online proximity voice (after M2-A): opt-in push-to-talk, distance/occlusion, mute/device settings, spectator separation and bounded transport. Gate: two separate machines complete a round with working voice, followed by four-peer/jitter/disconnect checks; denied microphone access does not block gameplay. Record the actual direct-IP/virtual-LAN connection method.
+- M3-V – Online proximity voice (after M2-A and M3 reliability): opt-in push-to-talk, distance/occlusion, mute/device settings, spectator separation and bounded transport. Gate: two separate machines complete a round with working voice, followed by four-peer/jitter/disconnect checks; denied microphone access does not block gameplay. Record the actual direct-IP/virtual-LAN connection method. Archetypes grant no global voice or extra microphone hearing.
 
 - M4 – Distribution: exported packages for available desktop targets and clear launch instructions, including audio files, codec dependencies and microphone permission behavior once voice is implemented. Gate: packaged audio/voice and builds checked on available platforms; untested target platforms labeled unverified.
 
-- M5 – Replayability/polish (after approval): objective location pools, randomized patrol route seeds, expanded ambience/music, additional tools, balance, improved sprite sheets and lighting. Baseline audio cues and voice have their own M2-A/M3-V gates.
+- M5 – Replayability/polish: the survivor/monster/biome planning backlog is approved for design, with one-at-a-time implementation gates. Further objective rotations, extraction modes, tools, balance, sprite sheets and lighting follow verified slices. Baseline audio cues and voice retain their own M2-A/M3-V gates; a content brainstorm is not execution evidence.
 
 ## Testing, verification & evidence
 

@@ -227,3 +227,19 @@ Doorway navigation assertions allow the native 7px clearance at region seams;
 separate actual-input traversal and complete rounds retain physical collisions.
 No balance/visibility assumptions are replaced with AI disablement in the active
 escape suites. Human balance and other desktop targets remain unverified.
+
+## Planned survivor and content acceptance
+
+The [survivor plan](survivor_multiplayer_plan.md) defines future M1-S modifier,
+selection/lifecycle and all-role escape checks, then real two/four-peer authority
+checks. [Monster](monster_catalog.md) and [biome](biome_design.md) designs add
+future telegraph/counterplay, reservation/connectivity, hazard expiry/reward and
+replication gates. None of those new features has implementation or test evidence
+yet; existing M1 suites do not establish their acceptance. Voice still requires
+opted-in real microphone and separate-machine permission/routing tests.
+
+For this documentation-only amendment, import/startup, local links/PNG references,
+current screenshot/rule review and whitespace checks establish document consistency
+and preserve the runnable baseline. They do not establish new gameplay, human
+balance, network or audio/voice acceptance. The project now maintains its brief
+and design documents solely in Markdown.

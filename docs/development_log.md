@@ -1,5 +1,55 @@
 # Development log
 
+## 2026-10-16 — Markdown-only survivor, monster and biome planning
+
+Updated planning in response to the survivor-selection, expanded-monster and
+detailed-biome requests. [Survivor/co-op plan](survivor_multiplayer_plan.md)
+defines a pre-game selection flow and six original camp archetypes: Jock,
+Grease Monkey, Scout, First-Aid Kid, Quiet Kid and Overprepared One. Proposed
+personal advantages support stamina, ignition, lighting, rescue, stealth and
+supplies. Includes exact initial values, solo/duplicate-role viability,
+private configuration, one-time application, authoritative lobby/ready lock and
+staged M1-S → M2 → M2-A → M3 → M3-V → M4 delivery/acceptance.
+
+[Monster catalog](monster_catalog.md) adds **48 distinct concepts**, each with
+trigger, nearby visible/audio tell, counterplay, limits and habitat. Covers
+pursuit, perception, sound deception, terrain, resource pressure and landmark
+guardians, plus compatible/prohibited pairings and first prototype gates.
+The seven existing enemy designs make 55 designs in total; the current spawn
+population is unchanged. Mimic powers use authored cues, not captured speech.
+
+[Biome design](biome_design.md) details **18 regions**: expanded current
+graveyard/village/bog and **15 new pockets** in the existing giant maze. Every
+dossier specifies identity, internal routes, optional interaction/reward,
+threat/counterplay, seeded variation and checks. Shared rules reserve entrances,
+loops, aprons and coherent collision/nav/shadow/sight; retain the current required
+regions and five-part recipe. Proposed first slices are Flooded Mill/Boiler
+Saint, Orchard/Bramble Seamstress, Observatory/Shutter Wraith and Rail Yard/
+Last-Car Conductor. No full-catalog requirement before voice or distribution.
+
+Updated authoritative brief to **1.5**, milestones, audio/voice design, README,
+architecture and testing. The user's latest amendment removes the Word brief:
+deleted `last_night_at_camp_agent_brief.docx`, changed AGENTS.md and active
+documentation to maintain Markdown only. Historical log/evidence entries about
+earlier Word checks remain historical; there is no ongoing Word alignment or
+rendering requirement.
+
+**Verification:** required Godot `--headless --path . --import` and
+`--headless --path . --quit-after 5` both exit 0 with zero errors/warnings on
+macOS arm64/Godot 4.7.2. Checked **90 local links/anchors and 23 PNG references**
+across 17 Markdown files,
+unique/complete IDs for all 6 roles, 48 new monsters and 18 biomes, current
+rule values against player/config/van/world scripts, and `git diff --check`.
+Reopened the existing Settings and surrounding-world screenshots to check the
+documented baseline; no new gameplay screenshots or results are fabricated.
+Raw command/document-check output is in ignored `artifacts/planning_verification`.
+
+This is a documentation-only increment; no runtime scripts/assets changed.
+The prior 77-step gameplay report remains the latest full regression, not a new
+run. Selection/bonuses, new monsters/biomes, networking and voice remain planned.
+Human balance/listening, Windows/Linux/Intel Mac, exports and real microphone
+permission/online tests remain unverified. No microphone capture is introduced.
+
 ## 2026-10-16 — Massive forest around central camp and spacious region approaches
 
 Completed the same request after the verified sight/audio/Settings increment

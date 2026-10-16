@@ -4,24 +4,34 @@ Status: **offline audio implemented; synchronized audio and proximity voice plan
 original voice-chat exclusion in [AGENT_BRIEF.md](../AGENT_BRIEF.md). The build is offline. The 16 October amendment prioritizes visual/map fixes,
 seeded camp variation and user-supplied sound files before networking/voice.
 Local playback does not establish two-client audio or microphone acceptance. Use [milestones](milestones.md) for delivery gates.
+The later survivor/content amendment adds [selection and archetypes](survivor_multiplayer_plan.md)
+before M2 and plans [monsters](monster_catalog.md)/[biomes](biome_design.md) as
+staged content. It does not implement networking, voice or new cue files.
 
 ## Delivery order
 
 1. **Offline polish/audio — first.** Fix path/building conflicts, vary seeded camp
    lots and implement the supplied files with local playback/mix/cleanup checks.
-2. **M2 — synchronized gameplay.** Establish host/join, authoritative actors/items/
+2. **M1-S — survivor selection and human baseline.** Add the offline choice flow,
+   personal bonuses and accurate HUD, then record normal-speed play. Keep menu
+   music/Settings and optional world randomization independent of role choice.
+3. **M2 — synchronized gameplay.** Establish host/join, authoritative actors/items/
    enemies/hazards/sites, complete shared rounds and reliable lifecycle cleanup.
+   Validate/lock role IDs and derive stats on the host, starting in Quick Camp
+   and verifying current expedition parity before advertising Woods co-op.
    Keep the first two-client gate independent of microphones and audio devices.
-3. **M2-A — audio foundation.** Add original/licensed files, stable cue IDs,
-   AudioManager, mix controls, positional playback and authoritative sound events.
+4. **M2-A — synchronized audio foundation.** Extend the existing local registry,
+   AudioManager/mixer and positional playback with authoritative sound events.
+   Complete missing cue/provenance work using actual original/licensed files.
    Verify two-client playback and a real listening session.
-4. **M3 + M3-V — reliability and online voice.** Keep four-peer gameplay stable,
+5. **M3, then M3-V — reliability and online voice.** Keep four-peer gameplay stable,
    then add capture/encoding/transport/playback with opt-in proximity voice.
    Test on separate machines across networks, not just local windows or loopback.
-5. **M4 — packaging.** Include files, attribution and approved codec dependencies;
+6. **M4 — packaging.** Include files, attribution and approved codec dependencies;
    test permissions/device behavior in actual desktop exports.
-6. **M5 — further polish.** Expand adaptive ambience/music and tune the mix and
-   voice balance from playtest evidence.
+7. **Staged content/M5.** Prototype a biome/monster slice after M1-S/human baseline,
+   integrate after M2/M2-A stabilize, and tune cues/voice from playtest evidence.
+   Full monster/biome catalogs are not prerequisites for voice or distribution.
 
 M2 can first use LAN or virtual LAN. For online acceptance, record a direct-IP
 setup with its required port forwarding, or a working virtual LAN, host/client
@@ -78,6 +88,13 @@ trusted bell, monster attack, completed repair or noise position by sending an
 arbitrary cue packet. Simultaneous pickup attempts still award/play one accepted
 event. Restore required loop state on scene/session changes without restarting
 every looping sound from scratch each snapshot.
+
+The planned Quiet Kid modifier affects only that actor's sprint-generated AI
+stimulus reach (×0.75 after weather), not footstep playback, voice gain or
+environmental noise. Role-selection UI sounds stay local. New monster mimicry
+uses authored registered cues, never recorded player speech, peer impersonation
+or arbitrary client-supplied audio. Threat cues retain visible counterparts and
+nearby attenuation; new biome ambience must not mask attack warnings.
 
 ## Proximity voice experience
 
@@ -151,6 +168,8 @@ results; do not report real microphone quality from synthetic packets alone.
 - **M3-V:** two separate machines complete an online round with PTT/device/mute
   controls, near/far/wall attenuation, correct passenger/spectator routing and no
   capture outside a session. Denied permission/no microphone must not block play.
+  Require M3 gameplay reliability first. Archetypes grant no global chat,
+  altered microphone hearing or microphone-dependent survival advantage.
 - **Reliability:** four peers speaking while moving/repairing/casting; packet
   loss/jitter/reordering/load; silence/duplicate/oversized frames; focus/device
   changes, host loss, peer disconnect/reconnect and round restart. Old peer/round

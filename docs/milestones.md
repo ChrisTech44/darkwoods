@@ -12,7 +12,7 @@ buildings, original character/environment pixel art, shadow-casting lights and a
 field map. The user's subsequent request explicitly authorizes woods,
 replayability and UI polish ahead of M2: a seeded finite trail maze, five-part
 repair/cache objectives, tools/supplies, weather and six original cryptid types
-(four per expedition), interactive village/bog/graveyard sites and richer sensing,
+(originally four creatures per expedition; now 24), interactive village/bog/graveyard sites and richer sensing,
 search, patrol and projectile behavior. Quick Camp retains M1's three-part objective with randomized camp positions.
 This work does not implement or claim M2 networking.
 
@@ -43,17 +43,43 @@ For each step, record commands, results, and remaining gaps in development_log.m
 Run import/startup and applicable tests before advancing; use configuration values
 for mechanics and add tests when they validate real rules. Commit at M1 acceptance.
 
-## Later gates
+## Next steps: survivor selection, then co-op
 
-- M2: ENet listen-server lobby, two local clients, synchronized mechanics,
-  deterministic two-client assertions and manual two-window smoke test.
-- M2-A (after M2): audio-file/provenance pipeline, AudioManager and mixer buses,
-  positional footsteps/monster/spell/objective cues and ambience. Replicate
+The 16 October planning amendment adds an offline survivor selection milestone
+before networking, plus a deliberately staged content backlog. The detailed
+[survivor/co-op plan](survivor_multiplayer_plan.md) defines six archetypes,
+proposed values, screen flows, lobby rules and verification. Selection/bonuses
+are **not implemented yet**. Existing M1 human acceptance remains unrecorded.
+
+1. **M1-S selection shell:** six cards, readable details/preview, saved choice,
+   explicit Random Survivor, Back/Start, settings/music and retry flows.
+2. **M1-S personal bonuses:** data-driven role IDs, private effective stats,
+   stamina/light/noise/ignition/revive/supply modifiers and accurate HUD.
+3. **M1-S verification/human baseline:** all six roles in both modes, reset and
+   contamination checks, real graphical input and recorded normal-speed play.
+   Keep solo victory possible; teammate fixtures do not establish networking.
+4. **M2 authority in Quick Camp:** two real ENet peers, selection/ready lock,
+   inputs/spawns, contested items, killer/revive, van/boarding and shared results.
+5. **M2 existing expedition parity:** current woods, roles, all 25 enemies,
+   projectiles/sites/caches/weather, per-player sight, restart and disconnect.
+   Verify this before advertising expedition co-op; do not add the full monster
+   catalog while establishing synchronization.
+6. **M2-A → M3 → M3-V → M4:** synchronized audio, four-peer gameplay reliability,
+   then optional online voice and verified packages, using the gates below.
+
+## Network, audio and distribution gates
+
+- M2: ENet listen-server lobby with host-validated archetypes/ready state, two
+  local clients, synchronized mechanics, deterministic two-client assertions
+  and manual two-window smoke test. Reject forged stats/unknown IDs; lobby-only
+  late joins and no reconnect supply refresh. Test duplicate and mixed roles.
+- M2-A (after M2): extend the existing local audio-file/AudioManager/mixer
+  foundation and complete cue/provenance gaps. Replicate positional world cues
   authoritative sound events once per receiver; keep AI hearing independent of
   device volume. Gate: two-client cue/cleanup checks and a real listening session.
 - M3: four players, simultaneous interactions, disconnect/host loss, lobby-only
   late join, shared restart, and practical latency checks.
-- M3-V (after M2-A, alongside M3 reliability): online proximity voice with opt-in
+- M3-V (after M2-A and M3 reliability): online proximity voice with opt-in
   microphone enablement, push-to-talk, distance falloff, wall muffling, per-peer
   mute/volume, device feedback and separate spectator speech. Gate: a complete
   two-machine round across networks using a documented connection method, then
@@ -62,14 +88,37 @@ for mechanics and add tests when they validate real rules. Commit at M1 acceptan
   and launch notes. Package actual audio files and any codec dependencies; verify
   microphone permissions and playback/capture on each claimed target. No exports
   before the applicable milestone passes.
-- M5: additional replayability/polish after approval. The woods/UI/supplies pass
-  is explicitly approved by the user's current request; alternate extraction,
-  expanded ambience/music, larger balance studies and further modes remain future work.
+- M5: staged replayability/polish from the approved planning backlog. Alternate
+  extraction, objective-region rotation and further modes remain future rule
+  changes, with separate verification. No catalog size is a release/voice gate.
 
 The user has approved including future online voice and audio files in the
 design. This does not mark them implemented or collapse the incremental gates.
 See [audio and multiplayer design](audio_multiplayer_design.md) for proposed
 defaults, event/voice boundaries, content priorities and acceptance criteria.
+
+## Expanded monsters and biomes: staged content track
+
+The [monster catalog](monster_catalog.md) adds **48 concepts** to the seven
+existing designs. The [biome document](biome_design.md) describes **18 regions**:
+expanded graveyard/village/bog and 15 new landmark pockets, with layout,
+interactions, encounters, randomness and acceptance checks. These are designs,
+not shipped enemies or locations. The current 24-cryptid expedition is unchanged.
+
+Prototype one slice after M1-S/human baseline, then integrate it after M2/M2-A
+stabilize. First candidates are **Flooded Mill + Boiler Saint**, **Orchard +
+Bramble Seamstress**, **Observatory + Shutter Wraith**, and **Rail Yard + Last-Car
+Conductor**. Keep each independently runnable and verified. Use navigation and
+sight reservations, safe return loops, optional rewards, bounded encounters and
+original/licensed art/audio. No required role/microphone, permanent route seal,
+remote trail reveal or automatic 48-enemy population increase.
+
+For each slice: schematic/reservation → scenery and collision/sight/nav → one
+interaction → one monster/tell/counterplay → seeded variants → online parity.
+Require actual graphical inspection, solo human counterplay, all-role access,
+one-time reward/reset checks and, once networked, two/four-peer event consistency.
+Retain three current objective regions and the five-part recipe initially. Add
+only a small verified subset of the biome pool to a given random night.
 
 ## 16 October priority amendment
 

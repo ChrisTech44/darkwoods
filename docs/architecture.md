@@ -1,8 +1,14 @@
 # Architecture and conventions
 
-`AGENT_BRIEF.md` is the authoritative specification. The adjacent Word document
-is a supplied reference. M1 implements an offline survival round. No network
+`AGENT_BRIEF.md` is the authoritative specification; project design documents
+are maintained in Markdown only. M1 implements an offline survival round. No network
 session or export is implemented yet.
+
+Planned next: [survivor selection and role authority](survivor_multiplayer_plan.md),
+then ENet co-op/audio and optional voice. [Monster](monster_catalog.md) and
+[biome](biome_design.md) catalogs are design backlogs, not current runtime types.
+Future role application must use private effective stats, and new regions must
+reserve one consistent collision/navigation/shadow/sight layout before props.
 
 Validated engine: **4.7.2.stable.official.ed1daf0bf**, macOS arm64. Use this version
 to reproduce results. Compatibility renderer, 384×216 base viewport, integer

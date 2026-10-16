@@ -5,7 +5,8 @@ user instructions as amendments, work in verified increments, keep the game
 runnable, and maintain `docs/development_log.md`.
 
 Read `docs/audio_multiplayer_design.md` before future audio/online voice work.
-Keep the Markdown and Word briefs aligned when requirements change. Audio assets,
+Maintain the brief and design documents in Markdown only; the Word brief was
+removed at the user's request. Audio assets,
 networking and proximity voice are planned features until their acceptance gates
 have execution evidence; document platform and microphone-permission limits.
 

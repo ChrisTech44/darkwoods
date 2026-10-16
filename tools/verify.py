@@ -56,7 +56,10 @@ def main():
     commands.append(("audio_polish", ["--headless", *audio, "--", "--audio-test"]))
     polish = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/layout_polish.gd"]
     commands.append(("layout_polish", ["--headless", *polish]))
+    content = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/content_expansion.gd"]
+    commands.append(("content_expansion", ["--headless", *content]))
     if args.graphical:
+        commands.append(("graphical_content", ["--audio-driver", "Dummy", *content, "--", "--capture"]))
         commands.append(("graphical_surround", [*surround, "--", "--capture"]))
         commands.append(("graphical_visibility", [*visibility, "--", "--capture"]))
         commands.append(("graphical_defaults", [*defaults, "--", "--capture"]))
@@ -90,7 +93,7 @@ def main():
                   if re.search(r"(?:SCRIPT ERROR|ERROR|Parse Error):", line)]
         warnings = [line for line in clean.splitlines() if "WARNING:" in line]
         passed = status == 0 and not errors and not timed_out
-        if name in ("menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
+        if name in ("content_expansion", "graphical_content", "menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
             summaries = []
             for line in clean.splitlines():
                 if line.startswith("{"):

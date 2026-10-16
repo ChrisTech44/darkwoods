@@ -10,6 +10,7 @@ var running: bool = false
 var remaining: float = 0.0
 var passengers: Array[CampPlayer] = []
 var headlights: Array[PointLight2D] = []
+var start_actor: CampPlayer
 var engine_clock: float = 0.0
 
 
@@ -88,9 +89,13 @@ func advance_start(actor: CampPlayer, holding: bool, delta: float) -> void:
 		return
 	if not holding or not in_range(actor) or installed.size() != required_parts.size():
 		start_progress = 0.0
+		start_actor = null
 		return
+	if start_actor != actor:
+		start_progress = 0
+		start_actor = actor
 	start_progress += delta
-	if start_progress >= config.start_hold_seconds:
+	if start_progress >= actor.config.start_hold_seconds:
 		running = true
 		remaining = config.extraction_seconds
 	queue_redraw()

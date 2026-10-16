@@ -1,5 +1,8 @@
 # Incremental implementation plan
 
+Latest user amendment: the offline content update is implemented ahead of M2;
+see [content rules and verification limits](content_update.md).
+
 M0 passed and was committed as `ef180d0`. M1's offline implementation and the
 requested forest expansions are complete. All five steps below are covered by automated
 engine checks. Full input-driven win/loss/restart runs pass headlessly and in a
@@ -43,13 +46,14 @@ For each step, record commands, results, and remaining gaps in development_log.m
 Run import/startup and applicable tests before advancing; use configuration values
 for mechanics and add tests when they validate real rules. Commit at M1 acceptance.
 
-## Next steps: survivor selection, then co-op
+## Next steps: human content baseline, then co-op
 
 The 16 October planning amendment adds an offline survivor selection milestone
 before networking, plus a deliberately staged content backlog. The detailed
 [survivor/co-op plan](survivor_multiplayer_plan.md) defines six archetypes,
 proposed values, screen flows, lobby rules and verification. Selection/bonuses
-are **not implemented yet**. Existing M1 human acceptance remains unrecorded.
+are **implemented offline**, with automated and graphical checks; the human
+balance and full all-role input-round gates remain pending. Existing M1 human acceptance remains unrecorded.
 
 1. **M1-S selection shell:** six cards, readable details/preview, saved choice,
    explicit Random Survivor, Back/Start, settings/music and retry flows.

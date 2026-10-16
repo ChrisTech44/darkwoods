@@ -1,5 +1,76 @@
 # Development log
 
+## 2026-10-16 — Offline survivors, item belt and six landmark biomes
+
+Implemented the user's priority amendment: substantial player/monster/biome
+content before online multiplayer. The brief is now 1.6. Six survivor cards have
+animated original outfit previews, exact bonuses, saved allowlisted choice,
+keyboard/mouse navigation, Back/Start, independent Random Survivor and Settings.
+Private per-player configuration applies spawn supplies once. Jock/Grease Monkey/
+Scout/First-Aid Kid/Quiet Kid/Overprepared bonuses now affect their documented
+stamina, ignition, light, rescue, sprint hearing and supplies. HUD uses effective
+stamina and interaction thresholds; changing the ignition/revive actor resets work.
+
+Added a six-type supply belt with same-type stacks, 1–6/keypad selection, a
+visible held supply, V use, G whole-stack drop and E single-unit recovery.
+Required car parts and reusable cutters stay separate. Full belts reject new
+types without consuming pickups/rewards. Noise tins emit three delayed rattles;
+salt wards protect from physical hits for four seconds; glow moss restores 35
+light charge and clears hexes. Existing Q/R/C shortcuts and teammate medkits remain.
+
+Added Flooded Mill, Bramble Orchard, Starless Observatory, Last-Car Rail Yard,
+White Stone Quarry and Drowned Chapel: nine major regions total, six small ruins,
+unchanged finite world size and required-cache recipe. Connected open-loop
+footprints preserve multiple approaches, 32px aprons and objective navigation.
+Native pixel scenery includes waterwheel/boiler gauges, channel bridges, trellises,
+fruit trees, dome/telescope, track switches, quarry terrace/ladder markings, broken
+columns/candle pews and chapel mosaics; bog dressing covers its expanded area.
+These optional first versions do not implement all interiors, hazards, quests or
+seeded module variants from the design backlog. Dressing is walkable.
+
+Added seven original directional cryptid sheets and first behavior versions:
+Switchback Hound, Stoneback Ram, Bramble Seamstress, Shutter Wraith, Candle Grazer,
+Boiler Saint and Last-Car Conductor. Hounds use longer hearing/search and locked
+telegraphed charges; six landmark guardians reject targets/stimuli outside their
+zones and constrain destinations. Wraiths stop under a visible beam, grazers
+consume nearby visible flares, and other guardians mark bounded expiring slow
+patches/charges. Patches never edit collision or lock routes. Population remains
+24 cryptids across 13 species plus the stalker. Existing cryptids/stalker receive
+trim/seam detail. New species reuse the registered revenant call with existing
+proximity limits; no bespoke new audio assets or microphone access is claimed.
+
+Verification on macOS arm64 / Godot 4.7.2:
+
+- `python3 tools/verify.py`: exit 0; **69 steps passed**, zero errors/warnings.
+  Includes import/startup, all script parsing, native navigation/region homes,
+  shadows/sight, local audio, replay, full keyboard-driven camp win/loss and
+  expedition escape with all enemies active.
+- Final required headless `--import` and five-frame startup: exit 0, no errors.
+- Final focused headless content: **301 assertions, zero failures**; forest hunt:
+  **80 assertions, zero failures**; woods visibility: results in preserved log.
+- Graphical content with Dummy audio: **309 assertions, zero failures**; actual
+  engine screenshots opened and inspected for selection, held supply/belt and
+  all six biomes. The biome tour brightens light/disables sight for inspection;
+  the belt capture retains ordinary night lighting. No human playthrough claimed.
+- Documentation links/assets checked against disk and implemented rules;
+  `git diff --check` passed. Remote fetched before publication, with no divergence.
+
+Checks cover role values in both mode flags, real drain and ignition boundaries,
+nonduplication/private stats, selector/settings, keypad/number input, full belt,
+drop recovery, rare consumables, locked/expiring powers, region nonoverlap and
+multiple entrances, and guardian limits. Fixed legacy test assumptions about
+immediate replay, six-only species and every non-village site being a cauldron.
+A review also found sprinting interactions incorrectly receiving Quiet Kid's
+modifier; separate sprint/environment stimulus signals now preserve full cache/
+flare hearing even while sprinting, with explicit regression coverage.
+
+[Content rules and screenshots](content_update.md),
+[verification report](evidence/content_expansion/summary.json) and selected raw
+logs/captures in [content evidence](evidence/content_expansion/README.md) are
+preserved. Human normal-speed balance, full all-role input-only escape rounds,
+Windows/Linux, exports, multiplayer/synchronized audio and proximity voice remain
+unverified. Actor/teammate fixtures do not pass M1-S human or co-op gates.
+
 ## 2026-10-16 — Markdown-only survivor, monster and biome planning
 
 Updated planning in response to the survivor-selection, expanded-monster and

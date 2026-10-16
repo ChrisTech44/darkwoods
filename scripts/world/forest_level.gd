@@ -14,6 +14,7 @@ var won: bool = false
 var message: String = "Search camp buildings. Tab shows where to find the supplies."
 var message_time: float = 6.0
 var killer: CampKiller
+var revive_actor: CampPlayer
 var revive_target: CampPlayer
 var revive_progress: float = 0.0
 var world_objects: Node2D
@@ -41,6 +42,7 @@ func _ready() -> void:
 	player = PLAYER_SCENE.instantiate()
 	player.position = Vector2(96, 384)
 	player.config = config
+	player.role = session.survivor
 	player.expedition = plan.expedition
 	world_objects.add_child(player)
 	camp_map.focus = player
@@ -50,6 +52,7 @@ func _ready() -> void:
 	player.get_node("Camera2D").limit_right = int(CampMap.WORLD_BOUNDS.end.x)
 	player.get_node("Camera2D").limit_bottom = int(CampMap.WORLD_BOUNDS.end.y)
 	player.noise_emitted.connect(_on_noise)
+	player.sprint_noise_emitted.connect(_on_sprint_noise)
 	killer = preload("res://scenes/actors/killer.tscn").instantiate()
 	killer.config = config
 	killer.position = Vector2(1400, 480)
@@ -116,16 +119,17 @@ func _process(_delta: float) -> void:
 		heading = "DOWNED  ·  BLEEDING OUT IN %.1fs" % player.bleedout
 	var detail := context_prompt()
 	if revive_progress > 0.0:
-		detail = "HOLD E · REVIVE  %d%%" % int(revive_progress / (1.2 if player.supplies["medkit"] > 0 else config.revive_seconds) * 100)
+		detail = "HOLD E · REVIVE  %d%%" % int(revive_progress / (1.2 if player.supplies["medkit"] > 0 else player.config.revive_seconds) * 100)
 	hud.threat_label.text = ""
 	if not finished and killer.global_position.distance_to(player.global_position) < 155.0:
 		hud.threat_label.text = "SPOTTED · RUN!" if killer.state == CampKiller.State.CHASE else "FOOTSTEPS NEARBY · KEEP QUIET"
 	if message_time > 0.0:
 		detail = message + "\n" + detail
-	hud.set_status(heading, detail, player.stamina / config.stamina_max)
+	hud.set_status(heading, detail, player.stamina / player.config.stamina_max)
 	hud.inventory_label.text = "NIGHT %d / %s\nQ FLARE %d · R BATTERY %d · C FOOD %d\n" % [plan.seed_value, plan.weather.to_upper(), player.supplies["flare"], player.supplies["battery_pack"], player.supplies["rations"]]
 	hud.inventory_label.text += plan.pack_description(van.installed)
 	hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINTENANCE") + " / TAB CLOSE"
+	hud.update_belt(player)
 	hud.location_label.text = camp_map.location_label(player.global_position)
 	hud.supplies_label.text = "LIGHT %ds / FLARES %d" % [int(player.flashlight_charge), player.supplies["flare"]] if plan.expedition else "QUICK CAMP"
 	for enemy: CampKiller in get_tree().get_nodes_in_group("cryptids"):
@@ -186,11 +190,14 @@ func try_interact(actor: CampPlayer) -> bool:
 				announce("Locked cache! Find boltcutters in Maintenance first.")
 				actor.noise_emitted.emit(actor.global_position)
 				return false
+			if actor.supplies.has(pickup.kind) and not actor.can_pack(pickup.kind):
+				announce("Belt full. Select a slot and G to drop its stack.")
+				return false
 			pickup.consume()
 			if plan.expedition:
 				actor.noise_emitted.emit(pickup.global_position)
 			if actor.supplies.has(pickup.kind):
-				actor.supplies[pickup.kind] += 1
+				actor.pack(pickup.kind)
 			else:
 				actor.inventory.append(pickup.kind)
 			if pickup.kind in plan.required:
@@ -229,14 +236,16 @@ func advance_revive(actor: CampPlayer, target: CampPlayer, holding: bool, delta:
 		revive_target = null
 		revive_progress = 0.0
 		return
-	if revive_target != target:
+	if revive_target != target or revive_actor != actor:
+		revive_actor = actor
 		revive_target = target
 		revive_progress = 0.0
 	revive_progress += delta
-	var duration := 1.2 if actor.supplies["medkit"] > 0 else config.revive_seconds
+	var duration := 1.2 if actor.supplies["medkit"] > 0 else actor.config.revive_seconds
 	if revive_progress >= duration:
 		if actor.supplies["medkit"] > 0:
 			actor.supplies["medkit"] -= 1
+			actor.tidy_belt()
 		target.set_status(CampPlayer.Status.ALIVE)
 		revive_target = null
 		revive_progress = 0.0
@@ -247,6 +256,12 @@ func _on_noise(origin: Vector2) -> void:
 	if not paused and not finished:
 		for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 			enemy.hear_noise(origin)
+
+
+func _on_sprint_noise(origin: Vector2) -> void:
+	if not paused and not finished:
+		for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
+			enemy.hear_stimulus(origin, enemy.config.hearing_radius * player.sprint_hearing)
 
 
 func loud_noise(origin: Vector2, radius: float) -> void:
@@ -283,9 +298,9 @@ func context_prompt() -> String:
 		if van.running:
 			return "E · ENTER VAN  —  Board before the countdown ends!"
 		if van.installed.size() == plan.required.size():
-			return "HOLD E · START VAN  %d%%" % int(van.start_progress / config.start_hold_seconds * 100)
+			return "HOLD E · START VAN  %d%%" % int(van.start_progress / player.config.start_hold_seconds * 100)
 		return "E · INSTALL SUPPLIES   |   NEED: " + ", ".join(missing_parts()).to_upper()
-	return "E use · F light · Q flare · R battery · C food · Tab notes" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
+	return "1-6 select · V use · G drop · E interact · Tab notes" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
 
 
 func missing_parts() -> Array[String]:
@@ -319,6 +334,22 @@ func finish_round(success: bool, detail: String) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if finished:
 		return
+	if not paused and event is InputEventKey and event.pressed and not event.echo and player.status == CampPlayer.Status.ALIVE:
+		var keys := [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6]
+		var pads := [KEY_KP_1, KEY_KP_2, KEY_KP_3, KEY_KP_4, KEY_KP_5, KEY_KP_6]
+		var index := keys.find(event.physical_keycode)
+		if index < 0:
+			index = pads.find(event.physical_keycode)
+		if index >= 0:
+			player.selected_slot = index
+			get_viewport().set_input_as_handled()
+			return
+		if event.physical_keycode == KEY_G:
+			drop_held(player)
+			return
+		if event.physical_keycode == KEY_V:
+			use_supply(player, player.held_item())
+			return
 	if event.is_action_pressed("pause"):
 		paused = not paused
 		for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
@@ -360,7 +391,7 @@ func return_to_menu() -> void:
 func restart_round() -> void:
 	var session: Node = get_node("/root/Session")
 	session.next_seed = 0
-	session.load_game()
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 
 
 func retry_round() -> void:
@@ -383,13 +414,28 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 		actor.flashlight_charge = minf(config.flashlight_capacity, actor.flashlight_charge + 70)
 		actor.flashlight_on = true
 	elif kind == "rations":
-		if actor.stamina >= config.stamina_max:
+		if actor.stamina >= actor.config.stamina_max:
 			return false
-		actor.stamina = config.stamina_max
+		actor.stamina = actor.config.stamina_max
 		actor.exhausted = false
+	elif kind == "noise_tin":
+		var lure := NoiseLure.new()
+		var target := actor.global_position + actor.facing * 52
+		lure.position = target if clear_path(actor.global_position, target) else actor.global_position
+		lure.level = self
+		world_objects.add_child(lure)
+		announce("Tin timer: three delayed rattles. Move away quietly.")
+	elif kind == "salt_ward":
+		actor.ward_remaining = 4.0
+		announce("Salt ward: four seconds of protection. Keep moving!")
+	elif kind == "glow_moss":
+		actor.flashlight_charge = minf(actor.config.flashlight_capacity, actor.flashlight_charge + 35)
+		actor.hex_remaining = 0
+		announce("Glow moss clears hexes and restores 35 light charge.")
 	else:
 		return false
 	actor.supplies[kind] -= 1
+	actor.tidy_belt()
 	return true
 
 
@@ -399,6 +445,7 @@ func _spawn_cryptids() -> void:
 		enemy.species = encounter["species"]
 		enemy.config = config
 		enemy.position = encounter["position"]
+		enemy.home = encounter.get("home", Rect2())
 		enemy.patrol.clear()
 		var start: Vector2i = encounter["cell"]
 		enemy.patrol.assign(plan.woods.roaming_route(start))
@@ -416,3 +463,23 @@ func _apply_weather() -> void:
 			enemy.config.sight_radius *= 0.72
 		elif plan.weather == "rain":
 			enemy.config.hearing_radius *= 0.7
+
+
+func drop_held(actor: CampPlayer) -> bool:
+	if paused or finished or actor.status != CampPlayer.Status.ALIVE:
+		return false
+	var kind := actor.held_item()
+	if kind.is_empty() or actor.supplies.get(kind, 0) <= 0:
+		return false
+	# Each physical pickup carries one unit, keeping existing pickup validation intact.
+	for index in range(actor.supplies[kind]):
+		var pickup: CampPickup = preload("res://scenes/items/pickup.tscn").instantiate()
+		pickup.kind = kind
+		pickup.position = actor.global_position
+		pickups.append(pickup)
+		add_child(pickup)
+	actor.supplies[kind] = 0
+	actor.tidy_belt()
+	loud_noise(actor.global_position, 130)
+	announce("Dropped " + kind.replace("_", " ") + ". E to recover.")
+	return true

@@ -1,6 +1,19 @@
 extends Node
 ## Run selection persists across scene changes; the round owns all gameplay state.
 
+var survivor: String = "jock"
+
+func _ready() -> void:
+	var saved := ConfigFile.new()
+	if saved.load("user://survivor.cfg") == OK:
+		survivor = SurvivorRoster.valid(str(saved.get_value("player", "role", "jock")))
+
+func select_survivor(id: String) -> void:
+	survivor = SurvivorRoster.valid(id)
+	var saved := ConfigFile.new()
+	saved.set_value("player", "role", survivor)
+	saved.save("user://survivor.cfg")
+
 var mode: String = "woods"
 var next_seed: int = 0
 var current_seed: int = 0

@@ -7,6 +7,7 @@ assets, franchise sprites, or third-party asset licenses are involved. Rebuild:
 ```sh
 python3 tools/build_pixel_art.py
 python3 tools/build_cryptids.py
+python3 tools/build_content_art.py
 ```
 
 Characters use three frames in four directional rows: down, up, right, left.
@@ -27,7 +28,7 @@ are drawn in GDScript. Lighting uses native Godot PointLight2D textures and
 LightOccluder2D geometry, generated at runtime; the former darkness shader has
 been replaced. `default_config.tres` contains the editable gameplay/light defaults.
 Seeded woods ruins, warning gate, weather, loading card, animated menu and field
-notes are also original GDScript drawing. No audio assets are included yet.
+notes are also original GDScript drawing. Audio files are documented separately below.
 
 The roster also includes original vampire (pale angular face, high collar and
 maroon-lined cloak), witch (pointed hat, braid, staff and layered robes), and
@@ -40,3 +41,11 @@ soft radial mist, trunk occluders and projectile effects are native GDScript art
 The user supplied the MP3 recordings used for local playback. See
 [audio cue mapping and provenance](audio/README.md) and [manifest](audio/manifest.json).
 These are separate from the repository's reproducible original pixel artwork.
+
+
+`build_content_art.py` adds six original 24×32 survivor sheets with role outfits,
+backpacks, tools and patches, plus seven 64×64 cryptid sheets with three frames
+and four directions. It uses the same deterministic standard-library painter.
+The expanded biome floors, machinery, trellises, rail switches, quarry terraces
+and chapel mosaics are native GDScript drawing in `forest_site.gd`. No external
+visual assets or new dependencies are used.

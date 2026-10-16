@@ -1,11 +1,13 @@
 # Forest biomes and landmark encounter design
 
-Status: **detailed planning backlog**. The implemented world is a finite
-9,600×9,408 forest around central Fernwood camp, with 2,410 connected clearings,
-four camp exits, an abandoned village, witch's bog, old graveyard and six smaller
-ruins. The existing three regions are playable in their current simpler forms.
-Everything described below beyond that baseline is **proposed**, including
-their expansions, new interiors, interactions, monsters and environmental powers.
+Status: **six new optional biome pockets implemented, deeper dossiers remain planned**.
+The finite 9,600×9,408 forest now contains nine major regions: village, bog,
+graveyard, flooded mill, orchard, observatory, rail yard, quarry and chapel,
+plus six small ruins. New pockets use connected open loops, distinctive native
+pixel scenery, a one-time rare-tool search and leashed guardians. They do not yet
+implement every interior, hazard, seeded variant or quest described below.
+See [implemented content and evidence](content_update.md). The user's latest
+amendment authorizes this offline content ahead of multiplayer.
 
 This plan contains **18 biome designs: three expanded existing regions and
 15 new regions**. They are modular pockets in the current maze, not a replacement

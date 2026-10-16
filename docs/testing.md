@@ -243,3 +243,21 @@ current screenshot/rule review and whitespace checks establish document consiste
 and preserve the runnable baseline. They do not establish new gameplay, human
 balance, network or audio/voice acceptance. The project now maintains its brief
 and design documents solely in Markdown.
+
+
+## Offline survivor/content expansion
+
+Run `godot --headless --path . --fixed-fps 60 --script res://tests/integration/content_expansion.gd`.
+Add `-- --capture` and remove `--headless` for actual viewport captures (use
+`--audio-driver Dummy` for silent graphical runs). The full runner now includes
+this suite. It checks six role configurations in both mode flags, supply counts,
+private baseline isolation, ignition boundaries and bonus nonduplication, then
+selection/settings/Back/Start, number/keypad input, six-type capacity, dropped
+pickup single-award recovery, rare consumables, nine-region nonoverlap/multiple
+entrances, sprites and guardian sensing/destination limits. Existing navigation
+suites cover the expanded region centres and spawn points. Replay expectations
+now include the survivor confirmation and seven-type supply distribution.
+
+See [content evidence and limits](content_update.md). Modifier/actor fixtures and
+rendered tours do not pass the human M1-S balance gate or establish all-role
+input-only escape rounds, online play, synchronized sounds or voice.

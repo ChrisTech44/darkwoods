@@ -1,12 +1,12 @@
 # Monster catalog: 48 additional encounter concepts
 
-Status: **brainstorm and implementation backlog, not shipped enemies**.
-The playable build has the camp stalker and six cryptid species: werewolf,
-Sasquatch/Bigfoot, lantern moth, vampire, witch and briar revenant. Expedition
-currently spawns four of each cryptid plus the stalker, not the roster below.
-Existing behavior is described in [README](../README.md#know-what-is-following-you).
-This catalog adds **48 concepts**, for **55 total enemy designs** including the
-existing seven. All new names/designs are working original concepts.
+Status: **seven additional offline monster types implemented as first versions**.
+The playable build has the stalker and 13 cryptid species. New additions are
+Switchback Hound, Bramble Seamstress, Stoneback Ram, Shutter Wraith, Candle
+Grazer, Boiler Saint and Last-Car Conductor. Their bounded current behaviors
+are documented in [content update](content_update.md); the detailed powers below
+remain design targets where they differ. Expedition retains 24 cryptids plus
+the stalker. The rest of these 48 concepts remain backlog, for 55 total designs.
 
 Read [biome design](biome_design.md) for encounter spaces and
 [survivor/co-op plan](survivor_multiplayer_plan.md) for progression. Entries are

@@ -1,7 +1,7 @@
 # LAST NIGHT AT CAMP
 **Godot 4 multiplayer horror game — agent implementation brief**
 
-Version 1.5 — 16 October 2026 — Codex Sol (medium effort)
+Version 1.6 — 16 October 2026 — Codex Sol (medium effort)
 
 User amendment: online proximity voice chat and an original/licensed audio-file
 pipeline are planned after synchronized multiplayer gameplay. This supersedes
@@ -33,6 +33,18 @@ detailed biomes (three existing-region expansions plus 15 new regions).
 These are plans, not implemented features or a requirement to ship the whole
 catalog before co-op. See [survivor/co-op plan](docs/survivor_multiplayer_plan.md),
 [monster catalog](docs/monster_catalog.md) and [biome design](docs/biome_design.md).
+
+16 October content implementation amendment: the user explicitly prioritizes a
+large offline survivor/biome/monster update **before online multiplayer**, replacing
+the earlier post-M2 content ordering. Six survivor choices/bonuses, a six-slot
+supply-type belt (1–6/keypad, V use, G drop), three rare consumables, six optional
+landmark biomes and seven additional cryptid species now have offline implementations.
+Required parts and reusable cutters remain separate from the belt. The nine major
+regions retain the existing required-cache recipe; no new region is mandatory.
+The population stays at 24 cryptids plus the camp stalker. New landmark powers are
+bounded first versions, not full catalog dossiers. See [content update](docs/content_update.md)
+for implemented rules, screenshots and remaining acceptance limits. Human balance,
+all-role full input rounds, networking, synchronized audio and voice remain unverified.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 
@@ -66,7 +78,7 @@ catalog before co-op. See [survivor/co-op plan](docs/survivor_multiplayer_plan.m
 
 - Tension: sprinting, interaction failures, or dropped objects may emit noise events. AI responds to recent sounds but does not automatically know all player locations. Give players telegraphing (footstep audio cue, visible alert animation, or debug indicators).
 
-## Survivor selection and expanded content — planned
+## Survivor selection and expanded content — implementation targets
 
 - Add M1-S before M2: a dedicated offline survivor selection screen with six readable cards, original preview art, exact advantages, keyboard/mouse navigation, Back/Start and saved choice. Keep menu music and Settings available. Random Night remains on by default; Random Survivor is a separate explicit choice. Retry preserves role; another night offers selection again.
 

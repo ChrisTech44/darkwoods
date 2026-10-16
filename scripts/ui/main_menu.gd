@@ -52,7 +52,7 @@ func _ready() -> void:
 func _play() -> void:
 	session.mode = "camp" if $Menu/Mode.selected == 1 else "woods"
 	session.next_seed = 0 if $Menu/RandomNight.button_pressed else clampi(int($Menu/Seed.text), 0, 2147483646)
-	session.load_game()
+	_show_survivors()
 
 
 func _random_toggled(enabled: bool) -> void:
@@ -66,6 +66,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause") and controls_panel.visible:
 		_hide_controls()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("pause") and has_node("SurvivorSelection") and $SurvivorSelection.visible:
+		$SurvivorSelection/Back.pressed.emit()
 	elif event.is_action_pressed("pause") and $SettingsPanel.visible:
 		_hide_settings()
 		get_viewport().set_input_as_handled()
@@ -104,3 +106,90 @@ func _hide_settings() -> void:
 	$Menu.show()
 	$Settings.show()
 	$Settings.grab_focus()
+	if has_node("SurvivorSelection"):
+		$Menu.hide()
+		$Settings.hide()
+		$SurvivorSelection.show()
+		$SurvivorSelection/Settings.grab_focus()
+
+
+func _show_survivors() -> void:
+	$Menu.hide()
+	$Settings.hide()
+	if has_node("SurvivorSelection"):
+		$SurvivorSelection.show()
+		$SurvivorSelection/Start.grab_focus()
+		return
+	var selection := Control.new()
+	selection.name = "SurvivorSelection"
+	selection.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(selection)
+	var background := ColorRect.new()
+	background.color = Color("101d20")
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	selection.add_child(background)
+	var heading := Label.new()
+	heading.text = "CHOOSE YOUR SURVIVOR"
+	heading.position = Vector2(14, 8)
+	heading.add_theme_font_size_override("font_size", 17)
+	selection.add_child(heading)
+	var detail := Label.new()
+	detail.name = "Detail"
+	detail.position = Vector2(155, 70)
+	detail.size = Vector2(218, 84)
+	detail.add_theme_font_size_override("font_size", 10)
+	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	selection.add_child(detail)
+	var preview := TextureRect.new()
+	preview.name = "Preview"
+	preview.position = Vector2(243, 31)
+	preview.size = Vector2(24, 32)
+	preview.scale = Vector2(1.5, 1.5)
+	selection.add_child(preview)
+	for index in range(6):
+		var button := Button.new()
+		button.name = SurvivorRoster.IDS[index]
+		button.text = SurvivorRoster.NAMES[index]
+		button.position = Vector2(14, 34 + index * 24)
+		button.size = Vector2(132, 23)
+		button.add_theme_font_size_override("font_size", 10)
+		button.pressed.connect(_select_survivor.bind(index))
+		selection.add_child(button)
+	var labels := ["BACK", "RANDOM SURVIVOR", "START NIGHT", "SETTINGS"]
+	for index in range(4):
+		var button := Button.new()
+		button.name = ["Back", "Random", "Start", "Settings"][index]
+		button.text = labels[index]
+		button.position = [Vector2(14,184), Vector2(155,157), Vector2(155,184), Vector2(285,184)][index]
+		button.size = Vector2(126 if index < 3 else 88, 23)
+		button.add_theme_font_size_override("font_size", 10)
+		selection.add_child(button)
+	selection.get_node("Back").pressed.connect(func():
+		selection.hide()
+		$Menu.show()
+		$Settings.show()
+		$Menu/Play.grab_focus())
+	selection.get_node("Random").pressed.connect(func(): _select_survivor(randi_range(0,5)))
+	selection.get_node("Start").pressed.connect(func(): session.load_game())
+	selection.get_node("Settings").pressed.connect(func():
+		selection.hide()
+		_show_settings())
+	_select_survivor(SurvivorRoster.IDS.find(session.survivor))
+	selection.get_node(session.survivor).grab_focus()
+
+func _select_survivor(index: int) -> void:
+	session.select_survivor(SurvivorRoster.IDS[index])
+	$SurvivorSelection/Detail.text = SurvivorRoster.NAMES[index] + "\n" + SurvivorRoster.DETAILS[index]
+	var atlas := AtlasTexture.new()
+	atlas.atlas = load("res://assets/sprites/survivor_" + session.survivor + ".png")
+	atlas.region = Rect2(0, 0, 24, 32)
+	$SurvivorSelection/Preview.texture = atlas
+	for id in SurvivorRoster.IDS:
+		$SurvivorSelection.get_node(id).modulate = Color("e7c98a") if id == session.survivor else Color.WHITE
+
+
+func _process(_delta: float) -> void:
+	if has_node("SurvivorSelection") and $SurvivorSelection.visible:
+		var atlas: AtlasTexture = $SurvivorSelection/Preview.texture
+		atlas.region.position.x = int(Time.get_ticks_msec()/350) % 3 * 24

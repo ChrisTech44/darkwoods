@@ -33,6 +33,29 @@ func _draw() -> void:
 		draw_rect(Rect2(-4, -5, 8, 10), color)
 		draw_line(Vector2(-2, -7), Vector2(3, -7), color, 2)
 		draw_line(Vector2(-2, 2), Vector2(2, -2), Color("754b3c"), 2)
+	elif kind == "noise_tin":
+		draw_rect(Rect2(-5,-6,10,12),Color("a6b8b2"))
+		for y in [-5,0,4]:
+			draw_line(Vector2(-5,y),Vector2(5,y),Color("e3c9a1"))
+		draw_line(Vector2(-4,-8),Vector2(4,-8),Color("ac8060"),2)
+	elif kind == "salt_ward":
+		draw_circle(Vector2.ZERO,6,Color("aa9277"))
+		draw_rect(Rect2(-4,-4,8,7),Color("e2ddc2"))
+		draw_line(Vector2(-3,-7),Vector2(3,-7),Color("645540"),2)
+	elif kind == "glow_moss":
+		for index in range(6):
+			draw_line(Vector2(index*2-6,5),Vector2(index*2-7,-4-index%2*3),Color("95bd86"),2)
+			draw_circle(Vector2(index*2-7,-4-index%2*3),2,Color("d5e7a9"))
+	elif kind == "flare":
+		draw_rect(Rect2(-2,-7,4,13),Color("bf7455"))
+		draw_rect(Rect2(-3,-7,6,3),Color("e2c185"))
+	elif kind == "battery_pack":
+		draw_rect(Rect2(-5,-5,10,10),Color("849995"))
+		draw_rect(Rect2(-3,-7,6,2),Color("d4c7a0"))
+		draw_line(Vector2(-2,0),Vector2(2,0),Color("e9dca9"))
+	elif kind == "rations":
+		draw_rect(Rect2(-5,-5,10,10),Color("a58b61"))
+		draw_rect(Rect2(-4,-2,8,4),Color("d3c29a"))
 	elif kind not in ["battery", "fuel", "key"]:
 		draw_rect(Rect2(-5, -5, 10, 10), Color("a4b49b"))
 		draw_line(Vector2(-3, 0), Vector2(3, 0), Color("485c51"), 2)

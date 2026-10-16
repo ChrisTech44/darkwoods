@@ -8,11 +8,36 @@ van while a stalker and roaming cryptids hunt by sight, sound, and light.
 
 **Playable now:** an offline solo prototype with two modes and complete
 escape/defeat/replay loops. The intended game is 1–4 player online co-op;
-the latest update fixes camp trails and adds local sound. Networking and voice
+the latest update adds survivor selection, an item belt, six optional biomes and seven new monster types. Networking and voice
 are **not implemented yet**. Run this
 prototype from source; standalone desktop packages are a later milestone.
 
 ![The forest menu with Woods Expedition and optional seed selection](docs/evidence/sight_audio/menu_defaults.png)
+
+## Survivors, biomes and the item belt
+
+Choose one of **six survivors** before starting, with exact bonuses, an animated
+preview, saved choice, Random Survivor and Settings. The Jock has 5s stamina;
+Grease Monkey starts the engine in 1.5s; Scout saves light; First-Aid Kid rescues
+faster; Quiet Kid reduces sprint hearing; Overprepared starts with extra supplies.
+
+**1–6 or keypad 1–6** selects one of six belt slots. **V** uses the held supply;
+**G** drops its whole stack; **E** picks it back up. Each supply type takes one
+slot, with same-type items stacking. Vehicle components and cutters are carried
+separately. Q/R/C still use flares, batteries and food. Medkits help while holding
+E to revive a teammate; they cannot self-revive.
+
+Find **noise tins** (three delayed distracting rattles), **salt wards** (4s of
+physical-hit protection), and **glow moss** (+35 light charge and hex removal).
+Six optional landmarks join the village, bog and graveyard: **Flooded Mill,
+Bramble Orchard, Starless Observatory, Last-Car Rail Yard, White Stone Quarry,
+and Drowned Chapel**. Each has multiple approaches, a one-time rare tool and a
+territorial guardian. Required components still come from the original regions.
+
+![Survivor selection](docs/evidence/content_expansion/survivor_selection.png)
+
+[Full content guide and inspection screenshots](docs/content_update.md) covers
+hunter/guardian counterplay and the current prototype limits.
 
 ## The surrounding forest update
 
@@ -23,7 +48,7 @@ ten furnished camp buildings. Four exits lead north, east, south and west.
 Trails are **128 pixels wide**, and the village, bog and graveyard have larger
 clearings and clear approach aprons. Roofs cut away inside buildings.
 
-In Woods Expedition, **24 cryptids—four of each species—plus the stalker** patrol
+In Woods Expedition, **24 cryptids across 13 species, plus the stalker** patrol
 the inner forest and deeper woods. A true sight mask hides occluded terrain and
 creatures; nearby footsteps and calls provide audible warnings without revealing
 the whole maze. The local field map follows you, records explored trails and
@@ -53,7 +78,7 @@ the helper commands. No plugins, Python packages, or export templates are needed
    python3 tools/run_game.py
    ```
 
-3. Choose **Woods Expedition** or **Quick Camp**, and select **Enter the Night**.
+3. Choose **Woods Expedition** or **Quick Camp**, select **Enter the Night**, choose a survivor, then **Start Night**.
    **Random Night is on by default** in both modes. To repeat a particular night,
    uncheck it and enter a positive seed. Open **Settings** to adjust volume before playing.
    **Controls** opens the survivor field guide.
@@ -86,7 +111,7 @@ the trails for exploration.
    not show the entire maze or undiscovered cache positions.
 3. **Repair the van.** Return to its rear and press **E** to install carried
    components. You can make several trips; all required parts must be installed.
-4. **Hold E for two seconds** at the rear to start the repaired van. Letting go
+4. **Hold E for two seconds (1.5s as Grease Monkey)** at the rear to start the repaired van. Letting go
    or moving out of range resets the start hold.
 5. **Stay aboard.** Starting automatically seats the driver. The van departs
    after **eight seconds**, and passengers are safe inside.
@@ -108,6 +133,8 @@ your own outcome too; survivors left outside are left behind.
 | **E** | Take items, open caches with cutters, install parts, enter a running van |
 | **Hold E** | Start the repaired van or revive a nearby downed teammate |
 | **F** | Toggle the flashlight |
+| **1–6 / keypad 1–6** | Select a belt slot |
+| **V / G** | Use held supply / drop its stack |
 | **Q** | Throw a flare |
 | **R** | Use a spare flashlight battery |
 | **C** | Eat rations to restore stamina |
@@ -124,13 +151,13 @@ sight; losing line of sight helps break pursuit.
 | --- | --- |
 | **Flashlight** | Starts with 90 seconds of charge. In an expedition it drains while lit in the woods, then switches off when empty. Turning it off saves charge. Camp use does not drain it. |
 | **Spare battery — R** | Restores up to 70 seconds, capped at 90, and switches the light on. |
-| **Flare — Q** | Burns for nine seconds. Repels the stalker and all cryptids except the lantern moth nearby when they can see it; attracts moths. |
+| **Flare — Q** | Burns for nine seconds. Repels nearby stalker/cryptids with sight to it except moths and candle grazers; moths follow it and grazers consume it. |
 | **Rations — C** | Restore full stamina and clear exhaustion. |
 | **Medkit** | Automatically consumed on a completed teammate revive, shortening the hold from three seconds to 1.2 seconds. It does not provide a solo self-revive. |
 | **Fog** | Shortens enemy sight and the woods flashlight beam. |
 | **Rain** | Reduces enemy hearing. |
 
-Expeditions start with two flares, one spare battery, and one ration pack.
+Baseline supplies are two flares, one spare battery, and one ration pack; survivor bonuses add to these.
 Search for additional supplies in camp, woods clearings, and themed sites.
 Tools and supplies cannot be used while paused or downed.
 
@@ -258,20 +285,15 @@ connected multiplayer, exported packages, and execution on Windows/Linux remain
 unverified. The automated woods player uses navigation paths as a route guide;
 the tests do not establish balance for every seed.
 
-Latest layout/audio checks and limits are recorded in the development log.
-The next planned step is **survivor selection (M1-S)**: six camp archetypes with
-advantages in stamina, ignition, light efficiency, rescue, stealth or supplies.
-Then come authoritative ENet co-op/audio (**M2/M2-A**), four-player reliability,
-optional proximity voice (**M3/M3-V**) and tested desktop packages (**M4**).
-Selection and bonuses are not playable yet; every role is planned to support
-solo escape and duplicate team choices.
+Latest [offline content rules and captures](docs/content_update.md) include the
+six playable survivor roles, item belt and six new landmark/monster pairs.
+Human balance and full all-role input-only rounds remain pending. Next come
+authoritative ENet co-op/audio (M2/M2-A), reliability, optional proximity voice
+(M3/M3-V), and tested desktop packages (M4).
 
-The content backlog now includes **48 additional monster concepts** with unique
-abilities, warnings and counterplay, plus **18 detailed biome designs**: deeper
-graveyard/village/bog regions and 15 new locations such as a flooded sawmill,
-glasshouse, quarry, rail yard, observatory and ruined apiary. These are plans,
-not newly added enemies/maps. Verified content slices will enter the existing
-maze gradually; the current objective recipe and enemy population remain as above.
+The larger backlog includes 48 monster concepts and 18 biome designs. Seven
+new monster types and six new regions now have first offline versions; deeper
+powers, interiors and the remaining catalog are still planned.
 
 - [Authoritative project brief](AGENT_BRIEF.md) — requirements and acceptance gates.
 - [Milestones](docs/milestones.md) — implementation plan and remaining work.

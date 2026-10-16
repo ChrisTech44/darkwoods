@@ -51,7 +51,7 @@ func generate(value: int, mode: String) -> void:
 	for index in range(3):
 		var kind := "fuel" if index == 0 else required[index + 2]
 		_add(kind, caches[index]["position"], caches[index]["label"], true)
-	var supply_types: Array[String] = ["flare", "battery_pack", "rations", "medkit"]
+	var supply_types: Array[String] = ["flare", "battery_pack", "rations", "medkit", "noise_tin", "salt_ward", "glow_moss"]
 	for index in range(96):
 		var cell := Vector2i(rng.randi_range(0, WoodsLayout.SIZE.x-1), rng.randi_range(0, WoodsLayout.SIZE.y-1))
 		while not woods.valid(cell):
@@ -60,7 +60,7 @@ func generate(value: int, mode: String) -> void:
 		var zone := woods.zone_at(at)
 		if not zone.is_empty() and zone["kind"] == "village":
 			at.y = zone["bounds"].end.y - 48
-		_add(supply_types[index % 4], at, "WOODS SUPPLIES", false)
+		_add(supply_types[index % supply_types.size()], at, "WOODS SUPPLIES", false)
 	_add("flare", Vector2(1304, 312), "MAINTENANCE", false)
 	_add("battery_pack", Vector2(168, 356), "CAMPSITE", false)
 	for item in loot:
@@ -73,8 +73,15 @@ func generate(value: int, mode: String) -> void:
 	_encounter("briar_revenant", Vector2i(32,26))
 	var species: Array[String] = ["werewolf","bigfoot","lantern_moth","vampire","witch","briar_revenant"]
 	var homes: Array[Vector2i] = [Vector2i(19,19),Vector2i(30,19),Vector2i(32,28),Vector2i(28,29),Vector2i(20,28),Vector2i(18,22),Vector2i(6,10),Vector2i(17,6),Vector2i(32,6),Vector2i(44,12),Vector2i(44,25),Vector2i(42,40),Vector2i(32,42),Vector2i(20,42),Vector2i(6,38),Vector2i(6,25),Vector2i(10,16),Vector2i(35,36)]
-	for index in range(homes.size()):
-		_encounter(species[(index + posmod(value,6)) % 6],homes[index])
+	var guardians := ["boiler_saint", "bramble_seamstress", "shutter_wraith", "last_car_conductor", "stoneback_ram", "candle_grazer"]
+	for index in range(6):
+		var zone: Dictionary = woods.zones[index + 3]
+		var cell: Vector2i = zone["cell"] + Vector2i(1,1)
+		_encounter(guardians[index], cell)
+		encounters.back()["home"] = zone["bounds"].grow(48)
+	# Replace a subset of roaming duplicates, retaining a bounded 24-creature population.
+	for index in range(homes.size() - 6):
+		_encounter("switchback_hound" if index % 4 == 0 else species[(index + posmod(value,6)) % 6],homes[index])
 
 
 

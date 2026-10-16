@@ -112,7 +112,13 @@ func _make_zones(rng: RandomNumberGenerator) -> void:
 	var definitions := [
 		["village", "NORTHWEST / ABANDONED VILLAGE", Vector2i(rng.randi_range(15,16), rng.randi_range(16,17)), Vector2i(5,3)],
 		["bog", "EAST / WITCH'S BOG", Vector2i(rng.randi_range(31,32), rng.randi_range(20,21)), Vector2i(4,4)],
-		["graveyard", "SOUTH / OLD GRAVEYARD", Vector2i(rng.randi_range(23,24), rng.randi_range(29,30)), Vector2i(4,4)]
+		["graveyard", "SOUTH / OLD GRAVEYARD", Vector2i(rng.randi_range(23,24), rng.randi_range(29,30)), Vector2i(4,4)],
+		["mill", "FLOODED MILL / PIPE LANES", Vector2i(9,20), Vector2i(4,4)],
+		["orchard", "BRAMBLE ORCHARD / THREAD ROWS", Vector2i(13,32), Vector2i(4,4)],
+		["observatory", "STARLESS OBSERVATORY", Vector2i(33,11), Vector2i(4,4)],
+		["rail", "LAST-CAR RAIL YARD", Vector2i(37,30), Vector2i(5,3)],
+		["quarry", "WHITE STONE QUARRY", Vector2i(8,8), Vector2i(4,4)],
+		["chapel", "DROWNED CHAPEL / CANDLE COURT", Vector2i(27,38), Vector2i(4,4)]
 	]
 	for d in definitions:
 		var anchor: Vector2i = d[2]

@@ -14,6 +14,7 @@ var threat_label: Label
 var location_label: Label
 var chart: Control
 var root: Control
+var belt_labels: Array[Label] = []
 var supplies_label: Label
 
 
@@ -35,6 +36,10 @@ func _ready() -> void:
 	root.theme = ui_theme
 	add_child(root)
 	title = _label(Vector2(9, 6), Vector2(366, 15), 10)
+	for index in range(6):
+		var slot := _label(Vector2(9 + index * 61, 150), Vector2(59, 17), 7)
+		slot.add_theme_stylebox_override("normal", CampStyle.box("101e22ee", "63705b", 2))
+		belt_labels.append(slot)
 	prompt = _label(Vector2(9, 184), Vector2(366, 28), 9)
 	prompt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	stamina = ProgressBar.new()
@@ -53,7 +58,7 @@ func _ready() -> void:
 	stamina.add_theme_stylebox_override("fill", bar_fill)
 	root.add_child(stamina)
 	stamina.size = Vector2(68, 6)
-	inventory_label = _label(Vector2(9, 40), Vector2(366, 124), 8)
+	inventory_label = _label(Vector2(9, 40), Vector2(366, 104), 8)
 	var pack_style := style.duplicate() as StyleBoxFlat
 	pack_style.bg_color = Color("101c1c")
 	inventory_label.add_theme_stylebox_override("normal", pack_style)
@@ -149,3 +154,11 @@ func show_result(won: bool, detail: String) -> void:
 	column.get_node("Heading").text = "DAWN AWAITS" if won else "LOST IN THE WOODS"
 	column.get_node("Detail").text = detail
 	column.get_node("Restart").grab_focus()
+
+
+func update_belt(actor: CampPlayer) -> void:
+	var short := {"flare":"FLARE", "battery_pack":"CELL", "rations":"FOOD", "medkit":"MEDKIT", "noise_tin":"TIN", "salt_ward":"SALT", "glow_moss":"MOSS"}
+	for index in range(6):
+		var kind := actor.belt[index]
+		belt_labels[index].text = "%s%d %s %s" % [">" if actor.selected_slot == index else "", index+1, short.get(kind, "--"), str(actor.supplies.get(kind, 0)) if not kind.is_empty() else ""]
+		belt_labels[index].modulate = Color("ffe3a3") if actor.selected_slot == index else Color("a0b69e")

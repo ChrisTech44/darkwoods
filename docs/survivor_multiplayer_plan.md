@@ -1,9 +1,11 @@
 # Survivor selection and the road to co-op
 
-Status: **design only — selection, archetype bonuses, networking and voice are
-not implemented**. This 16 October 2026 amendment follows
-[AGENT_BRIEF.md](../AGENT_BRIEF.md). The current offline game, random nights,
-opaque woods sight and local sound remain the verified baseline.
+Status: **offline selection and six personal bonuses implemented**. See
+[content update](content_update.md) for the shipped rules and execution evidence.
+The human balance gate and full all-role input-only rounds remain pending.
+Networking and voice are not implemented. The following design remains the
+acceptance target; later online sections are plans. The user's latest amendment
+prioritizes offline content before M2.
 
 ## What the player chooses
 
@@ -24,8 +26,8 @@ Default to the Jock on first use, remember the last valid choice locally, and
 show that choice before confirmation. A separate Random Survivor button chooses
 uniformly from the six, reveals the result and allows changing it. Random Night
 continues to randomize the world by default; it does not silently randomize the
-survivor. Retry This Seed preserves the selected survivor; Another Night changes
-the world seed and offers the selection screen again.
+survivor. Retry This Seed preserves the selected survivor; Another Night returns to the
+menu and offers survivor selection before a fresh random night.
 
 Archetypes are affectionate camp/slasher personality tropes. Appearance, name,
 gender and skin tone do not determine abilities. Use original designs and let
@@ -34,7 +36,7 @@ parts, tools, revives, the van or victory. Duplicate archetypes are allowed.
 
 ## Initial six archetypes
 
-These are **proposed tuning values**, not current stats. Every survivor retains
+These are the implemented initial offline tuning values. Every survivor retains
 70px/s walking, 110px/s sprinting, ordinary collision/sight, the full interaction
 set and the same two-hit injury rule. Bonuses are personal and do not stack into
 team auras. Each role must be able to win alone; useful team specialization must

@@ -65,6 +65,7 @@ func _physics_process(delta: float) -> void:
 		destination = search_points[search_index]
 	if NavigationServer2D.map_get_iteration_id(agent.get_navigation_map()) > 0:
 		destination = NavigationServer2D.map_get_closest_point(agent.get_navigation_map(), destination)
+	destination = constrain_destination(destination)
 	var arrived := global_position.distance_to(destination) < 9.0
 	if state == State.PATROL and arrived:
 		patrol_index = (patrol_index + 1) % patrol.size()
@@ -160,6 +161,10 @@ func hear_stimulus(origin: Vector2, radius: float) -> void:
 	path_clock = 0
 
 
+func constrain_destination(point: Vector2) -> Vector2:
+	return point
+
+
 func pursuit_goal(actor: CampPlayer) -> Vector2:
 	# Brief prediction uses only an actually visible actor's current movement.
 	var lead := actor.global_position + actor.velocity * 0.3
@@ -195,6 +200,10 @@ func _draw() -> void:
 		row = 1
 	var frame := 0 if velocity.length() < 1.0 else 1 + int(stride / 9.0) % 2
 	draw_texture_rect_region(preload("res://assets/sprites/stalker.png"), Rect2(-16, -36, 32, 40), Rect2(frame * 32, row * 40, 32, 40))
+	draw_rect(Rect2(-8,-15,16,2),Color("897a59"))
+	draw_rect(Rect2(-2,-15,4,3),Color("c3b893"))
+	for index in range(4):
+		draw_line(Vector2(-6+index*4,-24),Vector2(-5+index*4,-20),Color("778072"))
 	var cue := "."
 	var color := Color("a7b194")
 	if state == State.CHASE:

@@ -116,6 +116,9 @@ func _objective_checks() -> void:
 		await _snapshot("win")
 	var previous: WeakRef = weakref(level)
 	level.hud.result_panel.get_child(0).get_node("Restart").pressed.emit()
+	await _frames(4)
+	current_scene.get_node("Menu/Play").pressed.emit()
+	current_scene.get_node("SurvivorSelection/Start").pressed.emit()
 	await _wait_world()
 	level = current_scene
 	player = level.player
@@ -211,6 +214,9 @@ func _killer_and_revive_checks() -> void:
 	if capture:
 		await _snapshot("loss")
 	level.restart_round()
+	await _frames(4)
+	current_scene.get_node("Menu/Play").pressed.emit()
+	current_scene.get_node("SurvivorSelection/Start").pressed.emit()
 	await _wait_world()
 	level = current_scene
 	player = level.player

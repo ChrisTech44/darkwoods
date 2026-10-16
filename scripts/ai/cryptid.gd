@@ -3,6 +3,12 @@ extends CampKiller
 
 signal spell_started
 
+var home := Rect2()
+var power_clock := 0.0
+var power_aim := Vector2.ZERO
+var power_tell := 0.0
+var dash_remaining := 0.0
+var dash_direction := Vector2.ZERO
 var species: String = "werewolf"
 var hunt_clock: float = 0.0
 var sheet: Texture2D
@@ -40,6 +46,12 @@ func _ready() -> void:
 		config.killer_chase_speed = 64
 		config.sight_radius = 155
 		config.hearing_radius = 160
+	elif species in ["boiler_saint", "bramble_seamstress", "shutter_wraith", "last_car_conductor", "stoneback_ram", "candle_grazer", "switchback_hound"]:
+		config.sight_radius = 190
+		config.hearing_radius = 320 if species == "switchback_hound" else 220
+		config.killer_chase_speed = 62
+		config.attack_radius = 12
+		config.search_seconds = 12 if species == "switchback_hound" else 6
 	else:
 		config.sight_radius = 125
 		config.hearing_radius = 210
@@ -50,6 +62,20 @@ func _physics_process(delta: float) -> void:
 		super._physics_process(delta)
 		return
 	if enabled:
+		if home.has_area() and not home.has_point(global_position + dash_direction * 10):
+			dash_remaining = 0
+		if dash_remaining > 0:
+			dash_remaining -= delta
+			velocity = dash_direction * 150
+			move_and_slide()
+			# Charge follows the locked visible lane, collides with ordinary walls.
+			for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+				if actor.status == CampPlayer.Status.ALIVE and global_position.distance_to(actor.global_position) < 14 and has_line_of_sight(actor.global_position):
+					actor.receive_hit()
+					dash_remaining = 0
+			queue_redraw()
+			return
+		_advance_power(delta)
 		hunt_clock += delta
 		if species == "werewolf":
 			# A visible wind-up, brief charge, then a slow recovery to let players juke.
@@ -61,6 +87,16 @@ func _physics_process(delta: float) -> void:
 					# This is sensed light, independent of the moth's shorter hearing.
 					last_seen = flare.global_position
 					transition(State.INVESTIGATE)
+		if species == "shutter_wraith":
+			var observer := sense_visible_target()
+			config.killer_chase_speed = 0 if is_instance_valid(observer) and in_beam(observer) else 74
+		if species == "candle_grazer":
+			for flare in get_tree().get_nodes_in_group("flares"):
+				if global_position.distance_to(flare.global_position) < 180 and has_line_of_sight(flare.global_position):
+					last_seen = flare.global_position
+					transition(State.INVESTIGATE)
+					if global_position.distance_to(flare.global_position) < 22:
+						flare.queue_free()
 		if species == "vampire":
 			var sensed := sense_visible_target()
 			config.killer_chase_speed = 52 if is_instance_valid(sensed) and in_beam(sensed) else 90
@@ -70,9 +106,11 @@ func _physics_process(delta: float) -> void:
 
 
 func can_sense(actor: CampPlayer) -> bool:
+	if home.has_area() and not home.has_point(actor.global_position):
+		return false
 	if species == "briar_revenant":
 		return actor.velocity.length() > 10 or global_position.distance_to(actor.global_position) < 55
-	return species != "lantern_moth" or actor.flashlight_on or global_position.distance_to(actor.global_position) < 45
+	return species not in ["lantern_moth", "candle_grazer"] or actor.flashlight_on or global_position.distance_to(actor.global_position) < 45
 
 
 func in_beam(actor: CampPlayer) -> bool:
@@ -124,10 +162,11 @@ func _advance_spell(delta: float) -> void:
 
 
 func fears_flare() -> bool:
-	return species != "lantern_moth"
+	return species not in ["lantern_moth", "candle_grazer"]
 
 
 func _draw() -> void:
+	_draw_power()
 	var row := 0
 	if absf(facing.x) > absf(facing.y):
 		row = 2 if facing.x > 0 else 3
@@ -135,7 +174,61 @@ func _draw() -> void:
 		row = 1
 	var frame := 0 if velocity.length() < 1 else 1 + int(stride / 10.0) % 2
 	draw_texture_rect_region(sheet, Rect2(-32, -58, 64, 64), Rect2(frame * 64, row * 64, 64, 64))
+	# Fine layered scars/lichen and a moving rim highlight retain the original silhouettes.
+	for index in range(5):
+		var at := Vector2(-11 + index * 5, -24 + index % 3 * 4)
+		draw_line(at, at + Vector2(2, -3), Color("9f9975"), 1)
+	if species == "bigfoot":
+		for index in range(8):
+			draw_line(Vector2(-21+index*6,-33),Vector2(-20+index*6,-26),Color("a28b5b"),1)
+	if species == "witch":
+		draw_circle(Vector2(20,-20), 3 + sin(hunt_clock)*0.5, Color("bcb185"))
 	if state == State.CHASE:
 		draw_string(ThemeDB.fallback_font, Vector2(-18, -63), "HEX!" if casting else ("HOWL!" if species == "werewolf" else "!"), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("d9b581"))
 	if casting:
 		draw_arc(Vector2(0, -20), 22, 0, TAU * (1 - cast_remaining / 0.8), 24, Color("c4aadf"), 2)
+
+
+func constrain_destination(point: Vector2) -> Vector2:
+	if not home.has_area():
+		return point
+	if not home.has_point(global_position):
+		transition(State.PATROL)
+	return point.clamp(home.position + Vector2.ONE * 16, home.end - Vector2.ONE * 16)
+
+func hear_stimulus(origin: Vector2, radius: float) -> void:
+	if home.has_area() and not home.has_point(origin):
+		return
+	super.hear_stimulus(origin, radius)
+
+func _advance_power(delta: float) -> void:
+	power_clock = maxf(0, power_clock - delta)
+	if power_tell > 0:
+		power_tell -= delta
+		if power_tell <= 0:
+			if species in ["switchback_hound", "stoneback_ram"]:
+				dash_direction = global_position.direction_to(power_aim)
+				dash_remaining = 0.55
+			else:
+				var hazard := LandmarkHazard.new()
+				hazard.position = power_aim
+				hazard.source = self
+				hazard.thorns = species == "bramble_seamstress"
+				get_parent().add_child(hazard)
+		return
+	if power_clock > 0 or not is_instance_valid(visible_target):
+		return
+	if species not in ["switchback_hound", "stoneback_ram", "boiler_saint", "bramble_seamstress", "last_car_conductor"]:
+		return
+	if not has_line_of_sight(visible_target.global_position):
+		return
+	power_clock = 6.5
+	power_aim = visible_target.global_position
+	power_tell = 1.2
+
+func _draw_power() -> void:
+	if power_tell > 0:
+		var at := to_local(power_aim)
+		draw_arc(at, 23, 0, TAU, 24, Color("f1c27d"), 2)
+		draw_line(Vector2.ZERO, at, Color("b99a72"), 1)
+		draw_string(ThemeDB.fallback_font, Vector2(-28,-72), "CHARGE" if species in ["switchback_hound","stoneback_ram"] else "DANGER", HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("f4d3a0"))

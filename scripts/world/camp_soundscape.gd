@@ -157,7 +157,7 @@ func _creature_call(enemy: CampCryptid) -> void:
 	var id := enemy.get_instance_id()
 	if call_timers.get(id, 0.0) > 0:
 		return
-	if play_cue(CREATURE_CUES[enemy.species], enemy.global_position, 0, 1, enemy):
+	if play_cue(CREATURE_CUES.get(enemy.species, "revenant_screech"), enemy.global_position, 0, 1, enemy):
 		call_timers[id] = rng.randf_range(8.0, 14.0)
 
 

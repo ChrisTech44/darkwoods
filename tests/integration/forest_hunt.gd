@@ -44,6 +44,13 @@ func _site_checks() -> void:
 			_check(player.supplies["flare"] == before["flare"] + 2 and player.supplies["battery_pack"] == before["battery_pack"] + 1, "well_awards_supplies_once")
 		elif action["kind"] == "crypt":
 			_check(player.supplies["flare"] == before["flare"] + 2, "crypt_awards_two_flares")
+		elif action["kind"] == "relic":
+			var total_before := 0
+			var total_after := 0
+			for kind in ["noise_tin","salt_ward","glow_moss"]:
+				total_before += before[kind]
+				total_after += player.supplies[kind]
+			_check(total_after == total_before + 1, "landmark_awards_one_rare_tool")
 		else:
 			_check(player.flashlight_charge > 89 and player.hex_remaining > 1.8, "cauldron_trades_hex_for_full_charge")
 		var after: Dictionary = player.supplies.duplicate()

@@ -20,7 +20,8 @@ func _run() -> void:
 	await _frames(3)
 	current_scene.get_node("Menu/RandomNight").button_pressed = false
 	current_scene.get_node("Menu/Seed").text = "42"
-	current_scene.get_node("Menu/Play").grab_focus()
+	current_scene.get_node("Menu/Play").pressed.emit()
+	current_scene.get_node("SurvivorSelection/Start").grab_focus()
 	await _tap(KEY_ENTER)
 	while current_scene == null or current_scene.name != "ForestLevel":
 		await process_frame
@@ -63,6 +64,11 @@ func _run() -> void:
 	_check(level.finished and level.won and player.status == CampPlayer.Status.ESCAPED, "complete_input_only_win_with_active_killer")
 	if capture:
 		await _snapshot("playthrough_win")
+	await _tap(KEY_ENTER)
+	await _frames(4)
+	_check(current_scene.name == "MainMenu", "another_night_returns_to_selection_flow")
+	current_scene.get_node("Menu/Play").pressed.emit()
+	current_scene.get_node("SurvivorSelection/Start").grab_focus()
 	await _tap(KEY_ENTER)
 	while current_scene == null or current_scene.name != "ForestLevel":
 		await process_frame

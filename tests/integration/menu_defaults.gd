@@ -46,6 +46,7 @@ func _run() -> void:
 		menu.get_node("Menu/Mode").select(mode_index)
 		menu.get_node("Menu/Seed").text = "42" # Even stale programmatic text is ignored in random mode.
 		menu.get_node("Menu/Play").pressed.emit()
+		menu.get_node("SurvivorSelection/Start").pressed.emit()
 		await _world()
 		var level: Node2D = current_scene
 		var first_seed: int = level.plan.seed_value
@@ -56,6 +57,10 @@ func _run() -> void:
 		level = current_scene
 		_check(level.plan.seed_value == first_seed and level.plan.camp.signature() == first_camp, "explicit_retry_repeats_camp_%d" % mode_index)
 		level.restart_round()
+		await _frames(4)
+		menu = current_scene
+		menu.get_node("Menu/Play").pressed.emit()
+		menu.get_node("SurvivorSelection/Start").pressed.emit()
 		await _world()
 		level = current_scene
 		_check(level.plan.seed_value != first_seed and level.plan.camp.signature() != first_camp, "another_night_randomizes_camp_%d" % mode_index)
@@ -67,6 +72,7 @@ func _run() -> void:
 		_check(menu.get_node("Menu/Seed").editable, "fixed_seed_opt_in_%d" % mode_index)
 		menu.get_node("Menu/Seed").text = "2026"
 		menu.get_node("Menu/Play").pressed.emit()
+		menu.get_node("SurvivorSelection/Start").pressed.emit()
 		await _world()
 		level = current_scene
 		_check(level.plan.seed_value == 2026, "explicit_seed_respected_%d" % mode_index)

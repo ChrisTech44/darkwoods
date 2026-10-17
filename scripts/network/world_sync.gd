@@ -51,7 +51,7 @@ static func capture(net: Node) -> Dictionary:
 		entities[entity.get_meta("network_id")]=row
 	return {"players":players,"enemies":enemies,"items":items,"sites":sites,"entities":entities,
 		"van":{"installed":level.van.installed,"progress":level.van.start_progress,"running":level.van.running,"remaining":level.van.remaining},
-		"pins":level.pins,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"props":level.props.snapshot(),"revive":level.revive_progress,"finished":level.finished,"won":level.won,"message":level.message,"message_time":level.message_time}
+		"pins":level.pins,"clues":level.clues,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"props":level.props.snapshot(),"revive":level.revive_progress,"finished":level.finished,"won":level.won,"message":level.message,"message_time":level.message_time}
 
 static func apply(net: Node, state: Dictionary) -> void:
 	var level: Node2D=net.world
@@ -141,6 +141,7 @@ static func apply(net: Node, state: Dictionary) -> void:
 		if actor.status==CampPlayer.Status.BOARDED: level.van.passengers.append(actor)
 	level.van.queue_redraw()
 	level.pins.assign(state["pins"])
+	level.clues=state["clues"]
 	level.help_pings.assign(state["help"])
 	level.self_recovery_progress=state["self_recovery"]
 	level.revive_duration=state["revive_duration"]

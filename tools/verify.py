@@ -70,6 +70,8 @@ def main():
     commands.append(("chase_props", ["--headless", *chase_props]))
     roads = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/road_network.gd"]
     commands.append(("road_network", ["--headless", *roads]))
+    clues = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/rotation_clues.gd"]
+    commands.append(("rotation_clues", ["--headless", *clues]))
     if args.graphical:
         commands.append(("graphical_player_render", ["--audio-driver", "Dummy", *render]))
         commands.append(("graphical_content", ["--audio-driver", "Dummy", *content, "--", "--capture"]))
@@ -78,6 +80,7 @@ def main():
         commands.append(("graphical_chase", ["--audio-driver", "Dummy", *chase, "--", "--capture"]))
         commands.append(("graphical_props", ["--audio-driver", "Dummy", *chase_props, "--", "--capture"]))
         commands.append(("graphical_roads", ["--audio-driver", "Dummy", *roads, "--", "--capture"]))
+        commands.append(("graphical_clues", ["--audio-driver", "Dummy", *clues, "--", "--capture"]))
         commands.append(("graphical_surround", [*surround, "--", "--capture"]))
         commands.append(("graphical_visibility", [*visibility, "--", "--capture"]))
         commands.append(("graphical_defaults", [*defaults, "--", "--capture"]))
@@ -111,7 +114,7 @@ def main():
                   if re.search(r"(?:SCRIPT ERROR|ERROR|Parse Error):", line)]
         warnings = [line for line in clean.splitlines() if "WARNING:" in line]
         passed = status == 0 and not errors and not timed_out
-        if name in ("player_render", "graphical_player_render", "content_expansion", "graphical_content", "navigation_aids", "graphical_navigation", "night_phases", "graphical_nights", "chase_toolkit", "graphical_chase", "chase_props", "graphical_props", "road_network", "graphical_roads", "menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
+        if name in ("player_render", "graphical_player_render", "content_expansion", "graphical_content", "navigation_aids", "graphical_navigation", "night_phases", "graphical_nights", "chase_toolkit", "graphical_chase", "chase_props", "graphical_props", "road_network", "graphical_roads", "rotation_clues", "graphical_clues", "menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
             summaries = []
             for line in clean.splitlines():
                 if line.startswith("{"):

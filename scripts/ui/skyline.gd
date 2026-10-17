@@ -29,6 +29,16 @@ static func beacons(plan: RoundPlan, from: Vector2) -> Array[Dictionary]:
 	return result
 
 
+## Regions the team knows hold a missing part show its name on the marker.
+static func beacon_label(level: Node2D, beacon: Dictionary) -> String:
+	var label: String = beacon["label"]
+	for kind: String in level.clues:
+		var zone: Dictionary = level.plan.woods.zones[level.plan.cache_zone[kind]]
+		if zone["kind"] == beacon["kind"] and level.clues[kind] >= 1 and kind not in level.van.installed:
+			label += " · " + kind.replace("_", " ").to_upper()
+	return label
+
+
 ## Clamp a screen point to the HUD-safe edge band along the ray from the view centre.
 static func edge_point(point: Vector2, view: Vector2) -> Vector2:
 	var middle := view * 0.5
@@ -51,7 +61,8 @@ func _draw() -> void:
 	var from: Vector2 = level.player.global_position
 	if level.plan.expedition and CampMap.is_woods(from):
 		for beacon in beacons(level.plan, from):
-			_marker(to_screen * beacon["position"], view, beacon["kind"], beacon["label"], Color("d8cfa4"))
+			var label := beacon_label(level, beacon)
+			_marker(to_screen * beacon["position"], view, beacon["kind"], label, Color("f0c27a") if label != beacon["label"] else Color("d8cfa4"))
 	for ping: Dictionary in level.help_pings:
 		if int(ping["remaining"] * 4) % 2 == 0:
 			_marker(to_screen * ping["position"], view, "help", "HELP " + ping["name"], Color("e0705a"))

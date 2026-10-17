@@ -56,6 +56,13 @@ func _draw() -> void:
 	elif kind == "rations":
 		draw_rect(Rect2(-5,-5,10,10),Color("a58b61"))
 		draw_rect(Rect2(-4,-2,8,4),Color("d3c29a"))
+	elif kind == "ranger_note":
+		draw_rect(Rect2(-5, -6, 10, 12), Color("e8dfc0"))
+		draw_rect(Rect2(-5, -6, 10, 2), Color("b55b45"))
+		for y in [-2, 1, 4]:
+			draw_line(Vector2(-3, y), Vector2(3, y), Color("7a705a"))
+		draw_string(ThemeDB.fallback_font, Vector2(-22, -12), "RANGER NOTE", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("e8dfc0"))
+		return
 	elif kind == "boltcutters":
 		draw_line(Vector2(-6, 5), Vector2(1, -2), Color("c7744f"), 2)
 		draw_line(Vector2(6, 5), Vector2(-1, -2), Color("c7744f"), 2)

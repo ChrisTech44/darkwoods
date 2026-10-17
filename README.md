@@ -156,9 +156,10 @@ Voice/microphone capture is not enabled.
 | **Woods Expedition** (40–60 min) | Battery and key in camp location pools; fuel and two extra parts in themed-area caches, revealed by ranger radio as the night deepens. | A 60-minute night that grows more dangerous: the stalker plus 48 cryptids, a seeded trail maze, survival supplies, weather, storms, blackouts and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
-The pack lists the current requirements and location clues. The woods contains nine major regions. Three hold the required caches: **Abandoned Village (northwest)**,
-**Witch's Bog (east)**, and **Old Graveyard (south)**. The mill, orchard, observatory, rail yard, quarry
-and chapel are optional; six smaller ruined landmarks also remain along the trails.
+The pack lists the current requirements and location clues. The woods contains nine major regions.
+Each night three of them (one each in three different directions) hold the
+locked caches; the White Stone Quarry never does. Six smaller ruined landmarks
+also remain along the trails.
 
 ## The night (Woods Expedition)
 
@@ -172,8 +173,23 @@ phase and clock; in the Witching Hour it counts down to dawn.
 | **Deep Night** | 25:00–40:00 | Radio reveals the **first extra part**. The stalker hears farther. A blackout hits camp. |
 | **Witching Hour** | 40:00–60:00 | Radio reveals the **last extra part**. The stalker chases faster. Escape before dawn. |
 
+- **Where the parts are changes every night.** The three locked caches (fuel and
+  the two extra parts) go to three different regions in three different
+  directions from camp, drawn from eight regions: village, observatory (north),
+  bog, rail yard (east), graveyard, chapel (south), mill, orchard (west).
+- **Follow the clues.**
+  - The camp corkboard names the fuel's region (shown in the Dusk message and
+    on Tab).
+  - For the other parts you start with only a direction, e.g. `FUSE / NORTH
+    WOODS? FIND A NOTE`.
+  - **Ranger notes** lie on the roads heading toward each part's region (two per
+    part). Pick one up with E to name the region for the whole team.
+  - Walking into a part's region also names it. Once its cache has been revealed
+    by radio, it's marked on your map `(CACHE MAPPED)`.
+  - Skyline markers show which part waits in a region you know about, e.g.
+    `DOME · FUSE`.
 - **Parts arrive by radio.** Tab lists every required part; unrevealed ones show
-  when the radio will announce them, e.g. `FUEL / RADIO AT 10:00`.
+  when the radio will announce them, e.g. `FUEL / RADIO 10:00 · ORCHARD`.
   The van can't be finished before 40:00, so most escapes happen between 40 and 60 minutes.
 - **Supply drops.** Each new phase leaves 2 flashlight batteries, a flare and a
   ration at the Maintenance stash.
@@ -579,12 +595,13 @@ recover units. Vehicle components and cutters remain separate from this limit.
 
 The current implementation includes solo and 1–4 player ENet co-op in both
 modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
-species. Full baseline verification passed **89 steps** with no errors/warnings,
+species. Full baseline verification passed **91 steps** with no errors/warnings,
 including the [navigation](docs/evidence/navigation/README.md),
 [night phase](docs/evidence/night_phases/README.md) and
 [chase toolkit](docs/evidence/chase_toolkit/README.md) and
 [hiding/doors](docs/evidence/chase_props/README.md) and
-[road network](docs/evidence/road_network/README.md) suites;
+[road network](docs/evidence/road_network/README.md) and
+[rotation/clue](docs/evidence/rotation_clues/README.md) suites;
 final content checks passed **350 assertions**. Current graphical ENet tests passed **654
 assertions across 14 process runs**, including two/four peers and graphical
 host/client windows in both modes. See the

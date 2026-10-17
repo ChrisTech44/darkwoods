@@ -8,6 +8,18 @@ const WORLD_BOUNDS := WoodsLayout.WORLD_BOUNDS
 const PICKUP_POSITIONS: Array[Vector2] = [Vector2(228, 120), Vector2(1304, 272), Vector2(696, 680)]
 const PICKUP_HINTS: Array[String] = ["Battery · Fern bunk cabin", "Fuel · maintenance workshop", "Key · ranger lodge office"]
 const ATLAS := preload("res://assets/tiles/camp_tiles.png")
+## Nav chunk seams (every 1536px) run inside the camp's two main roads (x=808 in
+## the 784-816 road, y=504 in the 496-544 road), which buildings and trees never
+## occupy. Neither is a multiple of 32, so no woods wall (all on the 32px grid) can
+## lie on a seam. Each chunk's edge is shrunk by the agent radius, leaving a 14px
+## off-mesh strip on every seam, so seams also stay clear of the y=520 patrol line.
+const NAV_SEAM := Vector2i(808, 504)
+const NAV_CHUNK := 1536
+
+
+static func nav_seam_start(axis: int) -> int:
+	var origin := int(WORLD_BOUNDS.position[axis])
+	return NAV_SEAM[axis] - NAV_CHUNK * ceili(float(NAV_SEAM[axis] - origin) / NAV_CHUNK)
 var obstacles: Array[Rect2] = []
 var trees: Array[Rect2] = []
 var canopies: Array[Sprite2D] = []
@@ -275,9 +287,11 @@ func _build_navigation() -> void:
 	# Bounded native bakes avoid unstable convex partitioning of one giant maze.
 	NavigationServer2D.map_set_use_async_iterations(get_world_2d().navigation_map,false)
 	NavigationServer2D.map_set_edge_connection_margin(get_world_2d().navigation_map,16.0)
-	for y in range(int(WORLD_BOUNDS.position.y),int(WORLD_BOUNDS.end.y),1536):
-		for x in range(int(WORLD_BOUNDS.position.x),int(WORLD_BOUNDS.end.x),1536):
-			var bounds := Rect2(x,y,1536,1536).intersection(WORLD_BOUNDS)
+	# A wall edge lying exactly on a chunk seam loses its path clearance, so seams
+	# are shifted half a chunk away from every road edge.
+	for y in range(nav_seam_start(1),int(WORLD_BOUNDS.end.y),NAV_CHUNK):
+		for x in range(nav_seam_start(0),int(WORLD_BOUNDS.end.x),NAV_CHUNK):
+			var bounds := Rect2(x,y,NAV_CHUNK,NAV_CHUNK).intersection(WORLD_BOUNDS)
 			var polygon := NavigationPolygon.new()
 			polygon.agent_radius = 7.0
 			var source := NavigationMeshSourceGeometryData2D.new()

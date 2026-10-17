@@ -83,7 +83,9 @@ func _collect(pickup: CampPickup) -> bool:
 func _leg(points: Array) -> bool:
 	for destination: Vector2 in points:
 		var reached := false
-		for index in range(900):
+		# Roads make long straight path segments; budget 1.6x the walking time (min 15s).
+		var budget := maxi(900, ceili(player.position.distance_to(destination) / player.config.walk_speed * 60.0 * 1.6))
+		for index in range(budget):
 			var offset := destination - player.position
 			if offset.length() < 2:
 				reached = true
@@ -112,6 +114,13 @@ func _leg(points: Array) -> bool:
 				await _tap(KEY_Q)
 				print(JSON.stringify({"event": "expedition_flare", "position": player.position, "danger_distance": danger}))
 				supply_cooldown = 30
+			# Out of flares: face the threat and flash-stun it, as a player would.
+			if danger < 60 and player.supplies["flare"] == 0 and player.flash_cooldown <= 0.0 and player.flashlight_charge >= CampPlayer.FLASH_COST:
+				for enemy: CampKiller in get_nodes_in_group("killers"):
+					if player.position.distance_to(enemy.position) <= danger + 0.5:
+						player.facing = player.position.direction_to(enemy.position)
+				await _tap(KEY_SPACE)
+				print(JSON.stringify({"event": "expedition_flash", "position": player.position, "danger_distance": danger}))
 			# Use carried rare counterplay through normal belt keys when flares run out.
 			if danger<65 and player.supplies["flare"]==0 and player.ward_remaining<=0 and player.supplies.get("salt_ward",0)>0:
 				await _belt_use("salt_ward")
@@ -138,7 +147,7 @@ func _leg(points: Array) -> bool:
 			Input.action_release(action)
 		await _frames(1)
 		if not reached:
-			print(JSON.stringify({"event": "expedition_blocked", "destination": destination, "position": player.position, "status": player.status, "stamina": player.stamina, "supplies":player.supplies}))
+			print(JSON.stringify({"event": "expedition_blocked", "destination": destination, "position": player.position, "status": player.status, "stamina": player.stamina, "supplies":player.supplies, "hidden": player.hidden_spot, "velocity": player.velocity, "controls": player.controls_enabled, "paused": level.paused}))
 			for enemy: CampKiller in get_nodes_in_group("killers"):
 				print(JSON.stringify({"event": "enemy_at_failure", "position": enemy.position, "state": enemy.state, "flare": enemy.nearby_flare()}))
 		_check(reached, "woods_walk_to_%d_%d" % [destination.x, destination.y])

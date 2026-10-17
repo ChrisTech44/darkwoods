@@ -149,7 +149,8 @@ func _host() -> void:
 	if selected_mode=="woods":
 		# The host owns the night clock; clients see the phase and the radio-revealed fuel cache.
 		level.night_clock.skip_to(NightClock.PHASE_STARTS[1])
-		harness.advance.rpc("night_phase")
+		level.read_note(level.plan.required[3])
+		harness.advance.rpc("night_phase",{"note":level.plan.required[3]})
 		if not await _reports(peers-1): return
 		for report: Dictionary in harness.reports.values(): _check(report.get("night",false),"nightfall_and_fuel_reveal_replicated")
 	for actor: CampPlayer in net.actors.values():
@@ -377,7 +378,7 @@ func _client() -> void:
 					if pickup.kind=="fuel": fuel=pickup
 				await _until(func(): return net.world.night_clock.phase==1 and fuel.available,5)
 				for frame in range(3): await process_frame
-				var night_ok: bool=net.world.night_clock.phase==1 and net.world.night_clock.elapsed>=600 and fuel.available and fuel.visible and net.world.hud.title.text.contains("NIGHTFALL")
+				var night_ok: bool=net.world.night_clock.phase==1 and net.world.night_clock.elapsed>=600 and fuel.available and fuel.visible and net.world.hud.title.text.contains("NIGHTFALL") and net.world.clues.get(harness.data["note"],0)==1
 				if not night_ok: print(JSON.stringify({"event":"night_replica","phase":net.world.night_clock.phase,"elapsed":net.world.night_clock.elapsed,"fuel":fuel.available,"visible":fuel.visible,"title":net.world.hud.title.text}))
 				harness.report.rpc_id(1,handled,{"night":night_ok})
 			"map_pin":

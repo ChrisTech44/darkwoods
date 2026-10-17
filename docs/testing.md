@@ -424,3 +424,22 @@ It covers:
 
 The expedition bot (`woods_playthrough`) runs unmodified on the new map.
 Evidence: [road network](evidence/road_network/README.md).
+
+## Rotating regions and clues (overhaul F4b-1)
+
+Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/rotation_clues.gd`
+(add `-- --capture` without `--headless` for the note and pack captures). It covers:
+
+- 24 seeds: three caches in three distinct directions from the region pool,
+  reproducible, with 4 ranger notes on walkable road cells outside regions and
+  each nearer its region than camp is;
+- all 8 pool regions used across seeds, and no rotation or notes in Quick Camp;
+- corkboard fuel named, others direction-only, and the pack text;
+- notes: reachable, prompt, region named for the team, not carried;
+- entering a sealed region names it, and the skyline marker shows the part;
+- after the radio reveal, standing in the region marks the cache.
+
+`road_network.gd` also asserts that no woods wall edge lies on a nav chunk seam
+(it fails with 75–83 such edges on the old seam layout) and that gameplay
+targets sit outside the seam strips. The network night stage now checks that a
+host-read note replicates to clients.

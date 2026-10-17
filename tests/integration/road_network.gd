@@ -69,6 +69,30 @@ func _layout_checks() -> void:
 		var a := first.cell_at(road.get_center() - (road.size - Vector2.ONE * WoodsLayout.CELL).max(Vector2.ZERO) * 0.5 * Vector2(1 if road.size.x > road.size.y else 0, 1 if road.size.y > road.size.x else 0))
 		linked = linked and first.road_cells.has(a)
 	_check(linked and first.lamps.size() >= 25, "roads_on_road_cells_and_%d_lamps" % first.lamps.size())
+	# Paths lose clearance where a wall edge lies exactly on a nav chunk seam.
+	var seams_x := {}
+	var seams_y := {}
+	for step in range(0, 9):
+		seams_x[CampMap.nav_seam_start(0) + CampMap.NAV_CHUNK * step] = true
+		seams_y[CampMap.nav_seam_start(1) + CampMap.NAV_CHUNK * step] = true
+	# Gameplay targets (stalker patrol line, test exits) must sit outside the 14px off-mesh seam strip.
+	for target in [Vector2(96, 520), Vector2(600, 520), Vector2(96, 384), Vector2(96, 300)]:
+		var clear := true
+		for seam: int in seams_y:
+			clear = clear and absf(target.y - seam) > 8
+		for seam: int in seams_x:
+			clear = clear and absf(target.x - seam) > 8
+		_check(clear, "target_%d_%d_off_seam_strip" % [target.x, target.y])
+	_check(seams_x.has(CampMap.NAV_SEAM.x) and seams_y.has(CampMap.NAV_SEAM.y) and CampMap.nav_seam_start(0) <= int(WoodsLayout.WORLD_BOUNDS.position.x), "nav_seams_run_down_camp_road_centres")
+	for seed_value in [1, 3, 42]:
+		var woods := WoodsLayout.new()
+		woods.generate(seed_value)
+		var on_seam := 0
+		for wall: Rect2 in woods.walls:
+			if seams_x.has(int(wall.position.x)) or seams_x.has(int(wall.end.x)) or seams_y.has(int(wall.position.y)) or seams_y.has(int(wall.end.y)):
+				if WoodsLayout.WORLD_BOUNDS.grow(-1).intersects(wall):
+					on_seam += 1
+		_check(on_seam == 0, "seed_%d_no_woods_wall_edge_on_nav_seam_%d" % [seed_value, on_seam])
 	var objectives := 0
 	for zone in first.zones.slice(0, 3):
 		for cell: Vector2i in first.road_cells:

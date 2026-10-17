@@ -1,5 +1,54 @@
 # Development log
 
+## 2026-10-16 — Overhaul F4b-1: rotating cache regions and the clue chain
+
+- `RoundPlan._rotate_caches()` (separate RNG, `seed + 4242`) picks three of four
+  directions, then one region per direction from `REGION_POOL` (N: village/
+  observatory, E: bog/rail, S: graveyard/chapel, W: mill/orchard). The quarry
+  is never used. `cache_spot()` keeps the original village/bog/graveyard spots;
+  other regions use `position + (-80, 80)`.
+- **Clue chain** (host-owned `level.clues`, replicated; 0 direction, 1 named, 2
+  cache found):
+  - the camp corkboard names fuel (Dusk message);
+  - two `ranger_note` pickups per other part sit on the road cells nearest that
+    part's region, at least 300 px apart;
+  - reading a note names the region team-wide;
+  - entering a region names its part, and marks the cache once the radio has
+    revealed it.
+
+  The pack uses the short sign names (DOME, RAILS...), radio messages follow
+  the clue level, and skyline markers append known parts (`DOME · FUSE`).
+- Rules `lnac-net-9`.
+
+**Navigation seams.** While validating, a camp item became unreachable and
+paths lost clearance where wall edges lay exactly on the 1,536 px nav chunk
+seams. Each chunk is eroded by the 7 px agent radius at its edges. The F4a roads
+put many woods wall edges on the old seams (75–83 per night, measured).
+- A first 100 px shift moved a seam 4 px from a camp cabin wall.
+- A half-chunk shift put one through Maintenance.
+
+Final layout: seams at x=808 / y=504 (inside the camp's two main roads, which
+buildings and trees never occupy). Neither is a multiple of 32, so no woods
+wall can ever lie on a seam; a new test enforces this and fails on the old
+layout. Seams also stay clear of the y=520 stalker patrol line (a seam at 520
+put a test target in the off-mesh strip).
+
+**Expedition bot.** Rotation sent night 42 to the orchard, village and rail
+yard. The bot ran out of flares on the rail-yard return and was downed. It now
+flash-stuns (Space) when cornered without flares, as a player would, and
+survived three encounters. A later stall was a 1,180 px straight leg down the
+east spoke, longer than the bot's fixed 900-frame waypoint budget. The budget
+now scales with distance (1.6× walking time). In hindsight the earlier y=1920
+stall was likely the same budget issue rather than the seam.
+
+**Verification:** `python3 tools/verify.py` 91/91 steps, no errors or warnings
+(new `rotation_clues`: 14 headless / 16 graphical; `road_network` 23/26 with
+seam checks). `verify_network.py --mode all`: 2 peers 269 and 4 peers 455
+assertions, all passing. One earlier 4-peer run had a single
+`wait_client_movement` timeout that did not recur in the final run. Evidence:
+[rotation/clues](evidence/rotation_clues/README.md). Not verified: human feel of
+the clue chain, other platforms.
+
 ## 2026-10-16 — Overhaul F4a: ring road, spokes and lamps
 
 First half of the map redesign, aimed at the original "puzzling, tedious to

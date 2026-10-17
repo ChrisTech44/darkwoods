@@ -32,6 +32,8 @@ var sight: WoodsVisibility
 var pins: Array[Dictionary] = []
 var night_clock: NightClock
 var props: ChaseProps
+## Team-wide clue chain per locked-cache part: 0 direction, 1 region named, 2 cache found.
+var clues: Dictionary = {}
 const PINS_PER_PLAYER := 3
 
 
@@ -39,8 +41,10 @@ func _ready() -> void:
 	add_to_group("round_world")
 	var session: Node = get_node("/root/Session")
 	plan.generate(session.begin_run(), session.mode)
+	for kind: String in plan.cache_zone:
+		clues[kind] = 1 if kind == "fuel" else 0
 	if plan.expedition:
-		message = "DUSK. Grab tools and supplies. The ranger radio reveals more parts as the night deepens."
+		message = "DUSK. Camp corkboard: fuel is at the %s. Ranger notes on the roads name the rest." % plan.region_name("fuel")
 	world_objects = Node2D.new()
 	world_objects.name = "WorldObjects"
 	world_objects.y_sort_enabled = true
@@ -97,6 +101,8 @@ func _ready() -> void:
 		pickup.kind = item["kind"]
 		pickup.position = item["position"]
 		pickup.locked = item["locked"]
+		if item.has("part"):
+			pickup.set_meta("part", item["part"])
 		pickups.append(pickup)
 		add_child(pickup)
 	var trail := preload("res://scripts/world/blood_trail.gd").new()
@@ -175,7 +181,7 @@ func _process(_delta: float) -> void:
 		detail = message + "\n" + detail
 	hud.set_status(heading, detail, player.stamina / player.config.stamina_max)
 	hud.inventory_label.text = "NIGHT %d / %s\nQ FLARE %d · R BATTERY %d · C FOOD %d\n" % [plan.seed_value, plan.weather.to_upper(), player.supplies["flare"], player.supplies["battery_pack"], player.supplies["rations"]]
-	hud.inventory_label.text += plan.pack_description(van.installed, night_clock.phase if plan.expedition else 3)
+	hud.inventory_label.text += plan.pack_description(van.installed, night_clock.phase if plan.expedition else 3, clues)
 	if plan.expedition:
 		hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINT./%s WOODS BOX" % plan.toolbox_hint) + (" +BAR" if "crowbar" in player.inventory else "") + " · TAB CLOSE"
 	else:
@@ -218,6 +224,7 @@ func _physics_process(delta: float) -> void:
 			van.board(player)
 			announce("Engine started. Driver boarded automatically. Others: E to enter.")
 	_advance_chase_toolkit(delta)
+	_advance_clues()
 	var living := false
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if actor.status in [CampPlayer.Status.ALIVE, CampPlayer.Status.BOARDED]:
@@ -269,6 +276,10 @@ func try_interact(actor: CampPlayer) -> bool:
 			if pickup.kind in ["boltcutters", "crowbar"] and pickup.kind in actor.inventory:
 				announce("You already carry " + pickup.kind + ". Leave these for a teammate.",actor)
 				return false
+			if pickup.kind == "ranger_note":
+				pickup.consume()
+				read_note(pickup.get_meta("part", ""))
+				return true
 			pickup.consume()
 			if pried:
 				loud_noise(pickup.global_position, 500)
@@ -405,6 +416,43 @@ func _advance_chase_toolkit(delta: float) -> void:
 			for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 				if enemy.state == CampKiller.State.PATROL:
 					enemy.hear_stimulus(actor.blood.back(), 110.0)
+
+
+func read_note(kind: String) -> void:
+	if not clues.has(kind):
+		return
+	var region := plan.region_name(kind)
+	if clues[kind] < 1:
+		clues[kind] = 1
+		announce("Ranger note: the %s was stashed at the %s." % [kind.replace("_", " ").to_upper(), region])
+	else:
+		announce("Ranger note: %s at the %s. You already knew." % [kind.replace("_", " ").to_upper(), region])
+
+
+## Walking into a part's region names it; once its cache is revealed, it is marked.
+func _advance_clues() -> void:
+	if clues.is_empty():
+		return
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if actor.status != CampPlayer.Status.ALIVE:
+			continue
+		var zone := plan.woods.zone_at(actor.global_position)
+		if zone.is_empty():
+			continue
+		var index := plan.woods.zones.find(zone)
+		for kind: String in clues:
+			if plan.cache_zone[kind] != index or clues[kind] >= 2:
+				continue
+			var revealed := false
+			for pickup in pickups:
+				if pickup.kind == kind and pickup.available:
+					revealed = true
+			if revealed:
+				clues[kind] = 2
+				announce("The %s cache is here at the %s. It's on your map." % [kind.replace("_", " ").to_upper(), plan.region_name(kind)])
+			elif clues[kind] < 1:
+				clues[kind] = 1
+				announce("Fresh boot prints: something will be stashed here at the %s (%s)." % [plan.region_name(kind), kind.replace("_", " ").to_upper()])
 
 
 func on_survivor_wounded(actor: CampPlayer) -> void:

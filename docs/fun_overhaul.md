@@ -1,6 +1,6 @@
 # Heart-pounding nights: gameplay overhaul plan
 
-Status: **approved planning direction; F1 navigation, F2 night phases, F3 chase toolkit and F4a road network implemented**
+Status: **approved planning direction; F1 navigation, F2 night phases, F3 chase toolkit, F4a road network and F4b-1 rotating regions with clues implemented**
 (signposts, skyline markers, wall-map regions, team pins, spare cutters and
 crowbar; see [evidence](evidence/navigation/README.md)). Everything else in
 this document is still planned until a development-log entry records execution
@@ -280,8 +280,9 @@ already has ENet authority), logged and pushed before the next one starts.
 4. **F4 Ring-and-spoke map** *(F4a implemented: deterministic lit ring road
    through the three objective regions, four spokes to the map edges, lamps on
    camp power, roads printed on the field map, maze kept as thickets; measured
-   18–30s walks to required regions. F4b next: rotating objective regions with
-   clue chains, unlockable shortcuts, fences to vault)*: rework the woods generator into hub/ring/spokes/
+   18–30s walks to required regions. F4b-1 implemented: three caches rotate across eight regions in three
+   directions each night, with corkboard → ranger note → region clue chain.
+   F4b-2 next: unlockable shortcuts, fences to vault)*: rework the woods generator into hub/ring/spokes/
    thickets with unlockable shortcuts, rotating objective regions and the
    camp → field → building clue chains that point to them.
 5. **F5 Escapes and new regions**: Radio Rescue first (Substation, Radio Relay

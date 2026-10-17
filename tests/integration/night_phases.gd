@@ -69,7 +69,7 @@ func _dusk_checks() -> void:
 		if pickup.kind in level.plan.required and level.plan.reveal_phase[pickup.kind] > 0:
 			sealed.append(pickup.available or pickup.visible)
 	_check(sealed.size() == 3 and not sealed.has(true), "three_parts_sealed_at_dusk")
-	_check(level.hud.inventory_label.text.contains("FUEL / RADIO AT 10:00") and level.hud.inventory_label.text.contains("RADIO AT 40:00"), "pack_lists_radio_times")
+	_check(level.hud.inventory_label.text.contains("FUEL / RADIO 10:00") and level.hud.inventory_label.text.contains("RADIO 40:00"), "pack_lists_radio_times")
 	_check(clock.dread < 15.0, "dusk_dread_low_%d" % int(clock.dread))
 
 

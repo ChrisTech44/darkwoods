@@ -1,0 +1,23 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"assertion","name":"24_seeds_three_directions_from_pool_reproducible_notes_toward_regions","passed":true}
+{"event":"assertion","name":"rotation_uses_8_of_8_regions","passed":true}
+{"event":"assertion","name":"quick_camp_has_no_rotation_or_notes","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"corkboard_names_fuel_others_direction_only","passed":true}
+{"event":"assertion","name":"pack_shows_direction_and_named_fuel","passed":true}
+{"event":"assertion","name":"ranger_note_reachable","passed":true}
+{"event":"assertion","name":"note_prompt","passed":true}
+{"event":"assertion","name":"reading_note_names_region","passed":true}
+{"event":"assertion","name":"note_announced_to_team","passed":true}
+{"event":"assertion","name":"notes_are_not_carried","passed":true}
+{"event":"assertion","name":"entering_sealed_region_names_it","passed":true}
+{"event":"assertion","name":"skyline_marker_shows_known_part","passed":true}
+{"event":"night_phase","phase":"NIGHTFALL","revealed":["fuel"],"time":2400}
+{"event":"night_phase","phase":"DEEP NIGHT","revealed":["fuse"],"time":2400}
+{"event":"night_phase","phase":"WITCHING HOUR","revealed":["spark_plug"],"time":2400}
+{"event":"night_event","kind":"storm","time":2400}
+{"event":"night_event","kind":"blackout","time":2400}
+{"event":"assertion","name":"revealed_cache_marked_when_standing_in_region","passed":true}
+{"event":"assertion","name":"pack_marks_mapped_cache","passed":true}
+{"checks":14,"event":"test_result","failures":0,"suite":"rotation_clues"}

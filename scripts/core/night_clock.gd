@@ -201,9 +201,9 @@ func _enter_phase(next: int) -> void:
 		level.killer.config.killer_chase_speed *= 1.08
 	var clue := ""
 	for kind in revealed:
-		for item in level.plan.loot:
-			if item["kind"] == kind:
-				clue += " %s at %s." % [kind.replace("_", " ").to_upper(), item["hint"]]
+		var known: int = level.clues.get(kind, 2)
+		var where: String = level.plan.region_name(kind) if known >= 1 else "the %s woods (find a ranger note)" % level.plan.cache_direction.get(kind, "")
+		clue += " %s stashed at %s." % [kind.replace("_", " ").to_upper(), where if not where.is_empty() else "camp"]
 	level.announce("%s. Ranger radio:%s Supply drop at Maintenance." % [PHASES[next], clue if not clue.is_empty() else " stay together."])
 	print(JSON.stringify({"event": "night_phase", "phase": PHASES[next], "time": int(elapsed), "revealed": revealed}))
 

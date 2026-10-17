@@ -137,8 +137,19 @@ spokes run from the camp exits to the map edges. About 34 lamp posts on the ring
 and inner spokes run on camp power, so blackouts darken them. The field map
 prints the roads, and the maze between roads remains as thickets. Measured
 walking time from camp: graveyard 18s, bog 28s, village 30s; optional regions
-41–69s. Rules `lnac-net-8`. F4b (rotating objective regions with clue chains,
-shortcuts, fences/vaults) follows.
+41–69s. Rules `lnac-net-8`.
+F4b-1 is implemented and supersedes the fixed village/bog/graveyard caches.
+Each night the three locked caches rotate across eight regions, one per
+direction for three of N/E/S/W (separate RNG), with a team-wide clue chain:
+- the camp corkboard names the fuel region;
+- the other parts start as a direction only;
+- two ranger notes per part on the roads toward its region name it;
+- entering the region names it, and marks the cache once revealed;
+- skyline markers show known parts.
+
+Nav chunk seams now run at x=808/y=504 (inside the camp's main roads, off the
+32px grid), so no woods wall edge lies on a seam. Rules `lnac-net-9`. F4b-2
+(shortcuts, fences/vaults) follows.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 

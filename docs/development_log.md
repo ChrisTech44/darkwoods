@@ -1,5 +1,17 @@
 # Development log
 
+## 2026-10-17 — README reorganised for new players
+
+The user found the README hard to use ("unsure how to play the game and what it
+looks like"). It now opens with a pitch and four screenshots, a contents list,
+"What kind of game is this?", an install-and-play quick start (Godot download,
+Download ZIP or git, Import, F5), an illustrated eleven-step first night, the
+controls, how to win and lose, and beginner tips. The detailed reference follows
+(co-op and voice, modes, the night, score, killers, escapes, survivors, items,
+creatures, the world, sound, sites, replay), then screenshots, art and a
+refreshed development summary (134 steps, 375 network assertions, voice suite).
+Claims were checked against the code; links verified.
+
 ## 2026-10-17 — README screenshots retaken; results and journal panels fit
 
 - Retook every README screenshot with the new art (one graphical suite at a

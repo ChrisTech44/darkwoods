@@ -1,160 +1,188 @@
 # Last Night at Camp
 
-**Find the parts. Keep your light alive. Escape by van, radio, boat, or the ranger road.**
+**Find the parts. Keep your light alive. Get out before the woods get you.**
 
-An original top-down pixel-art survival horror game built in Godot 4. Explore
-Fernwood's cabins, follow twisting trails into the woods, and repair your escape
-van while a stalker and roaming cryptids hunt by sight, sound, and light.
+A top-down pixel-art survival horror game for **1 to 4 players**, made in Godot.
+It is the last night of summer camp at Fernwood, the counselors are gone, and
+something is hunting you. Search the cabins and the forest for the parts your
+escape needs, keep your flashlight charged, hide and run when you are found,
+and get your friends out together.
 
-**Playable now:** offline solo and **1–4 player ENet host/join co-op**, with
-Quick Camp and Woods Expedition. Host on LAN/Wi-Fi or a reachable Internet /
-virtual-LAN address. Independent local-process and graphical network tests pass;
-real cross-machine/Internet and other-platform acceptance remains pending.
-The [gameplay overhaul](docs/fun_overhaul.md) is under way (F1–F5 implemented),
-and opt-in **proximity voice chat** is in. Run from source; standalone packages
-are a later milestone.
-
-See the [item reference](#items) for every item, its location and how to use it.
-
-![Title screen over the moonlit camp illustration, with Woods Expedition and optional seed selection](docs/screenshots/menu_defaults.png)
-
-## Survivors, biomes and the item belt
-
-Choose one of **six survivors** before starting, with exact bonuses, an animated
-preview, saved choice, Random Survivor and Settings. The Jock has 5s stamina;
-Grease Monkey starts the engine in 1.5s; Scout saves light; First-Aid Kid rescues
-faster; Quiet Kid reduces sprint hearing; Overprepared starts with extra supplies.
-
-Every survivor also has one **active ability on X** and a **team bonus**.
-
-| Survivor | Advantage | Ability (X) | Team bonus |
-| --- | --- | --- | --- |
-| **The Jock** | 5s sprint stamina instead of 4s | **Second Wind**: full stamina and +10% sprint for 2s; once per night phase | Hauls the heavy boat motor alone at full walking pace. |
-| **Grease Monkey** | 1.5s engine ignition; +1 spare battery | **Jury-Rig** (2 per night): shut and barricade the nearest cabin door for 8s (nothing can push through), or restart the dead generator silently | |
-| **The Scout** | Light drain 0.8/s; +1 ration | **Mark** (30s cooldown): tag the creature, locked cache or site you are facing and can see, for the whole team, for 6s | Starts the night knowing one extra part's region. |
-| **First-Aid Kid** | Medkit revive 2.25s; +1 medkit, +1 flare | **Patch** (2 per night): heal your own or an adjacent teammate's wound without a medkit | |
-| **The Quiet Kid** | Sprint hearing reach ×0.75 | **Hold Breath** (45s cooldown): 6s of silent sprinting; breath lasts twice as long while hidden | Leaves no blood trail while wounded. |
-| **Overprepared** | +1 flare, +1 battery, +1 ration | **Unpack** (once per night): drop a stash of flare, battery, rations and medkit for anyone | |
-
-**H** hands one of your held supply to a teammate standing right beside you.
-Two survivors at the dead generator restart it quietly; alone it roars.
-At the end of a night the results screen hands out **awards** such as *Never
-Left Behind*, *Most Flares Wasted*, *Bait*, *Pack Mule* and *Show-Off*.
-
-Your choice is remembered. **Random Survivor** reveals a role before confirmation;
-it is independent of **Random Night**. All roles can collect every part and escape.
-
-**1–6 or keypad 1–6** selects one of six belt slots. **V** uses the held supply;
-**G** drops its whole stack; **E** picks it back up. Each supply type takes one
-slot, with same-type items stacking. Slots show the key and name without trailing quantity numbers; Tab lists the main supply counts. Vehicle components and cutters are carried
-separately. Q/R/C still use flares, batteries and food. Medkits help while holding
-E to revive a teammate faster, and V patches your own wound.
-
-Find **noise tins** (three delayed distracting rattles), **salt wards** (4s of
-physical-hit protection), and **glow moss** (+35 light charge and hex removal).
-Six optional landmarks join the village, bog and graveyard: **Flooded Mill,
-Bramble Orchard, Starless Observatory, Last-Car Rail Yard, White Stone Quarry,
-and Drowned Chapel**. Each has multiple approaches, a one-time rare tool and a
-territorial guardian. Required components still come from the original regions.
-
-![Survivor selection](docs/screenshots/survivor_selection.png)
-
-[Full content guide and inspection screenshots](docs/content_update.md) covers
-hunter/guardian counterplay and the current prototype limits.
-
-## The surrounding forest update
-
-Fernwood camp now sits at the exact centre of a **9,600×9,408** world, with a
-massive forest on every side—about **35 times the previous woods area**.
-**2,410 connected forest clearings**, loops and six remote ruins surround the
-ten furnished camp buildings. Four exits lead north, east, south and west.
-Trails are **128 pixels wide**, and the village, bog and graveyard have larger
-clearings and clear approach aprons. Roofs cut away inside buildings.
-
-In Woods Expedition, **48 cryptids across 16 species, plus the stalker** patrol
-the inner forest and deeper woods. A true sight mask hides occluded terrain and
-creatures; nearby footsteps and calls provide audible warnings without revealing
-the whole maze. The local field map follows you, records explored trails and
-points back toward camp. The village lies northwest, bog east and graveyard south.
-
-### Find your way
-
-- **The ring road and spokes.** A wide dirt **ring road** circles camp about
-  1,500 px out and runs straight through the Abandoned Village, Witch's Bog and
-  Old Graveyard. Four straight **spoke roads** leave the camp exits (north,
-  east, south, west) and run to the edges of the map. Lamp posts light the
-  ring and the inner spokes as long as camp has power; in a blackout the roads
-  go dark too. The outer spokes are dark **logging roads**. Everything between
-  the roads is the old maze ("the thickets"): shorter as the crow flies, but
-  darker and unmarked. From camp, the graveyard is about 18 s on foot, the bog
-  28 s and the village 30 s.
-
-- **Signposts** stand at about 120 trail junctions per night. Each board points
-  along the real shortest trail to **camp** and the two nearest regions. Stand
-  beside one to read its full directions on the HUD
-  (for example `SIGNPOST · CAMP E · ABANDONED VILLAGE W · OLD GRAVEYARD S`).
-- **Skyline markers.** Tall landmarks show over the treetops: the camp fire always,
-  plus up to four regions within about 2,400 px (bell tower, bog glow, dome,
-  rail signal and others). They sit at the screen edge in that direction and
-  never reveal trails, caches or creatures.
-- **Region names and roads from the start.** The field map (Tab) prints the ring
-  road, spokes and every nearby region outline from the Ranger Lodge wall map;
-  regions brighten once you have walked them.
-  Trails still appear only where you have explored.
-- **Team pins.** Press **M** to drop a pin where you stand. Everyone sees it on
-  their field map and as an edge marker, with a shared "pinned WITCH'S BOG"
-  notice. Each player keeps their newest three pins.
-
-![Signpost arrows to camp, village and graveyard in the flashlight beam](docs/screenshots/nav_signpost.png)
-
-Both modes default to fresh randomized camp layouts. Loot, required extra parts,
-weather, creature homes and trails use the run seed. Music plays on the menu;
-**Settings** holds the saved mixer before Play. Foreground canopies fade when
-they cover the camper, and view-local scenery rendering keeps distant forest
-active for gameplay without drawing thousands of tree sprites at once. Every
-trail is lined with dense trees and undergrowth; your sight reaches just into
-that tree line and fades to darkness, so you see the forest rising around the
-path but never the next trail through it.
-
-Trees use staggered trunk positions, varied crown heights and a dense bracken
-fringe rather than a straight hedge. Visible foliage catches nearby flashlights
-and flares even along the north-facing border. Crowns fade locally around your
-survivor, and a small, smooth woods-camera lookahead gives north-side trees more
-room above you. The terrain and creatures behind the tree wall remain hidden.
-
-| Facing north at normal night exposure | Facing south at normal night exposure |
+| The title screen | The camp at night |
 | --- | --- |
-| ![North-facing forest edge](docs/screenshots/treeline_north.png) | ![South-facing forest edge](docs/screenshots/treeline_south.png) |
+| ![Title screen over a moonlit camp illustration](docs/screenshots/menu_defaults.png) | ![A survivor beside the campfire, tent and escape van](docs/screenshots/campsite.png) |
 
-[Before/after captures and verification](docs/evidence/forest_treeline/README.md).
+| Something in the woods | The Signal Fire finale |
+| --- | --- |
+| ![A werewolf looming over a survivor in the flashlight beam](docs/screenshots/woods_werewolf.png) | ![A survivor holding out beside a blazing signal pyre](docs/screenshots/signal_fire.png) |
 
-## Play from source
+## Contents
 
-Use **Godot 4.7.2 stable**, standard/GDScript edition. Python 3 is optional for
-the helper commands. No plugins, Python packages, or export templates are needed.
+- [What kind of game is this?](#what-kind-of-game-is-this)
+- [Quick start: install and play](#quick-start-install-and-play)
+- [Your first night, step by step](#your-first-night-step-by-step)
+- [Controls](#controls)
+- [How to win (and lose)](#how-to-win-and-lose)
+- [Tips for your first nights](#tips-for-your-first-nights)
+- [Play with friends and proximity voice](#play-with-friends)
+- Detailed guide: [modes](#choose-your-night) · [the night](#the-night-woods-expedition) ·
+  [score and journal](#score-daily-night-and-the-camp-journal) · [killers and modifiers](#tonights-killer-and-night-modifiers) ·
+  [escapes](#how-to-escape) · [survivors](#survivors-and-their-abilities) · [items](#items) ·
+  [creatures](#survive-the-woods) · [the world](#the-world-and-finding-your-way) · [sound](#sound-and-volume) ·
+  [forest sites](#use-the-forest-sites) · [replay](#replay-the-expedition)
+- [Screenshots](#screenshots) · [Art](#art) · [Development and testing](#development-and-verification)
 
-1. Clone this repository and enter its folder:
+## What kind of game is this?
+
+- **Co-op survival horror.** Play alone or with up to three friends over your
+  home network or the internet. Everyone sees the same world; downed friends can
+  be revived; one team escape saves everyone still alive.
+- **Two modes.** *Quick Camp* is a short round inside the camp: find a battery,
+  fuel and key, fix the van, leave. *Woods Expedition* is the main game: a long
+  night across a huge forest around the camp.
+- **A night that builds.** The night starts calm and gets more dangerous as you
+  make progress (Dusk → Nightfall → Deep Night → Witching Hour). There is no
+  timer to beat; the danger keeps rising until you escape.
+- **Something different every night.** Each night is generated from a seed: the
+  camp layout, where the parts are, which escape is rumoured to work, which killer
+  hunts you (the **Stalker** or the **Groundskeeper**), weather, events and
+  modifiers such as Blood Moon.
+- **Fear you can fight.** You cannot kill anything. You can run, hide in lockers
+  and bushes, slam doors, throw flares, flash creatures with your light, set
+  traps of noise, and use your survivor's special ability.
+
+## Quick start: install and play
+
+You need two things: the free **Godot 4.7.2** engine and this project's files.
+
+1. **Install Godot 4.7.2 (standard version, not .NET).** Download it from
+   [godotengine.org/download](https://godotengine.org/download/archive/4.7.2-stable/).
+   - **Mac:** open the downloaded `.zip`, drag **Godot.app** into Applications.
+     The first time, right-click it and choose **Open** if macOS warns you.
+   - **Windows:** unzip it anywhere and run the `Godot_v4.7.2...exe` file.
+   - **Linux:** unzip it and run the executable.
+2. **Get the game files.** Either click the green **Code** button on GitHub and
+   choose **Download ZIP** (then unzip it), or use git:
 
    ```sh
    git clone https://github.com/ChrisTech44/darkwoods.git
-   cd darkwoods
    ```
 
-2. Open `project.godot` in Godot and press **F5**, or launch with:
+3. **Open it in Godot.** Start Godot. In the Project Manager click **Import**,
+   pick the `project.godot` file inside the game folder, and confirm. The first
+   import takes a minute.
+4. **Play.** Press **F5** (or the ▶ button at the top right of the editor).
+   The title screen opens in its own window.
 
-   ```sh
-   python3 tools/run_game.py
-   ```
+Prefer the terminal? `python3 tools/run_game.py` launches the game directly
+(it finds Godot on your PATH or in Applications; set `GODOT_BIN` to point at it
+otherwise; `--editor` opens the editor). Python is optional. More detail:
+[setup and testing](docs/testing.md).
 
-3. Choose **Woods Expedition** or **Quick Camp**, select **Enter the Night**, choose a survivor, then **Start Night**.
-   **Random Night is on by default** in both modes. To repeat a particular night,
-   uncheck it and enter a positive seed. Open **Settings** to adjust volume before playing.
-   **Controls** opens the survivor field guide.
+## Your first night, step by step
 
-The launcher finds `godot` or `godot4` on PATH, or the macOS app executable.
-Set `GODOT_BIN` to another executable if needed. Use
-`python3 tools/run_game.py --editor` to open the editor. On Windows,
-`py -3` can replace `python3`. See [setup and testing](docs/testing.md).
+1. **Pick a night.** On the title screen choose **WOODS EXPEDITION** (the full
+   game) or **QUICK CAMP** (a 5–10 minute taste), then **ENTER THE NIGHT**.
+   *Daily Night* gives everyone the same night today.
+2. **Pick a survivor.** Each has a small bonus and one special ability (X).
+   The Scout or First-Aid Kid are friendly first picks. Then **START NIGHT**.
+
+   ![Choosing a survivor](docs/screenshots/survivor_selection.png)
+
+3. **Read the opening message.** It names where the fuel is, which second
+   escape is rumoured to work tonight, tonight's killer and any modifiers.
+4. **Search the camp.** Walk into the cabins (roofs fade away inside). Stand on
+   an item and press **E** to take it. The **battery** and **key** are in camp;
+   grab the **boltcutters** from Maintenance (they open locked caches) and any
+   flares, batteries and food you see.
+
+   ![The camp](docs/screenshots/mess_hall.png)
+
+5. **Open your pack (Tab).** It lists every part you still need and where it
+   is, plus a field map that fills in as you explore. **T** flips between
+   tonight's escape plans.
+
+   ![Pack, clues and field map](docs/screenshots/woods_field_notes.png)
+
+6. **Head into the woods.** Leave camp by one of its four exits. Your
+   **flashlight (F)** drains in the woods; **R** swaps in a spare battery.
+   Follow the lit ring road and the **signposts** at junctions, which always
+   point toward camp and nearby regions.
+
+   ![A signpost in the flashlight beam](docs/screenshots/nav_signpost.png)
+
+7. **Find the locked caches.** The fuel and two extra parts sit in locked
+   caches in three different regions. Ranger notes on the roads and walking into
+   a region tell you which one. Open a cache with **E** while carrying
+   boltcutters (a crowbar works, but loudly).
+8. **When something finds you:** sprint (**Shift**), throw a **flare (Q)**,
+   **flash (Space)** it with your light, slam a cabin door, or hide (**E** at a
+   locker, bed or bush) and hold still. Your first hit only wounds you; a second
+   one downs you. Patch wounds with a **medkit (V)**.
+9. **Fix your escape.** Bring each part back and press **E** at the rear of the
+   van. Installing parts deepens the night, so the radio reveals the next part
+   and the woods get angrier.
+10. **Get out.** Hold **E** at the van's rear to start it. The engine roars and
+    everything comes for you: everyone has **20 seconds** to press **E** beside
+    the van and climb in. (Or use tonight's rumoured escape: radio, boat, gate
+    or signal fire.)
+
+    ![The van finale](docs/screenshots/van_finale.png)
+
+11. **See your score.** The results show your grade, awards and any new badges.
+    New creatures you met are added to the **Camp Journal** on the title screen.
+
+    ![Results with score and awards](docs/screenshots/results_score.png)
+
+## Controls
+
+| Key | Action |
+| --- | --- |
+| **WASD / arrow keys** | Walk and face a direction |
+| **Shift** | Sprint while stamina lasts; sprinting makes noise |
+| **E** | Take items, open caches with cutters or a crowbar, install parts, enter a running van, hide/leave a hiding spot, slam/open doors, knock over woodpiles and deadfall |
+| **Hold E** | Climb/transmit at the relay (6s), start the repaired van, revive a nearby downed teammate, or (solo, downed) get back up once |
+| **Space** | Flash-stun creatures close in your beam (costs light, 8 s cooldown) |
+| **F** | Toggle the flashlight |
+| **1–6 / keypad 1–6** | Select a belt slot |
+| **V / G** | Use held supply / drop its stack |
+| **Q** | Throw a flare |
+| **R** | Use a spare flashlight battery |
+| **C** | Eat rations to restore stamina |
+| **M** | Drop a team map pin where you stand (newest three kept) |
+| **B** (hold) | Push to talk, when voice is set to push-to-talk in co-op |
+| **X** | Use your survivor's ability |
+| **H** | Hand the held supply to an adjacent teammate |
+| **Tab** | Toggle pack, objective clues, and field map |
+| **Esc** | Solo: pause/resume. Co-op: local menu; the shared world continues. |
+
+**T** cycles tonight's escape plans (the van and the rumoured escape) in the Tab pack.
+
+## How to win (and lose)
+
+- **Win:** any escape that finishes with a living survivor aboard or in its
+  rescue circle. Downed teammates are carried out with you; anyone else still
+  standing outside is left behind.
+- **Lose:** everyone is downed with no one left to revive them (solo players get
+  one 20-second chance to drag themselves back up).
+- There is **no time limit**. Waiting is not safe, though: pressure keeps
+  rising, and in the Witching Hour it never stops.
+
+## Tips for your first nights
+
+- **Keep your light alive.** Pick up every battery. Turn the flashlight off
+  (F) when a lantern moth or lens eater is near; they hunt light.
+- **Sound gives you away.** Sprinting, crowbars, dropped items and the
+  generator are loud. Walk once you have broken line of sight.
+- **Listen.** Creature calls carry well off-screen and footsteps get heavier as
+  big things get close. A flicker of your flashlight means something is coming.
+- **Flares scare teeth, not wings.** Hounds, wolves and the stalker hate flares;
+  moths are drawn to light.
+- **Hide early, not late.** Something that *sees* you hide will drag you out.
+- **Use the roads.** The lit ring road is faster and safer than the maze,
+  until a blackout turns its lamps off.
+- **Mark things.** Press M to pin a spot for your team; the Scout's X marks a
+  creature or cache everyone can see.
 
 ## Play with friends
 
@@ -413,29 +441,49 @@ round. Quick Camp keeps its original van-only rules.
 
 [Full Boat/Gate walkthrough, graphics and verification limits](docs/boat_gate.md).
 
-## Controls
+## Survivors and their abilities
 
-| Key | Action |
-| --- | --- |
-| **WASD / arrow keys** | Walk and face a direction |
-| **Shift** | Sprint while stamina lasts; sprinting makes noise |
-| **E** | Take items, open caches with cutters or a crowbar, install parts, enter a running van, hide/leave a hiding spot, slam/open doors, knock over woodpiles and deadfall |
-| **Hold E** | Climb/transmit at the relay (6s), start the repaired van, revive a nearby downed teammate, or (solo, downed) get back up once |
-| **Space** | Flash-stun creatures close in your beam (costs light, 8 s cooldown) |
-| **F** | Toggle the flashlight |
-| **1–6 / keypad 1–6** | Select a belt slot |
-| **V / G** | Use held supply / drop its stack |
-| **Q** | Throw a flare |
-| **R** | Use a spare flashlight battery |
-| **C** | Eat rations to restore stamina |
-| **M** | Drop a team map pin where you stand (newest three kept) |
-| **B** (hold) | Push to talk, when voice is set to push-to-talk in co-op |
-| **X** | Use your survivor's ability |
-| **H** | Hand the held supply to an adjacent teammate |
-| **Tab** | Toggle pack, objective clues, and field map |
-| **Esc** | Solo: pause/resume. Co-op: local menu; the shared world continues. |
+Choose one of **six survivors** before starting, with exact bonuses, an animated
+preview, saved choice, Random Survivor and Settings. The Jock has 5s stamina;
+Grease Monkey starts the engine in 1.5s; Scout saves light; First-Aid Kid rescues
+faster; Quiet Kid reduces sprint hearing; Overprepared starts with extra supplies.
 
-**T** cycles expedition Van / Radio / Boat / Ranger Gate objective plans.
+Every survivor also has one **active ability on X** and a **team bonus**.
+
+| Survivor | Advantage | Ability (X) | Team bonus |
+| --- | --- | --- | --- |
+| **The Jock** | 5s sprint stamina instead of 4s | **Second Wind**: full stamina and +10% sprint for 2s; once per night phase | Hauls the heavy boat motor alone at full walking pace. |
+| **Grease Monkey** | 1.5s engine ignition; +1 spare battery | **Jury-Rig** (2 per night): shut and barricade the nearest cabin door for 8s (nothing can push through), or restart the dead generator silently | |
+| **The Scout** | Light drain 0.8/s; +1 ration | **Mark** (30s cooldown): tag the creature, locked cache or site you are facing and can see, for the whole team, for 6s | Starts the night knowing one extra part's region. |
+| **First-Aid Kid** | Medkit revive 2.25s; +1 medkit, +1 flare | **Patch** (2 per night): heal your own or an adjacent teammate's wound without a medkit | |
+| **The Quiet Kid** | Sprint hearing reach ×0.75 | **Hold Breath** (45s cooldown): 6s of silent sprinting; breath lasts twice as long while hidden | Leaves no blood trail while wounded. |
+| **Overprepared** | +1 flare, +1 battery, +1 ration | **Unpack** (once per night): drop a stash of flare, battery, rations and medkit for anyone | |
+
+**H** hands one of your held supply to a teammate standing right beside you.
+Two survivors at the dead generator restart it quietly; alone it roars.
+At the end of a night the results screen hands out **awards** such as *Never
+Left Behind*, *Most Flares Wasted*, *Bait*, *Pack Mule* and *Show-Off*.
+
+Your choice is remembered. **Random Survivor** reveals a role before confirmation;
+it is independent of **Random Night**. All roles can collect every part and escape.
+
+**1–6 or keypad 1–6** selects one of six belt slots. **V** uses the held supply;
+**G** drops its whole stack; **E** picks it back up. Each supply type takes one
+slot, with same-type items stacking. Slots show the key and name without trailing quantity numbers; Tab lists the main supply counts. Vehicle components and cutters are carried
+separately. Q/R/C still use flares, batteries and food. Medkits help while holding
+E to revive a teammate faster, and V patches your own wound.
+
+Find **noise tins** (three delayed distracting rattles), **salt wards** (4s of
+physical-hit protection), and **glow moss** (+35 light charge and hex removal).
+Six optional landmarks join the village, bog and graveyard: **Flooded Mill,
+Bramble Orchard, Starless Observatory, Last-Car Rail Yard, White Stone Quarry,
+and Drowned Chapel**. Each has multiple approaches, a one-time rare tool and a
+territorial guardian. Required components still come from the original regions.
+
+![Survivor selection](docs/screenshots/survivor_selection.png)
+
+[Full content guide and inspection screenshots](docs/content_update.md) covers
+hunter/guardian counterplay and the current prototype limits.
 
 ## Items
 
@@ -637,6 +685,72 @@ reachable points around their last sensed location after losing sight.
 Creature calls and footsteps complement the visual threat cues. A heartbeat fades
 in when the stalker or a cryptid sees you, then fades away after pursuit.
 
+## The world and finding your way
+
+Fernwood camp now sits at the exact centre of a **9,600×9,408** world, with a
+massive forest on every side—about **35 times the previous woods area**.
+**2,410 connected forest clearings**, loops and six remote ruins surround the
+ten furnished camp buildings. Four exits lead north, east, south and west.
+Trails are **128 pixels wide**, and the village, bog and graveyard have larger
+clearings and clear approach aprons. Roofs cut away inside buildings.
+
+In Woods Expedition, **48 cryptids across 16 species, plus the stalker** patrol
+the inner forest and deeper woods. A true sight mask hides occluded terrain and
+creatures; nearby footsteps and calls provide audible warnings without revealing
+the whole maze. The local field map follows you, records explored trails and
+points back toward camp. The village lies northwest, bog east and graveyard south.
+
+### Find your way
+
+- **The ring road and spokes.** A wide dirt **ring road** circles camp about
+  1,500 px out and runs straight through the Abandoned Village, Witch's Bog and
+  Old Graveyard. Four straight **spoke roads** leave the camp exits (north,
+  east, south, west) and run to the edges of the map. Lamp posts light the
+  ring and the inner spokes as long as camp has power; in a blackout the roads
+  go dark too. The outer spokes are dark **logging roads**. Everything between
+  the roads is the old maze ("the thickets"): shorter as the crow flies, but
+  darker and unmarked. From camp, the graveyard is about 18 s on foot, the bog
+  28 s and the village 30 s.
+
+- **Signposts** stand at about 120 trail junctions per night. Each board points
+  along the real shortest trail to **camp** and the two nearest regions. Stand
+  beside one to read its full directions on the HUD
+  (for example `SIGNPOST · CAMP E · ABANDONED VILLAGE W · OLD GRAVEYARD S`).
+- **Skyline markers.** Tall landmarks show over the treetops: the camp fire always,
+  plus up to four regions within about 2,400 px (bell tower, bog glow, dome,
+  rail signal and others). They sit at the screen edge in that direction and
+  never reveal trails, caches or creatures.
+- **Region names and roads from the start.** The field map (Tab) prints the ring
+  road, spokes and every nearby region outline from the Ranger Lodge wall map;
+  regions brighten once you have walked them.
+  Trails still appear only where you have explored.
+- **Team pins.** Press **M** to drop a pin where you stand. Everyone sees it on
+  their field map and as an edge marker, with a shared "pinned WITCH'S BOG"
+  notice. Each player keeps their newest three pins.
+
+![Signpost arrows to camp, village and graveyard in the flashlight beam](docs/screenshots/nav_signpost.png)
+
+Both modes default to fresh randomized camp layouts. Loot, required extra parts,
+weather, creature homes and trails use the run seed. Music plays on the menu;
+**Settings** holds the saved mixer before Play. Foreground canopies fade when
+they cover the camper, and view-local scenery rendering keeps distant forest
+active for gameplay without drawing thousands of tree sprites at once. Every
+trail is lined with dense trees and undergrowth; your sight reaches just into
+that tree line and fades to darkness, so you see the forest rising around the
+path but never the next trail through it.
+
+Trees use staggered trunk positions, varied crown heights and a dense bracken
+fringe rather than a straight hedge. Visible foliage catches nearby flashlights
+and flares even along the north-facing border. Crowns fade locally around your
+survivor, and a small, smooth woods-camera lookahead gives north-side trees more
+room above you. The terrain and creatures behind the tree wall remain hidden.
+
+| Facing north at normal night exposure | Facing south at normal night exposure |
+| --- | --- |
+| ![North-facing forest edge](docs/screenshots/treeline_north.png) | ![South-facing forest edge](docs/screenshots/treeline_south.png) |
+
+[Before/after captures and verification](docs/evidence/forest_treeline/README.md).
+
 ## Sound and volume
 
 **Creatures are loud now.** Calls carry about 560 px (well off-screen) with a
@@ -716,35 +830,6 @@ The atlas includes Power Substation, Radio Relay Station, Logging Camp, Lakeshor
 Boathouse, the Ranger Road/bridge and the chapel rescue area. Van caches rotate across eight
 regions; labels identify possible cache regions rather than fixed objectives. North is up. This is an inspection
 atlas; the in-game field map still reveals only explored trails.
-
-## Art
-
-The F5 escape props use one **16-piece SpriteCook sheet**, matched to the existing
-camp art: transformer, breaker, mast, flare beacon, outboard, skiff, boathouse,
-ranger booth/barrier, logs, workshop, pier, Lake Thing, bridge, marine fuel and
-code notes. The batch cost **12 credits** (716 → 704). No paid animation or repeat
-generation was needed. Source and derived IDs/hashes are in
-[spritecook-assets.json](spritecook-assets.json); the reproducible slicer is
-[tools/slice_escape_props.gd](tools/slice_escape_props.gd).
-
-The game's art was redrawn with SpriteCook in October 2026:
-- trees and bushes, all six survivors, the stalker and all 16 creatures;
-- every item and belt icon, the van, tent, campfire and camp props;
-- building interiors and furniture, the landmark props;
-- seamless ground, floor, roof and water textures;
-- (17 October) the Groundskeeper, Signal Fire props, snares, gift crate, rescue
-  helicopter, orchard trees and trellises, ground decals that soften every path
-  edge, and asphalt, gravel, flagstone, court-tile, orchard and plank surfaces.
-  Roofs are shaded gables and interior walls are timber, so nothing in the world
-  is a flat box any more (48 credits; 656 kept in reserve);
-- the title screen.
-
-See [art evidence](docs/evidence/spritecook/README.md). The stalker is now
-noticeably bigger than the campers.
-
-![New survivors and stalker](docs/evidence/spritecook/cast_closeup.png)
-
-![All 16 creatures](docs/evidence/spritecook/creature_lineup.png)
 
 ## Screenshots
 
@@ -855,34 +940,53 @@ recover units. Vehicle components and cutters remain separate from this limit.
 | --- | --- |
 | ![Forest loading card before preparing the next night](docs/screenshots/woods_loading.png) | ![Successful extraction after a complete active woods expedition](docs/screenshots/woods_playthrough_win.png) |
 
+## Art
+
+The F5 escape props use one **16-piece SpriteCook sheet**, matched to the existing
+camp art: transformer, breaker, mast, flare beacon, outboard, skiff, boathouse,
+ranger booth/barrier, logs, workshop, pier, Lake Thing, bridge, marine fuel and
+code notes. The batch cost **12 credits** (716 → 704). No paid animation or repeat
+generation was needed. Source and derived IDs/hashes are in
+[spritecook-assets.json](spritecook-assets.json); the reproducible slicer is
+[tools/slice_escape_props.gd](tools/slice_escape_props.gd).
+
+The game's art was redrawn with SpriteCook in October 2026:
+- trees and bushes, all six survivors, the stalker and all 16 creatures;
+- every item and belt icon, the van, tent, campfire and camp props;
+- building interiors and furniture, the landmark props;
+- seamless ground, floor, roof and water textures;
+- (17 October) the Groundskeeper, Signal Fire props, snares, gift crate, rescue
+  helicopter, orchard trees and trellises, ground decals that soften every path
+  edge, and asphalt, gravel, flagstone, court-tile, orchard and plank surfaces.
+  Roofs are shaded gables and interior walls are timber, so nothing in the world
+  is a flat box any more (48 credits; 656 kept in reserve);
+- the title screen.
+
+See [art evidence](docs/evidence/spritecook/README.md). The stalker is now
+noticeably bigger than the campers.
+
+![New survivors and stalker](docs/evidence/spritecook/cast_closeup.png)
+
+![All 16 creatures](docs/evidence/spritecook/creature_lineup.png)
+
 ## Development and verification
 
-The current implementation includes solo and 1–4 player ENet co-op in both
-modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
-species. Full baseline verification passed **104 steps** with no errors/warnings,
-including the [navigation](docs/evidence/navigation/README.md),
-[night phase](docs/evidence/night_phases/README.md) and
-[chase toolkit](docs/evidence/chase_toolkit/README.md) and
-[hiding/doors](docs/evidence/chase_props/README.md) and
-[road network](docs/evidence/road_network/README.md) and
-[rotation/clue](docs/evidence/rotation_clues/README.md) and
-[gates/fences/audio](docs/evidence/barriers_audio/README.md) suites;
-final content checks passed **350 assertions**. Current graphical ENet tests passed **654
-assertions across 14 process runs**, including two/four peers and graphical
-host/client windows in both modes. See the
-[current network report](docs/evidence/active_ai/summary.json),
-[evidence notes](docs/evidence/active_ai/README.md), and
-[rendering/denser-forest evidence](docs/evidence/denser_forest/README.md).
-The latest [forest-rendering pass](docs/evidence/forest_treeline/README.md)
-adds 20 graphical cardinal/walking assertions, 7 sight and 12 shadow checks,
-plus 273 assertions across two graphical peers in both modes. Earlier graphical
-baselines remain preserved separately.
+Everything in this README is implemented and covered by automated tests. On
+17 October 2026 the full headless suite (`tools/verify.py`) passed **134 steps**
+(import, startup, every script and 30+ gameplay suites, including the active-AI
+expedition bot), the two-peer network suite passed **375 assertions**, and the
+voice suite passed (codec, routing and a two-process ENet round). Older
+graphical and four-peer evidence is kept in [docs/evidence](docs/evidence).
+What automation cannot prove is still open: human playtests of pacing and fun,
+a real microphone and listening test, two separate computers over the internet,
+Windows/Linux, and exported builds.
 
 ```sh
 python3 tools/verify.py             # Import, parse, and headless gameplay checks
 python3 tools/verify.py --graphical # Also render, play, and capture screenshots
 python3 tools/verify_network.py --mode all --players 2
 python3 tools/verify_network.py --mode all --players 4
+python3 tools/verify_voice.py       # Proximity voice: codec, routing, two-process round
 ```
 
 Verified on **macOS arm64 / Godot 4.7.2**. Human real-time balance testing,

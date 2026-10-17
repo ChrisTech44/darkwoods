@@ -119,6 +119,12 @@ func _host() -> void:
 	_check(not level.night_clock.blackout and rigger.ability_charges==1,"guest_ability_accepted_by_host")
 	for report: Dictionary in harness.reports.values(): _check(report.get("ability",false),"guest_ability_state_replicated")
 	rigger.position=rig_spot
+	# F7 snares are host state; every client renders the same traps.
+	level.snares.snares.append({"position": Vector2(2000, 2000), "armed": true})
+	harness.advance.rpc("snare",{})
+	if not await _reports(peers-1): return
+	for report: Dictionary in harness.reports.values(): _check(report.get("snare",false),"host_snare_replicated_to_clients")
+	level.snares.snares.clear()
 	# A guest's flash is a host-validated intent; the stun replicates to every peer.
 	var flasher: CampPlayer=net.actors[guest]
 	flasher.facing=Vector2.RIGHT
@@ -442,6 +448,9 @@ func _client() -> void:
 				var night_ok: bool=net.world.night_clock.phase==1 and fuel.available and fuel.visible and net.world.hud.title.text.contains("NIGHTFALL") and net.world.clues.get(harness.data["note"],0)==1
 				if not night_ok: print(JSON.stringify({"event":"night_replica","phase":net.world.night_clock.phase,"elapsed":net.world.night_clock.elapsed,"fuel":fuel.available,"visible":fuel.visible,"title":net.world.hud.title.text}))
 				harness.report.rpc_id(1,handled,{"night":night_ok})
+			"snare":
+				await _until(func(): return net.world.snares.snares.size()==1,5)
+				harness.report.rpc_id(1,handled,{"snare":net.world.snares.snares.size()==1 and net.world.snares.snares[0]["armed"]})
 			"ability":
 				if mine==harness.data["guest"]: net.action("ability")
 				await _until(func(): return net.actors[harness.data["guest"]].ability_charges==1 and not net.world.night_clock.blackout,5)

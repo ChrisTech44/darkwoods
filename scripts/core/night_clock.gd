@@ -37,6 +37,13 @@ var relief: Dictionary = {}
 var nudges := 0
 var next_event := 0
 var rng := RandomNumberGenerator.new()
+## F7 escalation: one van sabotage in Deep Night, one power cut in the Witching Hour.
+const SABOTAGE_CLEAR := 300.0
+var sabotage_armed := false
+var sabotage_done := false
+var sabotage_clock := 0.0
+var power_cut_done := false
+var stolen := ""
 
 
 func _ready() -> void:
@@ -83,6 +90,7 @@ func advance(delta: float) -> void:
 	var through := phase_elapsed / DREAD_RAMP_SECONDS
 	through = through if phase == 3 else minf(through, 1.0)
 	dread = clampf(PHASE_DREAD[phase] + through * 20.0 + heat + level.van.installed.size() * 3.0, 0.0, 100.0)
+	_escalate(delta)
 	director_clock -= delta
 	if director_clock <= 0.0:
 		director_clock = lerpf(75.0, 25.0, dread / 100.0)
@@ -232,6 +240,12 @@ func _reveal(up_to: int) -> Array[String]:
 func _enter_phase(next: int) -> void:
 	if level.abilities != null:
 		level.abilities.on_phase()
+	level.killer.tier = next + 1
+	if next == 2:
+		# Tier 3: longer search memory and one van sabotage.
+		level.killer.config.search_seconds *= 1.5
+		sabotage_armed = true
+		sabotage_clock = 30.0
 	var revealed := _reveal(next)
 	var drop: Vector2 = level.plan.camp.remap(Vector2(1304, 312))
 	var index := 0
@@ -273,6 +287,50 @@ func _weather(delta: float) -> void:
 	if lightning_clock <= 0.0:
 		lightning_clock = rng.randf_range(5.0, 12.0)
 		lightning = 0.18
+
+
+## Tier 3 sabotage and tier 4 power cut. Both are visible, telegraphed events:
+## the stalker walks to the van/generator through normal navigation.
+func _escalate(delta: float) -> void:
+	var stalker: CampKiller = level.killer
+	if sabotage_armed and not sabotage_done and level.van.installed.size() > 0 and not level.van.running:
+		sabotage_clock -= delta
+		var van_at: Vector2 = level.van.interaction_point()
+		var guarded := get_tree().get_nodes_in_group("survivors").any(func(actor: CampPlayer) -> bool: return actor.status == CampPlayer.Status.ALIVE and actor.global_position.distance_to(van_at) <= SABOTAGE_CLEAR)
+		if sabotage_clock <= 0.0 and not guarded and stalker.enabled and stalker.state == CampKiller.State.PATROL:
+			sabotage_clock = 20.0
+			stalker.hear_stimulus(van_at, INF)
+		if not guarded and stalker.enabled and stalker.global_position.distance_to(van_at) <= 40.0:
+			sabotage(stalker)
+	if phase >= 3 and not power_cut_done and not blackout and stalker.enabled and stalker.global_position.distance_to(generator_point()) <= 60.0:
+		var watched := get_tree().get_nodes_in_group("survivors").any(func(actor: CampPlayer) -> bool: return actor.status == CampPlayer.Status.ALIVE and actor.global_position.distance_to(generator_point()) <= 200.0)
+		if not watched:
+			power_cut_done = true
+			blackout = true
+			level.announce("The camp lights die. Something cut the generator. Restart it at Maintenance.")
+
+
+## Pull the last installed part and drop it, marked, in its part's region.
+func sabotage(stalker: CampKiller) -> bool:
+	if sabotage_done or level.van.installed.is_empty():
+		return false
+	sabotage_done = true
+	var part: String = level.van.installed.pop_back()
+	stolen = part
+	var zone_index: int = level.plan.cache_zone.get(part, 7)
+	var zone: Dictionary = level.plan.woods.zones[zone_index]
+	var drop: Vector2 = zone["position"] + Vector2(-60, 120)
+	level.spawn_dropped(part, drop)
+	level.pins.append({"owner": -1, "slot": 0, "position": drop.round(), "name": "STOLEN", "place": WoodsLayout.short_name(zone)})
+	level.loud_noise(level.van.global_position, 600)
+	level.van.queue_redraw()
+	level.announce("VAN ALARM! The %s tore out the %s and left it at the %s. It's pinned on your map." % [stalker.headline.to_upper(), part.replace("_", " ").to_upper(), WoodsLayout.short_name(zone)])
+	print(JSON.stringify({"event": "night_sabotage", "part": part, "zone": zone["kind"]}))
+	return true
+
+
+func sabotage_state() -> Dictionary:
+	return {"done": sabotage_done, "stolen": stolen, "power_cut": power_cut_done}
 
 
 func snapshot() -> Dictionary:

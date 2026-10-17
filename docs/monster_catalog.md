@@ -68,7 +68,9 @@ Heart-pounding goals for every new or reworked monster:
 ## Stalker escalation and headline killers
 
 The current stalker becomes the first **headline killer**, the night's main
-antagonist. Planned for **F7**, with tier changes driven by night phase:
+antagonist. **Implemented in F7 (17 October 2026)**: the tiers below, and H01
+the Groundskeeper (snares) as the seeded alternative headline killer. H02–H04
+and Hunter's Moon remain planned. Tier changes are driven by night phase:
 
 | Tier / phase | Stalker behavior |
 | --- | --- |

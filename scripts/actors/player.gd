@@ -62,6 +62,8 @@ var breath: float = 1.0
 var ability_charges: int = 0
 var ability_cooldown: float = 0.0
 var ability_active: float = 0.0
+## Seconds left held in a Groundskeeper snare.
+var snared: float = 0.0
 
 
 func _ready() -> void:
@@ -118,6 +120,9 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 		stride += position.distance_to(before) * 0.5
 		return
 	if status != Status.ALIVE:
+		sprinting = false
+		return
+	if snared > 0.0:
 		sprinting = false
 		return
 	var movement := direction.limit_length(1.0)

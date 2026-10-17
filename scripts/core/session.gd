@@ -6,6 +6,11 @@ var survivor: String = "jock"
 
 func _ready() -> void:
 	RoundPlan.force_all_escapes = "--all-escapes" in OS.get_cmdline_user_args()
+	if "--no-modifiers" in OS.get_cmdline_user_args():
+		RoundPlan.force_modifiers = []
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--headline="):
+			RoundPlan.force_headline = argument.get_slice("=", 1)
 	var saved := ConfigFile.new()
 	if saved.load("user://survivor.cfg") == OK:
 		survivor = SurvivorRoster.valid(str(saved.get_value("player", "role", "jock")))

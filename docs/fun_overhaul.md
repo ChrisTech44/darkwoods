@@ -307,8 +307,12 @@ already has ENet authority), logged and pushed before the next one starts.
    two-person generator restart, awards. Ghost wisps deferred: no mid-round
    spectators exist under current rules)*: active abilities, item passing, heavy
    items, two-person actions, ghost wisps, awards.
-7. **F7 Killers and modifiers**: stalker tiers and sabotage, first new headline
-   killer, night modifiers.
+7. **F7 Killers and modifiers** *(implemented 17 October: stalker tiers 1–4 with
+   the Dusk inner-ring limit, Deep Night search memory and one van sabotage, Witching
+   Hour faster door breaking and one power cut; H01 Groundskeeper as a seeded
+   alternative headline killer with snares; six night modifiers. Hunter's Moon
+   and the other headline killers remain planned)*: stalker tiers and sabotage,
+   first new headline killer, night modifiers.
 8. **F8 Meta**: score/grades, daily seed, journal, merit badges and unlocks;
    campaign after that.
 

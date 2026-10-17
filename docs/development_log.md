@@ -1,5 +1,28 @@
 # Development log
 
+## 2026-10-17 — F7 headline killers, stalker escalation and night modifiers
+
+- `RoundPlan` seeds a **headline killer** (Stalker or H01 **Groundskeeper**) and
+  **0–2 modifiers** (Blood Moon, Dead Batteries, Fog Bank, Silent Night,
+  Generous Woods, Lone Wolf) on separate RNGs, announced at Dusk and in the pack.
+- **Escalation tiers** follow the night phase: Dusk keeps the killer's chases
+  inside the 1,600 px inner ring; Deep Night extends search memory 50% and arms
+  one **van sabotage** (an unguarded van loses its last part, dropped and pinned
+  "STOLEN" in that part's region, with an alarm); the Witching Hour breaks doors
+  1.5× faster and **cuts the generator once** if unguarded. The killer walks to
+  the van/generator normally; nothing teleports.
+- **Groundskeeper snares** (`Snares`): set on walked trail cells while patrolling
+  (max 4 armed, 150 px apart), 4s hold with a loud rattle, instant teammate
+  release or quiet disarm on E, glint within 90 px of a flashlight. Snares and
+  the snared timer replicate. Groundskeeper art is a tinted stalker until the
+  art pass. Rules `lnac-net-14`.
+- Correction to the F5c entry: `signal_fire.gd` has 29 checks, not 25.
+
+**Verification:** `killers_modifiers.gd` 32 checks; `verify.py` 126/126;
+`verify_network.py --players 2` 375 assertions, 0 failures. The active-AI
+expedition bot passes on seed 42's real rules (`woods_replay` uses
+`--no-modifiers` for its baseline recipe checks).
+
 ## 2026-10-17 — F5c Signal Fire, rumoured escapes and the van finale
 
 - **One rumoured escape per night.** `RoundPlan.escape_options` is the van plus

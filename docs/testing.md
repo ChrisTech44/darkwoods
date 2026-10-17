@@ -576,3 +576,18 @@ ring), the 20s expedition van departure whose start and revs call creatures,
 and then, on a real Signal Fire seed, that absent escapes have no prompts, the
 Dusk message names the rumour and T shows the pyre plan. `radio_rescue.gd`,
 `field_escapes.gd` and all network peers run with `--all-escapes`.
+
+## Headline killers, escalation and modifiers (overhaul F7)
+
+`tests/integration/killers_modifiers.gd` (in `verify.py`) checks across 60 seeds
+that both headline killers rotate, all six modifiers appear (0–2 distinct per
+night), Fog Bank forces fog, Generous Woods adds supplies and Blood Moon adds
+hounds/jackals without changing the creature count. With the Groundskeeper it
+checks snares only on walked trails with spacing, the 4s hold and rattle that
+calls him, no movement while snared, a teammate's instant release, quiet disarm
+and the timeout; Dusk inner-ring chase limit vs Nightfall; Deep Night tier with
+longer search, one sabotage of an unguarded van (part dropped and pinned), one
+Witching Hour power cut, and 1.5× door breaking. Modifier effects: Dead
+Batteries (40 charge), Silent Night hearing, Blood Moon speed, Lone Wolf
+spawns. `woods_replay.gd` runs with `--no-modifiers` because it checks the
+baseline loot recipe; `network_peer.gd` checks a host snare reaches clients.

@@ -27,6 +27,16 @@ const ESCAPE_NAMES := {"van": "THE CAMP VAN", "radio": "RADIO RESCUE", "boat": "
 ## Test fixtures set this (launch flag --all-escapes) to exercise every escape on one seed.
 static var force_all_escapes := false
 var escape_options: Array[String] = ["van"]
+## F7: tonight's headline killer and 0–2 night modifiers (separate seeded RNGs).
+const HEADLINES: Array[String] = ["stalker", "groundskeeper"]
+const MODIFIERS: Array[String] = ["blood_moon", "dead_batteries", "fog_bank", "silent_night", "generous_woods", "lone_wolf"]
+const MODIFIER_NAMES := {"blood_moon": "BLOOD MOON", "dead_batteries": "DEAD BATTERIES", "fog_bank": "FOG BANK", "silent_night": "SILENT NIGHT", "generous_woods": "GENEROUS WOODS", "lone_wolf": "LONE WOLF"}
+const MODIFIER_RULES := {"blood_moon": "more hounds and jackals; the killer runs faster", "dead_batteries": "spare batteries hold 40 charge", "fog_bank": "thick fog: shorter sight for everyone", "silent_night": "no music; creatures hear farther", "generous_woods": "half again as many supplies", "lone_wolf": "everyone starts in a different cabin"}
+## Fixtures: null = seeded; otherwise the exact list to use (launch flag --no-modifiers sets []).
+static var force_modifiers: Variant = null
+static var force_headline := ""
+var headline := "stalker"
+var modifiers: Array[String] = []
 var signal_regions: Dictionary = {}
 
 
@@ -45,6 +55,8 @@ func generate(value: int, mode: String) -> void:
 	gate_regions.clear()
 	signal_regions.clear()
 	escape_options.assign(["van"])
+	headline = "stalker"
+	modifiers.clear()
 	required.assign(["battery", "fuel", "key"])
 	var rng := RandomNumberGenerator.new()
 	rng.seed = value + 771
@@ -53,6 +65,9 @@ func generate(value: int, mode: String) -> void:
 			loot.append({"kind": required[index], "position": camp.remap(CampMap.PICKUP_POSITIONS[index]), "hint": CampMap.PICKUP_HINTS[index], "locked": false})
 		return
 	weather = ["fog", "rain", "moonless"][rng.randi_range(0, 2)]
+	_choose_night_rules(value)
+	if has_modifier("fog_bank"):
+		weather = "fog"
 	var extras: Array[String] = ["fuse", "belt", "tire", "spark_plug"]
 	for index in range(2):
 		var chosen := rng.randi_range(0, extras.size() - 1)
@@ -99,6 +114,14 @@ func generate(value: int, mode: String) -> void:
 			_add("flare", woods.zones[8]["position"] + Vector2(-76 + index * 18, 230), "CHAPEL / RESCUE SIGNAL STASH", false)
 	_add_field_escapes(value)
 	_add_signal_fire(value)
+	if has_modifier("generous_woods"):
+		var extra := RandomNumberGenerator.new()
+		extra.seed = value + 2828
+		var kinds: Array[String] = ["flare", "battery_pack", "rations", "medkit", "noise_tin", "salt_ward"]
+		for index in range(48):
+			var cell := Vector2i(extra.randi_range(0, WoodsLayout.SIZE.x - 1), extra.randi_range(0, WoodsLayout.SIZE.y - 1))
+			if woods.valid(cell) and woods.links.has(cell):
+				_add(kinds[index % kinds.size()], woods.center(cell) + Vector2(-16, 12), "WOODS SUPPLIES", false)
 	_schedule_night(value)
 	for item in loot:
 		# Keep ordinary seeded supplies off the new solid lake banks.
@@ -145,6 +168,13 @@ func generate(value: int, mode: String) -> void:
 		_encounter(["relay_jackal","ration_moth","lens_eater","switchback_hound"][added.size()%4],cell)
 		added.append(at)
 		if encounters.size()==CRYPTID_COUNT: break
+	if has_modifier("blood_moon"):
+		# Blood Moon: half again as many hounds and jackals, same total count.
+		var converted := 0
+		for encounter in encounters:
+			if encounter["species"] in ["ration_moth", "lens_eater"] and not encounter.has("home") and converted < 6:
+				encounter["species"] = "switchback_hound" if converted % 2 == 0 else "relay_jackal"
+				converted += 1
 
 
 ## Three regions in three different directions from camp, rotating every night.
@@ -275,6 +305,31 @@ func clue_text(kind: String, level: int) -> String:
 
 func region_name(kind: String) -> String:
 	return WoodsLayout.short_name(woods.zones[cache_zone[kind]]) if cache_zone.has(kind) else ""
+
+
+func has_modifier(id: String) -> bool:
+	return id in modifiers
+
+
+func modifier_text() -> String:
+	return ", ".join(modifiers.map(func(id: String) -> String: return MODIFIER_NAMES[id]))
+
+
+## 0–2 modifiers (40% none, 45% one, 15% two) and the headline killer.
+func _choose_night_rules(value: int) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = value + 2727
+	headline = force_headline if not force_headline.is_empty() else HEADLINES[rng.randi_range(0, HEADLINES.size() - 1)]
+	if force_modifiers != null:
+		modifiers.assign(force_modifiers)
+		return
+	var roll := rng.randf()
+	var count := 0 if roll < 0.4 else (1 if roll < 0.85 else 2)
+	var pool: Array[String] = MODIFIERS.duplicate()
+	for index in range(count):
+		var pick := rng.randi_range(0, pool.size() - 1)
+		modifiers.append(pool[pick])
+		pool.remove_at(pick)
 
 
 func has_escape(id: String) -> bool:

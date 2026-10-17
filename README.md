@@ -242,6 +242,33 @@ phase and how long you have been out.
 
 Quick Camp stays a short mode with no night clock.
 
+## Tonight's killer and night modifiers
+
+Each Woods Expedition night has a **headline killer** and **0–2 modifiers**, both
+chosen by the seed and announced in the Dusk message and the Tab pack heading.
+
+- **The Stalker** escalates with the night. At Dusk he keeps to camp and the inner
+  ring (he gives up chases beyond it). From Nightfall he hunts anywhere. In Deep
+  Night his search memory lasts 50% longer, and **once** he may sabotage the van:
+  if nobody stands within 300 px of it, he walks over, rips out the last installed
+  part and leaves it in that part's region, **pinned on your map** (VAN ALARM).
+  In the Witching Hour he runs faster, breaks doors 50% quicker and **once** cuts
+  the generator if nobody is guarding it.
+- **The Groundskeeper** escalates the same way, and also sets **snares** on trails
+  you have already walked (up to four armed). A snare glints in your flashlight
+  within 90 px. Step on one and you are held for 4 seconds while it rattles loudly
+  and calls him. A teammate frees you instantly with **E**, and anyone can
+  **disarm** an armed snare quietly with **E**.
+
+| Modifier | Effect |
+| --- | --- |
+| **Blood Moon** | More hounds and jackals roam; the killer runs 8% faster. |
+| **Dead Batteries** | Spare batteries restore 40 charge instead of 70. |
+| **Fog Bank** | The night is foggy: shorter sight for everyone. |
+| **Silent Night** | No music; creatures hear 15% farther. |
+| **Generous Woods** | 48 extra supply caches in the woods. |
+| **Lone Wolf** | Every survivor starts at a different camp building door. |
+
 ## How to escape
 
 **Each Woods Expedition night offers two ways out: the camp van, plus one

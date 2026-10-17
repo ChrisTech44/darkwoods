@@ -177,6 +177,10 @@ func fears_flare() -> bool:
 	return species not in ["lantern_moth", "candle_grazer"]
 
 
+func is_class_cryptid() -> bool:
+	return true
+
+
 func _draw() -> void:
 	_draw_power()
 	var row := 0

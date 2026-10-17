@@ -123,7 +123,9 @@ func _physics_process(delta: float) -> void:
 	_mix_loop("campfire", 1.0, delta)
 	# Music swells with the night's dread; a chase still pulls it under the heartbeat.
 	var dread: float = level.night_clock.dread if level.night_clock.active else 40.0
-	_mix_loop("music", clampf(0.45 + dread * 0.0055, 0.0, 1.0) * (1.0 - threat_gain * 0.35), delta)
+	# Silent Night modifier: no music, only the woods.
+	var music_gain := 0.0 if level.plan.has_modifier("silent_night") else clampf(0.45 + dread * 0.0055, 0.0, 1.0) * (1.0 - threat_gain * 0.35)
+	_mix_loop("music", music_gain, delta)
 	loops["music"].pitch_scale = lerpf(1.0, 0.9, dread / 100.0)
 	if level.night_clock.phase != heard_phase:
 		heard_phase = level.night_clock.phase

@@ -323,7 +323,9 @@ func advance(delta: float) -> void:
 				enemy.stuck_clock = 0.0
 		# A jury-rigged barricade holds while it lasts; pushing makes no progress.
 		var pushing: bool = not pushers.is_empty() and door["barricade"] <= 0.0
-		door["progress"] = door["progress"] + delta if pushing else maxf(0.0, door["progress"] - delta * 0.5)
+		# Witching Hour (tier 4): the headline killer breaks doors faster.
+		var force := 1.5 if pushers.any(func(enemy: CampKiller) -> bool: return enemy.tier >= 4 and not enemy.is_class_cryptid()) else 1.0
+		door["progress"] = door["progress"] + delta * force if pushing else maxf(0.0, door["progress"] - delta * 0.5)
 		if door["progress"] >= DOOR_BREAK_SECONDS:
 			door["open"] = true
 			door["progress"] = 0.0

@@ -38,6 +38,7 @@ var rescue: RadioRescue
 var props: ChaseProps
 var abilities: SurvivorAbilities
 var signal_fire: SignalFire
+var snares: Snares
 ## End-of-night award titles (host computes, clients receive in snapshots).
 var awards_text := ""
 ## Team-wide clue chain per locked-cache part: 0 direction, 1 region named, 2 cache found.
@@ -67,6 +68,10 @@ func _ready() -> void:
 				break
 	if plan.expedition:
 		message = "DUSK. Corkboard: fuel is at the %s; notes on the roads name the rest. Rumour: %s might get you out too (T)." % [plan.region_name("fuel"), plan.rumour_text()]
+		message += " Tonight THE %s hunts." % plan.headline.to_upper()
+		if not plan.modifiers.is_empty():
+			message += " %s." % plan.modifier_text()
+		message_time = 10.0
 	world_objects = Node2D.new()
 	world_objects.name = "WorldObjects"
 	world_objects.y_sort_enabled = true
@@ -94,6 +99,7 @@ func _ready() -> void:
 	player.sprint_noise_emitted.connect(_on_sprint_noise)
 	killer = preload("res://scenes/actors/killer.tscn").instantiate()
 	killer.config = config
+	killer.headline = plan.headline
 	# Visit central camp early, then tour the roads and cabin approaches.
 	killer.position = Vector2(600,520)
 	var perimeter: Array[Vector2]=[Vector2(360,520),Vector2(360,216),Vector2(960,216),Vector2(960,520),Vector2(1400,520),Vector2(960,840),Vector2(600,520)]
@@ -150,6 +156,10 @@ func _ready() -> void:
 	escapes.name = "FieldEscapes"
 	escapes.level = self
 	add_child(escapes)
+	snares = Snares.new()
+	snares.name = "Snares"
+	snares.level = self
+	add_child(snares)
 	signal_fire = SignalFire.new()
 	signal_fire.name = "SignalFire"
 	signal_fire.level = self
@@ -178,6 +188,8 @@ func _ready() -> void:
 	add_child(soundscape)
 	if get_node("/root/Net").active:
 		get_node("/root/Net").attach_world(self)
+	if plan.has_modifier("lone_wolf"):
+		_scatter_survivors()
 		var buttons: VBoxContainer=hud.result_panel.get_child(0)
 		buttons.get_node("Restart").text="RETURN TO LOBBY (HOST)"
 		buttons.get_node("Retry").text="RETRY SEED / LOBBY (HOST)"
@@ -225,7 +237,7 @@ func _process(_delta: float) -> void:
 	elif message_time > 0.0:
 		detail = message + "\n" + detail
 	hud.set_status(heading, detail, player.stamina / player.config.stamina_max)
-	hud.inventory_label.text = "NIGHT %d / %s\nQ FLARE %d · R BATTERY %d · C FOOD %d\n" % [plan.seed_value, plan.weather.to_upper(), player.supplies["flare"], player.supplies["battery_pack"], player.supplies["rations"]]
+	hud.inventory_label.text = "NIGHT %d / %s%s\nQ FLARE %d · R BATTERY %d · C FOOD %d\n" % [plan.seed_value, plan.weather.to_upper(), (" / " + plan.headline.to_upper() + ((" / " + plan.modifier_text()) if not plan.modifiers.is_empty() else "")) if plan.expedition else "", player.supplies["flare"], player.supplies["battery_pack"], player.supplies["rations"]]
 	hud.inventory_label.text += rescue.pack_text() if plan.expedition and rescue.show_in_pack(player) else plan.pack_description(van.installed, night_clock.phase if plan.expedition else 3, clues)
 	var page := current_page()
 	if page in ["boat", "gate"]:
@@ -316,6 +328,8 @@ func try_interact(actor: CampPlayer) -> bool:
 		return false
 	if actor.hidden_spot >= 0:
 		return props.interact(actor)
+	if not snares.prompt(actor).is_empty():
+		return snares.interact(actor)
 	if van.can_board(actor):
 		var entered := van.board(actor)
 		if entered:
@@ -570,6 +584,9 @@ func context_prompt() -> String:
 		return "E · ENTER VAN  —  Board before the countdown ends!"
 	if player.hidden_spot >= 0:
 		return props.prompt(player)
+	var snare_prompt := snares.prompt(player)
+	if not snare_prompt.is_empty():
+		return snare_prompt
 	if player.status == CampPlayer.Status.DOWNED:
 		if solo_recovery_available(player):
 			return "HOLD E (8s) · DRAG YOURSELF UP · ONCE PER NIGHT, LOUD"
@@ -647,6 +664,21 @@ func pin_place(point: Vector2) -> String:
 
 func near_generator(actor: CampPlayer) -> bool:
 	return night_clock.blackout and actor.global_position.distance_to(night_clock.generator_point()) <= config.interact_radius * 1.5 and clear_path(actor.global_position, night_clock.generator_point())
+
+
+## Lone Wolf: each survivor starts at a different camp building door.
+func _scatter_survivors() -> void:
+	var doors: Array[Vector2] = []
+	for building: CampBuilding in camp_map.buildings:
+		doors.append(building.door + Vector2(0, 14))
+	var actors: Array = get_tree().get_nodes_in_group("survivors")
+	var net: Node = get_node("/root/Net")
+	if net.active:
+		var ids: Array = net.actors.keys()
+		ids.sort()
+		actors = ids.map(func(id: int) -> CampPlayer: return net.actors[id])
+	for index in range(actors.size()):
+		actors[index].position = doors[(plan.seed_value + index * 3) % doors.size()]
 
 
 func _van_started() -> void:
@@ -816,7 +848,7 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 	elif kind == "battery_pack":
 		if actor.flashlight_charge >= config.flashlight_capacity:
 			return false
-		actor.flashlight_charge = minf(config.flashlight_capacity, actor.flashlight_charge + 70)
+		actor.flashlight_charge = minf(config.flashlight_capacity, actor.flashlight_charge + (40 if plan.has_modifier("dead_batteries") else 70))
 		actor.flashlight_on = true
 	elif kind == "rations":
 		if actor.stamina >= actor.config.stamina_max:
@@ -875,6 +907,10 @@ func _apply_weather() -> void:
 			enemy.config.hearing_radius = 220
 		if plan.weather == "fog":
 			enemy.config.sight_radius *= 0.72
+		if plan.has_modifier("silent_night"):
+			enemy.config.hearing_radius *= 1.15
+		if plan.has_modifier("blood_moon") and enemy == killer:
+			enemy.config.killer_chase_speed *= 1.08
 		elif plan.weather == "rain":
 			enemy.config.hearing_radius *= 0.7
 

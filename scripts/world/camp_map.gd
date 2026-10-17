@@ -42,6 +42,8 @@ var sites: Array[ForestSite] = []
 var navigation_region: NavigationRegion2D
 var objects: Node2D
 var focus: CampPlayer
+## Woods canopy renderer; the sight mask redraws its visible tree line on top.
+var woods_canopy: Node2D
 var woods: WoodsLayout
 var seed_value: int = 42
 var layout: CampLayout
@@ -205,6 +207,8 @@ func _build_woods() -> void:
 		renderer.canopy_only = canopy
 		renderer.z_index = 5 if canopy else -20
 		add_child(renderer)
+		if canopy:
+			woods_canopy = renderer
 	var decor := preload("res://scripts/world/woods_decor.gd").new()
 	decor.woods = woods
 	add_child(decor)

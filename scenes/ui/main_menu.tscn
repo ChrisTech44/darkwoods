@@ -51,18 +51,18 @@ text = "A fresh random camp every night."
 
 [node name="Menu" type="VBoxContainer" parent="."]
 offset_left = 248.0
-offset_top = 16.0
+offset_top = 10.0
 offset_right = 364.0
-offset_bottom = 163.0
-theme_override_constants/separation = 5
+offset_bottom = 186.0
+theme_override_constants/separation = 3
 
 [node name="Mode" type="OptionButton" parent="Menu"]
-custom_minimum_size = Vector2(116, 23)
+custom_minimum_size = Vector2(116, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
 
 [node name="RandomNight" type="CheckBox" parent="Menu"]
-custom_minimum_size = Vector2(116, 18)
+custom_minimum_size = Vector2(116, 16)
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
 button_pressed = true
@@ -70,7 +70,7 @@ text = "RANDOM NIGHT"
 tooltip_text = "New camp and woods every start. Uncheck to enter a repeatable seed."
 
 [node name="Seed" type="LineEdit" parent="Menu"]
-custom_minimum_size = Vector2(116, 23)
+custom_minimum_size = Vector2(116, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
 editable = false
@@ -78,32 +78,30 @@ placeholder_text = "AUTO: FRESH NIGHT"
 max_length = 10
 
 [node name="Play" type="Button" parent="Menu"]
-custom_minimum_size = Vector2(116, 25)
+custom_minimum_size = Vector2(116, 19)
 layout_mode = 2
 text = "ENTER THE NIGHT"
 
+[node name="Settings" type="Button" parent="Menu"]
+custom_minimum_size = Vector2(116, 19)
+layout_mode = 2
+text = "SETTINGS"
+
 [node name="Controls" type="Button" parent="Menu"]
-custom_minimum_size = Vector2(116, 25)
+custom_minimum_size = Vector2(116, 19)
 layout_mode = 2
 text = "CONTROLS"
 
 [node name="Quit" type="Button" parent="Menu"]
-custom_minimum_size = Vector2(116, 25)
+custom_minimum_size = Vector2(116, 19)
 layout_mode = 2
 text = "QUIT"
 
-[node name="Settings" type="Button" parent="."]
-offset_left = 20.0
-offset_top = 144.0
-offset_right = 232.0
-offset_bottom = 169.0
-text = "SETTINGS"
-
 [node name="Status" type="Label" parent="."]
 offset_left = 20.0
-offset_top = 190.0
+offset_top = 194.0
 offset_right = 364.0
-offset_bottom = 206.0
+offset_bottom = 210.0
 theme_override_colors/font_color = Color(0.66, 0.72, 0.65, 1)
 theme_override_font_sizes/font_size = 8
 text = "SOLO FIELD TEST  •  CO-OP IN DEVELOPMENT  /  EVERY NIGHT IS DIFFERENT"

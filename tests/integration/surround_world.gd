@@ -132,7 +132,18 @@ func _tour() -> void:
 		level.player.position=zone["position"]
 		await _frames(12)
 		await _snapshot("surround_"+zone["kind"])
-	level.player.get_node("Camera2D").zoom=Vector2.ONE
+	# Close landmark portraits at gameplay zoom for the README gallery.
+	var camera: Camera2D = level.player.get_node("Camera2D")
+	camera.zoom=Vector2.ONE
+	level.hud.hide()
+	for zone in level.plan.woods.zones:
+		level.player.position=zone["position"]+Vector2(44,50)
+		camera.offset=Vector2(-44,-46)
+		camera.reset_smoothing()
+		await _frames(12)
+		await _snapshot("landmark_"+zone["kind"])
+	camera.offset=Vector2.ZERO
+	level.hud.show()
 
 func _snapshot(name: String) -> void:
 	await process_frame

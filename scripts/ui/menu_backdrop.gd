@@ -21,7 +21,7 @@ func _draw() -> void:
 			var point := Vector2(20 + index * 29, 139 + sin(index * 7.1 + time * 0.4) * 23)
 			draw_rect(Rect2(point.round(), Vector2(1, 1)), Color(0.8, 0.86, 0.5, 0.35 + sin(time + index) * 0.2))
 		# Translucent so the stalker still watches from behind the menu.
-		draw_rect(Rect2(239, 20, 130, 166), Color(0.02, 0.06, 0.06, 0.62))
+		draw_rect(Rect2(241, 4, 130, 196), Color(0.02, 0.06, 0.06, 0.62))
 		draw_line(Vector2(239, 20), Vector2(369, 20), Color("899475"))
 		return
 	draw_rect(Rect2(0, 0, 384, 216), Color("081318"))

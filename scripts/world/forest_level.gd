@@ -133,6 +133,7 @@ func _ready() -> void:
 	hud.retry_requested.connect(retry_round)
 	sight = WoodsVisibility.new()
 	sight.player = player
+	sight.canopy = camp_map.woods_canopy
 	add_child(sight)
 	soundscape = CampSoundscape.new()
 	soundscape.level = self

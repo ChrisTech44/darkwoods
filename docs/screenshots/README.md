@@ -1,21 +1,33 @@
 # README screenshots
 
-These are unedited Godot viewport captures from the verified camp art tour in
-`tests/integration/camp_upgrade.gd`, run during the full graphical verification
-recorded in `../evidence/woods_replay/summary.json`.
+Unedited Godot viewport captures used by the main README, retaken on
+17 October 2026 after the SpriteCook art passes. Each file is copied from the
+`artifacts/verification/` (or `artifacts/network/`) capture named below,
+produced by `python3 tools/verify.py --graphical` and
+`python3 tools/verify_network.py --mode all --players 2`.
 
-- `campsite.png`: source `artifacts/verification/upgrade_campsite.png`.
-- `ranger_lodge.png`: source `artifacts/verification/upgrade_lodge.png`.
+| File | Source capture | Test |
+| --- | --- | --- |
+| `menu_defaults.png` | `menu_defaults.png` | `menu_defaults.gd` |
+| `survivor_selection.png` | `survivor_selection.png` | `content_expansion.gd` |
+| `nav_signpost.png` | `nav_signpost.png` | `navigation_aids.gd` |
+| `lobby.png` | `network/lobby_camp_2.png` | `network_peer.gd` |
+| `audio_pause_mixer.png` | `audio_pause_mixer.png` | `audio_polish.gd` |
+| `full_map.png` | `surround_overview.png` | `surround_world.gd` |
+| `campsite.png` | `upgrade_campsite.png` | `camp_upgrade.gd` |
+| `mess_hall.png` | `upgrade_mess_hall.png` | `camp_upgrade.gd` |
+| `woods_light_on.png`, `woods_field_notes.png` | same names | `woods_replay.gd` |
+| `woods_<creature>.png` | same names | `forest_hunt.gd` |
+| `monster_<species>.png` | same names | `content_expansion.gd` |
+| `landmark_<region>.png` | same names | `surround_world.gd` |
+| `item_belt.png` | `item_belt.png` | `content_expansion.gd` |
+| `woods_loading.png` | `woods_loading.png` | `woods_replay.gd` |
+| `woods_playthrough_win.png` | `woods_playthrough_win.png` | `woods_playthrough.gd` |
 
-Both use Quick Camp mode and controlled player placements with the stalker
-paused for art inspection. They are not complete-round playthrough captures.
-The main README reuses the committed woods evidence images for its other shots.
+Camp shots use Quick Camp with controlled player placements and the stalker
+paused for inspection. Creature portraits disable AI. Landmark close-ups
+(`landmark_*`) hide the HUD, raise ambient light and switch off the sight mask
+so the art is readable; normal nights are much darker. The extraction result
+comes from a complete automated expedition with all enemies active.
 
-
-The README's current full-map example is
-[the nine-region Night 42 atlas](../evidence/content_expansion/full_map.png),
-rendered by the `Overview` control in `tests/integration/surround_world.gd`.
-It replaces the earlier three-region example in the player guide. The old
-surrounding-forest evidence capture remains historical evidence. The current
-atlas includes the six optional biomes, camp and 24 cryptid starting positions;
-it is an inspection view, not the player's explored-only field map.
+Older captures cited by the development log stay in `../evidence/` unchanged.

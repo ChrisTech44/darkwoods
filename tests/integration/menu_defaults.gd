@@ -16,7 +16,7 @@ func _run() -> void:
 	var menu: Control = current_scene
 	_check(menu.get_node("Menu/RandomNight").button_pressed and not menu.get_node("Menu/Seed").editable, "random_night_default_seed_disabled")
 	_check(not menu.get_node("SettingsPanel").visible, "knobs_hidden_behind_settings")
-	menu.get_node("Settings").pressed.emit()
+	menu.get_node("Menu/Settings").pressed.emit()
 	_check(menu.get_node("SettingsPanel").visible, "settings_opens")
 	_check(menu.get_node("SettingsPanel/Content/AudioControls").get_child_count() == 4, "four_pre_game_mix_controls_visible")
 	var music: AudioStreamPlayer = menu.get_node("MenuAudio/music")

@@ -15,9 +15,9 @@ func _ready() -> void:
 	online.name="Online"
 	online.text="HOST / JOIN CO-OP"
 	online.add_theme_font_size_override("font_size",8)
-	add_child(online)
-	online.position=Vector2(20,170)
-	online.size=Vector2(212,20)
+	online.custom_minimum_size=Vector2(116,19)
+	$Menu.add_child(online)
+	$Menu.move_child(online,$Menu/Play.get_index()+1)
 	online.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/ui/network_lobby.tscn"))
 	if not session.notice.is_empty():
 		$Status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -51,7 +51,7 @@ func _ready() -> void:
 	back.pressed.connect(_hide_settings)
 	content.add_child(back)
 	panel.hide()
-	$Settings.pressed.connect(_show_settings)
+	$Menu/Settings.pressed.connect(_show_settings)
 	$Menu/RandomNight.toggled.connect(_random_toggled)
 	_random_toggled(true)
 	controls_button.pressed.connect(_show_controls)
@@ -87,18 +87,18 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _show_controls() -> void:
-	$Online.hide()
+	$Menu/Online.hide()
 	$Menu.hide()
-	$Settings.hide()
+	$Menu/Settings.hide()
 	controls_panel.show()
 	back_button.grab_focus()
 
 
 func _hide_controls() -> void:
 	controls_panel.hide()
-	$Online.show()
+	$Menu/Online.show()
 	$Menu.show()
-	$Settings.show()
+	$Menu/Settings.show()
 	controls_button.grab_focus()
 
 
@@ -111,30 +111,30 @@ func _quit() -> void:
 
 
 func _show_settings() -> void:
-	$Online.hide()
+	$Menu/Online.hide()
 	$Menu.hide()
-	$Settings.hide()
+	$Menu/Settings.hide()
 	$SettingsPanel.show()
 	$SettingsPanel/Content/Back.grab_focus()
 
 func _hide_settings() -> void:
 	$SettingsPanel.hide()
-	$Online.show()
+	$Menu/Online.show()
 	$Menu.show()
-	$Settings.show()
-	$Settings.grab_focus()
+	$Menu/Settings.show()
+	$Menu/Settings.grab_focus()
 	if has_node("SurvivorSelection"):
-		$Online.hide()
+		$Menu/Online.hide()
 		$Menu.hide()
-		$Settings.hide()
+		$Menu/Settings.hide()
 		$SurvivorSelection.show()
 		$SurvivorSelection/Settings.grab_focus()
 
 
 func _show_survivors() -> void:
-	$Online.hide()
+	$Menu/Online.hide()
 	$Menu.hide()
-	$Settings.hide()
+	$Menu/Settings.hide()
 	if has_node("SurvivorSelection"):
 		$SurvivorSelection.show()
 		$SurvivorSelection/Start.grab_focus()
@@ -188,9 +188,9 @@ func _show_survivors() -> void:
 		button.add_theme_font_size_override("font_size", 10)
 	selection.get_node("Back").pressed.connect(func():
 		selection.hide()
-		$Online.show()
+		$Menu/Online.show()
 		$Menu.show()
-		$Settings.show()
+		$Menu/Settings.show()
 		$Menu/Play.grab_focus())
 	selection.get_node("Random").pressed.connect(func(): _select_survivor(randi_range(0,5)))
 	selection.get_node("Start").pressed.connect(func(): session.load_game())

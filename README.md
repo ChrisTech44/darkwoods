@@ -16,7 +16,7 @@ source; standalone packages are a later milestone.
 
 See the [item reference](#items) for every item, its location and how to use it.
 
-![The forest menu with Woods Expedition and optional seed selection](docs/evidence/sight_audio/menu_defaults.png)
+![Title screen over the moonlit camp illustration, with Woods Expedition and optional seed selection](docs/screenshots/menu_defaults.png)
 
 ## Survivors, biomes and the item belt
 
@@ -50,7 +50,7 @@ Bramble Orchard, Starless Observatory, Last-Car Rail Yard, White Stone Quarry,
 and Drowned Chapel**. Each has multiple approaches, a one-time rare tool and a
 territorial guardian. Required components still come from the original regions.
 
-![Survivor selection](docs/evidence/multiplayer/survivor_selection.png)
+![Survivor selection](docs/screenshots/survivor_selection.png)
 
 [Full content guide and inspection screenshots](docs/content_update.md) covers
 hunter/guardian counterplay and the current prototype limits.
@@ -98,13 +98,16 @@ points back toward camp. The village lies northwest, bog east and graveyard sout
   their field map and as an edge marker, with a shared "pinned WITCH'S BOG"
   notice. Each player keeps their newest three pins.
 
-![Signpost arrows to camp, village and graveyard in the flashlight beam](docs/evidence/navigation/nav_signpost.png)
+![Signpost arrows to camp, village and graveyard in the flashlight beam](docs/screenshots/nav_signpost.png)
 
 Both modes default to fresh randomized camp layouts. Loot, required extra parts,
 weather, creature homes and trails use the run seed. Music plays on the menu;
 **Settings** holds the saved mixer before Play. Foreground canopies fade when
 they cover the camper, and view-local scenery rendering keeps distant forest
-active for gameplay without drawing thousands of tree sprites at once.
+active for gameplay without drawing thousands of tree sprites at once. Every
+trail is lined with dense trees and undergrowth; your sight reaches just into
+that tree line and fades to darkness, so you see the forest rising around the
+path but never the next trail through it.
 
 ## Play from source
 
@@ -146,7 +149,7 @@ explains routing, joining, revives, shared escape and replay. New joins are
 lobby-only. **Esc opens a local menu without pausing the shared world.**
 Voice/microphone capture is not enabled.
 
-![Connected co-op lobby](docs/evidence/multiplayer/lobby_camp_2.png)
+![Connected co-op lobby](docs/screenshots/lobby.png)
 
 ## Choose your night
 
@@ -464,7 +467,7 @@ the current build. Local sound follows replicated world movement; synchronized
 audio event/listening acceptance remains pending. See the [cue manifest and provenance notes](assets/audio/README.md).
 Final listening/balance and Windows/Linux/exported audio remain unverified.
 
-![Pause menu with saved Master, Effects, Ambience and Music controls](docs/evidence/audio_polish/audio_pause_mixer.png)
+![Pause menu with saved Master, Effects, Ambience and Music controls](docs/screenshots/audio_pause_mixer.png)
 
 ## Use the forest sites
 
@@ -511,7 +514,7 @@ Both modes vary building positions and surrounding trees within reserved camp
 lots. Bunk cabins can trade places, as can the bathhouse and first aid building. Door paths, loot and field-map markers move together. Roof footprints
 and main trails stay separate. Retrying a seed reproduces the camp too.
 
-![Current full-map example for Night 42 with all nine numbered regions, central Fernwood camp and 48 cryptid spawn positions](docs/evidence/denser_forest/full_map.png)
+![Current full-map example for Night 42 with all nine numbered regions, central Fernwood camp and 48 cryptid spawn positions](docs/screenshots/full_map.png)
 
 **Full-map example — Night 42.** Numbers match the region names around the map;
 **C** marks Fernwood camp and coral dots mark the 48 cryptid starting positions.
@@ -537,33 +540,33 @@ noticeably bigger than the campers.
 
 ## Screenshots
 
-Actual Godot viewport captures. The original camp/forest screenshots below are
-from the earlier verified baseline; the new-monster and optional-biome galleries
-show the content update. The camp images use Quick Camp. Region overviews deliberately raise ambient
-light and disable the sight mask to inspect entrances; normal play keeps both
+Actual Godot viewport captures with the current SpriteCook art, retaken on
+17 October 2026 (see [screenshot sources](docs/screenshots/README.md)). The camp
+images use Quick Camp. Region and landmark shots deliberately raise ambient
+light and disable the sight mask so the art is visible; normal play keeps both
 night lighting and sight restrictions. Close creature shots are inspection fixtures with
 AI disabled and the camera offset for composition. The escape result comes from
 a complete automated expedition with all enemies active.
 
-| Campsite and local lighting | Furnished Ranger Lodge |
+| Campsite, tent and escape van | Furnished mess hall |
 | --- | --- |
-| ![Camper beside the lit campsite and escape van](docs/screenshots/campsite.png) | ![Flashlight illuminating the Ranger Lodge interior](docs/screenshots/ranger_lodge.png) |
+| ![Camper beside the campfire, tent and escape van](docs/screenshots/campsite.png) | ![Flashlight on the mess hall tables, benches and stove](docs/screenshots/mess_hall.png) |
 
 | Dark woods and flashlight | Field notes and explored trails |
 | --- | --- |
-| ![A narrow flashlight beam reveals trees in otherwise dark woods](docs/evidence/surround_forest/woods_light_on.png) | ![Five-part objective clues beside the partially explored woods map](docs/evidence/surround_forest/woods_field_notes.png) |
+| ![A narrow flashlight beam reveals trees in otherwise dark woods](docs/screenshots/woods_light_on.png) | ![Five-part objective clues beside the partially explored woods map](docs/screenshots/woods_field_notes.png) |
 
 | Werewolf | Sasquatch (Bigfoot) | Lantern moth |
 | --- | --- | --- |
-| ![Original werewolf walking sprite in a flashlight beam](docs/evidence/forest_hunt/woods_werewolf.png) | ![Long-armed Sasquatch sprite in a flashlight beam](docs/evidence/forest_hunt/woods_bigfoot.png) | ![Original lantern moth sprite with patterned wings](docs/evidence/forest_hunt/woods_lantern_moth.png) |
+| ![Original werewolf walking sprite in a flashlight beam](docs/screenshots/woods_werewolf.png) | ![Long-armed Sasquatch sprite in a flashlight beam](docs/screenshots/woods_bigfoot.png) | ![Original lantern moth sprite with patterned wings](docs/screenshots/woods_lantern_moth.png) |
 
 | Vampire | Witch | Briar revenant |
 | --- | --- | --- |
-| ![Pale vampire with a high collar and long cloak](docs/evidence/forest_hunt/woods_vampire.png) | ![Witch with staff and pointed hat](docs/evidence/forest_hunt/woods_witch.png) | ![Antlered briar revenant with twig limbs](docs/evidence/forest_hunt/woods_briar_revenant.png) |
+| ![Pale vampire with a high collar and long cloak](docs/screenshots/woods_vampire.png) | ![Witch with staff and pointed hat](docs/screenshots/woods_witch.png) | ![Antlered briar revenant with twig limbs](docs/screenshots/woods_briar_revenant.png) |
 
 | Abandoned village | Witch's bog | Old graveyard |
 | --- | --- | --- |
-| ![Village huts, bell frame and well](docs/evidence/surround_forest/surround_village.png) | ![Glowing cauldron in a marsh clearing](docs/evidence/surround_forest/surround_bog.png) | ![Crypt and crooked gravestones](docs/evidence/surround_forest/surround_graveyard.png) |
+| ![Cobbled village square with the bell frame and well](docs/screenshots/landmark_village.png) | ![Bubbling cauldron on the bog boardwalk](docs/screenshots/landmark_bog.png) | ![Crypt and gravestones in dead graveyard grass](docs/screenshots/landmark_graveyard.png) |
 
 ### New monster close-ups
 
@@ -573,44 +576,45 @@ than concept art; the monster table above explains their current powers.
 
 | Switchback Hound | Boiler Saint | Bramble Seamstress |
 | --- | --- | --- |
-| ![Switchback Hound with exposed teeth and long clawed legs](docs/evidence/content_expansion/monster_switchback_hound.png) | ![Boiler Saint with brass body gauge and pipe equipment](docs/evidence/content_expansion/monster_boiler_saint.png) | ![Bramble Seamstress with twig crown and long needle](docs/evidence/content_expansion/monster_bramble_seamstress.png) |
+| ![Switchback Hound with exposed teeth and long clawed legs](docs/screenshots/monster_switchback_hound.png) | ![Boiler Saint with brass body gauge and pipe equipment](docs/screenshots/monster_boiler_saint.png) | ![Bramble Seamstress with twig crown and long needle](docs/screenshots/monster_bramble_seamstress.png) |
 
 | Shutter Wraith | Last-Car Conductor | Stoneback Ram |
 | --- | --- | --- |
-| ![Shutter Wraith with lens face and layered shroud](docs/evidence/content_expansion/monster_shutter_wraith.png) | ![Last-Car Conductor with uniform cap and hand lamp](docs/evidence/content_expansion/monster_last_car_conductor.png) | ![Stoneback Ram with stone plates and curved horns](docs/evidence/content_expansion/monster_stoneback_ram.png) |
+| ![Shutter Wraith with lens face and layered shroud](docs/screenshots/monster_shutter_wraith.png) | ![Last-Car Conductor with uniform cap and hand lamp](docs/screenshots/monster_last_car_conductor.png) | ![Stoneback Ram with stone plates and curved horns](docs/screenshots/monster_stoneback_ram.png) |
 
-![Candle Grazer with burning candles along its back](docs/evidence/content_expansion/monster_candle_grazer.png)
+![Candle Grazer with burning candles along its back](docs/screenshots/monster_candle_grazer.png)
 
 ### More roaming encounters
 
 | Relay Jackal | Ration Moth | Lens Eater |
 | --- | --- | --- |
-| ![Relay Jackal with tall ears and curved tail](docs/evidence/denser_forest/monster_relay_jackal.png) | ![Ration Moth with layered paper-like wings](docs/evidence/denser_forest/monster_ration_moth.png) | ![Lens Eater with a large vertical iris](docs/evidence/denser_forest/monster_lens_eater.png) |
+| ![Relay Jackal with tall ears and curved tail](docs/screenshots/monster_relay_jackal.png) | ![Ration Moth with layered paper-like wings](docs/screenshots/monster_ration_moth.png) | ![Lens Eater with a large vertical iris](docs/screenshots/monster_lens_eater.png) |
 
 These three species roam ordinary trails; they do not require a biome encounter.
 
 ### New optional biomes
 
-The following captures show each new region and its local guardian. Lighting is
-brightened and sight masking disabled for the inspection tour; normal play keeps
+The following captures show each new region's centrepiece at gameplay zoom,
+with the HUD hidden. Lighting is brightened and sight masking disabled for the
+inspection tour; normal play keeps
 night lighting and occlusion. The forest-site table above covers rewards, risks
 and how to navigate each site.
 
-| Flooded Mill — waterwheel, boiler and plank crossings | Bramble Orchard — fruit rows and trellises |
+| Flooded Mill — waterwheel and plank crossings | Bramble Orchard — fruit rows and trellises |
 | --- | --- |
-| ![Flooded Mill with waterwheel, gauge boiler, channels and bridges](docs/evidence/denser_forest/biome_mill.png) | ![Bramble Orchard with trellis, fruit trees and vine rows](docs/evidence/denser_forest/biome_orchard.png) |
+| ![Flooded Mill with waterwheel, relic altar and plank bridges over the channels](docs/screenshots/landmark_mill.png) | ![Bramble Orchard with trellis, fruit trees, fences and relic altar](docs/screenshots/landmark_orchard.png) |
 
-| Starless Observatory — dome and telescope | Last-Car Rail Yard — tracks and switches |
+| Starless Observatory — dome and survey rings | Last-Car Rail Yard — tracks and signals |
 | --- | --- |
-| ![Observatory dome and telescope above a radial tiled court](docs/evidence/denser_forest/biome_observatory.png) | ![Rail Yard with paired tracks, sleepers, switch and signal](docs/evidence/denser_forest/biome_rail.png) |
+| ![Observatory dome above a tiled court with survey rings](docs/screenshots/landmark_observatory.png) | ![Rail Yard with paired tracks, boxcars and two rail signals](docs/screenshots/landmark_rail.png) |
 
-| White Stone Quarry — terraces and survey rings | Drowned Chapel — columns and cross mosaic |
+| White Stone Quarry — terraces and stone piles | Drowned Chapel — columns and shrine |
 | --- | --- |
-| ![Quarry with stepped terrace markings, ladders and stone clusters](docs/evidence/denser_forest/biome_quarry.png) | ![Chapel court with broken columns, candle pews and a cross mosaic](docs/evidence/denser_forest/biome_chapel.png) |
+| ![Quarry court with ladders, stone piles and relic altar](docs/screenshots/landmark_quarry.png) | ![Chapel court with two columns, a shrine and candle pews](docs/screenshots/landmark_chapel.png) |
 
 ### Supply belt
 
-![All six supply-type slots with a noise tin selected in ordinary night lighting](docs/evidence/multiplayer/item_belt.png)
+![All six supply-type slots with a noise tin selected in ordinary night lighting](docs/screenshots/item_belt.png)
 
 The selected slot is highlighted and its supply appears in the survivor's hand.
 Use **1–6/keypad** to select, **V** to use, **G** to drop the stack and **E** to
@@ -618,7 +622,7 @@ recover units. Vehicle components and cutters remain separate from this limit.
 
 | Loading the next night | Successful extraction |
 | --- | --- |
-| ![Forest loading card before preparing the next night](docs/evidence/woods_replay/woods_loading.png) | ![Successful extraction after a complete active woods expedition](docs/evidence/surround_forest/woods_playthrough_win.png) |
+| ![Forest loading card before preparing the next night](docs/screenshots/woods_loading.png) | ![Successful extraction after a complete active woods expedition](docs/screenshots/woods_playthrough_win.png) |
 
 ## Development and verification
 

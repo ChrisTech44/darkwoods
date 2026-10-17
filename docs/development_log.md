@@ -1,5 +1,54 @@
 # Development log
 
+## 2026-10-17 — Forest tree line along every trail; menu buttons on the right
+
+Playtest feedback: trail edges looked like a rigid black line with a few tree
+tops poking up, not a surrounding forest. The title-screen buttons also covered
+the new art.
+
+- **Tree line.** `woods_terrain.gd` replaces the 32 px checkerboard of canopies
+  with trees on a jittered 20 px grid inside the forest walls: every tree
+  within 44 px of a trail is kept (the edge line), and one in three deeper in.
+  Trunks always stand inside the wall, so collision and navigation are
+  unchanged. Shrubs fill the gaps between trunks along each edge, and the
+  forest floor under the walls is shaded darker.
+- **Softer sight mask.** `WoodsVisibility` now lets sight reach 12 px into the
+  wall and then fades to black over 18 px, instead of cutting off at the wall
+  face. Corridors are separated by walls at least 64 px thick, so this never
+  reveals the next trail. Edge trees whose own patch of trail is in sight are
+  redrawn whole above the mask, so the forest rises as a silhouette instead of
+  being clipped. Monster visibility (`can_see`) is unchanged.
+- **Menu.** Host/Join Co-op and Settings joined Enter the Night, Controls and
+  Quit in the right-hand column (`Menu/Online`, `Menu/Settings`), so the left
+  side shows the title illustration. The translucent panel now spans the column.
+
+**Verification:** `python3 tools/verify.py` 101/101 steps.
+
+## 2026-10-17 — README screenshots retaken with the new art
+
+The user noted the README images predated the SpriteCook passes. Every README
+screenshot was retaken from the current build and stored in
+`docs/screenshots/` with a source table; older images in `docs/evidence/` stay
+unchanged because earlier log entries cite them.
+
+- `surround_world.gd --capture` now also saves `landmark_<region>.png`: each
+  region's centrepiece at gameplay zoom with the HUD hidden. These replace the
+  zoomed-out region and biome shots in the README, where the new bell frame,
+  well, cauldron, crypt, waterwheel, dome, signals and columns were too small to
+  see.
+- The Ranger Lodge shot (too dark to show furniture) became the mess hall.
+- Captions now describe what each new image actually shows.
+
+**Verification:** `python3 tools/verify.py` 101/101 steps. The graphical captures
+came from `verify.py --graphical` plus direct `--capture` runs of
+`camp_upgrade`, `woods_replay`, `forest_hunt`, `surround_world` (0 failures
+each) and `woods_playthrough` (0 failures, extraction won; it needs more than
+the runner's 240 s limit in a real window). `verify_network.py --mode all
+--players 2` passed and supplied the lobby image. **Not resolved:** in the
+graphical run, `offline_playthrough` lost its scripted 60-minute route to the
+stalker and the runner stopped there; the same test passes headless. No README
+image comes from that test.
+
 ## 2026-10-17 — SpriteCook: items, camp, interiors, landmarks, textures, title
 
 The user added 800 credits and asked to make everything look better while

@@ -27,7 +27,15 @@ const MAX_PACKET := 400
 const PACKET_BUDGET := 75
 const JITTER_PACKETS := 3
 const STREAM_GAP := 0.35
-const HEAR_RANGE := 420.0
+const HEAR_RANGE := 560.0
+## Gentle distance fade (1.0 = linear); speech stays clear across a clearing.
+const VOICE_ATTENUATION := 0.6
+## Walls and tree lines soften a voice rather than smother it.
+const MUFFLE_CUTOFF := 2400.0
+## While a teammate talks, music and ambience dip (dB) so speech cuts through.
+const DUCK_MUSIC_DB := -10.0
+const DUCK_AMBIENCE_DB := -8.0
+const DUCK_EFFECTS_DB := -3.0
 const OPEN_HANG := 0.6
 const CHANNEL := 3
 
@@ -72,8 +80,22 @@ func _ready() -> void:
 		AudioServer.set_bus_name(index, "VoiceMuffled")
 		AudioServer.set_bus_send(index, "Voice")
 		var lowpass := AudioEffectLowPassFilter.new()
-		lowpass.cutoff_hz = 900.0
+		lowpass.cutoff_hz = MUFFLE_CUTOFF
 		AudioServer.add_bus_effect(index, lowpass)
+	# Level every voice: quiet microphones are lifted and loud ones held back,
+	# so a soft-spoken teammate is as easy to hear as a loud one.
+	var voice_bus := AudioServer.get_bus_index("Voice")
+	if voice_bus >= 0 and AudioServer.get_bus_effect_count(voice_bus) == 0:
+		var leveller := AudioEffectCompressor.new()
+		leveller.threshold = -30.0
+		leveller.ratio = 4.0
+		leveller.gain = 12.0
+		leveller.attack_us = 2000.0
+		leveller.release_ms = 250.0
+		AudioServer.add_bus_effect(voice_bus, leveller)
+		var ceiling := AudioEffectLimiter.new()
+		ceiling.ceiling_db = -1.5
+		AudioServer.add_bus_effect(voice_bus, ceiling)
 	var settings := ConfigFile.new()
 	if settings.load(SETTINGS_PATH) == OK:
 		var stored: String = str(settings.get_value("voice", "mode", "off"))
@@ -127,15 +149,22 @@ func status_text() -> String:
 	return "HOLD B TO TALK" if mode == "push" else "OPEN MIC"
 
 
-## Names of peers heard right now (for the HUD speaking indicator).
-func speaking_names() -> Array[String]:
-	var names: Array[String] = []
-	var net: Node = get_node("/root/Net")
+## Peers heard right now (lobby meters and the HUD speaking indicator).
+func speaking_ids() -> Array[int]:
+	var ids: Array[int] = []
 	var now := Time.get_ticks_msec() / 1000.0
 	for peer: int in _speakers:
 		var speaker: Dictionary = _speakers[peer]
 		if now - speaker["last"] < 0.3 and _route(peer) != "none":
-			names.append(str(net.participants.get(peer, net.roster.get(peer, {})).get("name", "Camper")))
+			ids.append(peer)
+	return ids
+
+
+func speaking_names() -> Array[String]:
+	var names: Array[String] = []
+	var net: Node = get_node("/root/Net")
+	for peer in speaking_ids():
+		names.append(str(net.participants.get(peer, net.roster.get(peer, {})).get("name", "Camper")))
 	return names
 
 
@@ -149,6 +178,7 @@ func _process(delta: float) -> void:
 	if capturing:
 		_capture(delta)
 	_update_speakers()
+	_duck(delta)
 
 
 func _set_capturing(on: bool) -> void:
@@ -303,7 +333,9 @@ func _speaker(peer: int) -> Dictionary:
 		player.stream = stream
 		player.bus = "Voice"
 		player.max_distance = HEAR_RANGE
-		player.attenuation = 1.4
+		player.attenuation = VOICE_ATTENUATION
+		# Teammates are panned only gently: a voice off to one side stays in both ears.
+		player.panning_strength = 0.4
 		add_child(player)
 		_speakers[peer] = {"player": player, "playback": null, "stream": -1, "next": 0, "buffer": [], "primed": false, "last": -10.0, "decoded": 0}
 	return _speakers[peer]
@@ -359,6 +391,19 @@ func _update_speakers() -> void:
 		player.volume_db = -80.0 if route == "none" else 0.0
 		player.global_position = actor.global_position if route == "proximity" and actor != null and is_instance_valid(actor) else here
 		player.bus = "VoiceMuffled" if route == "proximity" and listener != null and actor != null and _occluded(listener, actor) else "Voice"
+
+
+## Smoothly dip music, ambience and (slightly) effects while anyone is heard.
+var ducked := 0.0
+func _duck(delta: float) -> void:
+	var target := 1.0 if not speaking_ids().is_empty() else 0.0
+	var next := move_toward(ducked, target, delta * (6.0 if target > ducked else 1.5))
+	if is_equal_approx(next, ducked):
+		return
+	ducked = next
+	var mixer: Node = get_node_or_null("/root/AudioManager")
+	if mixer != null and mixer.has_method("set_duck"):
+		mixer.set_duck({"Music": DUCK_MUSIC_DB * ducked, "Ambience": DUCK_AMBIENCE_DB * ducked, "Effects": DUCK_EFFECTS_DB * ducked})
 
 
 func _occluded(listener: CampPlayer, speaker: CampPlayer) -> bool:

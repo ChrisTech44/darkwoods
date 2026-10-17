@@ -11,6 +11,13 @@ var level: Node2D
 func _ready() -> void:
 	set_meta("stand_in_world", true)
 	var center: Vector2 = definition["position"]
+	if definition["kind"] == "boathouse":
+		var lake := LakeWater.new()
+		lake.rects = FieldEscapeArt.water_rects(center)
+		for x in [-49, 46]:
+			for y in [-216, -120, -24]:
+				lake.pilings.append(center + Vector2(x, y + 8))
+		add_child(lake)
 	if definition["kind"] == "village":
 		actions = [
 			{"kind": "bell", "label": "RING VILLAGE BELL / DISTRACT", "position": center + Vector2(0, -24), "used": false},

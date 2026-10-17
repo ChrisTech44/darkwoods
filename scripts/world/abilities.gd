@@ -182,10 +182,10 @@ func _mark(actor: CampPlayer) -> bool:
 
 
 func _patch(actor: CampPlayer) -> bool:
-	var target: CampPlayer = actor if actor.wounded else null
+	var target: CampPlayer = actor if actor.health < CampPlayer.MAX_HEALTH else null
 	if target == null:
 		for other: CampPlayer in get_tree().get_nodes_in_group("survivors"):
-			if other != actor and other.status == CampPlayer.Status.ALIVE and other.wounded and actor.global_position.distance_to(other.global_position) <= level.config.interact_radius and level.clear_path(actor.global_position, other.global_position):
+			if other != actor and other.status == CampPlayer.Status.ALIVE and other.health < CampPlayer.MAX_HEALTH and actor.global_position.distance_to(other.global_position) <= level.config.interact_radius and level.clear_path(actor.global_position, other.global_position):
 				target = other
 				break
 	if target == null:

@@ -7,6 +7,8 @@ var cues: Dictionary = {}
 var streams: Dictionary = {}
 var volumes: Dictionary = {"Master": 0.8, "Effects": 0.8, "Ambience": 0.65, "Music": 0.5, "Voice": 1.0}
 var output_enabled: bool = false
+## Temporary dB offsets per bus (voice ducking); never saved.
+var duck: Dictionary = {}
 var settings_path: String = SETTINGS_PATH
 
 
@@ -54,12 +56,19 @@ func set_volume(bus: String, value: float, persist: bool = true) -> void:
 	volumes[bus] = value
 	var index := AudioServer.get_bus_index(bus)
 	AudioServer.set_bus_mute(index, value <= 0.0)
-	AudioServer.set_bus_volume_db(index, linear_to_db(maxf(value, 0.0001)))
+	AudioServer.set_bus_volume_db(index, linear_to_db(maxf(value, 0.0001)) + float(duck.get(bus, 0.0)))
 	if persist:
 		var settings := ConfigFile.new()
 		for name in BUSES:
 			settings.set_value("volume", name, volumes[name])
 		settings.save(settings_path)
+
+
+func set_duck(offsets: Dictionary) -> void:
+	duck = offsets
+	for bus in BUSES:
+		var index := AudioServer.get_bus_index(bus)
+		AudioServer.set_bus_volume_db(index, linear_to_db(maxf(volumes[bus], 0.0001)) + float(duck.get(bus, 0.0)))
 
 
 func stream_for(cue: String) -> AudioStream:

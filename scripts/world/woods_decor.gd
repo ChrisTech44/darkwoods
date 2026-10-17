@@ -5,8 +5,33 @@ const RUINS: Array[String] = ["stump", "hunter_blind", "cave", "watchtower", "sh
 const RUIN_WIDTHS: Array[float] = [34.0, 36.0, 56.0, 50.0, 34.0, 50.0]
 
 
+## Camp boundary at each trail mouth: [left post base, right post base]. The
+## lanterns burn while camp is a refuge (creatures stay beyond them) and go out
+## at Deep Night, when the camp is open to everything.
+const THRESHOLDS: Array = [[Vector2(-14, 452), Vector2(-14, 582)], [Vector2(1550, 452), Vector2(1550, 582)],
+	[Vector2(602, -4), Vector2(742, -4)], [Vector2(794, 972), Vector2(934, 972)]]
+var lanterns: Array[PointLight2D] = []
+var lit := true
+
+
 func _ready() -> void:
 	set_meta("stand_in_world", true)
+	for pair: Array in THRESHOLDS:
+		for base: Vector2 in pair:
+			lanterns.append(CampLights.lamp(self, base + Vector2(8, -30), 70, Color("f0c27a"), 0.9))
+	_set_lit(CampKiller.camp_closed)
+
+
+func _process(_delta: float) -> void:
+	if lit != CampKiller.camp_closed:
+		_set_lit(CampKiller.camp_closed)
+
+
+func _set_lit(value: bool) -> void:
+	lit = value
+	for lantern in lanterns:
+		lantern.enabled = value
+	queue_redraw()
 
 
 ## Seeded trail-side dressing so straight trails stop looking alike: [sprite, width].
@@ -39,15 +64,15 @@ func _draw_dressing() -> void:
 
 
 func _draw() -> void:
-	# Warning gate at the east approach: SpriteCook gate, a plaque and footprints.
-	if PixelArt.draw_standing(self, "gate_closed", Vector2(1568, 540), 40):
-		PixelArt.draw_in(self, "ui_plaque", Rect2(1544, 478, 52, 22))
-		draw_string(ThemeDB.fallback_font, Vector2(1551, 493), "THE WOODS", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("2a2216"))
-		for index in range(3):
-			PixelArt.draw_in(self, "fx_footprints", Rect2(1590 + index * 24, 512 + (index % 2) * 7, 14, 12), Color(1, 1, 1, 0.7))
-	else:
-		draw_rect(Rect2(1544, 490, 50, 18), Color("947e53"))
-		draw_string(ThemeDB.fallback_font, Vector2(1547, 503), "THE WOODS", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("242f28"))
+	# Lantern posts flank every trail mouth (lit while camp is safe); the east
+	# approach keeps its warning plaque at the trail edge and the footprints.
+	for pair: Array in THRESHOLDS:
+		for base: Vector2 in pair:
+			PixelArt.draw_standing(self, "trail_lantern", base, 18, 46, Color.WHITE if lit else Color(0.62, 0.6, 0.58))
+	if PixelArt.draw_in(self, "ui_plaque", Rect2(1562, 556, 52, 22)):
+		draw_string(ThemeDB.fallback_font, Vector2(1569, 571), "THE WOODS", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("2a2216"))
+	for index in range(3):
+		PixelArt.draw_in(self, "fx_footprints", Rect2(1590 + index * 24, 512 + (index % 2) * 7, 14, 12), Color(1, 1, 1, 0.7))
 	_draw_dressing()
 	for index in range(woods.landmarks.size()):
 		var landmark: Dictionary = woods.landmarks[index]

@@ -83,7 +83,8 @@ survivors outside the van are left behind.
 
 **Esc opens your local settings/menu; it does not pause the shared world.**
 Your survivor stops sending movement while that menu is open and can still be
-caught. The first hit wounds; a second downs. A downed teammate stays down
+caught. Each hit takes health (creatures hit for different amounts; a medkit
+heals 50); at zero you're downed. A downed teammate stays down
 indefinitely and can crawl and press E to call for help. Any teammate can hold E
 to revive: 6s bare-handed, or 3s (2.25s as First-Aid Kid) with a medkit, which
 is consumed. Revived survivors come back wounded. Further hits never permanently
@@ -168,8 +169,19 @@ to ship the addon folder and its libraries explicitly (no exports yet).
   for players who turned voice on (on macOS CoreAudio waits on that prompt at
   start-up, so the project keeps input off by default). Restart once after enabling.
 - **Routing.** Lobby: everyone. Round: alive, downed and boarded survivors hear
-  each other positionally (`AudioStreamPlayer2D` at the speaker, silent beyond
-  420 px, low-pass "VoiceMuffled" bus when a wall blocks line of sight).
+  each other positionally (`AudioStreamPlayer2D` at the speaker, attenuation
+  0.6 and panning strength 0.4 so speech fades gently and stays in both ears,
+  silent beyond 560 px, "VoiceMuffled" bus with a 2.4 kHz low-pass when a wall
+  or tree line blocks line of sight; it was 900 Hz, which smothered speech in
+  the woods, where trees block almost every line).
+- **Levelling and ducking.** The Voice bus runs a compressor (threshold -30 dB,
+  4:1, +12 dB make-up) and a -1.5 dB limiter, so a quiet microphone arrives as
+  loud as a strong one. While anyone is heard, music dips 10 dB, ambience 8 dB
+  and effects 3 dB (`AudioManager.set_duck`), released over about a second.
+- **Lobby meters.** A mic meter beside the lobby title shows your mode, live
+  level and open-mic threshold; each roster row has a speaker meter lit by that
+  player's received voice level. Name, address and port persist in
+  `user://lobby.cfg`.
   Escaped, dead and left-behind players share a ghost channel; the living never
   hear it, and ghosts can still listen to the living by position. Monster AI
   never hears voice.

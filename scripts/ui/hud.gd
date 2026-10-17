@@ -7,6 +7,10 @@ signal retry_requested
 var title: Label
 var prompt: Label
 var stamina: ProgressBar
+## Survivor health (0–100) above stamina, and a red edge flash when hit.
+var health: ProgressBar
+var health_fill: StyleBoxFlat
+var hurt_flash: ColorRect
 var pause_panel: PanelContainer
 var result_panel: PanelContainer
 var inventory_label: Label
@@ -54,9 +58,27 @@ func _ready() -> void:
 		belt_icons.append(icon)
 	prompt = _label(Vector2(9, 184), Vector2(366, 28), 9)
 	prompt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hurt_flash = ColorRect.new()
+	hurt_flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	hurt_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hurt_flash.color = Color(0.6, 0.05, 0.04, 0.0)
+	root.add_child(hurt_flash)
+	root.move_child(hurt_flash, 0)
+	health = ProgressBar.new()
+	health.position = Vector2(9, 22)
+	health.show_percentage = false
+	var health_background := StyleBoxFlat.new()
+	health_background.bg_color = Color("2a1416")
+	health_fill = StyleBoxFlat.new()
+	health_fill.bg_color = Color("c4544a")
+	health.add_theme_stylebox_override("background", health_background)
+	health.add_theme_stylebox_override("fill", health_fill)
+	health.value = 100.0
+	root.add_child(health)
+	health.size = Vector2(68, 5)
 	stamina = ProgressBar.new()
-	stamina.position = Vector2(9, 25)
-	stamina.size = Vector2(68, 6)
+	stamina.position = Vector2(9, 28)
+	stamina.size = Vector2(68, 3)
 	supplies_label = _label(Vector2(83, 25), Vector2(107, 14), 7)
 	threat_label = _label(Vector2(190, 25), Vector2(185, 14), 9)
 	threat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -74,7 +96,7 @@ func _ready() -> void:
 	stamina.add_theme_stylebox_override("background", bar_background)
 	stamina.add_theme_stylebox_override("fill", bar_fill)
 	root.add_child(stamina)
-	stamina.size = Vector2(68, 6)
+	stamina.size = Vector2(68, 3)
 	inventory_label = _label(Vector2(9, 40), Vector2(366, 104), 8)
 	var pack_style := style.duplicate() as StyleBoxFlat
 	pack_style.bg_color = Color("101c1c")
@@ -175,6 +197,13 @@ func set_status(heading: String, detail: String, energy: float) -> void:
 	title.text = heading
 	prompt.text = detail
 	stamina.value = energy * 100.0
+
+
+## Health bar turns from red to a pulsing deep red when wounded; a hit flashes the edges.
+func set_health(value: float, wounded: bool, hurt: float) -> void:
+	health.value = value
+	health_fill.bg_color = Color("8f2a26").lerp(Color("e0574a"), 0.5 + 0.5 * sin(Time.get_ticks_msec() * 0.008)) if wounded else Color("c4544a")
+	hurt_flash.color.a = clampf(hurt, 0.0, 0.6) * 0.45
 
 
 func show_pause(value: bool) -> void:

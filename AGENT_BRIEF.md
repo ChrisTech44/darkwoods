@@ -51,8 +51,11 @@ Latest user amendment: fix selected survivors rendering as white blocks; remove
 trailing belt counts; add roaming monsters and more frequent encounters; then
 implement ENet host/join multiplayer for LAN/Wi-Fi and direct-IP or virtual-LAN
 Internet play. Voice chat is the next feature and must remain a separate gated
-opt-in system. The offline encounter update uses 48 cryptids across 16 species,
-including Relay Jackal, Ration Moth and Lens Eater away from landmark biomes.
+opt-in system. The offline encounter update uses 16 species, including Relay Jackal, Ration
+Moth and Lens Eater away from landmark biomes. Amendment (17 October 2026,
+playtest feedback): 26 cryptids, with 18 roamers spread across the whole
+forest; survivors have health with per-creature damage and attack cooldowns;
+creatures stay out of camp until Deep Night.
 Required online cross-machine acceptance still needs execution evidence.
 
 Network implementation amendment: the current build has a 1–4 peer listen-host

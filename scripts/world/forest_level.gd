@@ -73,7 +73,7 @@ func _ready() -> void:
 				clues[kind] = 1
 				break
 	if plan.expedition:
-		message = "DUSK. Corkboard: fuel is at the %s; notes on the roads name the rest. Rumour: %s might get you out too (T)." % [plan.region_name("fuel"), plan.rumour_text()]
+		message = "DUSK. Corkboard: fuel is at the %s; notes on the roads name the rest. Rumour: %s might get you out too (T). Camp stays safe until Deep Night." % [plan.region_name("fuel"), plan.rumour_text()]
 		message += " Tonight THE %s hunts." % plan.headline.to_upper()
 		if not plan.modifiers.is_empty():
 			message += " %s." % plan.modifier_text()
@@ -112,9 +112,14 @@ func _ready() -> void:
 	killer.headline = plan.headline
 	# Visit central camp early, then tour the roads and cabin approaches.
 	killer.position = Vector2(600,520)
-	var perimeter: Array[Vector2]=[Vector2(360,520),Vector2(360,216),Vector2(960,216),Vector2(960,520),Vector2(1400,520),Vector2(960,840),Vector2(600,520)]
-	if plan.seed_value % 2 == 1: perimeter.reverse()
-	killer.patrol.assign([Vector2(360,520),Vector2(96,520),Vector2(96,384),Vector2(96,520)]+perimeter)
+	killer.patrol.assign(camp_tour())
+	# Expeditions: camp is off limits to every creature until Deep Night, so
+	# the stalker starts out prowling a stretch of woods beyond camp.
+	CampKiller.camp_closed = plan.expedition
+	if plan.expedition:
+		var den := woods_den()
+		killer.position = plan.woods.center(den)
+		killer.patrol.assign(plan.woods.roaming_route(den, 24))
 	world_objects.add_child(killer)
 	_spawn_cryptids()
 	_apply_weather()
@@ -239,18 +244,20 @@ func _process(_delta: float) -> void:
 	if self_recovery_progress > 0.0:
 		detail = "HOLD E · GET UP  %d%%" % int(self_recovery_progress / SELF_RECOVERY_SECONDS * 100)
 	hud.threat_label.text = ""
+	var energy: float = player.stamina / player.config.stamina_max
+	hud.set_health(player.health if player.status == CampPlayer.Status.ALIVE else 0.0, player.wounded and player.status == CampPlayer.Status.ALIVE, player.hurt_time)
 	if player.wounded and player.status == CampPlayer.Status.ALIVE:
-		hud.threat_label.text = "WOUNDED · MEDKIT (V) PATCHES"
+		hud.threat_label.text = "WOUNDED %d HP · MEDKIT HEALS" % ceili(player.health)
 	if player.hidden_spot >= 0:
 		hud.threat_label.text = "HOLD YOUR BREATH" if player.breath < 0.999 else "HIDDEN"
-		hud.stamina.value = player.breath * 100.0
+		energy = player.breath
 	if not finished and killer.global_position.distance_to(player.global_position) < 155.0 and sight.can_see(killer.global_position):
 		note_sighting(plan.headline)
 	if player.notice_time > 0.0:
 		detail=player.notice+"\n"+detail
 	elif message_time > 0.0:
 		detail = message + "\n" + detail
-	hud.set_status(heading, detail, player.stamina / player.config.stamina_max)
+	hud.set_status(heading, detail, energy)
 	hud.inventory_label.text = "NIGHT %d / %s%s\nQ FLARE %d · R BATTERY %d · C FOOD %d\n" % [plan.seed_value, plan.weather.to_upper(), (" / " + plan.headline.to_upper() + ((" / " + plan.modifier_text()) if not plan.modifiers.is_empty() else "")) if plan.expedition else "", player.supplies["flare"], player.supplies["battery_pack"], player.supplies["rations"]]
 	hud.inventory_label.text += rescue.pack_text() if plan.expedition and rescue.show_in_pack(player) else plan.pack_description(van.installed, night_clock.phase if plan.expedition else 3, clues)
 	var page := current_page()
@@ -563,7 +570,7 @@ func _advance_clues() -> void:
 
 func on_survivor_wounded(actor: CampPlayer) -> void:
 	if get_node("/root/Net").active and not multiplayer.is_server(): return
-	announce("WOUNDED! One more hit downs you. Run, then patch up with a medkit.", actor)
+	announce("BADLY HURT (%d health) and bleeding. Break line of sight, then use a medkit." % ceili(actor.health), actor)
 
 
 func _on_noise(origin: Vector2) -> void:
@@ -753,6 +760,8 @@ func note_sighting(species: String) -> void:
 
 func _van_started() -> void:
 	if plan.expedition:
+		# The finale: the engine roar brings everything into camp whatever the hour.
+		open_camp()
 		van_rev_clock = VAN_REV_SECONDS
 		loud_noise(van.global_position, 1200)
 		killer.hear_stimulus(van.global_position, 6000)
@@ -924,10 +933,11 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 		actor.flashlight_charge = minf(config.flashlight_capacity, actor.flashlight_charge + (40 if plan.has_modifier("dead_batteries") else 70))
 		actor.flashlight_on = true
 	elif kind == "rations":
-		if actor.stamina >= actor.config.stamina_max:
+		if actor.stamina >= actor.config.stamina_max and actor.health >= CampPlayer.MAX_HEALTH:
 			return false
 		actor.stamina = actor.config.stamina_max
 		actor.exhausted = false
+		actor.heal(CampPlayer.RATION_HEAL)
 		for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
 			if enemy.species == "ration_moth": enemy.hear_stimulus(actor.global_position,600)
 	elif kind == "noise_tin":
@@ -941,12 +951,11 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 		actor.ward_remaining = 4.0
 		announce("Salt ward: four seconds of protection. Keep moving!",actor)
 	elif kind == "medkit":
-		if not actor.wounded:
-			announce("You're not wounded. Save the medkit for a revive.", actor)
+		if actor.health >= CampPlayer.MAX_HEALTH:
+			announce("You're at full health. Save the medkit for a revive.", actor)
 			return false
-		actor.wounded = false
-		actor.blood.clear()
-		announce("Wound patched. One hit no longer downs you.", actor)
+		actor.heal(CampPlayer.MEDKIT_HEAL)
+		announce("Medkit: +%d health (%d/%d)." % [int(CampPlayer.MEDKIT_HEAL), ceili(actor.health), int(CampPlayer.MAX_HEALTH)], actor)
 	elif kind == "glow_moss":
 		actor.flashlight_charge = minf(actor.config.flashlight_capacity, actor.flashlight_charge + 35)
 		actor.hex_remaining = 0
@@ -956,6 +965,37 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 	actor.supplies[kind] -= 1
 	actor.tidy_belt()
 	return true
+
+
+func camp_tour() -> Array[Vector2]:
+	var perimeter: Array[Vector2]=[Vector2(360,520),Vector2(360,216),Vector2(960,216),Vector2(960,520),Vector2(1400,520),Vector2(960,840),Vector2(600,520)]
+	if plan.seed_value % 2 == 1: perimeter.reverse()
+	var tour: Array[Vector2] = [Vector2(360,520),Vector2(96,520),Vector2(96,384),Vector2(96,520)]
+	tour.append_array(perimeter)
+	return tour
+
+
+## A seeded woods clearing well clear of camp where the stalker waits out the first half.
+func woods_den() -> Vector2i:
+	var options: Array[Vector2i] = []
+	var middle := CampMap.CAMP_BOUNDS.get_center()
+	for cell: Vector2i in plan.woods.links:
+		var distance := plan.woods.center(cell).distance_to(middle)
+		if distance >= RoundPlan.SAFE_RADIUS and distance <= RoundPlan.SAFE_RADIUS + 500.0 and plan.woods.zone_at(plan.woods.center(cell)).is_empty():
+			options.append(cell)
+	if options.is_empty():
+		return WoodsLayout.ENTRY + Vector2i(-6, 0)
+	options.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y * WoodsLayout.SIZE.x + a.x < b.y * WoodsLayout.SIZE.x + b.x)
+	return options[posmod(plan.seed_value * 7919, options.size())]
+
+
+## Deep Night: creatures may now enter camp, and the stalker tours it.
+func open_camp() -> void:
+	if not CampKiller.camp_closed:
+		return
+	CampKiller.camp_closed = false
+	killer.patrol.assign(camp_tour())
+	killer.patrol_index = 0
 
 
 func _spawn_cryptids() -> void:
@@ -1088,7 +1128,7 @@ func _drop_position(origin: Vector2, index: int) -> Vector2:
 			var query := PhysicsShapeQueryParameters2D.new()
 			query.shape=shape
 			query.transform=Transform2D(0,at)
-			query.collision_mask=1
+			query.collision_mask=1 | CampPlayer.WATER_LAYER
 			if get_world_2d().direct_space_state.intersect_shape(query,1).is_empty(): return at
 	# Extremely cramped geometry: draw the pickup above the body so it remains visible.
 	return origin

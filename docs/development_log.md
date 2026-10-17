@@ -1,5 +1,94 @@
 # Development log
 
+## 2026-10-17 — Playtest feedback: health, fewer creatures, a camp refuge, water, gates, voice
+
+The game was played with friends; their findings and the changes made:
+- **Too oppressive, little room to explore:**
+  - creatures cut from 48 to 26 (a vampire and a witch in their regions, six
+    guardians, and 18 roamers);
+  - roamers are placed by seeded best-candidate sampling across the whole
+    forest: each pick is the farthest of 12 random clearings from everything
+    placed. None starts within 1,100 px of camp; no more clusters on the
+    camp approaches.
+  - **Camp is a refuge until Deep Night:** `CampKiller.camp_closed` (set at
+    expedition start, lifted at Deep Night or when the van engine roars)
+    blinds creatures to survivors in camp and deafens them to camp noise. It
+    also pushes their routes out of camp and refuses steps or charges into
+    it. The stalker spends the first half prowling a seeded woods clearing
+    beyond camp, then tours camp. Lanterns at the four trail mouths burn
+    while camp is safe.
+  - the director waits until Nightfall and steers creatures less often
+    (110 to 40 s apart, was 75 to 25).
+- **Health bar, health packs, cooldowns:**
+  - survivors have 100 health (HUD bar, red edge flash on a hit); 50 or less
+    is wounded; 0 downs;
+  - each creature has [damage, cooldown] in `CampKiller.THREATS`: easy to
+    evade means hard-hitting with a long recovery (Bigfoot 60/5 s, Stoneback
+    Ram 55/5 s, stalker 50/4 s); quick creatures hit lightly but are easy to
+    counter (moths, wraith and jackal 15 with a 1–1.2 s cooldown);
+  - after a landed hit the attacker stands still for half its cooldown (max
+    2 s), and every hit grants 1.5 s of grace, so no back-to-back hits from
+    one or several creatures;
+  - a medkit heals 50, rations heal 10 and the medic's Patch heals fully;
+    revived survivors have 35 health; health is in the network snapshot.
+- **The Groundskeeper moonwalked:** his importer had swapped the left and
+  right poses. Fixed in `tools/import_spritecook_groundskeeper.gd` and the
+  sheet rebuilt. All 25 character sheets were checked side by side; the
+  others were correct.
+- **Name not kept for another night:** the lobby saves name, address and port
+  to `user://lobby.cfg` and shows the session's name on return.
+- **Gates looked wacky; the woods entrance had a pointless gate:**
+  - two SpriteCook sheets (24 credits, 500 left), sliced by
+    `slice_spritecook_grid.gd` (now with 2x2 sheets and an "opened" derived
+    sprite): a straight double gate, closed and open, a lantern trail post,
+    a straight rail fence, a top-down vertical fence run and a padlocked
+    edge-on gate;
+  - shortcut gates across north–south trails are fence, gate, fence at chest
+    height (the gate leaves swing back when opened). Across east–west trails
+    they are a top-down fence run with the padlocked gate in the middle
+    (just its posts once open). Before, a row of tiled angled gates or
+    sparse angled sections;
+  - the stray gate mid-trail at the east entrance became lantern posts on
+    both sides of all four trail mouths (lit while camp is safe), with the
+    plaque moved to the trail edge.
+- **Boat landing water was non-existent:**
+  - the lake was solid on layer 1, so the sight mask treated it as a wall
+    (and it cast a black shadow). Water is now on its own layer
+    (`CampPlayer.WATER_LAYER`): bodies collide with it, but sight, light and
+    voice rays cross it;
+  - `LakeWater` draws it with `lake_water.gdshader`: depth shading from the
+    bank, drifting pixel wave dashes, a slow swell, lapping foam, rings
+    around the pilings and glints where light falls;
+  - a muddy bank and a lantern at the end of the pier.
+- **Lobby voice visuals:** a mic meter (mode, level, open-mic threshold) by
+  the title, and a speaker meter per roster row lit by that player's voice.
+- **Hard to hear in the woods:**
+  - the muffle (any blocked line, and trees block nearly every line in the
+    woods) was a 900 Hz low-pass; it is now 2.4 kHz;
+  - range rises from 420 to 560 px with gentler attenuation (0.6, was 1.4)
+    and panning strength 0.4;
+  - the Voice bus levels speakers (compressor plus limiter), so a quiet
+    microphone, the likely cause of "friends can't hear me but I hear them",
+    is lifted;
+  - music, ambience and effects duck while anyone is heard.
+
+**Verification (macOS):**
+- `design_feedback.gd`: 52/52.
+- Rerun after the changes: offline_slice 65, chase_props 46, chase_toolkit 29,
+  woods_replay 443, surround_world 101, killers_modifiers 32, night_phases 43,
+  content_expansion 443, roles_abilities 33, night_events 31, forest_hunt 87,
+  barriers 32, field_escapes 58, signal_fire 31, navigation_aids 45; all 0
+  failures.
+- Three tests changed for the new rules:
+  - `offline_slice` waits through the stalker's 4 s cooldown;
+  - `chase_props` opens the camp, since its hiding and door scenarios are
+    second-half ones;
+  - van start now opens the camp, which `signal_fire` expects.
+- `verify_voice.py`: 24 + 8 + 13 checks.
+- `verify.py` (import, startup, every script parse and all suites,
+  `design_feedback` included): all 140 steps passed.
+- Gates, entrances, water and lobby checked in captured frames.
+
 ## 2026-10-17 — Import crash on Linux and Windows: voice library kept out of the editor
 
 The friends' machines still failed after the launcher fixes. Their logs showed

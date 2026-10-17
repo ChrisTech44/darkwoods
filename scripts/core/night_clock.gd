@@ -93,8 +93,9 @@ func advance(delta: float) -> void:
 	_escalate(delta)
 	director_clock -= delta
 	if director_clock <= 0.0:
-		director_clock = lerpf(75.0, 25.0, dread / 100.0)
-		if director_enabled:
+		director_clock = lerpf(110.0, 40.0, dread / 100.0)
+		# Dusk is for exploring: the director only starts steering at Nightfall.
+		if director_enabled and phase >= 1:
 			direct()
 
 
@@ -247,6 +248,8 @@ func _enter_phase(next: int) -> void:
 		level.abilities.on_phase()
 	level.killer.tier = next + 1
 	if next == 2:
+		# The second half: the camp is no longer a refuge.
+		level.open_camp()
 		# Tier 3: longer search memory and one van sabotage.
 		level.killer.config.search_seconds *= 1.5
 		sabotage_armed = true
@@ -268,7 +271,8 @@ func _enter_phase(next: int) -> void:
 		var known: int = level.clues.get(kind, 2)
 		var where: String = level.plan.region_name(kind) if known >= 1 else "the %s woods (find a ranger note)" % level.plan.cache_direction.get(kind, "")
 		clue += " %s stashed at %s." % [kind.replace("_", " ").to_upper(), where if not where.is_empty() else "camp"]
-	level.announce("%s. Ranger radio:%s Supply drop at Maintenance." % [PHASES[next], clue if not clue.is_empty() else " stay together."])
+	var warning := " The creatures no longer fear the camp: it is not safe now." if next == 2 else ""
+	level.announce("%s. Ranger radio:%s Supply drop at Maintenance.%s" % [PHASES[next], clue if not clue.is_empty() else " stay together.", warning])
 	print(JSON.stringify({"event": "night_phase", "phase": PHASES[next], "time": int(elapsed), "revealed": revealed}))
 
 

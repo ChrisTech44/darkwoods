@@ -162,10 +162,10 @@ func _decor_clear(base: Vector2, width: float) -> bool:
 	return true
 
 
-func add_wall(rect: Rect2, shadow: bool = true) -> void:
+func add_wall(rect: Rect2, shadow: bool = true, layer: int = 1) -> void:
 	obstacles.append(rect)
 	var body := StaticBody2D.new()
-	body.collision_layer = 1
+	body.collision_layer = layer
 	body.collision_mask = 0
 	var collision := CollisionShape2D.new()
 	var shape := RectangleShape2D.new()
@@ -290,8 +290,11 @@ func _build_sites() -> void:
 		elif definition["kind"] == "relay":
 			add_wall(Rect2(definition["position"] + Vector2(-24, 12), Vector2(48, 28)))
 		elif definition["kind"] == "boathouse":
+			# Water blocks walking only: sight, light and voice carry across it.
 			for water_rect in FieldEscapeArt.water_rects(definition["position"]):
-				add_wall(water_rect)
+				add_wall(water_rect, false, CampPlayer.WATER_LAYER)
+			# A lantern at the end of the pier lights the water and the boat.
+			CampLights.lamp(self, definition["position"] + Vector2(0, -222), 150, Color("e9c37f"), 0.9)
 		elif definition["kind"] == "bog":
 			CampLights.lamp(self, definition["position"] - Vector2(0, 13), 66, Color("a0b876"), 0.65)
 		else:

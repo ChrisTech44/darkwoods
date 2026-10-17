@@ -557,6 +557,47 @@ func _draw_fence_art(rect: Rect2, kind: String) -> bool:
 	return true
 
 
+## One shortcut gate across the trail. Across a north-south trail: fence
+## sections either side of a single straight double gate (latched, or its
+## leaves swung back once opened). Across an east-west trail the run is seen
+## edge-on: angled fence sections with one gate section in the middle.
+## Everything stays about chest height. False when the art is missing.
+func _draw_gate_art(rect: Rect2, open: bool) -> bool:
+	if PixelArt.fit("gateway_closed", Vector2(32, 32)) == null or PixelArt.fit("rail_fence", Vector2(32, 32)) == null:
+		return false
+	const HEIGHT := 26.0
+	if rect.size.x > rect.size.y:
+		var gate_width := PixelArt.fit("gateway_closed", Vector2(999, HEIGHT)).get_size().x
+		var side := (rect.size.x - gate_width) * 0.5
+		var base_y := rect.get_center().y + 6.0
+		PixelArt.draw_standing(self, "gateway_open" if open else "gateway_closed", Vector2(rect.get_center().x, base_y), gate_width + 2.0, HEIGHT)
+		for direction in [-1, 1]:
+			PixelArt.draw_standing(self, "rail_fence", Vector2(rect.get_center().x + direction * (gate_width + side) * 0.5, base_y), side + 2.0, HEIGHT - 4.0)
+		return true
+	# Edge-on run (top-down): a padlocked gate in the middle (just its two posts
+	# once open), fence runs filling the trail above and below, posts overlapping.
+	if PixelArt.fit("gateway_v_closed", Vector2(32, 32)) == null or PixelArt.fit("fence_run_v", Vector2(32, 32)) == null:
+		return false
+	const SCALE := 0.75
+	var x := rect.get_center().x
+	var gate_size := PixelArt.fit("gateway_v_closed", Vector2(99, 117 * SCALE)).get_size()
+	var gate_bottom := rect.get_center().y + gate_size.y * 0.5
+	PixelArt.draw_standing(self, "gateway_v_open" if open else "gateway_v_closed", Vector2(x, gate_bottom), gate_size.x + 1.0, gate_size.y)
+	var run := PixelArt.fit("fence_run_v", Vector2(99, 120 * SCALE)).get_size()
+	for stretch in [[rect.position.y, gate_bottom - gate_size.y + 3.0], [gate_bottom - 3.0, rect.end.y]]:
+		var length: float = stretch[1] - stretch[0]
+		if length <= 4.0:
+			continue
+		var pieces := maxi(1, ceili(length / run.y))
+		for index in range(pieces):
+			# Spread pieces so the last one ends exactly at the stretch end.
+			var bottom: float = stretch[0] + run.y + (length - run.y) * (float(index) / maxf(1.0, pieces - 1.0) if pieces > 1 else 0.0)
+			if pieces == 1:
+				bottom = stretch[1]
+			PixelArt.draw_standing(self, "fence_run_v", Vector2(x, bottom), run.x + 1.0, run.y)
+	return true
+
+
 ## A knocked-over woodpile: fallen-log sprites laid along the blocked lane.
 func _draw_fallen(rect: Rect2) -> bool:
 	if PixelArt.fit("woodpile_fallen", Vector2(32, 32)) == null:
@@ -644,12 +685,8 @@ func _draw() -> void:
 		if not _draw_fence_art(fence["rect"], "fence"):
 			_draw_rails(fence["rect"], Color("9a7b52"), false)
 	for gate: Dictionary in level.plan.woods.gates:
-		if not gate["open"]:
-			if not _draw_fence_art(gate["rect"], "gate_closed"):
-				_draw_rails(gate["rect"], Color("b39c6a"), true)
-		else:
-			var rect: Rect2 = gate["rect"]
-			PixelArt.draw_standing(self, "gate_open", rect.position + Vector2(8, rect.size.y * 0.5 + 8), 22)
+		if not _draw_gate_art(gate["rect"], gate["open"]) and not gate["open"]:
+			_draw_rails(gate["rect"], Color("b39c6a"), true)
 	for spot in spots:
 		var at: Vector2 = spot["position"]
 		if spot["woods"] and PixelArt.draw_standing(self, "berry_bush" if int(at.x + at.y) % 2 == 0 else "ferns", at + Vector2(0, 6), 30):

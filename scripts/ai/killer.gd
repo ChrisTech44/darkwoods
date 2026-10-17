@@ -30,6 +30,28 @@ var headline := "stalker"
 ## Escalation tier = night phase + 1 (1 Dusk … 4 Witching Hour), set by NightClock.
 var tier := 1
 const INNER_RING := 1600.0
+## Per-creature hit as [damage, cooldown seconds]. Slow or telegraphed creatures
+## that are easy to evade hit hard and need a long recovery; quick ones hit
+## lightly and more often but each has a simple counter (darkness, the beam,
+## standing still, a flare). After a hit the attacker pauses for half its
+## cooldown (at most 2 s), so a survivor always gets a head start.
+const THREATS := {
+	"stalker": [50.0, 4.0], "groundskeeper": [40.0, 3.5],
+	"bigfoot": [60.0, 5.0], "werewolf": [40.0, 4.0], "witch": [35.0, 4.0],
+	"vampire": [25.0, 2.5], "lantern_moth": [15.0, 1.0], "briar_revenant": [20.0, 1.5],
+	"boiler_saint": [45.0, 4.0], "bramble_seamstress": [30.0, 3.0], "shutter_wraith": [15.0, 1.0],
+	"last_car_conductor": [35.0, 3.5], "stoneback_ram": [55.0, 5.0], "candle_grazer": [20.0, 1.5],
+	"switchback_hound": [30.0, 2.5], "relay_jackal": [15.0, 1.2], "ration_moth": [15.0, 1.0],
+	"lens_eater": [20.0, 2.0],
+}
+## Expedition nights keep every creature out of camp until Deep Night (the
+## second half): camp neither shows nor sounds to them, and they never path
+## in. The level sets this at start and NightClock lifts it.
+static var camp_closed := false
+const CAMP_MARGIN := 40.0
+var hit_damage := 45.0
+var hit_cooldown := 4.0
+var recover_remaining := 0.0
 const STALKER_SHEET := preload("res://assets/sprites/stalker.png")
 const GROUNDSKEEPER_SHEET := preload("res://assets/sprites/groundskeeper.png")
 @onready var agent: NavigationAgent2D = $NavigationAgent2D
@@ -37,8 +59,11 @@ const GROUNDSKEEPER_SHEET := preload("res://assets/sprites/groundskeeper.png")
 
 func _ready() -> void:
 	add_to_group("killers")
+	var threat: Array = THREATS.get(threat_key(), [45.0, 3.0])
+	hit_damage = threat[0]
+	hit_cooldown = threat[1]
 	# Fences and closed gates (layer 8) stop creatures too; they never vault.
-	collision_mask |= CampPlayer.BARRIER_LAYER
+	collision_mask |= CampPlayer.BARRIER_LAYER | CampPlayer.WATER_LAYER
 
 
 func _physics_process(delta: float) -> void:
@@ -48,6 +73,12 @@ func _physics_process(delta: float) -> void:
 	if tick_stun(delta):
 		return
 	attack_remaining = maxf(0.0, attack_remaining - delta)
+	if recover_remaining > 0.0:
+		# Catching its breath after a hit: the survivor's head start.
+		recover_remaining = maxf(0.0, recover_remaining - delta)
+		velocity = Vector2.ZERO
+		queue_redraw()
+		return
 	retreat_remaining = maxf(0.0, retreat_remaining - delta)
 	for target_id: int in memory.keys():
 		memory[target_id]["remaining"] -= delta
@@ -65,8 +96,7 @@ func _physics_process(delta: float) -> void:
 		memory[visible_target.get_instance_id()] = {"position": last_seen, "remaining": config.memory_seconds}
 		transition(State.CHASE)
 		if global_position.distance_to(last_seen) <= config.attack_radius and attack_remaining <= 0.0:
-			attack_remaining = config.attack_cooldown
-			visible_target.receive_hit()
+			land_hit(visible_target, hit_damage)
 			if visible_target.status != CampPlayer.Status.ALIVE:
 				visible_target = null
 				transition(State.SEARCH)
@@ -86,6 +116,8 @@ func _physics_process(delta: float) -> void:
 	if NavigationServer2D.map_get_iteration_id(agent.get_navigation_map()) > 0:
 		destination = NavigationServer2D.map_get_closest_point(agent.get_navigation_map(), destination)
 	destination = constrain_destination(destination)
+	if camp_closed:
+		destination = outside_camp(destination)
 	var arrived := global_position.distance_to(destination) < 9.0
 	if state == State.PATROL and arrived:
 		patrol_index = (patrol_index + 1) % patrol.size()
@@ -115,6 +147,14 @@ func _physics_process(delta: float) -> void:
 		velocity = direction * (config.killer_chase_speed if state == State.CHASE else config.killer_patrol_speed)
 		if retreat_remaining > 0:
 			velocity = direction * maxf(config.killer_patrol_speed, 82)
+	if camp_closed and velocity != Vector2.ZERO and not in_camp(global_position) and in_camp(global_position + velocity.normalized() * 12.0):
+		# A route that cuts through camp is refused: turn back to the woods.
+		velocity = Vector2.ZERO
+		if state != State.PATROL:
+			visible_target = null
+			transition(State.PATROL)
+		patrol_index = (patrol_index + 1) % patrol.size()
+		path_clock = 0.0
 	var previous := position
 	move_and_slide()
 	stride += position.distance_to(previous)
@@ -131,6 +171,37 @@ func _physics_process(delta: float) -> void:
 	else:
 		stuck_clock = 0.0
 	queue_redraw()
+
+
+func threat_key() -> String:
+	return headline
+
+
+static func in_camp(point: Vector2) -> bool:
+	return CampMap.CAMP_BOUNDS.grow(CAMP_MARGIN).has_point(point)
+
+
+## The nearest point just outside the closed camp.
+static func outside_camp(point: Vector2) -> Vector2:
+	var rect := CampMap.CAMP_BOUNDS.grow(CAMP_MARGIN + 1.0)
+	if not rect.has_point(point):
+		return point
+	var gaps := [point.x - rect.position.x, rect.end.x - point.x, point.y - rect.position.y, rect.end.y - point.y]
+	match gaps.find(gaps.min()):
+		0: return Vector2(rect.position.x, point.y)
+		1: return Vector2(rect.end.x, point.y)
+		2: return Vector2(point.x, rect.position.y)
+	return Vector2(point.x, rect.end.y)
+
+
+## Strike once; a landed hit starts the cooldown and the recovery pause.
+func land_hit(actor: CampPlayer, damage: float) -> bool:
+	if not actor.receive_hit(damage):
+		attack_remaining = 0.3
+		return false
+	attack_remaining = hit_cooldown
+	recover_remaining = minf(hit_cooldown * 0.5, 2.0)
+	return true
 
 
 ## A flash-stunned creature freezes briefly, then cannot be re-stunned for a while.
@@ -174,6 +245,8 @@ func sense_visible_target() -> CampPlayer:
 			continue
 		if actor.status != CampPlayer.Status.ALIVE or actor.hidden_spot >= 0:
 			continue
+		if camp_closed and in_camp(actor.global_position):
+			continue
 		var candidate_distance := global_position.distance_to(actor.global_position)
 		if candidate_distance <= distance and has_line_of_sight(actor.global_position):
 			distance = candidate_distance
@@ -212,6 +285,8 @@ func hear_noise(origin: Vector2) -> void:
 
 func hear_stimulus(origin: Vector2, radius: float) -> void:
 	if not enabled or state == State.CHASE or global_position.distance_to(origin) > radius:
+		return
+	if camp_closed and in_camp(origin):
 		return
 	last_seen = origin
 	transition(State.INVESTIGATE)

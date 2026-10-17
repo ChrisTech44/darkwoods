@@ -90,6 +90,8 @@ def main():
     commands.append(("radio_rescue", ["--headless", *rescue]))
     field_escapes = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/field_escapes.gd", "--", "--all-escapes"]
     commands.append(("field_escapes", ["--headless", *field_escapes]))
+    feedback = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/design_feedback.gd"]
+    commands.append(("design_feedback", ["--headless", *feedback]))
     if args.graphical:
         commands.append(("graphical_field_escapes", ["--audio-driver", "Dummy", *field_escapes, "--", "--capture"]))
         commands.append(("graphical_rescue", ["--audio-driver", "Dummy", *rescue, "--", "--capture"]))

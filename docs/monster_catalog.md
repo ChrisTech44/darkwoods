@@ -5,8 +5,8 @@ The playable build has the stalker and 16 cryptid species. New additions are
 Switchback Hound, Bramble Seamstress, Stoneback Ram, Shutter Wraith, Candle
 Grazer, Boiler Saint and Last-Car Conductor. Their bounded current behaviors
 are documented in [content update](content_update.md); the detailed powers below
-remain design targets where they differ. Expedition retains 48 cryptids plus
-the stalker. The rest of these 48 concepts remain backlog, for 55 total designs.
+remain design targets where they differ. Expedition now has 26 cryptids plus
+the stalker (18 roamers spread across the forest; 17 October playtest feedback). The rest of these 48 concepts remain backlog, for 55 total designs.
 
 Read [biome design](biome_design.md) for encounter spaces and
 [survivor/co-op plan](survivor_multiplayer_plan.md) for progression. Entries are

@@ -300,6 +300,18 @@
       "label": "groundskeeper 2x2 mid-stride poses (edit of bc1d5e5d)",
       "file": "art_sources/spritecook/groundskeeper_stride_sheet.png",
       "sha12": "0c9b236c189d"
+    },
+    {
+      "asset_id": "e1f93cd1-20b0-48a0-909b-808c3d8c441c",
+      "label": "gateway 2x2 (straight double gate closed/open, lantern trail post, rail fence), 12 credits, NB 2.1, style from world objects; slices gateway_closed, gateway_open, trail_lantern, rail_fence via tools/slice_spritecook_grid.gd",
+      "file": "art_sources/spritecook/gateway_sheet.png",
+      "sha12": "c171cf194d35"
+    },
+    {
+      "asset_id": "eb9892fd-4c08-41bb-a085-cb92a2bb8ea1",
+      "label": "vertical gateway 2x2 (top-down fence run, padlocked edge-on gate, unused open pose, post), 12 credits, NB 2.1, style from gateway sheet; slices fence_run_v, gateway_v_closed, fence_post and derived gateway_v_open",
+      "file": "art_sources/spritecook/gateway_vertical_sheet.png",
+      "sha12": "7c56d3874dae"
     }
   ]
 }

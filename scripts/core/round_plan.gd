@@ -2,7 +2,12 @@ class_name RoundPlan
 extends RefCounted
 ## Seeded authority-side run recipe. No gameplay relies on global RNG state.
 
-const CRYPTID_COUNT := 48
+## Two region dwellers, six landmark guardians and ROAMERS spread through the woods.
+const ROAMERS := 18
+const CRYPTID_COUNT := 8 + ROAMERS
+## No roaming creature starts this close to camp (the first stretch is for exploring).
+const SAFE_RADIUS := 1100.0
+const ROAMER_SPECIES: Array[String] = ["werewolf", "switchback_hound", "bigfoot", "relay_jackal", "lantern_moth", "ration_moth", "vampire", "lens_eater", "witch", "switchback_hound", "briar_revenant", "relay_jackal", "ration_moth", "lens_eater"]
 var seed_value: int
 var expedition: bool
 var weather: String = "clear"
@@ -131,50 +136,52 @@ func generate(value: int, mode: String) -> void:
 		item["position"] = camp.remap(item["position"])
 	_encounter("vampire", woods.zones[2]["cell"] + Vector2i(1,1))
 	_encounter("witch", woods.zones[1]["cell"] + Vector2i(1,1))
-	_encounter("werewolf", Vector2i(24,18))
-	_encounter("bigfoot", Vector2i(18,24))
-	_encounter("lantern_moth", Vector2i(25,30))
-	_encounter("briar_revenant", Vector2i(32,26))
-	var species: Array[String] = ["werewolf","bigfoot","lantern_moth","vampire","witch","briar_revenant"]
-	var homes: Array[Vector2i] = [Vector2i(19,19),Vector2i(30,19),Vector2i(32,28),Vector2i(28,29),Vector2i(20,28),Vector2i(18,22),Vector2i(6,10),Vector2i(17,6),Vector2i(32,6),Vector2i(44,12),Vector2i(44,25),Vector2i(42,40),Vector2i(32,42),Vector2i(20,42),Vector2i(6,38),Vector2i(6,25),Vector2i(10,16),Vector2i(35,36)]
 	var guardians := ["boiler_saint", "bramble_seamstress", "shutter_wraith", "last_car_conductor", "stoneback_ram", "candle_grazer"]
 	for index in range(6):
 		var zone: Dictionary = woods.zones[index + 3]
 		var cell: Vector2i = zone["cell"] + Vector2i(1,1)
 		_encounter(guardians[index], cell)
 		encounters.back()["home"] = zone["bounds"].grow(48)
-	# Preserve the original core encounters before adding the denser roaming ring.
-	for index in range(homes.size() - 6):
-		_encounter("switchback_hound" if index % 4 == 0 else species[(index + posmod(value,6)) % 6],homes[index])
-	# Denser, seeded roaming encounters around the approaches, never inside camp or a landmark.
-	var candidates: Array[Vector2i] = []
-	for cell: Vector2i in woods.links:
-		var at := woods.center(cell)
-		var distance := at.distance_to(CampMap.CAMP_BOUNDS.get_center())
-		if distance > 850 and distance < 2400 and woods.zone_at(at).is_empty():
-			candidates.append(cell)
-	for index in range(candidates.size()-1,0,-1):
-		var swap := rng.randi_range(0,index)
-		var cell := candidates[index]
-		candidates[index] = candidates[swap]
-		candidates[swap] = cell
-	var added: Array[Vector2] = []
-	for cell in candidates:
-		var at := woods.center(cell)
-		var clear := true
-		for existing: Vector2 in added:
-			if at.distance_to(existing)<220: clear=false
-		if not clear: continue
-		_encounter(["relay_jackal","ration_moth","lens_eater","switchback_hound"][added.size()%4],cell)
-		added.append(at)
-		if encounters.size()==CRYPTID_COUNT: break
+	_spread_roamers(value)
 	if has_modifier("blood_moon"):
-		# Blood Moon: half again as many hounds and jackals, same total count.
+		# Blood Moon: more hounds and jackals, same total count.
 		var converted := 0
 		for encounter in encounters:
 			if encounter["species"] in ["ration_moth", "lens_eater"] and not encounter.has("home") and converted < 6:
 				encounter["species"] = "switchback_hound" if converted % 2 == 0 else "relay_jackal"
 				converted += 1
+
+
+## Roaming creatures spread across the whole forest (seeded best-candidate
+## sampling: each pick is the farthest of a dozen random clearings from every
+## creature already placed), none within SAFE_RADIUS of camp, none in a region.
+func _spread_roamers(value: int) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = value + 3131
+	var camp_center := CampMap.CAMP_BOUNDS.get_center()
+	var candidates: Array[Vector2i] = []
+	for cell: Vector2i in woods.links:
+		var at := woods.center(cell)
+		if at.distance_to(camp_center) >= SAFE_RADIUS and woods.zone_at(at).is_empty():
+			candidates.append(cell)
+	candidates.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y * WoodsLayout.SIZE.x + a.x < b.y * WoodsLayout.SIZE.x + b.x)
+	var placed: Array[Vector2] = []
+	for encounter in encounters:
+		placed.append(encounter["position"])
+	var offset := posmod(value, ROAMER_SPECIES.size())
+	for index in range(ROAMERS):
+		var best := candidates[rng.randi_range(0, candidates.size() - 1)]
+		var best_gap := -1.0
+		for attempt in range(12):
+			var cell := candidates[rng.randi_range(0, candidates.size() - 1)]
+			var gap := INF
+			for other in placed:
+				gap = minf(gap, woods.center(cell).distance_to(other))
+			if gap > best_gap:
+				best_gap = gap
+				best = cell
+		_encounter(ROAMER_SPECIES[(index + offset) % ROAMER_SPECIES.size()], best)
+		placed.append(woods.center(best))
 
 
 ## Three regions in three different directions from camp, rotating every night.

@@ -26,6 +26,8 @@ func _run() -> void:
 	player.local_input = false
 	props = level.props
 	level.night_clock.director_enabled = false
+	# Camp hiding and doors matter once creatures may enter camp (Deep Night on).
+	level.open_camp()
 	for enemy: CampKiller in get_nodes_in_group("killers"):
 		enemy.enabled = false
 	for attempt in range(240):

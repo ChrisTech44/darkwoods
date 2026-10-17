@@ -78,7 +78,7 @@ func start(kind: String) -> bool:
 func _spawn_camper() -> void:
 	camper_body = CharacterBody2D.new()
 	camper_body.collision_layer = 0
-	camper_body.collision_mask = 1
+	camper_body.collision_mask = 1 | CampPlayer.WATER_LAYER
 	var shape := CollisionShape2D.new()
 	var circle := CircleShape2D.new()
 	circle.radius = 4.0

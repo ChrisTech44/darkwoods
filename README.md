@@ -175,8 +175,10 @@ editor). Python is optional. More detail:
    boltcutters (a crowbar works, but loudly).
 8. **When something finds you:** sprint (**Shift**), throw a **flare (Q)**,
    **flash (Space)** it with your light, slam a cabin door, or hide (**E** at a
-   locker, bed or bush) and hold still. Your first hit only wounds you; a second
-   one downs you. Patch wounds with a **medkit (V)**.
+   locker, bed or bush) and hold still. Each hit takes **health** (the red bar
+   under the title); at zero you're downed. A **medkit (V)** heals 50. Until Deep
+   Night the camp is a refuge: nothing follows you past the lanterns at the
+   trail mouths.
 9. **Fix your escape.** Bring each part back and press **E** at the rear of the
    van. Installing parts deepens the night, so the radio reveals the next part
    and the woods get angrier.
@@ -247,7 +249,8 @@ editor). Python is optional. More detail:
 ## Play with friends
 
 Open **Host / Join Co-op**, choose your name/survivor, and **Host** or enter the
-host address and **Join**. Default port: **UDP 27840**. Everyone marks **Ready**;
+host address and **Join**. Your name, the address and the port are remembered
+for the next night and the next launch. Default port: **UDP 27840**. Everyone marks **Ready**;
 the host chooses mode/seed and starts. LAN/Wi-Fi uses the host's local IP;
 Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
 
@@ -258,11 +261,16 @@ lobby-only. **Esc opens a local menu without pausing the shared world.**
 **Proximity voice** (optional, off by default): in **Settings** or the Esc menu,
 set **MIC** to *Push to talk (B)* or *Open mic*, then **restart the game once**.
 The microphone (and macOS's one-time permission prompt) is only started for
-players who turn voice on. In the lobby everyone hears everyone. In a round you
-hear teammates near you (up to about 420 px), from their direction, muffled
-behind walls and silent beyond range. Escaped, dead and left-behind players
-talk on a ghost channel the living cannot hear. Monsters never hear voice. The
-HUD shows who is talking. **VOICE** and **MIC GAIN** sliders set loudness.
+players who turn voice on. In the lobby everyone hears everyone: a mic meter
+beside the title shows your own level (and the open-mic threshold), and a
+speaker meter lights beside each player in the roster while they talk. In a
+round you hear teammates near you (up to about 560 px, fading gently), slightly
+from their direction, softened (not smothered) by walls and tree lines, and
+silent beyond range. Every voice is levelled, so a quiet microphone is lifted to
+match a loud one, and music and ambience dip while a teammate is talking.
+Escaped, dead and left-behind players talk on a ghost channel the living cannot
+hear. Monsters never hear voice. The HUD shows who is talking. **VOICE** and
+**MIC GAIN** sliders set loudness; if friends say you're quiet, raise MIC GAIN.
 
 ![Connected co-op lobby](docs/screenshots/lobby.png)
 
@@ -271,7 +279,7 @@ HUD shows who is talking. **VOICE** and **MIC GAIN** sliders set loudness.
 | Mode | Repair objective | Threats and exploration |
 | --- | --- | --- |
 | **Quick Camp** | Battery in the Fern bunk cabin, fuel in Maintenance, key in the Ranger Lodge. | The camp stalker and a shorter three-part objective with randomized camp buildings. Flashlight charge does not drain. |
-| **Woods Expedition** (a long night at your own pace) | Battery and key in camp location pools; fuel and two extra parts in themed-area caches, revealed by ranger radio as the night deepens. | A night that deepens as you make progress: the stalker plus 48 cryptids, a seeded trail maze, survival supplies, weather, storms, blackouts and a draining flashlight. |
+| **Woods Expedition** (a long night at your own pace) | Battery and key in camp location pools; fuel and two extra parts in themed-area caches, revealed by ranger radio as the night deepens. | A night that deepens as you make progress: the stalker plus 26 cryptids spread through the woods (camp is safe until Deep Night), a seeded trail maze, survival supplies, weather, storms, blackouts and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
 The pack lists the current requirements and location clues. The woods contains nine major regions.
@@ -515,7 +523,7 @@ Every survivor also has one **active ability on X** and a **team bonus**.
 | **The Jock** | 5s sprint stamina instead of 4s | **Second Wind**: full stamina and +10% sprint for 2s; once per night phase | Hauls the heavy boat motor alone at full walking pace. |
 | **Grease Monkey** | 1.5s engine ignition; +1 spare battery | **Jury-Rig** (2 per night): shut and barricade the nearest cabin door for 8s (nothing can push through), or restart the dead generator silently | |
 | **The Scout** | Light drain 0.8/s; +1 ration | **Mark** (30s cooldown): tag the creature, locked cache or site you are facing and can see, for the whole team, for 6s | Starts the night knowing one extra part's region. |
-| **First-Aid Kid** | Medkit revive 2.25s; +1 medkit, +1 flare | **Patch** (2 per night): heal your own or an adjacent teammate's wound without a medkit | |
+| **First-Aid Kid** | Medkit revive 2.25s; +1 medkit, +1 flare | **Patch** (2 per night): heal yourself or an adjacent teammate to full health without a medkit | |
 | **The Quiet Kid** | Sprint hearing reach ×0.75 | **Hold Breath** (45s cooldown): 6s of silent sprinting; breath lasts twice as long while hidden | Leaves no blood trail while wounded. |
 | **Overprepared** | +1 flare, +1 battery, +1 ration | **Unpack** (once per night): drop a stash of flare, battery, rations and medkit for anyone | |
 
@@ -531,7 +539,7 @@ it is independent of **Random Night**. All roles can collect every part and esca
 **G** drops its whole stack; **E** picks it back up. Each supply type takes one
 slot, with same-type items stacking. Slots show the key and name without trailing quantity numbers; Tab lists the main supply counts. Vehicle components and cutters are carried
 separately. Q/R/C still use flares, batteries and food. Medkits help while holding
-E to revive a teammate faster, and V patches your own wound.
+E to revive a teammate faster, and V heals 50 of your own health.
 
 Find **noise tins** (three delayed distracting rattles), **salt wards** (4s of
 physical-hit protection), and **glow moss** (+35 light charge and hex removal).
@@ -600,7 +608,7 @@ one of noise tin, salt ward or glow moss; the reward depends on its seeded site.
 | **Flare** | Start with 2; Woods loot; 3-flare Maintenance stash; 3-flare chapel rescue stash; Village well; Graveyard crypt. Medic and Overprepared start with +1. | **Q**, or select + **V**, throws it ahead. Lights the area for up to **9s** and repels enemies with clear sight nearby. **E at a rescue signal holder** instead spends one flare on a persistent signal light (no permanent repulsion). Lantern Moths follow it; Candle Grazers can consume it. |
 | **Spare flashlight battery** | Start with 1; Woods loot; extra campsite battery; Village well. Grease Monkey and Overprepared start with +1. | **R**, or select + **V**, restores **70 charge**, capped at 90, and switches the light on. Not consumed if already full. |
 | **Rations** | Start with 1; Woods loot; Village well. Scout and Overprepared start with +1. | **C**, or select + **V**, restores full stamina and clears exhaustion. Not consumed at full stamina. Eating can attract nearby Ration Moths. |
-| **Medkit** | First-Aid Kid starts with 1; Woods loot. | Select + **V** patches your own wound. Carried while you **hold E beside a downed teammate**, it speeds the revive to 3s (2.25s as First-Aid Kid) instead of 6s bare-handed, and is consumed on completion. Interrupted attempts keep it. |
+| **Medkit** | First-Aid Kid starts with 1; Woods loot. | Select + **V** heals 50 health (refused at full health). Carried while you **hold E beside a downed teammate**, it speeds the revive to 3s (2.25s as First-Aid Kid) instead of 6s bare-handed, and is consumed on completion. Interrupted attempts keep it. |
 | **Noise tin** | Woods loot; landmark reward. | Select + **V** places a lure ahead. It rattles at **1.5s, 3.5s and 5.5s**, drawing noise-sensitive enemies within 480 world pixels. Move away before they investigate. |
 | **Salt ward** | Woods loot; landmark reward. | Select + **V** grants **4s of protection from physical hits**. Does not heal or remove hexes. |
 | **Glow moss** | Woods loot; landmark reward. | Select + **V** restores **35 light charge**, capped at 90, and removes the current hex. Use F if your flashlight was switched off. |
@@ -619,7 +627,7 @@ press E once to refill your light, at the cost of a 2s hex and a loud noise.
 ### Carrying, selecting and sharing items
 
 The belt holds **six different supply types**; matching units stack in the same
-slot. Select with **1–6 or keypad 1–6**, use with **V** (a medkit patches a wound), and
+slot. Select with **1–6 or keypad 1–6**, use with **V** (a medkit heals 50 health), and
 press **G** to drop the selected supply's **whole stack**. The belt labels show
 slot keys and names; Tab shows flare, battery and ration counts. Parts and
 boltcutters stay outside this limit.
@@ -641,19 +649,23 @@ connected screen; walls and the viewer’s woods line of sight still block visib
 Interaction and supply messages appear only on the acting player’s HUD; down,
 revive and departure announcements remain shared.
 
-**Wounded, then downed.** The first hit **wounds** you. You get 1.2 seconds of
-grace to run, sprint 10% slower and leave a short blood trail that nearby
-patrolling creatures can follow. Select a **medkit and press V** to patch the
-wound. A second hit while wounded **downs** you indefinitely; further hits and
-time never kill. All carried parts, tools and supplies drop beside the body,
-where teammates can recover them with E.
+**Health, then downed.** You have **100 health** (the red bar under the title;
+the edges of the screen flash red when you're hit). Every creature hits for its
+own damage (see the table below); after any hit you get **1.5 seconds** in
+which nothing can hit you again, and the creature that hit you stops to recover
+before it can strike again. At **50 or less** you're **wounded**: you sprint 10%
+slower and leave a short blood trail that nearby creatures can follow. Select a
+**medkit and press V** to heal **50** (rations heal 10 and refill stamina). At
+**0** you're **downed** indefinitely; further hits and time never kill. All
+carried parts, tools and supplies drop beside the body, where teammates can
+recover them with E.
 
 - **Downed:** crawl slowly with WASD (20 px/s) and press **E** to call for help.
   That gives every teammate a flashing HELP marker for 8 s and makes a small noise
   (10 s cooldown).
 - **Reviving:** any living teammate can **hold E** beside you. Bare-handed takes
   **6 s** (4.5 s for the First-Aid Kid); with a medkit it takes 3 s (2.25 s) and
-  uses the kit. Revived survivors come back wounded.
+  uses the kit. Revived survivors come back with 35 health.
 - **Solo:** if you're the only survivor, you get **20 seconds** after going down to
   **hold E for 8 s** and drag yourself up, once per night, loudly.
 - **Flash-stun:** press **Space** to flare your flashlight. Creatures in the beam
@@ -700,7 +712,7 @@ anyone is standing or aboard.
 
 | Threat | Behavior | Useful response |
 | --- | --- | --- |
-| **Camp stalker** | Sweeps central camp early, patrols the roads, investigates noise and chases standing survivors on clear sight. Leaves downed bodies to search or pursue others. | Break sight around buildings; use sprint carefully and flares when cornered. |
+| **Camp stalker** | Prowls the woods beyond camp for the first half of the night, then tours camp from Deep Night. Investigates noise and chases standing survivors on clear sight. Leaves downed bodies to search or pursue others. | Break sight around buildings; use sprint carefully and flares when cornered. |
 | **Werewolf** | Alternates a fast charge with a slower recovery. | Save stamina for the burst and use the recovery window to reposition. |
 | **Sasquatch / Bigfoot** | A long-armed forest ape that hears farther than the stalker, with a slower chase. | Walk quietly and avoid broadcasting your route with repeated sprinting. |
 | **Lantern moth** | Tracks lit survivors and visible flares; ignores dark survivors beyond close range. | Switch off your light to reduce detection, and remember that flares attract it. |
@@ -708,11 +720,40 @@ anyone is standing or aboard.
 | **Witch** | Keeps casting distance, shows a wind-up, then fires a fixed-trajectory hex bolt. | Sidestep the bolt or put a wall between you. A hit briefly slows movement and drains stamina. |
 | **Briar revenant** | Senses movement, with close-range detection even if you stand still. | Freeze at a distance or break sight; do not wait for it to get close. |
 
-Each expedition spawns **48 cryptids across 16 species, plus the stalker**.
-The stalker starts on camp routes. Roaming cryptids follow trail circuits and
-investigate sensed activity; six landmark guardians stay within their home zones.
-The denser expedition places additional roaming encounters around camp approaches,
-with a three-flare preparation stash in Maintenance. The new threats below are playable first versions of the larger design catalog.
+Each expedition spawns **26 cryptids across 16 species, plus the stalker**: a
+vampire and a witch in their regions, six landmark guardians that stay within
+their home zones, and **18 roamers spread across the whole forest** (each placed
+as far as possible from the others, none within 1,100 px of camp). Roamers follow
+trail circuits and investigate sensed activity. There's a three-flare stash in
+Maintenance for when they come.
+
+**Camp is a refuge until Deep Night.** For the first half of the night no
+creature (the stalker included) enters camp, sees into it or hears noise from
+it; the lanterns at the four trail mouths burn while that holds. They go out when
+**Deep Night** begins (or when the van's engine roars): from then on the camp is
+open to everything. The director that steers creatures toward survivors also
+waits until Nightfall and acts less often than before.
+
+**How hard things hit.** Creatures that are easy to evade (slow, or with a long
+warning) hit hard but must recover for a long time; quick ones hit lightly and
+more often, but each has a simple counter.
+
+| Creature | Damage | Cooldown | Creature | Damage | Cooldown |
+| --- | --- | --- | --- | --- | --- |
+| Stalker | 50 | 4 s | Groundskeeper | 40 | 3.5 s |
+| Bigfoot | 60 | 5 s | Stoneback Ram | 55 (charge 55) | 5 s |
+| Werewolf | 40 | 4 s | Boiler Saint | 45 | 4 s |
+| Witch | 35 | 4 s | Last Car Conductor | 35 | 3.5 s |
+| Switchback Hound | 30 (charge 40) | 2.5 s | Bramble Seamstress | 30 | 3 s |
+| Vampire | 25 | 2.5 s | Lens Eater | 20 | 2 s |
+| Briar Revenant | 20 | 1.5 s | Candle Grazer | 20 | 1.5 s |
+| Lantern Moth | 15 | 1 s | Shutter Wraith | 15 | 1 s |
+| Relay Jackal | 15 | 1.2 s | Ration Moth | 15 | 1 s |
+
+After a hit the creature pauses for half its cooldown (at most 2 s). The lake
+thing's telegraphed strike at the boat dock hits for 50.
+
+The new threats below are playable first versions of the larger design catalog.
 
 | New threat | Where and how it hunts | Tell and useful response |
 | --- | --- | --- |
@@ -725,7 +766,7 @@ with a three-flare preparation stash in Maintenance. The new threats below are p
 | **Candle Grazer** | Territorial guardian of the **Drowned Chapel**. Sees lit survivors, detects dark survivors at close range, and follows visible flares. | Switch off your beam at a distance or leave a flare and move away. It **consumes flares on contact** and is not repelled by them. |
 | **Relay Jackal** | Roams ordinary forest trails and angles toward a flank only while it can see you; searches last sensed areas for 12s. | Break sight, change direction and avoid sprinting back through its investigation route. Flares repel it. |
 | **Ration Moth** | Roams the woods with short 70px sight; ration use attracts it to that sound location from up to 600px away. | Eat before moving, then leave quietly. It investigates the meal location rather than tracking hidden inventory. Flares repel it. |
-| **Lake Thing** | A bounded **Boat launch encounter**, separate from the 48 roaming cryptids. Marks fixed dock positions, then strikes after 2 seconds. | Leave each glowing ripple circle or throw a nearby flare with clear sight to cancel that strike. It does not chase through the forest or target unseen survivor positions. |
+| **Lake Thing** | A bounded **Boat launch encounter**, separate from the 26 cryptids. Marks fixed dock positions, then strikes after 2 seconds. | Leave each glowing ripple circle or throw a nearby flare with clear sight to cancel that strike. It does not chase through the forest or target unseen survivor positions. |
 | **Lens Eater** | A roaming lens-faced creature that warns before draining up to 8 light charge if you keep aiming directly at it nearby. | Turn your beam away or put a tree/wall between you during its 1.2s **DANGER** warning. The cast has a 6.5s cooldown; it cannot consume spare batteries. |
 
 **Hunters versus zones:** Hounds can follow sensed activity along ordinary trails;
@@ -762,8 +803,8 @@ ten furnished camp buildings. Four exits lead north, east, south and west.
 Trails are **128 pixels wide**, and the village, bog and graveyard have larger
 clearings and clear approach aprons. Roofs cut away inside buildings.
 
-In Woods Expedition, **48 cryptids across 16 species, plus the stalker** patrol
-the inner forest and deeper woods. A true sight mask hides occluded terrain and
+In Woods Expedition, **26 cryptids across 16 species, plus the stalker** are
+spread through the forest, and none comes into camp before Deep Night. A true sight mask hides occluded terrain and
 creatures; nearby footsteps and calls provide audible warnings without revealing
 the whole maze. The local field map follows you, records explored trails and
 points back toward camp. The village lies northwest, bog east and graveyard south.

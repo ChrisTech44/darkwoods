@@ -73,6 +73,8 @@ func _physics_process(delta: float) -> void:
 			power_tell = 0
 		if home.has_area() and not home.has_point(global_position + dash_direction * 10):
 			dash_remaining = 0
+		if camp_closed and dash_remaining > 0 and in_camp(global_position + dash_direction * 14):
+			dash_remaining = 0
 		if dash_remaining > 0:
 			dash_remaining -= delta
 			velocity = dash_direction * 150
@@ -80,7 +82,8 @@ func _physics_process(delta: float) -> void:
 			# Charge follows the locked visible lane, collides with ordinary walls.
 			for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 				if actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and global_position.distance_to(actor.global_position) < 14 and has_line_of_sight(actor.global_position):
-					actor.receive_hit()
+					# A telegraphed charge hits at least as hard as a swipe.
+					land_hit(actor, maxf(hit_damage, 40.0))
 					dash_remaining = 0
 			queue_redraw()
 			return
@@ -112,6 +115,10 @@ func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
 	if species == "witch" and enabled:
 		_advance_spell(delta)
+
+
+func threat_key() -> String:
+	return species
 
 
 func can_sense(actor: CampPlayer) -> bool:

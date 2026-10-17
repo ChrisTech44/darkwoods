@@ -28,11 +28,9 @@ static func draw_site(canvas: Node2D, zone: Dictionary) -> void:
 		PixelArt.draw_standing(canvas,"workbench",center+Vector2(110,60),65)
 		PixelArt.draw_standing(canvas,"toolbox",center+Vector2(112,14),22)
 	elif kind=="boathouse":
+		# The lake itself is a LakeWater child (animated shader); here only a muddy bank.
 		for rect in water_rects(center):
-			canvas.draw_rect(rect,Color("173a3e"))
-			for y in range(int(rect.position.y),int(rect.end.y),16):
-				for x in range(int(rect.position.x),int(rect.end.x),16):
-					PixelArt.draw_material(canvas,"water",Rect2(Vector2(x,y),Vector2(16,16)),Color("71968d"))
+			canvas.draw_rect(rect.grow(5),Color("2b2a1f"))
 		# Launch dock: weathered SpriteCook planks with a dark edge and drop shadow.
 		var dock := Rect2(center+Vector2(-46,-238),Vector2(92,338))
 		canvas.draw_rect(Rect2(dock.position+Vector2(3,4),dock.size),Color(0,0,0,0.35))

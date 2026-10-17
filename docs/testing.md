@@ -545,7 +545,7 @@ and per-peer rate limits, and that voice settings and the next-launch microphone
 override persist and release. `voice_peer.gd` then starts a host and a client
 process: both stream a synthetic tone in the lobby and must decode each other,
 then ready up into a Quick Camp round where the host checks positional playback
-from the teammate's survivor, silence beyond 420 px, and ghost isolation.
+from the teammate's survivor, silence beyond 560 px, and ghost isolation.
 Logs and `summary.json` go to `artifacts/voice/`. A real microphone needs a
 person to approve the macOS permission dialog once, so it is not automated.
 
@@ -613,3 +613,35 @@ panics when chased, reaches camp for a medkit, +250 score), director build-ups
 step ranges, the killer screams in a chase, the distant chorus, a call heard at
 450 px). `night_phases.gd` checks the schedule now carries two of the three
 story events in sorted phases; `woods_visibility.gd` checks the new call range.
+
+## Playtest feedback round (health, spread, camp refuge, water, voice)
+
+`tests/integration/design_feedback.gd` (in `verify.py`, 52 checks) covers:
+- **Creature placement:** for four seeds there are 26 creatures (18 roamers),
+  none within 1,100 px of camp, at least 600 px between roamers and at least
+  two in every quarter of the forest.
+- **Lobby:** name and address persist (through a test-only prefs file) and the
+  voice meters exist.
+- **Health:**
+  - light hits take health only, and the 1.5 s grace blocks back-to-back hits;
+  - 50 or less is wounded, and the HUD bar follows health;
+  - a medkit heals 50, caps at full and is refused at full health;
+  - zero health downs, and revival returns 35 health.
+- **Threat table:**
+  - every creature has a row, and evasive creatures hit harder with longer
+    cooldowns while quick ones hit for 20 or less;
+  - a creature uses its own damage, a hit starts the cooldown and recovery,
+    and the creature stands still while it recovers.
+- **Closed camp:**
+  - camp is closed at Dusk and the stalker starts in the woods;
+  - routes are pushed out of camp, and creatures can't see, hear or walk into it;
+  - Deep Night opens it, the stalker tours camp and camp noise is heard again.
+- **Water:** sight rays cross the lake while the water layer still blocks
+  walking, and the lake is a shader-drawn `LakeWater`.
+- **Voice mixing:** the Voice bus has a compressor, the muffle cutoff is at
+  least 2 kHz, voice range is at least 500 px with gentle attenuation, and
+  music ducks and releases.
+
+The Groundskeeper's side rows were checked by eye in a magnified side-by-side
+render (moving right now faces right), alongside every other character sheet.
+The gate, entrance, water and lobby art were checked in captured frames.

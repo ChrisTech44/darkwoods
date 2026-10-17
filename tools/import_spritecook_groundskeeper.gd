@@ -4,8 +4,9 @@ extends SceneTree
 ## 2x2 pose grid (down, up / right, left), one shared scale for all directions.
 ## Run: godot --headless --path . --script res://tools/import_spritecook_groundskeeper.gd
 const SHEET := "res://art_sources/spritecook/groundskeeper_sheet.png"
-## Down, up, right, left: this sheet's side views sit the other way round.
-const CELLS: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]
+## Down, up, right, left. The bottom-left pose faces right and the bottom-right
+## pose faces left (an earlier swap made him walk backwards).
+const CELLS: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)]
 const CELL := 100
 const FRAME := Vector2i(40, 48)
 const LEG_ROWS := 9

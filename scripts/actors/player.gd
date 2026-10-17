@@ -39,13 +39,32 @@ var selected_slot: int = 0
 var role_applied := false
 var ward_remaining: float = 0.0
 var hex_remaining: float = 0.0
+## Health: each creature hits for its own damage (see CampKiller.THREATS); at 0
+## the survivor is downed. At or below half health they are wounded (bleeding,
+## slower sprint). Medkits heal; a hit grants a short grace so two creatures
+## cannot land back-to-back hits.
+const MAX_HEALTH := 100.0
+const WOUNDED_AT := 50.0
+const DEFAULT_HIT := 50.0
+const REVIVE_HEALTH := 35.0
+const MEDKIT_HEAL := 50.0
+const RATION_HEAL := 10.0
+var health: float = MAX_HEALTH
+## Damage of the latest hit and seconds since, for the HUD's hurt flash.
+var last_hit := 0.0
+var hurt_time := 0.0
 ## F3 chase toolkit: wounded before downed, a crawl while downed, flash-stun and solo recovery.
-const WOUND_GRACE := 1.2
+const WOUND_GRACE := 1.5
 const WOUNDED_SPRINT := 0.9
 const CRAWL_SPEED := 20.0
 const FLASH_COST := 15.0
 const FLASH_COOLDOWN := 8.0
-var wounded: bool = false
+## Derived from health: setting true drops to half health, false heals fully.
+var wounded: bool:
+	get:
+		return health <= WOUNDED_AT
+	set(value):
+		health = minf(health, WOUNDED_AT) if value else MAX_HEALTH
 var flash_time: float = 0.0
 var flash_cooldown: float = 0.0
 var self_recovery_used: bool = false
@@ -57,6 +76,8 @@ var motor_assisted := false
 var assisting_motor := false
 var vault_time: float = 0.0
 const BARRIER_LAYER := 8
+## Lake water: solid to bodies, but not to sight, light or voice rays (layer 1).
+const WATER_LAYER := 16
 var breath: float = 1.0
 ## F6 active ability state (see SurvivorAbilities).
 var ability_charges: int = 0
@@ -75,7 +96,7 @@ func _ready() -> void:
 	stamina = config.stamina_max
 	flashlight_charge = config.flashlight_capacity
 	add_to_group("survivors")
-	collision_mask |= BARRIER_LAYER
+	collision_mask |= BARRIER_LAYER | WATER_LAYER
 
 
 func _physics_process(delta: float) -> void:
@@ -85,6 +106,7 @@ func _physics_process(delta: float) -> void:
 	flash_time = maxf(0.0, flash_time - delta)
 	flash_cooldown = maxf(0.0, flash_cooldown - delta)
 	help_cooldown = maxf(0.0, help_cooldown - delta)
+	hurt_time = maxf(0.0, hurt_time - delta)
 	flicker = maxf(0.0, flicker - delta)
 	if expedition and CampMap.is_woods(global_position) and flashlight_on and status == Status.ALIVE:
 		flashlight_charge = maxf(0.0, flashlight_charge - delta * light_drain)
@@ -176,19 +198,31 @@ func silent() -> bool:
 	return role == "quiet" and ability_active > 0.0
 
 
-func receive_hit() -> void:
+## Returns true when the hit landed. Every landed hit grants WOUND_GRACE.
+func receive_hit(damage: float = DEFAULT_HIT) -> bool:
 	if invulnerability > 0.0 or ward_remaining > 0.0:
-		return
+		return false
 	if status != Status.ALIVE or hidden_spot >= 0:
-		return
-	if not wounded:
-		# First hit wounds: a brief grace window to run before a second hit downs.
-		wounded = true
-		invulnerability = WOUND_GRACE
+		return false
+	var was_wounded := wounded
+	health = maxf(0.0, health - damage)
+	last_hit = damage
+	hurt_time = 0.6
+	if health <= 0.0:
+		set_status(Status.DOWNED)
+		return true
+	invulnerability = WOUND_GRACE
+	if wounded and not was_wounded:
 		get_tree().call_group("round_world", "on_survivor_wounded", self)
-		queue_redraw()
-		return
-	set_status(Status.DOWNED)
+	queue_redraw()
+	return true
+
+
+func heal(amount: float) -> void:
+	health = minf(MAX_HEALTH, health + amount)
+	if not wounded:
+		blood.clear()
+	queue_redraw()
 
 
 func apply_hex(seconds: float) -> void:
@@ -211,8 +245,8 @@ func set_status(next: Status) -> void:
 		bleedout = 0
 		get_tree().call_group("round_world", "on_survivor_downed", self)
 	if status == Status.ALIVE:
-		# Revived survivors come back wounded: one more hit downs them again.
-		wounded = true
+		# Revived survivors come back badly hurt: a solid hit downs them again.
+		health = REVIVE_HEALTH
 		stamina = config.stamina_max * 0.5
 		invulnerability = config.revive_grace_seconds
 	status_changed.emit()

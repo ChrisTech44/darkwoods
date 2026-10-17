@@ -1,4 +1,8 @@
 extends Control
+## Name, address and port are remembered between nights and launches.
+const PREFS := "user://lobby.cfg"
+## Tests point this elsewhere so they never touch a player's saved name.
+static var prefs_path := PREFS
 var net: Node
 var fields := {}
 var roster_label: Label
@@ -6,6 +10,54 @@ var message: Label
 var ready_button: Button
 var start_button: Button
 var last_refresh := 0.0
+var voice_meters: VoiceMeters
+
+
+## Lobby voice at a glance: a mic meter for you beside the title, and a
+## speaker meter at the end of each roster row that lights while they talk.
+class VoiceMeters extends Control:
+	var roster: Label
+	func _process(_delta: float) -> void:
+		queue_redraw()
+	func _draw() -> void:
+		var voice: Node = get_node_or_null("/root/Voice")
+		var net: Node = get_node("/root/Net")
+		if voice == null or roster == null:
+			return
+		var mine := Rect2(Vector2(282, 9), Vector2(88, 13))
+		draw_rect(mine, Color(0.04, 0.08, 0.09, 0.85))
+		draw_rect(mine, Color("63705b"), false, 1.0)
+		var label := "MIC OFF" if voice.mode == "off" else ("RESTART FOR MIC" if not voice.mic_ready and not voice.test_input else ("HOLD B" if voice.mode == "push" else "OPEN MIC"))
+		if voice.talking:
+			label = "TALKING"
+		draw_string(ThemeDB.fallback_font, mine.position + Vector2(4, 10), label, HORIZONTAL_ALIGNMENT_LEFT, 46, 7, Color("a9e0a0") if voice.talking else Color("a9c8d6"))
+		var bar := Rect2(mine.position + Vector2(50, 4), Vector2(34, 5))
+		draw_rect(bar, Color("13252a"))
+		var level := clampf(voice.mic_level * 2.0, 0.0, 1.0) if voice.mode != "off" else 0.0
+		draw_rect(Rect2(bar.position, Vector2(bar.size.x * level, bar.size.y)), Color("8fd17f") if voice.talking else Color("6f8f7a"))
+		if voice.mode == "open":
+			var mark := bar.position.x + bar.size.x * clampf(voice.threshold * 2.0, 0.0, 1.0)
+			draw_line(Vector2(mark, bar.position.y - 1), Vector2(mark, bar.end.y + 1), Color("e7c98a"))
+		# One speaker meter per roster row, in the roster's order and line height.
+		var ids: Array = net.roster.keys()
+		ids.sort()
+		var heard: Array = voice.speaking_ids()
+		var row: float = roster.get_line_height() + roster.get_theme_constant("line_spacing")
+		for index in range(ids.size()):
+			var id: int = ids[index]
+			var me: bool = id == multiplayer.get_unique_id()
+			var live: bool = voice.talking if me else id in heard
+			var amount: float = clampf((voice.mic_level if me else voice.output_peak(id)) * 2.0, 0.0, 1.0)
+			var at := roster.position + Vector2(roster.size.x - 22, index * row + (row - 7.0) * 0.5 + 1.0)
+			var tint := Color("8fd17f") if live else Color("4d5f58")
+			draw_rect(Rect2(at + Vector2(0, 2), Vector2(2, 3)), tint)
+			draw_colored_polygon(PackedVector2Array([at + Vector2(2, 2), at + Vector2(5, 0), at + Vector2(5, 7), at + Vector2(2, 5)]), tint)
+			for bar_index in range(3):
+				var height := 2.0 + bar_index * 2.0
+				var lit := live and amount > bar_index * 0.25
+				draw_rect(Rect2(at + Vector2(8 + bar_index * 3, 3.5 - height * 0.5), Vector2(2, height)), Color("8fd17f") if lit else Color(0.3, 0.38, 0.35, 0.5))
+
+
 func _ready() -> void:
 	net=get_node("/root/Net")
 	theme=CampStyle.make()
@@ -27,7 +79,7 @@ func _ready() -> void:
 		shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		shade.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		add_child(shade)
-	_label("NETWORK CAMP / 1-4 SURVIVORS",Vector2(14,6),17)
+	_label("NETWORK CAMP / 1-4 SURVIVORS",Vector2(14,7),14)
 	_line("Name","Camper",Vector2(14,32),Vector2(145,23))
 	var role := OptionButton.new()
 	add_child(role)
@@ -45,10 +97,12 @@ func _ready() -> void:
 	_line("Seed","",Vector2(269,60),Vector2(101,23))
 	fields["Seed"].placeholder_text="Random seed"
 	_button("Host","HOST",Vector2(14,88),Vector2(78,23),func():
+		_save_prefs()
 		var result: Error=net.host(int(fields["Port"].text),fields["Name"].text,SurvivorRoster.IDS[role.selected])
 		if result!=OK and not net.active: net.status_text="Cannot host: "+error_string(result)
 		if result==OK: _configure())
 	_button("Join","JOIN",Vector2(100,88),Vector2(78,23),func():
+		_save_prefs()
 		var result: Error=net.join(fields["Address"].text,int(fields["Port"].text),fields["Name"].text,SurvivorRoster.IDS[role.selected])
 		if result!=OK and not net.active: net.status_text="Cannot join: "+error_string(result))
 	_button("Leave","BACK / LEAVE",Vector2(186,88),Vector2(91,23),func(): net.leave())
@@ -76,6 +130,12 @@ func _ready() -> void:
 	message=_label("",Vector2(14,191),8)
 	message.size=Vector2(356,24)
 	message.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	_load_prefs()
+	voice_meters = VoiceMeters.new()
+	voice_meters.roster = roster_label
+	voice_meters.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	voice_meters.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(voice_meters)
 	var music: Node = load("res://scripts/ui/menu_audio.gd").new()
 	add_child(music)
 	fields["Name"].grab_focus()
@@ -133,6 +193,24 @@ func _process(delta: float) -> void:
 		fields["Seed"].text=str(net.seed_value) if net.seed_value>0 else ""
 	var mine: Dictionary=net.roster.get(multiplayer.get_unique_id(),{})
 	ready_button.text="UNREADY" if mine.get("ready",false) else "READY"
+func _load_prefs() -> void:
+	var prefs := ConfigFile.new()
+	if prefs.load(prefs_path) == OK:
+		for key in ["Name", "Address", "Port"]:
+			var stored := str(prefs.get_value("lobby", key.to_lower(), "")).strip_edges()
+			if not stored.is_empty():
+				fields[key].text = stored
+	# Back for another night: show the name this session is already using.
+	if net.active and not str(net.local_name).is_empty():
+		fields["Name"].text = net.local_name
+
+func _save_prefs() -> void:
+	var prefs := ConfigFile.new()
+	prefs.load(prefs_path)
+	for key in ["Name", "Address", "Port"]:
+		prefs.set_value("lobby", key.to_lower(), fields[key].text.strip_edges())
+	prefs.save(prefs_path)
+
 func _configure() -> void:
 	if fields.has("Mode"):
 		net.configure_lobby("woods" if fields["Mode"].selected==1 else "camp",int(fields["Seed"].text))

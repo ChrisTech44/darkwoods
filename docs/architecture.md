@@ -69,8 +69,12 @@ decay and only pursues current positions while raycast sight is valid. Hearing
 records the emitted location; lost targets do not update hidden positions.
 
 Defaults live in CampConfig: walking 70 px/s, sprint 110 px/s, four stamina seconds,
-two-second van start, eight-second departure, three-second revive, two-second attack
-cooldown/revive grace. First hit downs indefinitely; further hits do not kill.
+two-second van start, eight-second departure, three-second revive, two-second revive
+grace. Survivors have 100 health; each creature's damage and attack cooldown come
+from `CampKiller.THREATS` (a hit grants 1.5 s of grace and the attacker pauses for
+half its cooldown). At 0 health a survivor is downed indefinitely; further hits
+do not kill. `CampKiller.camp_closed` keeps every creature out of camp (sight,
+hearing and routes) until Deep Night on expeditions.
 Starting automatically boards the driver. CampVan validates other survivors'
 proximity and unobstructed access to a side/rear boarding point before E enters
 them. BOARDED survivors cannot move or receive hits. At departure recorded passengers escape and rescue connected downed teammates;

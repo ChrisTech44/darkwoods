@@ -220,7 +220,8 @@ func _killer_and_revive_checks() -> void:
 	_check(player.status == CampPlayer.Status.ALIVE and player.wounded, "killer_attack_wounds_player")
 	await _frames(55)
 	_check(player.status == CampPlayer.Status.ALIVE, "attack_cooldown_and_grace_prevent_double_hit")
-	for frame in range(240):
+	# The stalker's 4 s cooldown (with its 2 s recovery pause) spaces its hits.
+	for frame in range(420):
 		if player.status == CampPlayer.Status.DOWNED: break
 		await physics_frame
 	_check(player.status == CampPlayer.Status.DOWNED, "second_attack_downs_wounded_player")

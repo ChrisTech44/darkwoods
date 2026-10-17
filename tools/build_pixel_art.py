@@ -8,7 +8,10 @@ import zlib
 
 ROOT = Path(__file__).resolve().parent.parent / "assets"
 SPRITECOOK_OWNED = {"pine_0", "pine_1", "pine_2", "birch", "shrub", "boulder", "stalker", "camper",
-    "survivor_jock", "survivor_mechanic", "survivor_scout", "survivor_medic", "survivor_quiet", "survivor_quartermaster"}
+    "survivor_jock", "survivor_mechanic", "survivor_scout", "survivor_medic", "survivor_quiet", "survivor_quartermaster",
+    "werewolf", "bigfoot", "vampire", "witch", "briar_revenant", "lantern_moth", "switchback_hound", "relay_jackal",
+    "ration_moth", "lens_eater", "boiler_saint", "shutter_wraith", "bramble_seamstress", "last_car_conductor",
+    "stoneback_ram", "candle_grazer"}
 
 
 def rgba(color):

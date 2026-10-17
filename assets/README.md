@@ -12,11 +12,12 @@ in [spritecook-assets.json](../spritecook-assets.json) and the raw sheets in
 | `pine_0/1/2`, `birch`, new `spruce`, `dead_tree`, `shrub`, `boulder`, new `stump` | One generated 3×3 props sheet | `tools/slice_spritecook_props.gd`: native pixels, trees bottom-anchored on 64×80 |
 | `survivor_<role>` ×6 (+ `camper.png` = scout) | A 6×4 pose grid, generated as an edit of the old poses so each role keeps its colours | `tools/import_spritecook_survivors.gd`: area downscale of the ~28×55 figures to 31 px, snapped to each figure's palette; frames 1–2 add a 1 px step-bob with alternating legs |
 | `stalker` | A 2×2 pose grid, generated as an edit of the old poses | `tools/import_spritecook_stalker.gd`: one shared 0.52 scale into new **40×48** frames (was 32×40), same step-bob |
+| All 16 creature sheets | Four 4×4 pose grids (columns = species, rows = directions), each an edit of the old poses; the last (guardians) used Nano Banana 2 Lite | `tools/import_spritecook_creatures.gd`: per-species shared scale (0.85–1.0, never upscaled) into 64×64 frames; wrong-facing side views mirrored or swapped; hover bob for the moths and Wraith |
 
-The 16 creatures, terrain atlas, buildings and props drawn in code still use the
-original procedural art below; the credit budget ran out after three images.
-Re-running `build_pixel_art.py` would overwrite the SpriteCook trees, survivors
-and stalker, so re-run the three import tools afterwards.
+The terrain atlas, buildings and props drawn in code still use the original
+procedural art below. All three Python builders (`build_pixel_art.py`, `build_cryptids.py`,
+`build_content_art.py`) skip the SpriteCook-owned files unless run with
+`--procedural`.
 
 The camper and stalker sheets, terrain atlas, trees and ground props are original
 pixel art authored in `tools/build_pixel_art.py` for this project. No downloaded

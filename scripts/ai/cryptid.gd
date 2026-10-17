@@ -185,16 +185,8 @@ func _draw() -> void:
 	elif facing.y < 0:
 		row = 1
 	var frame := 0 if velocity.length() < 1 else 1 + int(stride / 10.0) % 2
+	# SpriteCook creature art (64x64 frames); the old procedural overlays are gone.
 	draw_texture_rect_region(sheet, Rect2(-32, -58, 64, 64), Rect2(frame * 64, row * 64, 64, 64))
-	# Fine layered scars/lichen and a moving rim highlight retain the original silhouettes.
-	for index in range(5):
-		var at := Vector2(-11 + index * 5, -24 + index % 3 * 4)
-		draw_line(at, at + Vector2(2, -3), Color("9f9975"), 1)
-	if species == "bigfoot":
-		for index in range(8):
-			draw_line(Vector2(-21+index*6,-33),Vector2(-20+index*6,-26),Color("a28b5b"),1)
-	if species == "witch":
-		draw_circle(Vector2(20,-20), 3 + sin(hunt_clock)*0.5, Color("bcb185"))
 	if state == State.CHASE:
 		draw_string(ThemeDB.fallback_font, Vector2(-18, -63), "HEX!" if casting else ("HOWL!" if species == "werewolf" else "!"), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("d9b581"))
 	if casting:

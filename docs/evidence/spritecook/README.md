@@ -16,8 +16,17 @@ In game (inspection lighting with the sight mask off; normal nights are dark):
 
 ![Camp with the new trees](camp_trees.png)
 
+**Creatures (second batch, 44 more credits):** four 4×4 grids, each an edit of
+the old creature poses: [A](creatures_A_sheet.png) (werewolf, Sasquatch,
+vampire, witch), [B](creatures_B_sheet.png) (revenant, lantern moth, hound,
+jackal), [C](creatures_C_sheet.png) (ration moth, Lens Eater, Boiler Saint,
+Shutter Wraith) and [D](creatures_D_sheet.png) (guardians, Nano Banana 2 Lite).
+
+![All 16 creatures in game](creature_lineup.png)
+
 The generated figures came out larger than requested (survivors about 28×55,
 stalker about 70×90), so they were area-downscaled and snapped back to each
 figure's own palette. Walk frames are a 1 px step-bob with alternating legs,
-not drawn animation. The 16 creatures, terrain tiles and code-drawn buildings
-keep their original art.
+not drawn animation. Terrain tiles and code-drawn buildings keep their
+original art. Some generated side views faced the wrong way; the importer
+mirrors or swaps those rows per species.

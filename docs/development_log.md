@@ -1,5 +1,31 @@
 # Development log
 
+## 2026-10-16 — SpriteCook creatures (all 16 species)
+
+The user added credits (44). Spent as three Nano Banana 2.1 images (12 each) and
+one Nano Banana 2 Lite (8), leaving 0. For each group, a 4×4 grid of the old
+creature poses (columns = species, rows = down/up/right/left) was uploaded and
+redrawn as an edit, with detailed per-species prompts from the monster guide:
+- A: werewolf, Sasquatch, vampire, witch;
+- B: Briar Revenant, Lantern Moth, Switchback Hound, Relay Jackal;
+- C: Ration Moth, Lens Eater, Boiler Saint, Shutter Wraith;
+- D (Lite): Bramble Seamstress, Last-Car Conductor, Stoneback Ram, Candle Grazer.
+
+`tools/import_spritecook_creatures.gd` splits each grid into equal cells, scales
+each species uniformly to fit 64×64 (0.85–1.0, never upscaled; palette-snapped
+when scaled) and builds the 3-frame rows. Some side views came back facing the
+wrong way; these were fixed per species:
+- mirrored the right profile for the revenant, both moths, hound, Wraith and
+  Conductor;
+- swapped the rows for the jackal and ram.
+
+The moths and Wraith hover-bob instead of stepping. `cryptid.gd` drops the old
+scar, fur and orb overlays drawn over the sprite. Sheet sizes are unchanged
+(192×256), so no gameplay code changed.
+
+Asset IDs are added to `spritecook-assets.json`. Evidence: the in-game lineup
+of all 16 in [art evidence](evidence/spritecook/README.md).
+
 ## 2026-10-16 — SpriteCook art pass (forest, survivors, stalker)
 
 The user asked for an art upgrade with SpriteCook, most important images first,

@@ -1,5 +1,5 @@
 {
-  "note": "SpriteCook asset IDs for the art revamp (account-owned). Sources in art_sources/spritecook; game sprites rebuilt by tools/slice_spritecook_props.gd, tools/import_spritecook_survivors.gd, tools/import_spritecook_stalker.gd.",
+  "note": "SpriteCook asset IDs for the art revamp (account-owned). Sources in art_sources/spritecook; game sprites rebuilt by tools/slice_spritecook_props.gd, tools/import_spritecook_survivors.gd, tools/import_spritecook_stalker.gd, tools/import_spritecook_creatures.gd.",
   "assets": [
     {
       "asset_id": "841427ac-28ae-4c9c-b3e4-5e1558688588",
@@ -26,6 +26,46 @@
       "label": "stalker 2x2 pose grid (edit of reference)",
       "file": "art_sources/spritecook/stalker_sheet.png",
       "sha12": "a36c5f85b567"
+    },
+    {
+      "asset_id": "f56a7c3b-d2cd-43d2-91ad-63822fa45c39",
+      "label": "upload: old creature poses reference A (4x4)"
+    },
+    {
+      "asset_id": "1dee1596-3921-4df8-b59c-1f4a0e0ab970",
+      "label": "creatures A 4x4 pose grid (werewolf, bigfoot, vampire, witch; NB 2.1, edit of reference)",
+      "file": "art_sources/spritecook/creatures_A_sheet.png",
+      "sha12": "01fc995156cb"
+    },
+    {
+      "asset_id": "73047fbe-6295-4373-b238-8f797e9f102a",
+      "label": "upload: old creature poses reference B (4x4)"
+    },
+    {
+      "asset_id": "e909fda0-d3db-449d-8342-faba4f983d49",
+      "label": "creatures B 4x4 pose grid (briar revenant, lantern moth, switchback hound, relay jackal; NB 2.1, edit of reference)",
+      "file": "art_sources/spritecook/creatures_B_sheet.png",
+      "sha12": "c8cb88081fb4"
+    },
+    {
+      "asset_id": "af499940-b9d7-46d5-a813-b10d63b6864b",
+      "label": "upload: old creature poses reference C (4x4)"
+    },
+    {
+      "asset_id": "acf836ae-c3ab-414e-b060-cc1b771199fd",
+      "label": "creatures C 4x4 pose grid (ration moth, lens eater, boiler saint, shutter wraith; NB 2.1, edit of reference)",
+      "file": "art_sources/spritecook/creatures_C_sheet.png",
+      "sha12": "b481618a74d8"
+    },
+    {
+      "asset_id": "b21678f0-a1f6-496b-8c10-024944ac2529",
+      "label": "upload: old creature poses reference D (4x4)"
+    },
+    {
+      "asset_id": "b1f1c61b-2dff-47e8-b67a-68df4c8ea12b",
+      "label": "creatures D 4x4 pose grid (bramble seamstress, last-car conductor, stoneback ram, candle grazer; NB 2 Lite, edit of reference)",
+      "file": "art_sources/spritecook/creatures_D_sheet.png",
+      "sha12": "075ce57df99d"
     }
   ]
 }

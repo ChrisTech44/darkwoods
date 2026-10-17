@@ -521,12 +521,15 @@ atlas; the in-game field map still reveals only explored trails.
 
 ## Art
 
-Trees, bushes, boulders, all six survivors and the stalker were redrawn with
-SpriteCook in October 2026 (see [art evidence](docs/evidence/spritecook/README.md)).
-The stalker is now noticeably bigger than the campers. Creatures, ground
-tiles and buildings still use the original procedural art.
+Trees, bushes, boulders, all six survivors, the stalker and all 16 creatures
+were redrawn with SpriteCook in October 2026 (see
+[art evidence](docs/evidence/spritecook/README.md)). The stalker is now noticeably
+bigger than the campers. Ground tiles and buildings still use the original
+procedural art.
 
 ![New survivors and stalker](docs/evidence/spritecook/cast_closeup.png)
+
+![All 16 creatures](docs/evidence/spritecook/creature_lineup.png)
 
 ## Screenshots
 

@@ -89,6 +89,15 @@ The game was played with friends; their findings and the changes made:
   `design_feedback` included): all 140 steps passed.
 - Gates, entrances, water and lobby checked in captured frames.
 
+**Screenshots:**
+- After a normal-darkness capture the water was brightened (shallows and
+  crests lifted, glints stronger but sparser) and the pier lantern widened
+  (220 px, energy 1.25); `field_escapes.gd --capture` still passes 58/58.
+- The README boat, boathouse, lake-thing, Groundskeeper (reframed so he is
+  actually in view; the old frame showed Bigfoot) and lobby screenshots were
+  retaken; the lobby comes from `verify_network.py --mode camp --players 2
+  --graphical` (host 107, client 29, late joiner 2 checks).
+
 ## 2026-10-17 — Import crash on Linux and Windows: voice library kept out of the editor
 
 The friends' machines still failed after the launcher fixes. Their logs showed

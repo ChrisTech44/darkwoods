@@ -4,8 +4,8 @@ shader_type canvas_item;
 // light (flashlight, dock lantern) falls. Quantised to 2 px to sit with the art.
 
 uniform vec4 deep_color : source_color = vec4(0.04, 0.14, 0.17, 1.0);
-uniform vec4 shallow_color : source_color = vec4(0.12, 0.31, 0.32, 1.0);
-uniform vec4 crest_color : source_color = vec4(0.40, 0.60, 0.58, 1.0);
+uniform vec4 shallow_color : source_color = vec4(0.16, 0.38, 0.38, 1.0);
+uniform vec4 crest_color : source_color = vec4(0.52, 0.74, 0.70, 1.0);
 uniform vec4 foam_color : source_color = vec4(0.80, 0.87, 0.80, 1.0);
 // Water rectangles in world space (x, y, width, height); their union is the lake.
 uniform vec4 rects[4];
@@ -73,6 +73,6 @@ void fragment() {
 void light() {
 	// Lit water: diffuse light plus moving sparkles on the wave tops.
 	vec2 px = floor(world / 2.0) * 2.0;
-	float glint = step(0.88, noise(px * 0.23 + vec2(TIME * 1.7, -TIME * 1.1)));
-	LIGHT = vec4(COLOR.rgb * LIGHT_COLOR.rgb * LIGHT_ENERGY + glint * LIGHT_COLOR.rgb * LIGHT_ENERGY * 0.7, LIGHT_COLOR.a);
+	float glint = step(0.92, noise(px * 0.23 + vec2(TIME * 1.7, -TIME * 1.1)));
+	LIGHT = vec4(COLOR.rgb * LIGHT_COLOR.rgb * LIGHT_ENERGY + glint * LIGHT_COLOR.rgb * LIGHT_ENERGY * 1.2, LIGHT_COLOR.a);
 }

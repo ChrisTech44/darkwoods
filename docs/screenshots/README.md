@@ -32,6 +32,13 @@ paused for inspection. Creature portraits disable AI. Landmark close-ups
 so the art is readable; normal nights are much darker. The extraction result
 comes from a complete automated expedition with all enemies active.
 
+After the playtest feedback round (17 October, later): `boat_launch.png`,
+`lakeshore_boathouse.png` and `lake_thing.png` (from `field_escapes.gd --capture`,
+`artifacts/verification/rescue_boat.png`, `rescue_boathouse.png`,
+`rescue_lake_thing.png`) show the new lake water; `groundskeeper_snare.png`
+(reframed showcase) shows the Groundskeeper facing his direction of travel;
+`lobby.png` shows the lobby voice meters. These frames include the new health bar.
+
 Older captures cited by the development log stay in `../evidence/` unchanged.
 
 The treeline captures use normal night exposure and weather, with controlled

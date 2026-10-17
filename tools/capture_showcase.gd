@@ -38,7 +38,9 @@ func _run() -> void:
 	level.snares.try_place(trail + Vector2(28, -6))
 	level.killer.position = trail + Vector2(-34, -10)
 	level.killer.facing = Vector2.RIGHT
-	player.position = trail + Vector2(10, 40)
+	level.killer.velocity = Vector2.ZERO
+	# Frame him and the snare below the HUD's top lines.
+	player.position = trail + Vector2(30, 22)
 	player.facing = Vector2.UP
 	await _shot("groundskeeper_snare")
 	level.killer.position = Vector2(600, 520)

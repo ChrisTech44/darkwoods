@@ -294,7 +294,7 @@ func _build_sites() -> void:
 			for water_rect in FieldEscapeArt.water_rects(definition["position"]):
 				add_wall(water_rect, false, CampPlayer.WATER_LAYER)
 			# A lantern at the end of the pier lights the water and the boat.
-			CampLights.lamp(self, definition["position"] + Vector2(0, -222), 150, Color("e9c37f"), 0.9)
+			CampLights.lamp(self, definition["position"] + Vector2(0, -222), 220, Color("e9c37f"), 1.25)
 		elif definition["kind"] == "bog":
 			CampLights.lamp(self, definition["position"] - Vector2(0, 13), 66, Color("a0b876"), 0.65)
 		else:

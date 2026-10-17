@@ -75,11 +75,16 @@ func _run() -> void:
 	level.killer.visible_target = level.player
 	level.killer.transition(CampKiller.State.CHASE)
 	await _frames(90)
-	_check(sound.threat_gain > 0.95 and sound.gains["heartbeat"] > 0.9, "spotted_player_fades_in_heartbeat")
+	_check(sound.threat_gain > 0.95 and sound.gains["heartbeat"] > 0.9 and sound.loops["heartbeat"].pitch_scale > 1.35, "seen_by_hunter_fast_loud_heartbeat")
 	level.killer.visible_target = null
 	level.killer.transition(CampKiller.State.SEARCH)
+	level.killer.position = level.player.position + Vector2(120, 0)
 	await _frames(240)
-	_check(sound.threat_gain == 0 and sound.gains["heartbeat"] < 0.01, "lost_target_fades_out_heartbeat")
+	_check(sound.threat_gain == 0 and sound.gains["heartbeat"] > 0.3 and sound.gains["heartbeat"] < 0.75 and sound.loops["heartbeat"].pitch_scale < 1.05, "nearby_unseen_slow_quiet_heartbeat")
+	level.killer.position = level.player.position + Vector2(2000, 0)
+	await _frames(300)
+	_check(sound.gains["heartbeat"] < 0.01, "heartbeat_fades_when_nothing_near")
+	_check(level.hud.threat_label.text.is_empty() and not level.hud.threat_label.text.contains("NEARBY"), "no_monster_readout_on_hud")
 	for species in CampSoundscape.CREATURE_CUES:
 		# Long calls hold their voices; free the bounded pool so each species is tested alone.
 		for voice in sound.voices:

@@ -246,8 +246,6 @@ func _process(_delta: float) -> void:
 		hud.stamina.value = player.breath * 100.0
 	if not finished and killer.global_position.distance_to(player.global_position) < 155.0 and sight.can_see(killer.global_position):
 		note_sighting(plan.headline)
-	if not finished and killer.global_position.distance_to(player.global_position) < 155.0:
-		hud.threat_label.text = "SPOTTED · RUN!" if killer.state == CampKiller.State.CHASE else "FOOTSTEPS NEARBY · KEEP QUIET"
 	if player.notice_time > 0.0:
 		detail=player.notice+"\n"+detail
 	elif message_time > 0.0:
@@ -273,8 +271,8 @@ func _process(_delta: float) -> void:
 	hud.supplies_label.text = "LIGHT %ds / FLARES %d" % [int(player.flashlight_charge), player.supplies["flare"]] if plan.expedition else "QUICK CAMP"
 	hud.ability_label.text = abilities.status_text(player) + " · H GIVE" if player.status == CampPlayer.Status.ALIVE else ""
 	for enemy: CampKiller in get_tree().get_nodes_in_group("cryptids"):
+		# No on-screen monster readout: listen for calls and your heartbeat.
 		if player.global_position.distance_to(enemy.global_position) < 180 and sight.can_see(enemy.global_position):
-			hud.threat_label.text = enemy.species.replace("_", " ").to_upper() + " NEARBY"
 			note_sighting(enemy.species)
 	if player.hex_remaining > 0:
 		hud.threat_label.text = "HEXED %.1fs / SLOWED!" % player.hex_remaining

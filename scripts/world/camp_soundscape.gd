@@ -46,6 +46,11 @@ var last_lightning := 0.0
 ## Positional loops placed in the world (generator, signal pyre, boat).
 const WORLD_LOOPS := ["generator", "fire_loop", "boat_engine"]
 ## Alarm-like one-shots carry much farther than ordinary effects.
+## Heartbeat as the only threat readout: something within NEAR_RANGE (even behind
+## trees) brings a slow, quiet beat that quickens as it closes; line of sight
+## (it is hunting you) brings a fast, loud one.
+const NEAR_RANGE := 300.0
+var near_gain := 0.0
 const LOUD_CUES := {"car_alarm": 1400.0, "bells": 1000.0, "car_start": 700.0, "fire_whoosh": 600.0, "thunder": 600.0, "metal_clang": 400.0, "chain_rattle": 400.0}
 
 
@@ -119,6 +124,7 @@ func _physics_process(delta: float) -> void:
 	var bog := level.plan.woods.zones[1]["bounds"] as Rect2
 	var swamp_weight := clampf(1.0 - actor.global_position.distance_to(bog.get_center()) / (bog.size.x * 0.5 + 150.0), 0.0, 1.0)
 	var spotted := false
+	var closest := INF
 	var active_ids := {}
 	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 		var id := enemy.get_instance_id()
@@ -127,6 +133,8 @@ func _physics_process(delta: float) -> void:
 			_track_enemy(enemy)
 		if enemy.enabled and enemy.state == CampKiller.State.CHASE and enemy.visible_target == actor:
 			spotted = true
+		if enemy.enabled:
+			closest = minf(closest, enemy.global_position.distance_to(actor.global_position))
 		call_timers[id] = maxf(0.0, call_timers[id] - delta)
 		var data: Dictionary = enemy_steps[id]
 		var travel := enemy.global_position.distance_to(data["position"])
@@ -149,8 +157,11 @@ func _physics_process(delta: float) -> void:
 	_weather_and_world(actor, indoor, delta)
 	_events()
 	threat_gain = move_toward(threat_gain, 1.0 if spotted and alive else 0.0, delta * (0.9 if spotted else 0.28))
-	_mix_loop("heartbeat", threat_gain, delta)
-	loops["heartbeat"].pitch_scale = lerpf(0.94, 1.12, threat_gain)
+	var proximity := clampf(1.0 - closest / NEAR_RANGE, 0.0, 1.0) if alive else 0.0
+	near_gain = move_toward(near_gain, proximity, delta * 0.6)
+	# Near: 0.35–0.7 gain at 0.8–1.0 speed. Seen: full gain at 1.45 speed.
+	_mix_loop("heartbeat", maxf(threat_gain, 0.35 + near_gain * 0.35 if near_gain > 0.02 else 0.0), delta)
+	loops["heartbeat"].pitch_scale = lerpf(lerpf(0.8, 1.0, near_gain), 1.45, threat_gain)
 	_mix_loop("woods", (1.0 - swamp_weight * 0.85) * (0.4 if indoor else 1.0), delta)
 	_mix_loop("swamp", swamp_weight * (0.4 if indoor else 1.0), delta)
 	_mix_loop("campfire", 1.0, delta)

@@ -260,16 +260,4 @@ func _draw() -> void:
 	# SpriteCook stalker: 40x48 frames, feet at the body origin like the old 32x40 art.
 	var sheet: Texture2D = GROUNDSKEEPER_SHEET if headline == "groundskeeper" else STALKER_SHEET
 	draw_texture_rect_region(sheet, Rect2(-20, -44, 40, 48), Rect2(frame * 40, row * 48, 40, 48))
-	var cue := "."
-	var color := Color("a7b194")
-	if state == State.CHASE:
-		cue = "!"
-		color = Color("ee947e")
-	elif state in [State.INVESTIGATE, State.SEARCH]:
-		cue = "?"
-		color = Color("dfc18e")
-	# SpriteCook alert / suspicion bubbles; a quiet patrol shows nothing.
-	var bubble := "fx_alert" if state == State.CHASE else ("fx_suspicion" if state in [State.INVESTIGATE, State.SEARCH] else "")
-	if bubble.is_empty() or not PixelArt.draw_in(self, bubble, Rect2(-6, -60, 12, 13)):
-		if cue != ".":
-			draw_string(ThemeDB.fallback_font, Vector2(-3, -48), cue, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)
+	# No "!"/"?" markers: whether it is hunting you is told by your heartbeat.

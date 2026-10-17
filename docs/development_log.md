@@ -1,5 +1,20 @@
 # Development log
 
+## 2026-10-17 — Heartbeat replaces the monster readouts
+
+Per the user: no on-screen indication of which monster is nearby or which is
+hunting you. Removed the HUD lines ("<SPECIES> NEARBY", "FOOTSTEPS NEARBY · KEEP
+QUIET", "SPOTTED · RUN!") and the "!"/"?" bubbles over hunters (the witch's
+casting ring and stun stars remain, as power telegraphs). The heartbeat now
+carries it: any enabled creature within 300 px, even behind trees, brings a
+quiet beat (0.35–0.7 gain) that speeds from 0.8× to 1.0× as it closes; a hunter
+with you in sight (chasing you) brings full volume at 1.45×. Journal sightings
+still record.
+
+**Verification:** `audio_polish.gd` checks the fast/loud seen beat, the slow/quiet
+nearby beat, the fade when nothing is near, and an empty HUD readout;
+`verify.py` (below); `verify_network.py --players 2`.
+
 ## 2026-10-17 — Twenty-seven new sounds; depth-sorted structures
 
 **Audio.** The user added 27 MP3s, two with instructions in their names. Per those:

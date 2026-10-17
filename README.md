@@ -201,8 +201,10 @@ otherwise; `--editor` opens the editor). Python is optional. More detail:
   (F) when a lantern moth or lens eater is near; they hunt light.
 - **Sound gives you away.** Sprinting, crowbars, dropped items and the
   generator are loud. Walk once you have broken line of sight.
-- **Listen.** Creature calls carry well off-screen and footsteps get heavier as
-  big things get close. A flicker of your flashlight means something is coming.
+- **Listen to your heart.** A slow heartbeat means something is close; a fast one
+  means it has seen you. Creature calls carry well off-screen, footsteps get
+  heavier as big things get close, and a flicker of your flashlight means
+  something is being sent your way.
 - **Flares scare teeth, not wings.** Hounds, wolves and the stalker hate flares;
   moths are drawn to light.
 - **Hide early, not late.** Something that *sees* you hide will drag you out.
@@ -709,8 +711,11 @@ visible tells still identify them best.
 
 Enemies lead visible moving targets briefly and sweep
 reachable points around their last sensed location after losing sight.
-Creature calls and footsteps complement the visual threat cues. A heartbeat fades
-in when the stalker or a cryptid sees you, then fades away after pursuit.
+**Listen, don't read.** Nothing on screen names a nearby monster or says whether it
+is hunting you. Instead your **heartbeat** tells you: a slow, quiet beat means
+something is close (within about 300 px, even behind the trees), quickening as it
+nears; a **fast, loud** beat means it can see you and is coming. Pair that with
+creature calls and footsteps to work out what and where it is.
 
 ## The world and finding your way
 

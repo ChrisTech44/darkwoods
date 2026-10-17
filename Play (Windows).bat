@@ -12,8 +12,8 @@ if "%GODOT%"=="" (
   pause
   goto :eof
 )
-if not exist ".godot\global_script_class_cache.cfg" (
-  echo First launch: importing the project, about a minute...
-  "%GODOT%" --headless --path "%~dp0." --import
-)
+rem Always import first: only new or changed files are processed (about 2 s
+rem when up to date, about a minute the first time), so a partial import heals.
+echo Checking imported assets...
+"%GODOT%" --headless --path "%~dp0." --import
 "%GODOT%" --path "%~dp0." %*

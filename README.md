@@ -106,15 +106,19 @@ You need two things: the free **Godot 4.7.2** engine and this project's files.
 **Even easier on Windows:** double-click **`Play (Windows).bat`** in the game
 folder. It finds Godot (put the Godot `.exe` in the game folder, your Downloads
 or your Desktop, or set `GODOT_BIN`), imports the project on the first run, and
-starts the game. On any system, `python3 tools/run_game.py` does the same.
+starts the game. On any system, `python3 tools/run_game.py` does the same
+(on Windows: `py -3 tools\run_game.py`). Both check and repair the import on
+every launch.
 
 ### Troubleshooting
 
 - **A wall of errors like `Identifier "CampProfile" not declared`,
   `Could not find type "CampPlayer"`, or `Unable to open file:
-  res://.godot/imported/....ctex`:** the project was run before Godot imported
-  it. Open it once in the Godot editor and wait for the import to finish, or use
-  `Play (Windows).bat` / `python3 tools/run_game.py`, which import automatically.
+  res://.godot/imported/....ctex` / `....mp3str`:** the project was run before
+  Godot finished importing it (for example, the editor was closed mid-import).
+  Use `Play (Windows).bat` or `python3 tools/run_game.py`: they run Godot's
+  import before every launch (about 2 seconds once up to date) and fill in
+  anything missing. Or open it in the Godot editor and wait for the import to finish.
   From a terminal: `godot --headless --path <game folder> --import`, then run.
 - **Still broken after updating with git pull?** Run the launcher with
   `--reimport` (or delete the `.godot` folder) to rebuild Godot's cache.

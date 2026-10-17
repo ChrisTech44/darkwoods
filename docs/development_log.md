@@ -1,5 +1,20 @@
 # Development log
 
+## 2026-10-17 — Launchers always import (partial-import report)
+
+After the first fix the Windows friend still saw missing `.ctex`/`.mp3str` files
+(UI art, music) although scripts now parsed: the `.godot/` cache existed but its
+import was incomplete (likely an editor closed mid-import), and the launcher
+only checked that the cache folder existed. Both launchers now run Godot's
+import before every launch; it processes only new or changed files (2.4 s when
+up to date here). `run_game.py` also lists assets whose imported file is missing,
+warns if any remain afterwards, and accepts `--no-import`. All 1,118 tracked
+assets have their `.import` files committed.
+
+**Verification:** deleted three imported files to mimic a partial import:
+`missing_imports()` found 3, the launcher re-imported them and reached
+`menu_ready` with 0 missing and no errors.
+
 ## 2026-10-17 — Fresh-clone launch fix (Windows report)
 
 A friend on Windows got parse errors for every global class (`CampProfile`,

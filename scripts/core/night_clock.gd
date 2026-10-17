@@ -1,12 +1,18 @@
 class_name NightClock
 extends Node
-## Host-owned 60-minute expedition night: phases, dread, ranger-radio part reveals,
-## a bounded encounter director, phase supply drops, seeded storm/blackout events and dawn.
+## Host-owned expedition night paced by the team's progress, not a fixed clock:
+## securing parts and escape steps deepens the night, which drives ranger-radio part
+## reveals, dread, a bounded encounter director, supply drops and storm/blackout events.
+## A stalled team still drifts into later phases (up to Deep Night); only a nearly
+## ready escape brings the Witching Hour finale. There is no dawn deadline.
 
 const PHASES: Array[String] = ["DUSK", "NIGHTFALL", "DEEP NIGHT", "WITCHING HOUR"]
-const PHASE_STARTS: Array[float] = [0.0, 600.0, 1500.0, 2400.0]
+## Escape progress (0–1, best of all escapes) that opens each phase.
+const PHASE_PROGRESS: Array[float] = [0.0, 0.2, 0.5, 0.8]
 const PHASE_DREAD: Array[float] = [5.0, 25.0, 45.0, 65.0]
-const DAWN := 3600.0
+## Quiet time before a stalled night drifts on by itself (never past Deep Night).
+const DRIFT_SECONDS := 720.0
+const DREAD_RAMP_SECONDS := 900.0
 const RELIEF_SECONDS := 45.0
 const STORM_SECONDS := 90.0
 const STORM_HEARING := 0.6
@@ -18,6 +24,7 @@ var level: Node2D
 var active := false
 var elapsed := 0.0
 var phase := 0
+var phase_elapsed := 0.0
 var dread := 0.0
 var heat := 0.0
 var storm_remaining := 0.0
@@ -52,11 +59,19 @@ func advance(delta: float) -> void:
 	if not active:
 		return
 	elapsed += delta
-	while phase < phase_at(elapsed):
+	phase_elapsed += delta
+	var target := maxi(phase, phase_for(progress()))
+	if target == phase and phase < 2 and phase_elapsed >= DRIFT_SECONDS:
+		target = phase + 1
+	while phase < target:
 		phase += 1
+		phase_elapsed = 0.0
 		_enter_phase(phase)
 	var events: Array[Dictionary] = level.plan.night_events
-	while next_event < events.size() and elapsed >= events[next_event]["time"]:
+	# A phase the team raced through keeps its event unplayed rather than stacking them.
+	while next_event < events.size() and phase > events[next_event]["phase"]:
+		next_event += 1
+	while next_event < events.size() and phase == events[next_event]["phase"] and phase_elapsed >= events[next_event]["delay"]:
 		_start_event(events[next_event]["kind"])
 		next_event += 1
 	_weather(delta)
@@ -64,23 +79,33 @@ func advance(delta: float) -> void:
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		var id := actor.get_instance_id()
 		relief[id] = RELIEF_SECONDS if chased(actor) else maxf(0.0, relief.get(id, 0.0) - delta)
-	var span := (PHASE_STARTS[phase + 1] if phase < 3 else DAWN) - PHASE_STARTS[phase]
-	var through := clampf((elapsed - PHASE_STARTS[phase]) / span, 0.0, 1.0)
+	# Lingering in a phase keeps raising the pressure; the Witching Hour never plateaus.
+	var through := phase_elapsed / DREAD_RAMP_SECONDS
+	through = through if phase == 3 else minf(through, 1.0)
 	dread = clampf(PHASE_DREAD[phase] + through * 20.0 + heat + level.van.installed.size() * 3.0, 0.0, 100.0)
 	director_clock -= delta
 	if director_clock <= 0.0:
 		director_clock = lerpf(75.0, 25.0, dread / 100.0)
 		if director_enabled:
 			direct()
-	if elapsed >= DAWN:
-		level.dawn()
 
 
-static func phase_at(seconds: float) -> int:
-	for index in range(PHASE_STARTS.size() - 1, -1, -1):
-		if seconds >= PHASE_STARTS[index]:
+static func phase_for(value: float) -> int:
+	for index in range(PHASE_PROGRESS.size() - 1, -1, -1):
+		if value >= PHASE_PROGRESS[index] - 0.0001:
 			return index
 	return 0
+
+
+## Best fraction of any escape's preparation steps the team has secured (0–1).
+func progress() -> float:
+	var best: float = level.van.installed.size() / float(maxi(1, level.plan.required.size()))
+	if level.rescue != null and level.rescue.active:
+		best = maxf(best, (int(level.rescue.powered) + int(level.rescue.transmitted) + level.rescue.signals.count(true)) / 5.0)
+	if level.escapes != null and level.escapes.active:
+		best = maxf(best, level.escapes.boat_installed.size() / 3.0)
+		best = maxf(best, (level.escapes.gate_installed.size() + int(level.escapes.gate_powered)) / 4.0)
+	return best
 
 
 static func clock_text(seconds: float) -> String:
@@ -88,9 +113,17 @@ static func clock_text(seconds: float) -> String:
 	return "%02d:%02d" % [whole / 60, whole % 60]
 
 
-## Jump the authoritative clock (tests and host tools). Applies every skipped phase once.
+## Jump the authoritative clock (tests and host tools). Drift and events apply once.
 func skip_to(seconds: float) -> void:
 	advance(maxf(0.0, seconds - elapsed))
+
+
+## Enter phases up to `target` immediately (tests and host tools), as progress would.
+func force_phase(target: int) -> void:
+	while phase < mini(target, PHASES.size() - 1):
+		phase += 1
+		phase_elapsed = 0.0
+		_enter_phase(phase)
 
 
 ## Reveal every staged part without advancing time (route-regression fixtures only).
@@ -231,12 +264,13 @@ func _weather(delta: float) -> void:
 
 
 func snapshot() -> Dictionary:
-	return {"elapsed": elapsed, "phase": phase, "dread": dread, "storm": storm_remaining, "blackout": blackout, "lightning": lightning}
+	return {"elapsed": elapsed, "phase": phase, "phase_elapsed": phase_elapsed, "dread": dread, "storm": storm_remaining, "blackout": blackout, "lightning": lightning}
 
 
 func restore(state: Dictionary) -> void:
 	elapsed = state["elapsed"]
 	phase = state["phase"]
+	phase_elapsed = state.get("phase_elapsed", 0.0)
 	dread = state["dread"]
 	storm_remaining = state["storm"]
 	blackout = state["blackout"]

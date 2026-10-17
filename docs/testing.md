@@ -353,16 +353,18 @@ replicated to every client (`lnac-net-4`). Evidence: [navigation](evidence/navig
 
 Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/night_phases.gd`
 (add `-- --capture` without `--headless` for the Witching Hour HUD capture).
-It checks the seeded reveal schedule and event windows on three seeds, and
-phase boundaries and clock text. It confirms three parts are sealed at Dusk,
-that the pack shows radio times, and that Nightfall announces fuel and drops
-supplies. The final part stays sealed until 40:00, dread rises, the HUD counts
-down to dawn, and the stalker's hearing ×1.21 and speed ×1.08 increase on
-schedule. It also covers storm hearing masking at 80% range plus lightning,
+It checks the seeded reveal schedule and phase-tied events on three seeds, and
+progress phase boundaries and clock text. It confirms three parts are sealed at
+Dusk, that the pack names each part's radio phase, that a quiet team drifts into
+Nightfall only after 12 minutes (which announces fuel and drops supplies), that
+two installed parts stay in Nightfall while the third brings Deep Night, that
+drift never reaches the Witching Hour, and that the fourth part does (revealing
+the last part, with no dawn countdown). The stalker's hearing ×1.21 and speed
+×1.08 increase on schedule. It also covers storm hearing masking at 80% range plus lightning,
 blackout lamps and the generator restart, and the director: it steers one
 distant roamer to a fuzzy area, never uses a creature within 400 px, honours
-relief windows and ignores survivors in camp. Finally it checks dawn rescue in
-camp versus left-behind in the woods. `network_peer.gd` adds a host-advanced
+relief windows and ignores survivors in camp. Finally it checks there is no dawn deadline
+after two more hours and that Witching Hour dread keeps rising. `network_peer.gd` adds a host-advanced
 Nightfall replicated to clients with the fuel cache visible (`lnac-net-5`).
 Legacy route tests reveal staged parts with `reveal_all()` and disable the
 director. Evidence: [night phases](evidence/night_phases/README.md).
@@ -494,7 +496,7 @@ python3 tools/verify_network.py --mode woods --players 4
 ```
 
 The solo fixture covers seeded, unique fuse generation; native paths to all
-seven actions; pickup/drop/recovery; circuit idempotence; the 40:00 gate; real
+seven actions; pickup/drop/recovery; circuit idempotence; no clock gate once powered; real
 held input; release/operator changes; exact flare spend; explicit ready start;
 pause; state restoration; and inside/outside/downed extraction. Captures include
 normal-night structures/signals, objective UI and a generated eleven-region atlas.
@@ -503,3 +505,27 @@ round, checks all client signal lights and shared results, and recovers a downed
 host. Placements and time acceleration isolate mechanics, not human balance.
 Cross-machine Internet, listening tests and human pacing remain unverified;
 the user deferred human playtests for F5a.
+
+
+## F5b Boat / Ranger Gate and SpriteCook
+
+```sh
+godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/field_escapes.gd
+godot --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --script res://tests/integration/field_escapes.gd -- --capture
+python3 tools/verify_network.py --mode woods --players 2 --graphical
+python3 tools/verify_network.py --mode woods --players 4
+```
+
+The focused fixture checks four reproducible recipes, unique separate inventory,
+native routes to parts/dock/bridge, motor speed and drop priority, held assistance,
+no clock gates (a ready escape brings the Witching Hour), two-second splash tells, wound/dodge/flare counterplay, shared-state
+restoration, physical arm opening, alarm sensing without teleport, full departure
+windows, downed recovery and fresh-round cleanup. The network harness drives all
+four escapes across separate rounds, with a real remote Boat/Gate operator,
+shared assistance/tells/collision and route-specific results.
+
+Art reproduction: `tools/slice_escape_props.gd`, source/derivative IDs and hashes
+in `spritecook-assets.json`. One 16-piece batch cost 12 credits, with no paid
+cleanup/animation. Capture fixtures generate a current fourteen-region atlas.
+Human pacing and cross-machine acceptance remain pending; see
+[F5b execution evidence](evidence/boat_gate/README.md).

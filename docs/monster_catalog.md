@@ -87,7 +87,11 @@ Further headline killers rotate by seed (one per night; two only under the rare
 | H03 **The Drowned Counselor** | Travels through water and the lake; emerges near wet ground with a 1.2s splash tell; hunts the Boat escape heavily. | Dripping footprints appear before it does; whistle call. | Stay on dry boardwalks and stone; it is slow on dry land. Never emerges inside buildings. |
 | H04 **The Lantern Warden** | Carries a large lantern; anything in its light is seen at long range; it extinguishes flares it reaches. | Swinging pool of warm light visible from far, which helps you track it. | Stay in shadow, use thickets; flash-stun dims its lantern for 4s. |
 
-The **Lake Thing** in the Boat finale is the Drowned Counselor's landmark
+The **Lake Thing** now has a first implemented Boat-finale version: three fixed
+dock splash tells (2s), ordinary wound damage, dodge/flare interruption, and a
+SpriteCook head/hands cutout. It adds no roaming cryptid or headline-killer
+behavior. See [Boat/Gate rules](boat_gate.md). The fuller planned identity is
+the Drowned Counselor's landmark
 encounter when H03 is not the headline killer: a bounded hold-out pressure
 (splash tells at the boathouse ramps), not a free-roaming hunter.
 

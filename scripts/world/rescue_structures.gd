@@ -27,9 +27,9 @@ func _draw() -> void:
 		if not zone["bounds"].has_point(observer.global_position) or not level.sight.can_see(anchor):
 			continue
 		var brightness := 0.62 if rescue.powered else 0.16
-		var direction := observer.global_position.direction_to(anchor)
-		if observer.flashlight_on and direction.dot(observer.facing) > 0.4:
-			brightness = maxf(brightness, 0.82)
+		for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+			if actor.flashlight_on and actor.status in [CampPlayer.Status.ALIVE,CampPlayer.Status.DOWNED] and actor.position.distance_to(anchor)<230 and actor.position.direction_to(anchor).dot(actor.facing)>0.4 and level.clear_path(actor.position,anchor):
+				brightness = maxf(brightness,0.9)
 		self_modulate = Color(brightness, brightness, brightness)
 		if index == 9:
 			RescueArt.draw_substation(self, at)

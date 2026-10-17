@@ -32,6 +32,8 @@ var soundscape: CampSoundscape
 var sight: WoodsVisibility
 var pins: Array[Dictionary] = []
 var night_clock: NightClock
+var objective_page := 0
+var escapes: FieldEscapes
 var rescue: RadioRescue
 var props: ChaseProps
 ## Team-wide clue chain per locked-cache part: 0 direction, 1 region named, 2 cache found.
@@ -122,6 +124,10 @@ func _ready() -> void:
 	rescue.name = "RadioRescue"
 	rescue.level = self
 	add_child(rescue)
+	escapes = FieldEscapes.new()
+	escapes.name = "FieldEscapes"
+	escapes.level = self
+	add_child(escapes)
 	hud = preload("res://scenes/ui/hud.tscn").instantiate()
 	add_child(hud)
 	hud.chart.camp_map = camp_map
@@ -158,13 +164,15 @@ func _process(_delta: float) -> void:
 	var heading := "VAN %d/%d · %s" % [van.installed.size(), plan.required.size(), plan.weather.to_upper() + " NIGHT" if plan.expedition else "SEARCH CAMP"]
 	if plan.expedition:
 		var clock := night_clock
-		heading = "VAN %d/%d · %s %s · %s" % [van.installed.size(), plan.required.size(), NightClock.PHASES[clock.phase], NightClock.clock_text(clock.elapsed), "DAWN IN " + NightClock.clock_text(NightClock.DAWN - clock.elapsed) if clock.phase == 3 else plan.weather.to_upper()]
+		heading = "VAN %d/%d · %s %s · %s" % [van.installed.size(), plan.required.size(), NightClock.PHASES[clock.phase], NightClock.clock_text(clock.elapsed), plan.weather.to_upper()]
 	if van.installed.size() == plan.required.size():
 		heading = "VAN REPAIRED  ·  HOLD E AT THE REAR TO START"
 	if van.running:
 		heading = "DEPARTING IN %.1fs  ·  %d ABOARD" % [van.remaining, van.passengers.size()]
 	if plan.expedition and rescue.transmitted and (not van.running or (rescue.started and rescue.remaining <= van.remaining)):
 		heading = rescue.heading()
+	if plan.expedition and not escapes.heading().is_empty():
+		heading = escapes.heading()
 	if finished:
 		heading = "ROUND COMPLETE  ·  ESCAPED" if won else "ROUND COMPLETE  ·  NO ESCAPE"
 	elif player.status == CampPlayer.Status.DEAD:
@@ -191,9 +199,11 @@ func _process(_delta: float) -> void:
 	hud.set_status(heading, detail, player.stamina / player.config.stamina_max)
 	hud.inventory_label.text = "NIGHT %d / %s\nQ FLARE %d · R BATTERY %d · C FOOD %d\n" % [plan.seed_value, plan.weather.to_upper(), player.supplies["flare"], player.supplies["battery_pack"], player.supplies["rations"]]
 	hud.inventory_label.text += rescue.pack_text() if plan.expedition and rescue.show_in_pack(player) else plan.pack_description(van.installed, night_clock.phase if plan.expedition else 3, clues)
-	if plan.expedition:
-		hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINT./%s WOODS BOX" % plan.toolbox_hint) + (" +BAR" if "crowbar" in player.inventory else "") + (" · T VAN / TAB CLOSE" if rescue.pack_selected else " · T RADIO / TAB CLOSE")
-	else:
+	if plan.expedition and objective_page >= 2:
+		hud.inventory_label.text = "NIGHT %d · T NEXT PLAN / TAB CLOSE\n" % plan.seed_value + escapes.pack_text(objective_page)
+	if plan.expedition and objective_page < 2:
+		hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINT./%s WOODS BOX" % plan.toolbox_hint) + (" +BAR" if "crowbar" in player.inventory else "") + " · T NEXT / TAB CLOSE"
+	elif not plan.expedition:
 		hud.inventory_label.text += "\nM PIN · TAB CLOSE"
 	hud.update_belt(player)
 	hud.location_label.text = camp_map.location_label(player.global_position)
@@ -233,6 +243,7 @@ func _physics_process(delta: float) -> void:
 			van.board(player)
 			announce("Engine started. Driver boarded automatically. Others: E to enter.")
 	rescue.advance(delta)
+	escapes.advance(delta)
 	if finished:
 		return
 	_advance_chase_toolkit(delta)
@@ -304,6 +315,8 @@ func try_interact(actor: CampPlayer) -> bool:
 				actor.inventory.append(pickup.kind)
 			if pickup.kind in plan.required:
 				announce(("Crowbar screech! " if pried else "") + "Found " + pickup.kind.replace("_", " ") + ". Install it at the van.",actor)
+			elif pickup.kind in FieldEscapes.BOAT_PARTS or pickup.kind.begins_with("gate_code_"):
+				announce("Objective recovered. T cycles escape plans. Motor carriers: G sets it down; a teammate can hold E nearby to help.", actor)
 			elif pickup.kind == "rescue_fuse":
 				announce("Emergency fuse found. Fit it at the north Power Substation; relay station lies east.", actor)
 			elif pickup.kind == "boltcutters":
@@ -313,6 +326,8 @@ func try_interact(actor: CampPlayer) -> bool:
 			else:
 				announce("Packed " + pickup.kind.replace("_", " ") + ". Q flare / R battery / C food.",actor)
 			return true
+	if not escapes.prompt(actor).is_empty():
+		return escapes.interact(actor)
 	if not rescue.prompt(actor).is_empty():
 		return rescue.interact(actor)
 	for site in camp_map.sites:
@@ -525,6 +540,9 @@ func context_prompt() -> String:
 			if pickup.locked and "boltcutters" not in player.inventory:
 				return "E · PRY CACHE WITH CROWBAR (LOUD)" if "crowbar" in player.inventory else "E · LOCKED CACHE / NEED BOLTCUTTERS OR CROWBAR"
 			return "E · TAKE " + pickup.kind.replace("_", " ").to_upper()
+	var field_prompt := escapes.prompt(player)
+	if not field_prompt.is_empty():
+		return field_prompt
 	var rescue_prompt := rescue.prompt(player)
 	if not rescue_prompt.is_empty():
 		return rescue_prompt
@@ -543,6 +561,8 @@ func context_prompt() -> String:
 		if van.installed.size() == plan.required.size():
 			return "HOLD E · START VAN  %d%%" % int(van.start_progress / player.config.start_hold_seconds * 100)
 		return "E · INSTALL SUPPLIES   |   NEED: " + ", ".join(missing_parts()).to_upper()
+	if "outboard_motor" in player.inventory:
+		return "MOTOR: G drop · teammate holds E nearby to help · T escape plans"
 	return "1-6 select · V use · G drop · E interact · Space flash · T plans · M pin" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
 
 
@@ -586,24 +606,6 @@ func near_generator(actor: CampPlayer) -> bool:
 
 
 ## First light: the ranger patrol reaches camp. Survivors in camp or aboard are rescued.
-func dawn() -> void:
-	if finished:
-		return
-	var rescued := 0
-	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
-		if actor.status == CampPlayer.Status.BOARDED or (actor.status == CampPlayer.Status.ALIVE and not CampMap.is_woods(actor.global_position)):
-			actor.set_status(CampPlayer.Status.ESCAPED)
-			rescued += 1
-	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
-		if actor.status == CampPlayer.Status.DOWNED and rescued > 0 and not CampMap.is_woods(actor.global_position):
-			actor.set_status(CampPlayer.Status.ESCAPED)
-			rescued += 1
-		elif actor.status in [CampPlayer.Status.ALIVE, CampPlayer.Status.DOWNED]:
-			actor.set_status(CampPlayer.Status.LEFT_BEHIND)
-	escape_route = "DAWN"
-	finish_round(rescued > 0, "Dawn broke. The ranger patrol rescued %d survivor(s) in camp. You: %s." % [rescued, CampPlayer.Status.keys()[player.status].to_lower().replace("_", " ")])
-
-
 func missing_parts() -> Array[String]:
 	var missing: Array[String] = []
 	for part in plan.required:
@@ -641,9 +643,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if finished:
 		return
 	if plan.expedition and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_T:
-		rescue.pack_selected = not rescue.pack_selected
+		objective_page = (objective_page + 1) % 4
+		rescue.pack_selected = objective_page == 1
 		hud.inventory_label.show()
-		hud.chart.show()
+		hud.chart.visible = objective_page == 0
 		get_viewport().set_input_as_handled()
 		return
 	if get_node("/root/Net").active:
@@ -689,7 +692,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif not paused and event.is_action_pressed("inventory"):
 		hud.inventory_label.visible = not hud.inventory_label.visible
-		hud.chart.visible = hud.inventory_label.visible
+		hud.chart.visible = hud.inventory_label.visible and objective_page == 0
 		get_viewport().set_input_as_handled()
 	elif not paused and event.is_action_pressed("map_pin"):
 		place_pin(player, 1, "You")
@@ -810,6 +813,11 @@ func _apply_weather() -> void:
 func drop_held(actor: CampPlayer) -> bool:
 	if paused or finished or actor.status != CampPlayer.Status.ALIVE:
 		return false
+	if "outboard_motor" in actor.inventory:
+		actor.inventory.erase("outboard_motor")
+		spawn_dropped("outboard_motor", _drop_position(actor.global_position, 0))
+		announce("Motor set down. E to pick up; sprint is available again.", actor)
+		return true
 	var kind := actor.held_item()
 	if kind.is_empty() or actor.supplies.get(kind, 0) <= 0:
 		return false

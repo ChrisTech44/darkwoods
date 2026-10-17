@@ -3,6 +3,8 @@ extends "res://tests/integration/offline_playthrough.gd"
 
 var supply_cooldown: int = 0
 var walked: float = 0.0
+var skipped_supplies: Array = []
+var detour_stuck: int = 0
 
 
 func _run() -> void:
@@ -90,6 +92,14 @@ func _leg(points: Array) -> bool:
 			if offset.length() < 2:
 				reached = true
 				break
+			# Bounded resupply: step aside for a supply in clear view, like a player would.
+			var detour := _nearby_supply()
+			if detour != null and not _threatened():
+				offset = detour.position - player.position
+				detour_stuck = detour_stuck + 1 if player.velocity.length() < 5.0 else 0
+				if detour_stuck > 20:
+					skipped_supplies.append(detour)
+					detour_stuck = 0
 			if player.status != CampPlayer.Status.ALIVE:
 				break
 			for action in ["move_left", "move_right", "move_up", "move_down", "sprint"]:
@@ -126,6 +136,9 @@ func _leg(points: Array) -> bool:
 				await _belt_use("salt_ward")
 			if player.hex_remaining>0 and player.supplies.get("glow_moss",0)>0:
 				await _belt_use("glow_moss")
+			if player.wounded and not chasing and player.supplies.get("medkit", 0) > 0:
+				await _belt_use("medkit")
+				print(JSON.stringify({"event": "expedition_medkit", "position": player.position}))
 			if player.flashlight_charge < 10 and player.supplies["battery_pack"] > 0:
 				await _tap(KEY_R)
 			if chasing:
@@ -154,6 +167,21 @@ func _leg(points: Array) -> bool:
 		if not reached:
 			return false
 	return true
+
+
+## A supply pickup within 120 px and plain sight that the pack can still hold.
+func _nearby_supply() -> CampPickup:
+	for pickup: CampPickup in level.pickups:
+		if pickup.available and not pickup.locked and pickup not in skipped_supplies and CampMap.is_woods(pickup.position) and player.can_pack(pickup.kind) and player.position.distance_to(pickup.position) < 120 and level.clear_path(player.position, pickup.position):
+			return pickup
+	return null
+
+
+func _threatened() -> bool:
+	for enemy: CampKiller in get_nodes_in_group("killers"):
+		if enemy.state == CampKiller.State.CHASE and player.position.distance_to(enemy.position) < 260:
+			return true
+	return false
 
 
 func _finish() -> void:

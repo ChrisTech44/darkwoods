@@ -42,7 +42,7 @@ var fences: Array[Dictionary] = []
 var blocked: Dictionary = {}
 const SIGN_SPACING := 640.0
 const SIGN_OFFSET := Vector2(-44, -40)
-const SIGN_NAMES := {"village":"VILLAGE", "bog":"BOG", "graveyard":"GRAVES", "mill":"MILL", "orchard":"ORCHARD", "observatory":"DOME", "rail":"RAILS", "quarry":"QUARRY", "chapel":"CHAPEL", "substation":"POWER", "relay":"RELAY"}
+const SIGN_NAMES := {"village":"VILLAGE", "bog":"BOG", "graveyard":"GRAVES", "mill":"MILL", "orchard":"ORCHARD", "observatory":"DOME", "rail":"RAILS", "quarry":"QUARRY", "chapel":"CHAPEL", "substation":"POWER", "relay":"RELAY", "logging":"LOGGING", "boathouse":"BOAT", "ranger":"GATE"}
 const COMPASS := {Vector2i.UP:"N", Vector2i.DOWN:"S", Vector2i.LEFT:"W", Vector2i.RIGHT:"E"}
 
 func generate(seed_value: int) -> void:
@@ -87,6 +87,8 @@ func generate(seed_value: int) -> void:
 	_make_zones(rng)
 	_make_roads()
 	_make_shortcuts()
+	_connect_grid(Vector2i(25,34), zones[12]["cell"] + Vector2i(1,2))
+	_connect_grid(Vector2i(16,29), zones[11]["cell"] + Vector2i(1,1))
 	# The relay approach branches cleanly from the east spoke.
 	_connect_grid(Vector2i(40,24), zones[10]["cell"] + Vector2i(1,1))
 	# Traversable approach routes keep objectives reachable without flattening the outer maze.
@@ -428,7 +430,10 @@ func _make_zones(rng: RandomNumberGenerator) -> void:
 		["quarry", "WHITE STONE QUARRY", Vector2i(8,8), Vector2i(4,4)],
 		["chapel", "DROWNED CHAPEL / CANDLE COURT", Vector2i(27,38), Vector2i(4,4)],
 		["substation", "NORTH / POWER SUBSTATION", Vector2i(23 + posmod(rng.seed, 2),10), Vector2i(3,3)],
-		["relay", "EAST / RADIO RELAY STATION", Vector2i(39,20 + posmod(rng.seed, 2)), Vector2i(3,3)]
+		["relay", "EAST / RADIO RELAY STATION", Vector2i(39,20 + posmod(rng.seed, 2)), Vector2i(3,3)],
+		["logging", "WEST / LOGGING CAMP", Vector2i(9,28), Vector2i(3,3)],
+		["boathouse", "SOUTHEAST / LAKESHORE BOATHOUSE", Vector2i(36,37), Vector2i(4,4)],
+		["ranger", "NORTH / RANGER ROAD AND BRIDGE", Vector2i(23,3), Vector2i(3,6)]
 	]
 	for d in definitions:
 		var anchor: Vector2i = d[2]

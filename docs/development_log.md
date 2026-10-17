@@ -1,5 +1,89 @@
 # Development log
 
+## 2026-10-17 — Night paced by progress, not the clock
+
+The user asked to "remove the fixed time requirements… make the whole process
+take long, but move at a natural pace."
+
+- `NightClock` phases now follow **escape progress**: the best fraction of any
+  escape's steps (van parts; radio power, transmit and three signals; boat parts;
+  gate codes and power). Nightfall at 20%, Deep Night at 50%, Witching Hour at
+  80%. Radio reveals stay tied to phases, so each installed part deepens the night
+  and unlocks the next: a long chain that never waits on a clock.
+- A stalled team **drifts** one phase after 12 quiet minutes, up to Deep Night
+  only; the Witching Hour comes only from real progress.
+- Removed every 40:00 gate (radio transmit, boat launch, gate opening) and the
+  60:00 **dawn** deadline and rescue (`dawn()` deleted). The heading shows elapsed
+  time instead of a dawn countdown.
+- Storm/blackout events are tied to phases with a seeded delay. A phase the team
+  races through drops its event rather than stacking several at once (caught
+  by `content_expansion`, which installs every part immediately).
+- Dread climbs with time spent in a phase; in the Witching Hour it has no ceiling.
+- Tests updated to drive progress (`force_phase`, installed parts) instead of
+  clock jumps. `night_phases` now checks drift timing, part-driven phases, that
+  drift never reaches the Witching Hour, and that there is no deadline after two
+  more hours.
+
+**Verification:** `python3 tools/verify.py` 116/116 steps (headless, run with
+`nice` after the user's computer crashed during an earlier heavy parallel run).
+Night phases 43 checks, Radio Rescue 34, Field Escapes 58, expedition bot 227
+with every enemy active; `verify_network.py --mode all --players 2`: 6 processes,
+361 assertions, 0 failures. Human pacing is still unmeasured.
+
+## 2026-10-17 — F5b Boat, Ranger Gate and a matched SpriteCook prop sheet
+
+**Completed and published on 17 October** after review by the next session. The
+remaining blocker (the active-AI expedition bot running out of supplies and being
+downed) was fixed in the bot, not the game: it now steps aside for supplies within
+120 px in plain sight (woods only, skipping any it cannot reach) and uses a
+medkit through the belt when wounded and not chased. No resources are granted,
+no AI is disabled and the seed is unchanged; it passes with 227 checks.
+
+Continued the user-approved F5 track; normal-speed human playtests remain
+explicitly deferred. SpriteCook MCP became available during this increment.
+Used the workflow/generation/polish skills, verified the owned camp-object style
+reference against its local hash, and generated **one 16-prop NB 2.1 sheet at 1K
+for 12 credits (716 → 704)**. Inspected saved/preserved alpha, kept cutoff 130,
+and reused the same output without paid animation, regeneration or cleanup.
+Asset IDs/hashes and crop reproduction are in `spritecook-assets.json` and
+`tools/slice_escape_props.gd`; signed download URLs are not stored in the repo.
+
+- Added Logging Camp, Lakeshore Boathouse and Ranger Road/Bridge, bringing the
+  finite forest to fourteen regions. New art replaces flat F5 transformers,
+  breaker/mast and adds the boat/motor, shore building, ranger booth/barrier,
+  logging workshop/logs, pier, bridge, Lake Thing, marine fuel and code notes.
+- Boat requires a unique motor from logging, marine fuel from the Rail Yard and
+  a drain plug from the Observatory, spanning three spokes. Objective items use
+  no belt slots, install once, and drop through existing reachable-ground rules.
+  Motor carriers walk at 75%, cannot sprint/vault, and G sets the motor down
+  before belt supplies. An adjacent standing held-E helper restores full walk
+  without sprint. Host-derived assistance replicates to peers.
+- After 40:00 the fitted boat starts a 25s launch. Three fixed dock strikes warn
+  for two seconds, use ordinary wound/grace rules and can be dodged/interrupted
+  by a nearby visible flare. Lake Thing is bounded pressure, not a new roamer.
+- Gate fragments rotate across three E/S/W regions. The shared substation plus
+  local breaker powers road lamps. A four-second host-owned hold after 40:00
+  opens the physical arm on all peers. Survivors run north; first bridge arrival
+  starts an eight-second team window. Gate alarm stimuli attract the existing
+  stalker through normal travel, with local hearing bounded for other creatures.
+- Boat radius is 80px; bridge radius is 64px. Standing/unhidden arrivals escape,
+  any successful extraction rescues connected downed teammates, and other
+  standing survivors are left behind. Route-specific results replicate.
+- T cycles four local objective pages without map/text overlap; Quick Camp stays
+  van-only. Expanded snapshots retain bounded packet chunks. Rules `lnac-net-12`.
+- Repeated graphical rounds exposed a radio timer capturing an already-freed
+  source. Read the audio design and replaced the callbacks with named round-owned
+  methods plus a weak source reference, preserving playback timing. A regression
+  also caught Ranger Road/substation apron overlap; shortened the road clearing
+  by one cell while preserving the 1,000px run and native connectivity.
+- Updated README/items, illustrated walkthrough, full-map example, biome/monster
+  plan status, brief, architecture, milestones and multiplayer/testing docs.
+  Signal Fire, primary/rumoured selection and revised van finale remain pending.
+
+Execution evidence: [Boat/Gate verification](evidence/boat_gate/README.md).
+No human pacing, real cross-machine Internet, new audio-file/listening, voice or
+export-platform acceptance is implied by these automated tests and captures.
+
 ## 2026-10-17 — F5a Radio Rescue and two new regions
 
 User approved F5 work and explicitly deferred normal-speed human playtests.

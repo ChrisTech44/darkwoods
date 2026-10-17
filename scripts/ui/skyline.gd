@@ -101,6 +101,16 @@ func _icon(at: Vector2, kind: String, color: Color) -> void:
 		"pin":
 			draw_line(at + Vector2(-2, 4), at + Vector2(-2, -5), color, 1)
 			draw_colored_polygon(PackedVector2Array([at + Vector2(-2, -5), at + Vector2(4, -3), at + Vector2(-2, -1)]), color)
+		"logging":
+			draw_rect(Rect2(at+Vector2(-4,-2),Vector2(8,5)),color)
+			draw_line(at+Vector2(-2,-5),at+Vector2(3,4),Color("c5b68c"),2)
+		"boathouse":
+			draw_arc(at,4,0,PI,12,color,2)
+			draw_line(at+Vector2(-4,0),at+Vector2(4,0),color)
+		"ranger":
+			draw_line(at+Vector2(-4,4),at+Vector2(-4,-3),color,2)
+			draw_line(at+Vector2(4,4),at+Vector2(4,-3),color,2)
+			draw_line(at+Vector2(-4,-3),at+Vector2(4,-3),color,2)
 		"relay":
 			draw_line(at + Vector2(-3, 4), at + Vector2(0, -5), color)
 			draw_line(at + Vector2(3, 4), at + Vector2(0, -5), color)

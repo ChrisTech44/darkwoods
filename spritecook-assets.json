@@ -108,6 +108,108 @@
       "label": "title screen illustration 384x216",
       "file": "art_sources/spritecook/title_art.png",
       "sha12": "dad8144f0099"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 escape props 4x4, 12 credits, NB 2.1; style from camp objects; alpha 130 inspected unchanged",
+      "file": "art_sources/spritecook/escape_props_sheet.png",
+      "sha12": "bd01be0f0a2d"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_transformer; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_transformer.png",
+      "sha12": "e94b3527279a"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_breaker; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_breaker.png",
+      "sha12": "f68969374109"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_relay; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_relay.png",
+      "sha12": "85e06fd9ac49"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_beacon; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_beacon.png",
+      "sha12": "fd73491b59a7"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice outboard_motor; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/outboard_motor.png",
+      "sha12": "70d39c7af097"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_boat; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_boat.png",
+      "sha12": "40ad436cabcf"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_boathouse; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_boathouse.png",
+      "sha12": "4f4a91130e75"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_ranger_booth; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_ranger_booth.png",
+      "sha12": "206a329c5e38"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_gate; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_gate.png",
+      "sha12": "204e8b6491e8"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_logs; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_logs.png",
+      "sha12": "0bbc396b699a"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_logging; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_logging.png",
+      "sha12": "4701ae3bb2fb"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_pier; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_pier.png",
+      "sha12": "ce61d0ff94b1"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_lake_thing; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_lake_thing.png",
+      "sha12": "bd675efda164"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_bridge; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_bridge.png",
+      "sha12": "a885eb757517"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice boat_fuel; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/boat_fuel.png",
+      "sha12": "5ab54dc7f3b4"
+    },
+    {
+      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+      "label": "F5 slice f5_codes; reproduce with tools/slice_escape_props.gd",
+      "file": "assets/sprites/sc/f5_codes.png",
+      "sha12": "840f376e1ac1"
     }
   ]
 }

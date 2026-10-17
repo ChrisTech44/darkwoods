@@ -288,6 +288,9 @@ func _build_sites() -> void:
 			add_wall(Rect2(definition["position"] + Vector2(-22, 12), Vector2(44, 20)))
 		elif definition["kind"] == "relay":
 			add_wall(Rect2(definition["position"] + Vector2(-24, 12), Vector2(48, 28)))
+		elif definition["kind"] == "boathouse":
+			for water_rect in FieldEscapeArt.water_rects(definition["position"]):
+				add_wall(water_rect)
 		elif definition["kind"] == "bog":
 			CampLights.lamp(self, definition["position"] - Vector2(0, 13), 66, Color("a0b876"), 0.65)
 		else:

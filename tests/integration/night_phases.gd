@@ -1,5 +1,5 @@
 extends SceneTree
-## F2 night: 60-minute phase clock, radio part reveals, dread, director, events and dawn.
+## Night pacing: progress-driven phases with drift, radio part reveals, dread, director and events. No dawn deadline.
 var checks := 0
 var failures := 0
 var capture := false
@@ -34,7 +34,7 @@ func _run() -> void:
 	await _phase_checks()
 	await _event_checks()
 	await _director_checks()
-	await _dawn_checks()
+	await _no_deadline_checks()
 	root.get_node("Session").select_survivor(previous_role)
 	print(JSON.stringify({"event":"test_result","suite":"night_phases","checks":checks,"failures":failures}))
 	await root.get_node("AudioManager").prepare_shutdown()
@@ -49,16 +49,15 @@ func _plan_checks() -> void:
 		again.generate(seed_value, "woods")
 		_check(plan.reveal_phase == again.reveal_phase and plan.night_events == again.night_events, "seed_%d_night_schedule_reproducible" % seed_value)
 		_check(plan.reveal_phase["battery"] == 0 and plan.reveal_phase["key"] == 0 and plan.reveal_phase["fuel"] == 1 and plan.reveal_phase[plan.required[3]] == 2 and plan.reveal_phase[plan.required[4]] == 3, "seed_%d_parts_staged_across_four_phases" % seed_value)
-		var windows := [[NightClock.PHASE_STARTS[1], NightClock.PHASE_STARTS[2]], [NightClock.PHASE_STARTS[2], NightClock.PHASE_STARTS[3]], [NightClock.PHASE_STARTS[3], NightClock.DAWN - 600]]
 		var placed := plan.night_events.size() == 3
 		for index in range(plan.night_events.size()):
-			var at: float = plan.night_events[index]["time"]
-			placed = placed and at > windows[index][0] and at < windows[index][1] and plan.night_events[index]["kind"] in ["storm", "blackout"]
+			var event: Dictionary = plan.night_events[index]
+			placed = placed and event["phase"] == index + 1 and event["delay"] > 0.0 and event["delay"] <= 360.0 and event["kind"] in ["storm", "blackout"]
 		_check(placed, "seed_%d_events_inside_their_phases" % seed_value)
 	var camp := RoundPlan.new()
 	camp.generate(42, "camp")
 	_check(camp.reveal_phase.is_empty() and camp.night_events.is_empty(), "quick_camp_has_no_night_schedule")
-	_check(NightClock.phase_at(599.9) == 0 and NightClock.phase_at(600) == 1 and NightClock.phase_at(2399) == 2 and NightClock.phase_at(3599) == 3, "phase_boundaries")
+	_check(NightClock.phase_for(0.0) == 0 and NightClock.phase_for(0.2) == 1 and NightClock.phase_for(0.49) == 1 and NightClock.phase_for(0.5) == 2 and NightClock.phase_for(0.79) == 2 and NightClock.phase_for(0.8) == 3, "progress_phase_boundaries")
 	_check(NightClock.clock_text(2405.7) == "40:05", "clock_text_format")
 
 
@@ -69,7 +68,7 @@ func _dusk_checks() -> void:
 		if pickup.kind in level.plan.required and level.plan.reveal_phase[pickup.kind] > 0:
 			sealed.append(pickup.available or pickup.visible)
 	_check(sealed.size() == 3 and not sealed.has(true), "three_parts_sealed_at_dusk")
-	_check(level.hud.inventory_label.text.contains("FUEL / RADIO 10:00") and level.hud.inventory_label.text.contains("RADIO 40:00"), "pack_lists_radio_times")
+	_check(level.hud.inventory_label.text.contains("FUEL / RADIO AT NIGHTFALL") and level.hud.inventory_label.text.contains("RADIO AT WITCHING HOUR"), "pack_lists_radio_phases")
 	_check(clock.dread < 15.0, "dusk_dread_low_%d" % int(clock.dread))
 
 
@@ -77,18 +76,30 @@ func _phase_checks() -> void:
 	var stash_before := _count_near(level.plan.camp.remap(Vector2(1304, 312)))
 	var hearing: float = level.killer.config.hearing_radius
 	var speed: float = level.killer.config.killer_chase_speed
-	clock.skip_to(NightClock.PHASE_STARTS[1])
+	# A quiet team drifts into Nightfall after DRIFT_SECONDS, never instantly.
+	clock.skip_to(NightClock.DRIFT_SECONDS - 1)
+	_check(clock.phase == 0, "no_phase_change_before_drift")
+	clock.skip_to(NightClock.DRIFT_SECONDS + 1)
 	await _frames(2)
 	_check(clock.phase == 1 and level.message.begins_with("NIGHTFALL") and level.message.contains("FUEL"), "nightfall_radio_names_fuel")
 	_check(_count_near(level.plan.camp.remap(Vector2(1304, 312))) == stash_before + 4, "phase_supply_drop_at_maintenance")
+	# Progress, not the clock, moves the night: two installed parts keep Nightfall (0.4).
+	level.van.installed.append(level.plan.required[0])
+	level.van.installed.append(level.plan.required[1])
+	clock.advance(1.0)
+	_check(clock.phase == 1, "two_parts_stay_in_nightfall")
+	level.van.installed.append(level.plan.required[2])
+	clock.advance(1.0)
+	_check(clock.phase == 2, "third_part_brings_deep_night")
 	var last: String = level.plan.required[4]
-	clock.skip_to(NightClock.PHASE_STARTS[3] - 1)
-	_check(not _part(last).available, "final_part_sealed_until_40_minutes")
+	clock.skip_to(clock.elapsed + NightClock.DRIFT_SECONDS * 3)
+	_check(clock.phase == 2 and not _part(last).available, "witching_hour_never_drifts_final_part_sealed")
 	_check(clock.dread > 45.0, "deep_night_dread_rises_%d" % int(clock.dread))
-	clock.skip_to(NightClock.PHASE_STARTS[3])
+	level.van.installed.append(level.plan.required[3])
+	clock.advance(1.0)
 	await _frames(2)
-	_check(_part(last).available and clock.phase == 3, "witching_hour_reveals_last_part")
-	_check(level.hud.title.text.contains("WITCHING HOUR 40:0") and (level.hud.title.text.contains("DAWN IN 20:00") or level.hud.title.text.contains("DAWN IN 19:59")), "hud_counts_down_to_dawn")
+	_check(_part(last).available and clock.phase == 3, "fourth_part_brings_witching_hour_and_last_part")
+	_check(level.hud.title.text.contains("WITCHING HOUR") and not level.hud.title.text.contains("DAWN"), "hud_has_no_dawn_countdown")
 	_check(is_equal_approx(level.killer.config.hearing_radius, hearing * 1.21) and is_equal_approx(level.killer.config.killer_chase_speed, speed * 1.08), "stalker_grows_bolder")
 	_check(level.soundscape.played_counts.get("phase_stinger", 0) >= 1, "phase_change_stinger")
 	_check(level.soundscape.played_counts.get("radio_talk", 0) >= 1 and level.soundscape.played_counts.get("radio_static", 0) >= 1, "phase_change_ranger_radio_broadcast")
@@ -164,18 +175,13 @@ func _director_checks() -> void:
 	clock.director_enabled = false
 
 
-func _dawn_checks() -> void:
-	var straggler: CampPlayer = load("res://scenes/actors/player.tscn").instantiate()
-	straggler.local_input = false
-	straggler.position = level.plan.woods.center(Vector2i(10, 24))
-	level.world_objects.add_child(straggler)
+func _no_deadline_checks() -> void:
 	player.position = Vector2(700, 520)
+	var before := clock.dread
+	clock.skip_to(clock.elapsed + 7200.0)
 	await _frames(2)
-	clock.skip_to(NightClock.DAWN)
-	await _frames(2)
-	_check(level.finished and level.won and player.status == CampPlayer.Status.ESCAPED, "dawn_rescues_survivor_in_camp")
-	_check(straggler.status == CampPlayer.Status.LEFT_BEHIND, "dawn_leaves_woods_survivor_behind")
-	_check(level.hud.result_panel.visible and level.hud.result_panel.get_child(0).get_node("Detail").text.contains("Dawn broke"), "dawn_result_explained")
+	_check(not level.finished and clock.phase == 3, "no_dawn_deadline_after_two_more_hours")
+	_check(clock.dread > before, "witching_hour_keeps_escalating")
 
 
 func _part(kind: String) -> CampPickup:

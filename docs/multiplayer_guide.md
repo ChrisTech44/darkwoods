@@ -8,7 +8,7 @@ microphone is opened or requested.
 
 ## Radio Rescue (expedition)
 
-All peers must use rules `lnac-net-11` (the same build). The host owns the fuse,
+All peers must use rules `lnac-net-12` (the same build). The host owns the fuse,
 substation, six-second relay hold, persistent signal lights, countdown and
 extraction results. Clients send the usual E/hold intents. **T** switches only
 that player's objective page. A remote operator can complete the whole chain;
@@ -16,6 +16,16 @@ any successful rescue also recovers connected downed teammates. Everyone standin
 must be inside the chapel landing circle; the van does not count as radio rescue.
 See the [Radio Rescue walkthrough](radio_rescue.md). Cross-machine and human
 pacing acceptance remain pending.
+
+## Boat and Ranger Gate (F5b)
+
+Both additional expedition routes are host-owned: parts, motor assistance, dock
+attack tells/strikes, floodlights, gate collision, holds, bridge countdown and
+results replicate. T cycles four local plans without sending objective-page
+choices to teammates. Boat recovers standing survivors in its 80px dock circle;
+bridge recovery uses 64px. A successful extraction also recovers connected downed
+teammates. The first completed escape ends the round. The [Boat/Gate guide](boat_gate.md)
+explains exact parts and counterplay. Quick Camp keeps its original van rules.
 
 ## Host and join
 
@@ -54,7 +64,7 @@ starts the repaired van. **1–6/keypad** selects a belt item; **V** uses it and
 **G** drops its stack. **Q/R/C** remain flare/battery/food shortcuts. Required
 vehicle parts and reusable cutters remain separate from the six supply slots.
 Map pins (**M**) are sent to the host, which keeps each player's newest three
-and shares them with everyone. The host also owns the 60-minute night clock, part reveals, storms and blackouts.
+and shares them with everyone. The host also owns the progress-paced night (phases), part reveals, storms and blackouts.
 Flash-stuns (Space) and help calls are host-validated intents.
 Hiding, doors and knock-overs use the normal E intent; the host owns breath,
 door breaking and blocking. The road network changes the generated woods, so

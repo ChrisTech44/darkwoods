@@ -240,3 +240,10 @@ devices/permissions, per-peer mute and living/spectator recipient tests remain
 required before claiming voice acceptance. The stable authority/identity/state
 boundaries are intended to support that next increment without trusting client
 positions or routing microphone traffic through reliable gameplay actions.
+
+
+17 October F5b cleanup: repeated round-transition testing exposed a delayed
+radio timer lambda retaining a freed static source. Named, round-owned callbacks
+plus a weak source reference now preserve the existing playback timing while
+allowing old-round callbacks to disconnect. This is a lifecycle fix, not a new
+audio event, listening acceptance or voice implementation.

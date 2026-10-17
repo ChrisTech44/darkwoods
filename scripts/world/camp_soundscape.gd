@@ -239,18 +239,27 @@ func radio_broadcast(phase: int) -> bool:
 	if not mixer.output_enabled:
 		return true
 	var static_burst := _radio_voice("radio_static", 0.0)
-	get_tree().create_timer(1.1).timeout.connect(func() -> void:
-		if is_instance_valid(static_burst): static_burst.queue_free())
+	get_tree().create_timer(1.1).timeout.connect(_finish_radio_static.bind(weakref(static_burst)))
 	var talk_length: float = mixer.stream_for("radio_talk").get_length()
 	var offset := fmod((phase - 1) * 9.0, maxf(1.0, talk_length - RADIO_TALK_SECONDS))
-	get_tree().create_timer(0.6).timeout.connect(func() -> void:
-		if level.finished: return
-		var talk := _radio_voice("radio_talk", offset)
-		var fade := talk.create_tween()
-		fade.tween_interval(RADIO_TALK_SECONDS - 1.0)
-		fade.tween_property(talk, "volume_db", -60.0, 1.0)
-		fade.tween_callback(talk.queue_free))
+	get_tree().create_timer(0.6).timeout.connect(_start_radio_talk.bind(offset))
 	return true
+
+
+func _finish_radio_static(source: WeakRef) -> void:
+	var voice: Node = source.get_ref()
+	if is_instance_valid(voice):
+		voice.queue_free()
+
+
+func _start_radio_talk(offset: float) -> void:
+	if level.finished:
+		return
+	var talk := _radio_voice("radio_talk", offset)
+	var fade := talk.create_tween()
+	fade.tween_interval(RADIO_TALK_SECONDS - 1.0)
+	fade.tween_property(talk, "volume_db", -60.0, 1.0)
+	fade.tween_callback(talk.queue_free)
 
 
 func _radio_voice(cue: String, offset: float) -> AudioStreamPlayer:

@@ -175,6 +175,9 @@ func _apply_gate(index: int) -> void:
 
 ## Hop a fence: half a second, quiet at a walk, loud at a sprint.
 func vault(actor: CampPlayer, index: int) -> bool:
+	if "outboard_motor" in actor.inventory:
+		level.announce("Set the heavy motor down with G before vaulting, or use the road.", actor)
+		return false
 	var fence: Dictionary = level.plan.woods.fences[index]
 	var travel: Vector2 = fence["travel"]
 	var side := signf((actor.global_position - fence["position"]).dot(travel))

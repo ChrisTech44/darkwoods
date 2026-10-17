@@ -6,7 +6,7 @@ var level: Node2D
 
 class Overview extends Control:
 	var plan: RoundPlan
-	const COLORS := {"village":"c8b28b", "bog":"81ad92", "graveyard":"a3b7b4", "mill":"79aeb2", "orchard":"a9b878", "observatory":"aaa8d0", "rail":"c79c78", "quarry":"bac2ad", "chapel":"8cabbc", "substation":"c6c48a", "relay":"93c7c5"}
+	const COLORS := {"village":"c8b28b", "bog":"81ad92", "graveyard":"a3b7b4", "mill":"79aeb2", "orchard":"a9b878", "observatory":"aaa8d0", "rail":"c79c78", "quarry":"bac2ad", "chapel":"8cabbc", "substation":"c6c48a", "relay":"93c7c5", "logging":"b59b70", "boathouse":"79b3bb", "ranger":"d3c48b"}
 	func _draw() -> void:
 		draw_rect(Rect2(0,0,384,216),Color("091614"))
 		var scale := 180.0 / WoodsLayout.WORLD_BOUNDS.size.y
@@ -36,17 +36,20 @@ class Overview extends Control:
 		draw_string(ThemeDB.fallback_font,Vector2(8,12),"FOREST ATLAS / NIGHT %d / 9,600 x 9,408" % plan.seed_value,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("e4d7ad"))
 		draw_string(ThemeDB.fallback_font,Vector2(8,23),"%d REGIONS / %d CRYPTIDS + CAMP STALKER / NORTH UP" % [plan.woods.zones.size(),plan.encounters.size()],HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("9eae96"))
 		var labels := [
-			[7,"8 QUARRY","STONEBACK RAM",Vector2(4,39)],
-			[0,"1 VILLAGE","ROTATING CACHE",Vector2(4,68)],
-			[3,"4 FLOODED MILL","FUSE / BOILER SAINT",Vector2(4,97)],
-			[4,"5 ORCHARD","SEAMSTRESS",Vector2(4,126)],
-			[2,"3 GRAVEYARD","ROTATING CACHE",Vector2(4,155)],
-			[9,"10 SUBSTATION","EMERGENCY POWER",Vector2(4,184)],
-			[5,"6 OBSERVATORY","SHUTTER WRAITH",Vector2(288,39)],
-			[1,"2 WITCH'S BOG","ROTATING CACHE",Vector2(288,68)],
-			[10,"11 RADIO RELAY","DISTRESS CALL",Vector2(288,97)],
-			[6,"7 RAIL YARD","CONDUCTOR",Vector2(288,126)],
-			[8,"9 CHAPEL","RESCUE / CANDLE GRAZER",Vector2(288,155)]
+			[7,"8 QUARRY","STONEBACK RAM",Vector2(4,36)],
+			[0,"1 VILLAGE","ROTATING CACHE",Vector2(4,60)],
+			[3,"4 FLOODED MILL","EMERGENCY FUSE",Vector2(4,84)],
+			[11,"12 LOGGING","OUTBOARD MOTOR",Vector2(4,108)],
+			[4,"5 ORCHARD","SEAMSTRESS",Vector2(4,132)],
+			[2,"3 GRAVEYARD","ROTATING CACHE",Vector2(4,156)],
+			[9,"10 SUBSTATION","EMERGENCY POWER",Vector2(4,180)],
+			[13,"14 RANGER ROAD","GATE / BRIDGE",Vector2(288,36)],
+			[5,"6 OBSERVATORY","BOAT DRAIN PLUG",Vector2(288,60)],
+			[1,"2 WITCH'S BOG","ROTATING CACHE",Vector2(288,84)],
+			[10,"11 RADIO RELAY","DISTRESS CALL",Vector2(288,108)],
+			[6,"7 RAIL YARD","BOAT FUEL",Vector2(288,132)],
+			[12,"13 BOATHOUSE","BOAT / LAKE THING",Vector2(288,156)],
+			[8,"9 CHAPEL","RADIO RESCUE",Vector2(288,180)]
 		]
 		for label in labels:
 			var zone: Dictionary=plan.woods.zones[label[0]]

@@ -154,7 +154,7 @@ func _host() -> void:
 	level.props.toggle_door(level.player,0)
 	if selected_mode=="woods":
 		# The host owns the night clock; clients see the phase and the radio-revealed fuel cache.
-		level.night_clock.skip_to(NightClock.PHASE_STARTS[1])
+		level.night_clock.force_phase(1)
 		level.read_note(level.plan.required[3])
 		harness.advance.rpc("night_phase",{"note":level.plan.required[3]})
 		if not await _reports(peers-1): return
@@ -320,6 +320,8 @@ func _host() -> void:
 		_check(net.world.pickups.size()==initial_items+dropped_count and net.roster.size()==peers-1,"disconnect_drops_objective_and_removes_actor")
 	if selected_mode == "woods":
 		await _radio_round(net.world, guest)
+		await _field_round(guest, "boat")
+		await _field_round(guest, "gate")
 	harness.advance.rpc("host_loss")
 	await create_timer(0.3).timeout
 	net.leave("Host closed test camp.")
@@ -347,7 +349,46 @@ func _client() -> void:
 		if harness.stage==handled: continue
 		handled=harness.stage
 		var mine: int=get_multiplayer().get_unique_id()
+		if handled.begins_with("field_take_"):
+			await create_timer(0.45).timeout
+			if mine==harness.data["guest"]: net.action("interact")
+			await _until(func(): return harness.data["kind"] in net.actors[harness.data["guest"]].inventory,5)
+			harness.report.rpc_id(1,handled,{"taken":harness.data["kind"] in net.actors[harness.data["guest"]].inventory})
+			continue
 		match handled:
+			"ready_boat", "ready_gate": net.choose("mechanic",true)
+			"field_boat_fit", "field_boat_start", "field_gate_fit", "field_gate_power", "field_circuit":
+				await create_timer(0.45).timeout
+				if mine==harness.data["guest"]: net.action("interact")
+				var accepted:=func() -> bool:
+					match handled:
+						"field_boat_fit": return net.world.escapes.boat_installed.size()==3
+						"field_boat_start": return net.world.escapes.boat_started
+						"field_gate_fit": return net.world.escapes.gate_installed.size()==3
+						"field_gate_power": return net.world.escapes.gate_powered
+						_: return net.world.rescue.powered
+				await _until(accepted,5)
+				harness.report.rpc_id(1,handled,{"accepted":accepted.call()})
+			"field_gate_hold":
+				await create_timer(0.45).timeout
+				if mine==harness.data["guest"]: Input.action_press("interact")
+				await _until(func(): return net.world.escapes.gate_open,7)
+				Input.action_release("interact")
+				await physics_frame
+				await physics_frame
+				harness.report.rpc_id(1,handled,{"open":net.world.escapes.gate_open and net.world.escapes.gate_body.get_child(0).disabled})
+			"field_assist":
+				await _until(func(): return net.actors[harness.data["guest"]].motor_assisted,5)
+				harness.report.rpc_id(1,handled,{"assisted":net.actors[harness.data["guest"]].motor_assisted and net.actors[1].assisting_motor})
+			"field_lake":
+				await _until(func(): return net.world.escapes.lake_tell>0,5)
+				harness.report.rpc_id(1,handled,{"tell":net.world.escapes.lake_tell>0,"wave":net.world.escapes.lake_wave})
+			"field_bridge":
+				await _until(func(): return net.world.escapes.bridge_started,5)
+				harness.report.rpc_id(1,handled,{"bridge":net.world.escapes.bridge_started})
+			"field_result_boat", "field_result_gate":
+				await _until(func(): return net.world.finished,5)
+				harness.report.rpc_id(1,handled,{"won":net.world.won,"escaped":net.world.player.status==CampPlayer.Status.ESCAPED,"route":net.world.escape_route})
 			"movement":
 				Input.action_press("move_down")
 				await _until(func(): return net.world.player.position.y>415,5)
@@ -387,7 +428,7 @@ func _client() -> void:
 					if pickup.kind=="fuel": fuel=pickup
 				await _until(func(): return net.world.night_clock.phase==1 and fuel.available,5)
 				for frame in range(3): await process_frame
-				var night_ok: bool=net.world.night_clock.phase==1 and net.world.night_clock.elapsed>=600 and fuel.available and fuel.visible and net.world.hud.title.text.contains("NIGHTFALL") and net.world.clues.get(harness.data["note"],0)==1
+				var night_ok: bool=net.world.night_clock.phase==1 and fuel.available and fuel.visible and net.world.hud.title.text.contains("NIGHTFALL") and net.world.clues.get(harness.data["note"],0)==1
 				if not night_ok: print(JSON.stringify({"event":"night_replica","phase":net.world.night_clock.phase,"elapsed":net.world.night_clock.elapsed,"fuel":fuel.available,"visible":fuel.visible,"title":net.world.hud.title.text}))
 				harness.report.rpc_id(1,handled,{"night":night_ok})
 			"map_pin":
@@ -664,3 +705,77 @@ func _radio_round(level: Node2D, guest: int) -> void:
 	harness.advance.rpc("radio_result")
 	if not await _reports(net.actors.size()-1): return
 	for report: Dictionary in harness.reports.values(): _check(report.get("won",false) and report.get("escaped",false) and report.get("route", "") == "RADIO RESCUE", "client_radio_result_matches_authority")
+
+
+func _field_round(guest: int, route: String) -> void:
+	net.return_lobby(true)
+	if not await _until(func(): return current_scene!=null and current_scene.name=="NetworkLobby",5): return
+	harness.advance.rpc("ready_"+route)
+	net.choose("medic",true)
+	if not await _until(func(): return net.can_start(),8): return
+	_check(net.start_round("woods",42),"fresh_"+route+"_round_starts")
+	if not await _until(func(): return net.phase=="playing",15): return
+	var level: Node2D=net.world
+	var field: FieldEscapes=level.escapes
+	var operator: CampPlayer=net.actors[guest]
+	for enemy: CampKiller in get_nodes_in_group("killers"): enemy.enabled=false
+	level.night_clock.director_enabled=false
+	var parts: Array[String]=FieldEscapes.BOAT_PARTS.duplicate() if route=="boat" else FieldEscapes.GATE_CODES.duplicate()
+	if route=="gate": parts.append("rescue_fuse")
+	for kind in parts:
+		for pickup: CampPickup in level.pickups:
+			if pickup.kind==kind and pickup.available: operator.position=pickup.position
+		harness.advance.rpc("field_take_"+kind,{"guest":guest,"kind":kind})
+		if not await _reports(net.actors.size()-1): return
+		_check(kind in operator.inventory,"remote_takes_"+kind)
+	if route=="boat":
+		operator.position=Vector2(620,520)
+		level.player.position=Vector2(600,520)
+		Input.action_press("interact")
+		harness.advance.rpc("field_assist",{"guest":guest})
+		if not await _reports(net.actors.size()-1): return
+		Input.action_release("interact")
+		_check(operator.motor_assisted,"heavy_assistance_authoritative")
+		for report: Dictionary in harness.reports.values(): _check(report.get("assisted",false),"client_sees_heavy_assistance")
+		operator.position=field.boat_point
+		harness.advance.rpc("field_boat_fit",{"guest":guest})
+		if not await _reports(net.actors.size()-1): return
+		_check(field.boat_installed.size()==3 and not field.boat_started,"remote_installs_boat_parts")
+		level.night_clock.skip_to(2400)
+		harness.advance.rpc("field_boat_start",{"guest":guest})
+		if not await _reports(net.actors.size()-1): return
+		_check(field.boat_started and field.boat_remaining>23,"remote_starts_full_boat_countdown")
+		field.advance(5.1)
+		harness.advance.rpc("field_lake")
+		if not await _reports(net.actors.size()-1): return
+		for report: Dictionary in harness.reports.values(): _check(report.get("tell",false) and report.get("wave",0)==1,"client_receives_telegraphed_lake_attack")
+	else:
+		operator.position=level.rescue.power_point
+		harness.advance.rpc("field_circuit",{"guest":guest})
+		if not await _reports(net.actors.size()-1): return
+		operator.position=field.breaker_point
+		harness.advance.rpc("field_gate_power",{"guest":guest})
+		if not await _reports(net.actors.size()-1): return
+		operator.position=field.gate_point
+		harness.advance.rpc("field_gate_fit",{"guest":guest})
+		if not await _reports(net.actors.size()-1): return
+		_check(field.gate_powered and field.gate_installed.size()==3,"remote_powers_gate_and_installs_codes")
+		level.night_clock.skip_to(2400)
+		harness.advance.rpc("field_gate_hold",{"guest":guest})
+		if not await _reports(net.actors.size()-1): return
+		_check(field.gate_open,"remote_gate_hold_opens_arm")
+		for report: Dictionary in harness.reports.values(): _check(report.get("open",false),"client_opens_physical_gate_arm")
+		operator.position=field.bridge
+		harness.advance.rpc("field_bridge")
+		if not await _reports(net.actors.size()-1): return
+		_check(field.bridge_started,"remote_reaches_bridge")
+	for id: int in net.actors:
+		if id!=guest:
+			net.actors[id].position=Vector2(96,384)
+			net.actors[id].set_status(CampPlayer.Status.DOWNED)
+	operator.position=field.boat_point if route=="boat" else field.bridge
+	field.advance(26 if route=="boat" else 9)
+	_check(level.finished and level.won and net.actors.values().all(func(actor): return actor.status==CampPlayer.Status.ESCAPED),route+"_recovers_all_connected_downed_teammates")
+	harness.advance.rpc("field_result_"+route)
+	if not await _reports(net.actors.size()-1): return
+	for report: Dictionary in harness.reports.values(): _check(report.get("won",false) and report.get("escaped",false) and report.get("route","")==("BOAT" if route=="boat" else "RANGER GATE"),"client_"+route+"_result_matches")

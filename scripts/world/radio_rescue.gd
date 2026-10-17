@@ -71,8 +71,6 @@ func prompt(actor: CampPlayer) -> String:
 			return "DISTRESS SENT · SIGNAL LANDING ZONE SOUTH OF CHAPEL"
 		if not powered:
 			return "RELAY OFFLINE · RESTORE NORTH SUBSTATION"
-		if level.night_clock.phase < 3:
-			return "RESCUE CHANNEL OPENS AT 40:00 · PREPARE THE LANDING ZONE"
 		return "HOLD E · CLIMB / TRANSMIT  %d%%" % int(progress / TRANSMIT_SECONDS * 100)
 	for index in range(3):
 		if near(actor, landing + SOCKET_OFFSETS[index]):
@@ -94,7 +92,7 @@ func interact(actor: CampPlayer) -> bool:
 		actor.inventory.erase("rescue_fuse")
 		powered = true
 		level.loud_noise(power_point, 750)
-		level.announce("Rescue circuit restored. East Relay Station can transmit at 40:00; prepare three chapel signals meanwhile.")
+		level.announce("Rescue circuit restored. Transmit from the East Relay Station and light three chapel signals.")
 		return true
 	if near(actor, relay_point):
 		level.announce(prompt(actor), actor)
@@ -126,7 +124,7 @@ func advance(delta: float) -> void:
 		return
 	var net: Node = get_node("/root/Net")
 	var actor: CampPlayer
-	if powered and not transmitted and level.night_clock.phase >= 3:
+	if powered and not transmitted:
 		if net.active:
 			var ids: Array = net.actors.keys()
 			ids.sort()
@@ -155,7 +153,7 @@ func advance(delta: float) -> void:
 func advance_transmit(actor: CampPlayer, delta: float) -> void:
 	if not authority() or not active or level.paused or level.finished or transmitted:
 		return
-	if actor == null or not powered or level.night_clock.phase < 3 or not near(actor, relay_point):
+	if actor == null or not powered or not near(actor, relay_point):
 		progress = 0.0
 		starter = null
 		return
@@ -196,7 +194,7 @@ func show_in_pack(_actor: CampPlayer) -> bool:
 
 
 func pack_text() -> String:
-	return "RADIO RESCUE · T VAN PLAN\n%s FUSE / FLOODED MILL → NORTH SUBSTATION\n%s RELAY EAST / HOLD E 6s AFTER 40:00\nCHAPEL SOUTH / 3 FLARES: %d/3 LIT\nE AT CIRCLE: START 40s HOLD / DOWNED TEAM RESCUED" % ["✓" if powered else "·", "✓" if transmitted else "·", signals.count(true)]
+	return "RADIO RESCUE · T NEXT PLAN\n%s FUSE / FLOODED MILL → NORTH SUBSTATION\n%s RELAY EAST / HOLD E 6s TO TRANSMIT\nCHAPEL SOUTH / 3 FLARES: %d/3 LIT\nE AT CIRCLE: START 40s HOLD / DOWNED TEAM RESCUED" % ["✓" if powered else "·", "✓" if transmitted else "·", signals.count(true)]
 
 
 func snapshot() -> Dictionary:
@@ -226,6 +224,7 @@ func _draw() -> void:
 		draw_arc(at, 9, 0, TAU, 12, Color("b2ab89"), 2)
 		draw_rect(Rect2(at + Vector2(-3, -9), Vector2(6, 10)), Color("d29a68") if signals[index] else Color("56675d"))
 		if signals[index]:
+			PixelArt.draw_standing(self,"f5_beacon",at+Vector2(0,8),22)
 			for spark in range(6):
 				var rise := fmod(pulse * 13 + spark * 3, 18)
 				draw_rect(Rect2(at + Vector2(sin(spark + pulse) * 5, -rise - 8), Vector2(2, 2)), Color("ffcb8b"))

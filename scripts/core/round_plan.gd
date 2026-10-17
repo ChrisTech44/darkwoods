@@ -20,6 +20,7 @@ var night_events: Array[Dictionary] = []
 const REGION_POOL := {"NORTH": [0, 5], "EAST": [1, 6], "SOUTH": [2, 8], "WEST": [3, 4]}
 var cache_zone: Dictionary = {}
 var cache_direction: Dictionary = {}
+var gate_regions: Dictionary = {}
 
 
 func generate(value: int, mode: String) -> void:
@@ -34,6 +35,7 @@ func generate(value: int, mode: String) -> void:
 	night_events.clear()
 	cache_zone.clear()
 	cache_direction.clear()
+	gate_regions.clear()
 	required.assign(["battery", "fuel", "key"])
 	var rng := RandomNumberGenerator.new()
 	rng.seed = value + 771
@@ -82,8 +84,13 @@ func generate(value: int, mode: String) -> void:
 	_add("rescue_fuse", woods.zones[3]["position"] + Vector2(76, 88), "FLOODED MILL / EMERGENCY FUSE", false)
 	for index in range(3):
 		_add("flare", woods.zones[8]["position"] + Vector2(-76 + index * 18, 230), "CHAPEL / RESCUE SIGNAL STASH", false)
+	_add_field_escapes(value)
 	_schedule_night(value)
 	for item in loot:
+		# Keep ordinary seeded supplies off the new solid lake banks.
+		var lake: Vector2 = woods.zones[12]["position"]
+		if FieldEscapeArt.water_rects(lake).any(func(rect: Rect2) -> bool: return rect.grow(8).has_point(item["position"])):
+			item["position"] = lake + Vector2(110 + loot.find(item) % 4 * 25, 150)
 		item["position"] = camp.remap(item["position"])
 	_encounter("vampire", woods.zones[2]["cell"] + Vector2i(1,1))
 	_encounter("witch", woods.zones[1]["cell"] + Vector2i(1,1))
@@ -180,15 +187,16 @@ func _add_notes() -> void:
 			placed += 1
 
 
-## Parts arrive by ranger radio across the night so escapes land in the 40-60 minute window.
+## Parts arrive by ranger radio as the night deepens, and the night deepens as the
+## team secures parts, so the chain unfolds at the team's own pace. Events are tied
+## to phases (with a seeded delay into each), not to fixed clock times.
 func _schedule_night(value: int) -> void:
 	reveal_phase = {"battery": 0, "key": 0, "fuel": 1, required[3]: 2, required[4]: 3}
 	var rng := RandomNumberGenerator.new()
 	rng.seed = value + 5150
-	var starts: Array[float] = NightClock.PHASE_STARTS
-	night_events.append({"kind": "storm", "time": rng.randf_range(starts[1] + 120, starts[2] - 240)})
-	night_events.append({"kind": "blackout", "time": rng.randf_range(starts[2] + 120, starts[3] - 240)})
-	night_events.append({"kind": "storm" if rng.randf() < 0.5 else "blackout", "time": rng.randf_range(starts[3] + 180, NightClock.DAWN - 600)})
+	night_events.append({"kind": "storm", "phase": 1, "delay": rng.randf_range(120.0, 360.0)})
+	night_events.append({"kind": "blackout", "phase": 2, "delay": rng.randf_range(120.0, 300.0)})
+	night_events.append({"kind": "storm" if rng.randf() < 0.5 else "blackout", "phase": 3, "delay": rng.randf_range(60.0, 180.0)})
 
 
 ## Extra lock tools so a team can split up. A separate RNG keeps older seeded content unchanged.
@@ -228,7 +236,7 @@ func pack_description(installed: Array[String], phase: int = 3, clues: Dictionar
 		var where := clue_text(kind, clues.get(kind, 2))
 		if reveal_phase.get(kind, 0) > phase:
 			var due: int = reveal_phase[kind]
-			lines.append("· %s / RADIO %s · %s" % [kind.replace("_", " ").to_upper(), NightClock.clock_text(NightClock.PHASE_STARTS[due]), where])
+			lines.append("· %s / RADIO AT %s · %s" % [kind.replace("_", " ").to_upper(), NightClock.PHASES[due], where])
 			continue
 		lines.append(("✓ " if kind in installed else "· ") + kind.replace("_", " ").to_upper() + " / " + where)
 	return "\n".join(lines)
@@ -253,3 +261,17 @@ func clue_text(kind: String, level: int) -> String:
 
 func region_name(kind: String) -> String:
 	return WoodsLayout.short_name(woods.zones[cache_zone[kind]]) if cache_zone.has(kind) else ""
+
+
+func _add_field_escapes(value: int) -> void:
+	_add("outboard_motor", woods.zones[11]["position"] + Vector2(-70,48), "WEST / LOGGING CAMP", false)
+	_add("boat_fuel", woods.zones[6]["position"] + Vector2(-92,72), "EAST / RAIL YARD", false)
+	_add("drain_plug", woods.zones[5]["position"] + Vector2(-96,96), "NORTH / OBSERVATORY", false)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = value + 8181
+	for index in range(3):
+		var choices: Array = [[1,6],[2,8],[3,4]][index]
+		var region: int = choices[rng.randi_range(0,1)]
+		var kind := "gate_code_%d" % (index+1)
+		gate_regions[kind] = region
+		_add(kind, woods.zones[region]["position"] + Vector2(-112,152), WoodsLayout.short_name(woods.zones[region]), false)

@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-11"
+const RULES := "lnac-net-12"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -391,7 +391,7 @@ func handle_input(event: InputEvent) -> void:
 	if menu_open or event.is_echo(): return
 	if event.is_action_pressed("inventory"):
 		world.hud.inventory_label.visible=not world.hud.inventory_label.visible
-		world.hud.chart.visible=world.hud.inventory_label.visible
+		world.hud.chart.visible=world.hud.inventory_label.visible and world.objective_page==0
 		return
 	if event is InputEventKey and event.pressed:
 		var row := [KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_6]

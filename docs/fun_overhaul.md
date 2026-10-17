@@ -47,25 +47,26 @@ Measured from the current code and rules, not from opinion alone:
 5. **Fear is earned and fair.** Threats always telegraph. Close calls happen
    often, and actual downs are rarer. You can hide, slam, vault and outthink the woods.
 
-## Target shape of a night (40–60 minutes)
+## Target shape of a night (long, at a natural pace)
 
-User amendment (16 October): expedition rounds span **40–60 minutes**. A night
-is 60 minutes long, and objectives are staged so the escape lands in the final third.
+User amendments: 16 October asked for long expedition rounds (40–60 minutes);
+**17 October removed the fixed time requirements**: the night should take a long
+time but move at a natural pace. The night is therefore **paced by progress**:
 
-| Phase | Clock | Feel | What changes |
+| Phase | Arrives when | Feel | What changes |
 | --- | --- | --- | --- |
-| **Dusk** | 0–10 min | Prepare, plan, split up | Battery/key in camp, tools, low dread, stalker sweeps camp quietly. |
-| **Nightfall** | 10–25 min | Expedition | Radio reveals fuel; supply drop; first storm; full roaming density. |
-| **Deep Night** | 25–40 min | Pressure | Radio reveals extra part 1; blackout; stalker hears farther; director peaks more often. |
-| **Witching Hour** | 40–60 min | Finale | Radio reveals the last part; stalker chases faster; escape finales; race to camp before dawn. |
-| **Dawn** | 60 min | Resolution | Ranger patrol rescues survivors in camp or aboard; anyone in the woods is left behind. |
+| **Dusk** | Start | Prepare, plan, split up | Battery/key in camp, tools, low dread, stalker sweeps camp quietly. |
+| **Nightfall** | Best escape ≥ 20% ready, or 12 quiet minutes | Expedition | Radio reveals fuel; supply drop; first storm; full roaming density. |
+| **Deep Night** | Best escape ≥ 50% ready, or 12 more quiet minutes | Pressure | Radio reveals extra part 1; blackout; stalker hears farther; director peaks more often. |
+| **Witching Hour** | Best escape ≥ 80% ready (never by drift) | Finale | Radio reveals the last part; stalker chases faster; escape finales; dread climbs without a ceiling. |
 
-Phases advance by **clock only**, so no team can finish before 40:00. Installed
-parts, loud actions and chases raise **dread** instead, which drives the
-director, music and event intensity. *(Implemented in F2; the original
-"time or progress" rule was replaced to keep the 40-minute floor.)* There is no
-instant loss before dawn. Witching Hour keeps getting harsher (configurable
-cap) so stalling is never the safe choice.
+"Escape progress" is the best fraction across van parts, radio steps (power,
+transmit, three signals), boat parts and gate steps (three codes, power). Each
+step reveals the next, so the chain is long but never waits on a clock. A
+stalled team drifts forward (up to Deep Night) so the night never stagnates.
+There is **no dawn deadline and no time gate** on any escape; dread rises the
+longer a team lingers in a phase, so stalling is never the safe choice.
+*(Implemented 17 October, replacing the F2 60-minute clock.)*
 
 **Escape finales** make leaving the climax. Starting the van, transmitting the
 radio call or launching the boat creates a team-wide noise beacon and a short
@@ -266,8 +267,8 @@ already has ENet authority), logged and pushed before the next one starts.
    wall-map region outlines, team map pins (M), second boltcutters + crowbar.
    Clue chains moved to F4: the pack already names each part's exact cache, so
    vaguer clues only make sense once objective regions rotate.
-2. **F2 Night phases, dread and director** *(implemented)*: 60-minute phase
-   clock, ranger-radio part reveals, dread, director with relief windows,
+2. **F2 Night phases, dread and director** *(implemented; clock replaced by progress pacing on 17 October)*: phase
+   pacing, ranger-radio part reveals, dread, director with relief windows,
    phase supply drops, Storm Front and Blackout/generator, dread-scaled music
    with phase stingers, modest stalker escalation and dawn rescue. Deferred:
    distant-call/flicker build-ups, separate chase music layers (needs new
@@ -290,11 +291,13 @@ already has ENet authority), logged and pushed before the next one starts.
    camp → field → building clue chains that point to them.
 5. **F5 Escapes and new regions** *(F5a implemented: secondary Radio Rescue,
    Substation and Radio Relay Station; fuse → power → six-second transmit after
-   40:00 → three persistent signal flares → player-started 40s chapel holdout.
-   Both escapes remain available; Quick Camp stays van-only. Human pacing tests
-   deferred by user on 17 October)*: next Boat (Logging Camp, Lakeshore Boathouse),
-   Ranger Gate and remaining finales; primary/rumoured-secondary selection and
-   broader escape-chain rotation still pending. See [implemented radio rules](radio_rescue.md).
+   once powered → three persistent signal flares → player-started 40s chapel holdout.
+   All four implemented escapes remain available; Quick Camp stays van-only. Human pacing tests
+   deferred by user on 17 October; F5b implemented: Boat with heavy motor/helper,
+   Logging Camp, Boathouse, 25s Lake Thing launch; Ranger Gate with three regional
+   code fragments, floodlights, 4s opening hold and north bridge run)*: Signal Fire,
+   revised van finale, primary/rumoured-secondary selection and broader escape-chain
+   rotation still pending. See [radio rules](radio_rescue.md) and [Boat/Gate rules](boat_gate.md).
 6. **F6 Roles 2.0 and co-op actions**: active abilities, item passing, heavy
    items, two-person actions, ghost wisps, awards.
 7. **F7 Killers and modifiers**: stalker tiers and sabotage, first new headline

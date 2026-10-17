@@ -53,6 +53,8 @@ var help_cooldown: float = 0.0
 var blood: Array[Vector2] = []
 var blood_distance: float = 0.0
 var hidden_spot: int = -1
+var motor_assisted := false
+var assisting_motor := false
 var vault_time: float = 0.0
 const BARRIER_LAYER := 8
 var breath: float = 1.0
@@ -118,7 +120,8 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 		facing = movement
 	if exhausted and stamina >= config.stamina_restart:
 		exhausted = false
-	sprinting = wants_sprint and movement != Vector2.ZERO and not exhausted and stamina > 0.0
+	var heavy := "outboard_motor" in inventory
+	sprinting = wants_sprint and not heavy and not assisting_motor and movement != Vector2.ZERO and not exhausted and stamina > 0.0
 	if sprinting:
 		stamina = maxf(0.0, stamina - delta)
 		if stamina == 0.0:
@@ -126,6 +129,8 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 	else:
 		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery)
 	velocity = movement * (config.sprint_speed * (WOUNDED_SPRINT if wounded else 1.0) if sprinting else config.walk_speed)
+	if heavy and not motor_assisted:
+		velocity *= 0.75
 	if hex_remaining > 0:
 		velocity *= 0.6
 	var previous := position
@@ -220,6 +225,8 @@ func _draw() -> void:
 			draw_line(Vector2(0, -14), Vector2(0, -10), Color("ecd6a0"), 2)
 		return
 	draw_texture_rect_region(sheet, Rect2(-12, -29, 24, 32), Rect2(frame * 24, row * 32, 24, 32))
+	if "outboard_motor" in inventory:
+		PixelArt.draw_in(self,"outboard_motor",Rect2(-20,-18,14,20))
 	if wounded:
 		draw_rect(Rect2(-4, -14, 3, 3), Color("a8322c"))
 		draw_rect(Rect2(2, -9, 2, 2), Color("8c2a25"))

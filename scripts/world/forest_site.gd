@@ -20,7 +20,7 @@ func _ready() -> void:
 	elif definition["kind"] == "graveyard":
 		actions = [{"kind": "crypt", "label": "SEARCH CRYPT / FLARES", "position": center + Vector2(-32, 32), "used": false}]
 
-	elif definition["kind"] in ["substation", "relay"]:
+	elif definition["kind"] in ["substation", "relay", "logging", "boathouse", "ranger"]:
 		actions = []
 	else:
 		actions = [{"kind":"relic", "label":"SEARCH LANDMARK / RARE TOOL (LOUD)", "position":center, "used":false}]
@@ -86,7 +86,9 @@ func interact(actor: CampPlayer) -> bool:
 func _draw() -> void:
 	var bounds: Rect2 = definition["bounds"]
 	var center := bounds.get_center()
-	if definition["kind"] in ["substation", "relay"]:
+	if definition["kind"] in ["logging", "boathouse", "ranger"]:
+		FieldEscapeArt.draw_site(self, definition)
+	elif definition["kind"] in ["substation", "relay"]:
 		RescueArt.draw_site(self, definition)
 	elif definition["kind"] == "village":
 		for y in range(int(bounds.position.y), int(bounds.end.y), 16):

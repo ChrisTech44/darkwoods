@@ -16,7 +16,8 @@ func _draw() -> void:
 	if locked and PixelArt.draw_in(self, "cache_crate", Rect2(-12, -12, 24, 22)):
 		draw_string(ThemeDB.fallback_font, Vector2(-21, -15), "LOCKED CACHE", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("c4b58e"))
 		return
-	var icon := PixelArt.fit("fuse" if kind == "rescue_fuse" else kind, Vector2(16, 16)) if not locked else null
+	var icon_name: String = {"rescue_fuse":"fuse", "outboard_motor":"outboard_motor", "boat_fuel":"boat_fuel", "drain_plug":"spark_plug", "gate_code_1":"f5_codes", "gate_code_2":"f5_codes", "gate_code_3":"f5_codes"}.get(kind,kind)
+	var icon := PixelArt.fit(icon_name, Vector2(16, 16)) if not locked else null
 	if icon != null:
 		draw_circle(Vector2(0, 1), 9, Color(0.8, 0.85, 0.6, 0.1))
 		draw_texture(icon, (-icon.get_size() * 0.5).round())

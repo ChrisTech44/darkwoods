@@ -64,9 +64,9 @@ func _run() -> void:
 	_check(rescue.interact(player) and rescue.powered and "rescue_fuse" not in player.inventory, "fuse_consumed_once_restores_circuit")
 	_check(rescue.interact(player) and rescue.powered, "repeated_power_interaction_idempotent")
 	player.position = rescue.relay_point
-	rescue.advance_transmit(player, 10)
-	_check(not rescue.transmitted and rescue.progress == 0 and rescue.prompt(player).contains("40:00"), "no_early_escape_before_40_minutes")
-	level.night_clock.skip_to(2400)
+	_check(not rescue.transmitted and rescue.prompt(player).contains("HOLD E"), "transmit_available_once_powered_no_clock_gate")
+	level.night_clock.force_phase(2)
+	level.night_clock.skip_to(level.night_clock.elapsed + 301.0)
 	_check(rescue.powered and level.night_clock.blackout, "camp_blackout_preserves_dedicated_rescue_power")
 	player.position = rescue.relay_point
 	rescue.advance_transmit(player, 3)

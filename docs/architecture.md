@@ -388,3 +388,32 @@ raises only machinery above floor fog when the observer is inside its clearing
 and can see the front anchor. Its illumination reflects rescue power or the
 observer's beam. This never reveals ground or enemies behind collision.
 The circuit stays powered independently of camp blackouts.
+
+
+## Boat, Ranger Gate and F5 props
+
+`FieldEscapes` owns the second pair of expedition state machines and appends
+regions 11–13 without changing earlier region IDs/cache pools. `RoundPlan` uses
+a separate RNG for three regional gate fragments and adds unique boat parts.
+All parts stay in objective inventory. Host input chooses a single gate operator;
+progress resets on operator changes. `WorldSync` captures both route states,
+fixed lake tells, lamp/arm state, and carry assistance flags. Rules are `lnac-net-12`.
+A rising gate flag disables its layer-8 body on all peers; surrounding paths
+remain connected. Boathouse water strips are layer-1 geometry in native bake,
+collision, shadow and sight. Seeded supplies landing there move to dry shore.
+
+The motor restricts movement without mutating role configs. Assistance derives
+from accepted held-E input, living/hidden status, 48px proximity and line of sight;
+G prioritizes dropping a carried motor. All drops reuse the existing pool.
+Lake attacks have fixed positions and two-second tells, use normal wound/hit
+rules, and can be interrupted by nearby visible flares. No new roaming actor
+or unsensed target query is needed. Gate alarms use a bounded local stimulus
+plus a longer stalker-only stimulus, preserving guardian leashes and normal travel.
+
+T cycles local pages independently of network state. Alternative plans use the
+full notes panel; the map stays on the original Van page. `FieldEscapeArt` and
+`field_escape_structures.gd` compose the SpriteCook sheet, reusing the existing
+visible-front-anchor approach for upright props without lifting terrain/actors
+over sight fog. Boat and Lake Thing draws remain under the normal sight mask.
+A found radio-cleanup defect was corrected with round-owned named timer callbacks
+and a weak reference to the static source; callbacks disappear with the old round.

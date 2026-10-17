@@ -33,7 +33,7 @@ func _site_checks() -> void:
 			spread = maxf(spread, enemy.patrol[0].distance_to(point))
 		_check(enemy.patrol.size() >= 8 and spread >= 320, "expanded_roaming_route_" + enemy.species)
 	for site: ForestSite in level.camp_map.sites:
-		if site.definition["kind"] in ["substation", "relay"]:
+		if site.definition["kind"] in ["substation", "relay", "logging", "boathouse", "ranger"]:
 			_check(site.actions.is_empty(), "rescue_site_uses_objective_instead_of_relic_" + site.definition["kind"])
 			continue
 		var action: Dictionary = site.actions[-1]

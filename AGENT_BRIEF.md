@@ -101,34 +101,12 @@ and a bounded director). Until then, the current rules describe the build.
 F1 navigation aids are implemented (signposts, skyline markers, wall-map regions,
 M-key team pins, a woods boltcutters pair and a loud crowbar; rules `lnac-net-4`).
 Clue chains moved to F4 alongside rotating objective regions.
-Round-length amendment: expedition rounds should span **40–60 minutes**. F2
-implements this as a host-owned 60-minute night. There are four phases (Dusk
-0–10, Nightfall 10–25, Deep Night 25–40, Witching Hour 40–60). Ranger-radio part
-reveals mean the final part appears at 40:00. Phases advance by clock only;
-progress raises dread instead, so the 40-minute floor holds. At dawn, survivors
-in camp or aboard are rescued and those in the woods are left behind. F2 also
-adds dread, a bounded director, phase supply drops, storms, blackouts with a
-generator restart, dread-scaled music and modest stalker escalation (rules
-`lnac-net-5`). Quick Camp stays short.
-F3a (chase toolkit, part one) is implemented and supersedes the one-hit-down and
-medkit-only-revive rules above. The first hit wounds (1.2s grace, −10% sprint,
-blood trail that patrolling AI follow; medkit + V patches) and a second downs.
-Downed survivors crawl and call for help. Revives work bare-handed at 2× the role
-time, or at role time with a medkit (consumed), and revived survivors return
-wounded. A lone survivor gets a 20s last chance to self-recover once (8s hold,
-loud) before all-down defeat. Space flash-stun costs 15 charge, has an 8s
-cooldown, freezes creatures in the beam within 90px for 1.5s, then 6s immunity.
-Rules `lnac-net-6`. F3b is implemented:
-- hiding spots in camp furniture and woods brush, where hidden survivors are
-  untargetable and immobile;
-- a breath meter that drains within 120px of a creature, with a loud gasp
-  ejection at zero;
-- creatures that saw you enter mark the spot and drag you out;
-- slam-shut doors on every building that block movement, sight and light, which
-  a creature pressing them breaks in 2.5s with a crash (the breaker keeps its
-  goal) and stay smashed for 20s;
-- one-use woodpile/deadfall knock-overs that block 6s and stun 2s, never walling
-  in a survivor.
+Round-length amendment: expedition rounds should be **long but naturally paced**.
+The 16 October 40–60 minute clock was replaced on 17 October at the user's request
+("remove the fixed time requirements"): phases advance by escape progress (with a
+12-minute drift for stalled teams, never into the Witching Hour), radio reveals
+follow phases, no escape has a time gate, and there is no dawn deadline. See
+[fun overhaul](docs/fun_overhaul.md#target-shape-of-a-night-long-at-a-natural-pace).
 
 Rules `lnac-net-7`. Vaults move to F4 with fences.
 F4a (road network) is implemented. A deterministic ring road (cells x16–33,
@@ -177,15 +155,33 @@ collision, AI, objective or networking-rule changes. See
 escape alongside the van. Two new seeded regions bring the total to eleven:
 north Power Substation and east Radio Relay Station, with an open east-spoke
 approach. Recover a separate emergency fuse at the mill, restore the rescue
-circuit, hold E six seconds at the relay after 40:00, and load three persistent
+circuit, hold E six seconds at the powered relay, and load three persistent
 flare holders south of the chapel. Gather the team and E at the circle starts a
 40s holdout. Standing, unhidden survivors within 96px and clear sight of the
 circle escape; any successful extraction also rescues connected downed survivors.
 The first escape to finish ends the round. Host owns all progress/signals/results;
 T switches the local objective plan. Quick Camp stays van-only. Rules `lnac-net-11`.
-Primary/rumoured escape rotation, Boat/Ranger Gate/Signal Fire and other finales
-remain future F5 slices. User explicitly deferred human pacing tests until later.
+This F5a record is superseded by F5b below for Boat/Ranger Gate and art.
+Primary/rumoured escape rotation, Signal Fire and other finales remain future F5 slices. User explicitly deferred human pacing tests until later.
 See [Radio Rescue guide](docs/radio_rescue.md).
+
+17 October F5b amendment: Boat and Ranger Gate are implemented. Logging Camp,
+Lakeshore Boathouse and Ranger Road/Bridge bring the region count to fourteen.
+Boat needs its own motor, marine fuel and drain plug, then a 25s launch with three fixed, two-second Lake Thing splash tells; dodge or interrupt
+with a nearby flare. A motor carrier walks at 75%, cannot sprint/vault, and G
+sets it down before dropping belt supplies; a nearby held-E helper restores
+full walking speed, without sprinting. Gate needs three seeded regional code
+fragments, shared substation power and its local floodlight breaker; a 4s hold
+opens the arm, then survivors run north to a bridge. First arrival
+starts an 8s team extraction window. Boat radius is 80px; bridge radius 64px.
+A successful standing/unhidden extraction also rescues connected downed peers.
+Host owns progress, carries, attacks, collision and results. T cycles four
+objective pages; Quick Camp stays van-only. Rules `lnac-net-12`. All four routes
+remain available; escape rotation, Signal Fire and revised van finale are pending.
+SpriteCook supplied one matching 16-prop sheet for 12 credits; models replace
+F5 placeholder machinery/boat/checkpoint and add a Lake Thing cutout. Human
+pacing and cross-machine acceptance remain deferred/unverified. See
+[Boat/Gate guide](docs/boat_gate.md).
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 

@@ -76,7 +76,7 @@ func _clue_checks() -> void:
 	_check(level.clues["fuel"] == 1 and level.clues[extras[0]] == 0 and level.clues[extras[1]] == 0, "corkboard_names_fuel_others_direction_only")
 	await _frames(2)
 	var pack: String = level.hud.inventory_label.text
-	_check(pack.contains("WOODS? FIND A NOTE") and pack.contains("FUEL / RADIO 10:00 · " + WoodsLayout.SIGN_NAMES[plan.woods.zones[plan.cache_zone["fuel"]]["kind"]]), "pack_shows_direction_and_named_fuel")
+	_check(pack.contains("WOODS? FIND A NOTE") and pack.contains("FUEL / RADIO AT NIGHTFALL · " + WoodsLayout.SIGN_NAMES[plan.woods.zones[plan.cache_zone["fuel"]]["kind"]]), "pack_shows_direction_and_named_fuel")
 	var note: CampPickup
 	for pickup: CampPickup in level.pickups:
 		if pickup.kind == "ranger_note" and pickup.get_meta("part", "") == extras[0]:
@@ -101,7 +101,7 @@ func _clue_checks() -> void:
 	_check(level.clues[late] == 1, "entering_sealed_region_names_it")
 	var beacon := {"kind": zone["kind"], "label": WoodsLayout.SIGN_NAMES[zone["kind"]], "position": zone["position"]}
 	_check(Skyline.beacon_label(level, beacon).contains(late.replace("_", " ").to_upper()), "skyline_marker_shows_known_part")
-	level.night_clock.skip_to(NightClock.PHASE_STARTS[3])
+	level.night_clock.force_phase(3)
 	await physics_frame
 	await physics_frame
 	_check(level.clues[late] == 2, "revealed_cache_marked_when_standing_in_region")

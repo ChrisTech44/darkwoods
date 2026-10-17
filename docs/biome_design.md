@@ -1,9 +1,9 @@
 # Forest biomes and landmark encounter design
 
 Status: **six new optional biome pockets implemented, deeper dossiers remain planned**.
-The finite 9,600×9,408 forest now contains nine major regions: village, bog,
-graveyard, flooded mill, orchard, observatory, rail yard, quarry and chapel,
-plus six small ruins. New pockets use connected open loops, distinctive native
+The finite 9,600×9,408 forest now contains fourteen major regions: the original
+nine, Power Substation, Radio Relay Station, Logging Camp, Lakeshore Boathouse
+and Ranger Road/Bridge, plus six small ruins. See the [F5 escape guide](boat_gate.md). New pockets use connected open loops, distinctive native
 pixel scenery, a one-time rare-tool search and leashed guardians. They do not yet
 implement every interior, hazard, seeded variant or quest described below.
 See [implemented content and evidence](content_update.md). The user's latest

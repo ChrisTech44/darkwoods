@@ -1,6 +1,6 @@
 # Last Night at Camp
 
-**Find the parts. Keep your light alive. Escape by van or call for rescue.**
+**Find the parts. Keep your light alive. Escape by van, radio, boat, or the ranger road.**
 
 An original top-down pixel-art survival horror game built in Godot 4. Explore
 Fernwood's cabins, follow twisting trails into the woods, and repair your escape
@@ -168,7 +168,7 @@ Voice/microphone capture is not enabled.
 | Mode | Repair objective | Threats and exploration |
 | --- | --- | --- |
 | **Quick Camp** | Battery in the Fern bunk cabin, fuel in Maintenance, key in the Ranger Lodge. | The camp stalker and a shorter three-part objective with randomized camp buildings. Flashlight charge does not drain. |
-| **Woods Expedition** (40–60 min) | Battery and key in camp location pools; fuel and two extra parts in themed-area caches, revealed by ranger radio as the night deepens. | A 60-minute night that grows more dangerous: the stalker plus 48 cryptids, a seeded trail maze, survival supplies, weather, storms, blackouts and a draining flashlight. |
+| **Woods Expedition** (a long night at your own pace) | Battery and key in camp location pools; fuel and two extra parts in themed-area caches, revealed by ranger radio as the night deepens. | A night that deepens as you make progress: the stalker plus 48 cryptids, a seeded trail maze, survival supplies, weather, storms, blackouts and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
 The pack lists the current requirements and location clues. The woods contains nine major regions.
@@ -178,15 +178,19 @@ also remain along the trails.
 
 ## The night (Woods Expedition)
 
-Each expedition is a **60-minute night** in four phases. The heading shows the
-phase and clock; in the Witching Hour it counts down to dawn.
+An expedition has **no fixed clock to beat and no deadline**. The night moves
+through four phases as **your team makes progress**: installing van parts, or
+completing steps of the radio, boat or gate escapes. A team that stalls still
+slides from Dusk to Nightfall to Deep Night after about 12 quiet minutes per
+phase, but only real progress brings the Witching Hour. The heading shows the
+phase and how long you have been out.
 
-| Phase | Clock | What happens |
+| Phase | Arrives when | What happens |
 | --- | --- | --- |
-| **Dusk** | 00:00–10:00 | Battery and key are in camp. Grab tools and supplies, plan routes. The woods are at their calmest. |
-| **Nightfall** | 10:00–25:00 | Ranger radio reveals the **fuel** cache. First storm of the night. |
-| **Deep Night** | 25:00–40:00 | Radio reveals the **first extra part**. The stalker hears farther. A blackout hits camp. |
-| **Witching Hour** | 40:00–60:00 | Radio reveals the **last extra part**. The stalker chases faster. Escape before dawn. |
+| **Dusk** | Start | Battery and key are in camp. Grab tools and supplies, plan routes. The woods are at their calmest. |
+| **Nightfall** | One step secured (e.g. first van part), or 12 quiet minutes | Ranger radio reveals the **fuel** cache. First storm of the night. |
+| **Deep Night** | Half an escape ready (e.g. third van part), or 12 more quiet minutes | Radio reveals the **first extra part**. The stalker hears farther. A blackout hits camp. |
+| **Witching Hour** | An escape nearly or fully ready (e.g. fourth van part) | Radio reveals the **last extra part**. The stalker chases faster, and pressure keeps climbing until you leave. |
 
 - **Where the parts are changes every night.** The three locked caches (fuel and
   the two extra parts) go to three different regions in three different
@@ -204,11 +208,12 @@ phase and clock; in the Witching Hour it counts down to dawn.
   - Skyline markers show which part waits in a region you know about, e.g.
     `DOME · FUSE`.
 - **Parts arrive by radio.** Tab lists every required part; unrevealed ones show
-  when the radio will announce them, e.g. `FUEL / RADIO 10:00 · ORCHARD`.
-  The van can't be finished before 40:00, so most escapes happen between 40 and 60 minutes.
+  which phase the radio will announce them in, e.g. `FUEL / RADIO AT NIGHTFALL ·
+  ORCHARD`. Each installed part deepens the night and unlocks the next one, so the
+  whole chain unfolds at your pace.
 - **Supply drops.** Each new phase leaves 2 flashlight batteries, a flare and a
   ration at the Maintenance stash.
-- **The woods get hungrier.** Pressure ("dread") rises with the clock, loud noises
+- **The woods get hungrier.** Pressure ("dread") rises the longer you linger in a phase, with loud noises
   and every installed part. Higher dread sends roaming creatures toward your
   general area more often, never to your exact spot and never into camp. After
   a chase you get at least 45 seconds of calm. Music swells with dread, and a
@@ -217,9 +222,8 @@ phase and clock; in the Witching Hour it counts down to dawn.
   lightning briefly lights the trees. Walls still block what you can see.
 - **Blackouts:** camp lamps die until someone restarts the generator by the
   Maintenance door (**E**, loud). The campfire keeps burning.
-- **Dawn (60:00):** the ranger patrol reaches camp. Survivors standing in camp
-  or aboard the van are rescued; anyone still in the woods is left behind. If
-  the van isn't ready, race home before dawn.
+- **No dawn rescue.** The only way out is an escape you build yourselves; the
+  Witching Hour never ends on its own.
 
 Quick Camp stays a short mode with no night clock.
 
@@ -246,7 +250,7 @@ use host-only placements for isolated authority checks; human co-op balance is
 still unrecorded.
 
 A round is won when at least one living passenger escapes, a standing survivor
-is rescued from the radio landing circle, or anyone is standing in camp at dawn. The results report your own outcome too; living
+is rescued from the radio landing circle, boat dock or ranger bridge. The results report your own outcome too; living
 survivors left outside are left behind.
 
 ### Radio Rescue (Woods Expedition)
@@ -260,7 +264,7 @@ remains available; the first extraction to finish ends the round.
 2. Press **E** at the substation cabinet to restore its dedicated rescue circuit.
    Camp blackouts do not undo this repair.
 3. At the east relay's ladder, **hold E for six seconds** to climb and transmit.
-   The rescue channel opens at **40:00**, preserving the expedition night length.
+   The channel opens as soon as the relay has power.
    Moving away, releasing E, getting downed or changing operators resets the hold.
 4. Load one **flare** into each of the three marked holders by pressing **E**.
    Three additional flares are stashed beside the chapel landing circle. Signals
@@ -275,7 +279,7 @@ remains available; the first extraction to finish ends the round.
    outside the circle, hidden survivors and van passengers are left behind by
    radio rescue. If nobody standing reaches the circle, the round is lost.
 
-Press **T** to open/switch between the radio plan and van clues; **Tab** closes
+Press **T** to cycle **Van → Radio → Boat → Ranger Gate** plans; **Tab** closes
 field notes. Quick Camp keeps its van-only escape.
 
 | North Power Substation | East Radio Relay Station |
@@ -283,6 +287,42 @@ field notes. Quick Camp keeps its van-only escape.
 | ![Powered substation at night](docs/screenshots/rescue_substation.png) | ![Relay mast, ladder and transmitter at night](docs/screenshots/rescue_relay.png) |
 
 ![Three permanent signals around the chapel rescue circle](docs/screenshots/rescue_landing.png)
+
+### Boat and Ranger Gate (Woods Expedition)
+
+**Boat:** carry the **outboard motor** from the west Logging Camp, **marine fuel**
+from the east Rail Yard, and the **drain plug** from the north Observatory to the
+southeast Lakeshore Boathouse. E fits them. The motor uses no belt slot, slows its
+carrier to **75% walking speed**, and prevents sprinting/vaulting. **G** sets it
+down immediately. A standing teammate can **hold E within 48 px** to help: both
+walk at normal speed without sprinting while assisting.
+
+Once all three parts are fitted, E at the boat starts a **25-second launch**. Stay on the
+wooden dock within **80 px** of the boat point. The **Lake Thing** marks three
+fixed dock positions with glowing ripple circles, each warning for **2 seconds**
+before striking. Step outside a circle or throw a flare within 100 px with clear
+sight to interrupt that attack. Signals at the chapel do not repel the Lake Thing.
+
+**Ranger Gate:** the T plan names three regions holding tonight's distinct
+**gate-code fragments**. Carry them to the gate on the north road and E to fit
+them. Restore the same north substation circuit used by Radio Rescue, then E at
+**the gate's left breaker** to turn on the road floodlights. The alarm draws the
+stalker toward the gate through normal travel; nearby roamers can hear it too.
+Once the gate is powered and coded, **hold E for four seconds** at the gate, then run north along the
+lit road to the bridge. The first standing survivor at the bridge starts an
+**eight-second team evacuation window**. Everyone standing must reach the bridge's
+**64 px circle** before it closes.
+
+Both routes recover connected downed teammates when at least one standing,
+unhidden survivor escapes. Standing players outside the extraction area and van
+passengers are left behind by these routes. The first escape to finish ends the
+round. Quick Camp keeps its original van-only rules.
+
+| Lakeshore boat launch | Ranger checkpoint |
+| --- | --- |
+| ![SpriteCook motorboat on the wooden launch dock](docs/screenshots/boat_launch.png) | ![SpriteCook gate and checkpoint on the lit north road](docs/screenshots/ranger_gate_closed.png) |
+
+[Full Boat/Gate walkthrough, graphics and verification limits](docs/boat_gate.md).
 
 ## Controls
 
@@ -303,7 +343,7 @@ field notes. Quick Camp keeps its van-only escape.
 | **Tab** | Toggle pack, objective clues, and field map |
 | **Esc** | Solo: pause/resume. Co-op: local menu; the shared world continues. |
 
-**T** opens/switches the expedition radio/van objective plan.
+**T** cycles expedition Van / Radio / Boat / Ranger Gate objective plans.
 
 ## Items
 
@@ -325,6 +365,10 @@ fuse, tire and spark plug; check Tab to see which two your night requires.
 | **Fuel** | Quick Camp: Maintenance. Woods: one of the three locked objective caches listed below. | Required van component in both modes. |
 | **Key** | Quick Camp: Ranger Lodge. Woods: Ranger Lodge or First Aid. | Required van component in both modes. |
 | **Drive belt** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
+| **Outboard motor** | Woods: west Logging Camp. | Heavy boat objective; no belt slot. Carry at 75% walk, no sprint/vault. G drops it; an adjacent teammate holding E restores full walking speed. E fits it at the boathouse. |
+| **Marine fuel** | Woods: east Rail Yard. | Dedicated boat fuel, separate from van fuel. No belt slot; E fits it at the boathouse. |
+| **Drain plug** | Woods: north Observatory. | Third boat component. No belt slot; E fits it at the boathouse. |
+| **Gate-code fragments 1–3** | Woods: three seeded regions across east, south and west; T names them. | Separate objective inventory; drop on down/disconnect. E fits each once at the north Ranger Gate. |
 | **Emergency fuse** | Woods only: Flooded Mill, beside its central reward area. | Repairs the north Power Substation for Radio Rescue. Separate objective inventory; no belt slot. Different from the van fuse. |
 | **Fuse** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
 | **Tire** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
@@ -481,12 +525,14 @@ with a three-flare preparation stash in Maintenance. The new threats below are p
 | **Candle Grazer** | Territorial guardian of the **Drowned Chapel**. Sees lit survivors, detects dark survivors at close range, and follows visible flares. | Switch off your beam at a distance or leave a flare and move away. It **consumes flares on contact** and is not repelled by them. |
 | **Relay Jackal** | Roams ordinary forest trails and angles toward a flank only while it can see you; searches last sensed areas for 12s. | Break sight, change direction and avoid sprinting back through its investigation route. Flares repel it. |
 | **Ration Moth** | Roams the woods with short 70px sight; ration use attracts it to that sound location from up to 600px away. | Eat before moving, then leave quietly. It investigates the meal location rather than tracking hidden inventory. Flares repel it. |
+| **Lake Thing** | A bounded **Boat launch encounter**, separate from the 48 roaming cryptids. Marks fixed dock positions, then strikes after 2 seconds. | Leave each glowing ripple circle or throw a nearby flare with clear sight to cancel that strike. It does not chase through the forest or target unseen survivor positions. |
 | **Lens Eater** | A roaming lens-faced creature that warns before draining up to 8 light charge if you keep aiming directly at it nearby. | Turn your beam away or put a tree/wall between you during its 1.2s **DANGER** warning. The cast has a 6.5s cooldown; it cannot consume spare batteries. |
 
 **Hunters versus zones:** Hounds can follow sensed activity along ordinary trails;
 landmark guardians reject survivor targets and noises outside their home bounds.
 Leave the landmark, break sight and stop sprinting to reduce pursuit. Required
-woods caches remain in the village/bog/graveyard; the six new zones are optional.
+woods caches rotate across eight regions. Guardian regions remain optional for a
+van run unless tonight's clue sends you there.
 Every guardian can still attack on contact. Steam, thorns and inspection patches
 expire, affect each survivor once per patch and never block an exit or change
 collision. Each patch hit applies a 1.2s hex (movement at 60% speed) and drains
@@ -564,16 +610,24 @@ Both modes vary building positions and surrounding trees within reserved camp
 lots. Bunk cabins can trade places, as can the bathhouse and first aid building. Door paths, loot and field-map markers move together. Roof footprints
 and main trails stay separate. Retrying a seed reproduces the camp too.
 
-![Current full-map example for Night 42 with all eleven numbered regions, central Fernwood camp and 48 cryptid spawn positions](docs/screenshots/full_map.png)
+![Current full-map example for Night 42 with all fourteen numbered regions, central Fernwood camp and 48 cryptid spawn positions](docs/screenshots/full_map.png)
 
 **Full-map example — Night 42.** Numbers match the region names around the map;
 **C** marks Fernwood camp and coral dots mark the 48 cryptid starting positions.
-The atlas includes the new Power Substation and Radio Relay Station, the chapel
-rescue area, and the existing guardian regions. Van caches rotate across eight
+The atlas includes Power Substation, Radio Relay Station, Logging Camp, Lakeshore
+Boathouse, the Ranger Road/bridge and the chapel rescue area. Van caches rotate across eight
 regions; labels identify possible cache regions rather than fixed objectives. North is up. This is an inspection
 atlas; the in-game field map still reveals only explored trails.
 
 ## Art
+
+The F5 escape props use one **16-piece SpriteCook sheet**, matched to the existing
+camp art: transformer, breaker, mast, flare beacon, outboard, skiff, boathouse,
+ranger booth/barrier, logs, workshop, pier, Lake Thing, bridge, marine fuel and
+code notes. The batch cost **12 credits** (716 → 704). No paid animation or repeat
+generation was needed. Source and derived IDs/hashes are in
+[spritecook-assets.json](spritecook-assets.json); the reproducible slicer is
+[tools/slice_escape_props.gd](tools/slice_escape_props.gd).
 
 The game's art was redrawn with SpriteCook in October 2026:
 - trees and bushes, all six survivors, the stalker and all 16 creatures;

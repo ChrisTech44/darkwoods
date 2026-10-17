@@ -8,11 +8,23 @@ synchronized-audio listening and proximity voice acceptance remain pending.
 
 ## Radio Rescue regions (F5a)
 
-The current forest has **eleven regions**, adding the north Power Substation and
-an east Radio Relay Station. These support a secondary expedition escape with an
+F5a added the north Power Substation and east Radio Relay Station. The current
+forest has **fourteen regions** after F5b. These support a secondary expedition escape with an
 emergency fuse, distress transmission, three permanent signal holders and a
 40-second chapel landing-zone finale. See the [illustrated Radio Rescue guide](radio_rescue.md).
 The van remains available; the first completed extraction ends the night.
+
+## Boat, Ranger Gate and SpriteCook polish (F5b)
+
+Logging Camp, Lakeshore Boathouse and Ranger Road/Bridge add two more escape
+chains. A heavy motor supports solo carrying or a nearby held-E helper. Boat
+launches in 25s with fixed, dodgeable Lake Thing attacks. Gate needs three seeded
+regional fragments and floodlights, followed by a bridge run. T cycles all four
+plans; accepted objectives, carries, lamps and results replicate. See the
+[illustrated Boat/Gate guide](boat_gate.md).
+
+One matched 16-prop SpriteCook batch cost 12 credits (716 → 704), replacing the
+flat F5 machinery and adding original boat, checkpoint and Lake Thing art.
 
 ## Rendering and denser roaming update
 
@@ -67,10 +79,10 @@ holding E at a downed teammate, rather than V. The hand displays the held supply
 
 ## Regions and encounters
 
-![Current Night 42 forest atlas with eleven labeled regions, central camp and cryptid spawns](screenshots/full_map.png)
+![Current Night 42 forest atlas with fourteen labeled regions, central camp and cryptid spawns](screenshots/full_map.png)
 
 The full-map example is generated from the current Night 42 world recipe.
-Numbers identify all eleven regions; C marks camp and coral dots show cryptid
+Numbers identify all fourteen regions; C marks camp and coral dots show cryptid
 starting positions. This inspection atlas is separate from the explored-trail
 field map used during play.
 
@@ -78,7 +90,8 @@ The five-part van recipe is preserved; locked caches now rotate across eight
 regions under F4. Six guardian pockets remain optional for van escape, with
 graph-connected loops, multiple entrances and 32px approach aprons. All eleven
 regions fit inside the existing finite forest. The six remote ruins remain.
-The two rescue regions add solid machinery footprints with native navigation;
+Rescue regions add solid machinery footprints; the boathouse has solid water
+banks around a reachable dock, and the ranger arm opens through host-owned state;
 other biome scenery still represents walkable floors, shallow channels and dressing.
 Interior architecture, deep water, advanced quests and varied region modules from
 the larger biome design remain future work. The variant footprint is currently

@@ -8,6 +8,7 @@ produced by `python3 tools/verify.py --graphical` and
 
 | File | Source capture | Test |
 | --- | --- | --- |
+| `treeline_north.png`, `treeline_south.png` | `treeline_after_north.png`, `treeline_after_south.png` | `treeline.gd` |
 | `menu_defaults.png` | `menu_defaults.png` | `menu_defaults.gd` |
 | `survivor_selection.png` | `survivor_selection.png` | `content_expansion.gd` |
 | `nav_signpost.png` | `nav_signpost.png` | `navigation_aids.gd` |
@@ -31,3 +32,8 @@ so the art is readable; normal nights are much darker. The extraction result
 comes from a complete automated expedition with all enemies active.
 
 Older captures cited by the development log stay in `../evidence/` unchanged.
+
+The treeline captures use normal night exposure and weather, with controlled
+placements and AI paused for inspection. They do not raise ambient light or
+disable the sight mask. See `../evidence/forest_treeline` for matched baseline
+views and strict sight/shadow pixel controls.

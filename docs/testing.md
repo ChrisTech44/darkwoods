@@ -462,3 +462,21 @@ Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tes
 thud, wood_falling, the radio broadcast, a call per species, decoded gain
 staging for all 23 cues). `network_peer.gd` checks that a host-opened gate and
 its nav link replicate.
+
+
+## Forest treeline cardinal views
+
+`treeline.gd` finds four actual solid trail borders, captures normal-exposure
+north/south/east/west views, and verifies blocked neighboring cells/creatures
+and movement collision. Its graphical run toggles only the foliage overlay to
+measure readable leaves, then checks bounded camera lookahead, HUD clearance and
+camp recentering during actual walking. The standard runner includes headless
+and optional graphical versions. Before/after images are engine captures after
+settling the camera and view-local scenery cache, with no exposure boost.
+
+Graphical sight tests isolate world pixels from HUD/skyline/weather overlays and
+probe the neighboring trail floor away from overhanging trunks. Hidden floor
+must stay black even at full ambient, while disabling the mask exposes it.
+Shadow tests separately toggle native border occluders and require real light
+leakage in that positive control. Fixture startup waits for the ForestLevel to
+finish loading instead of assuming it exists after a fixed number of frames.

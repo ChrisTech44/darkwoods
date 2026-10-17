@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"current_path_visible","passed":true}
+{"event":"assertion","name":"tree_border_hides_entire_monster","passed":true}
+{"event":"assertion","name":"distant_monster_does_not_start_call","passed":true}
+{"event":"assertion","name":"nearby_call_allowed","passed":true}
+{"event":"sight_pixels","hidden":0.0,"probe":"(328, 132)","shown":0.186994507908821}
+{"event":"assertion","name":"opaque_sight_mask_even_in_full_ambient_light","passed":true}
+{"event":"assertion","name":"monster_native_proximity_falloff","passed":true}
+{"event":"assertion","name":"playing_call_follows_moving_monster","passed":true}
+{"checks":7,"event":"test_result","failures":0,"suite":"woods_visibility"}

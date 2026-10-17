@@ -1,5 +1,63 @@
 # Development log
 
+## 2026-10-17 — Readable north/south forest borders and local canopy clearance
+
+Read the latest brief, fun overhaul direction and preceding SpriteCook/tree-line
+work before changing presentation. Confirmed the upright tree sprites and
+flat-ground light/shadow/sight layers made north-facing edges disappear while
+south crowns piled over the trail. Reused the existing sprites; no image credits
+spent or new external art. Cosmetic jitter now includes the run seed.
+
+- Staggered 32px trunk rows, varied 60/75/90% crowns, pine/spruce weighting,
+  occasional birch and rare snags replace the uniformly dense 20px rows.
+  Cached anchors sample multiple trail sides, preventing missing edge rows
+  when the first anchor belongs to the hidden side.
+- A view-local foliage surface layer catches visible flashlights/flares and
+  adds front-edge bracken. An original unshaded shader uses existing sight-ray
+  depths to fade outer tips within 60px of the first surface. It never redraws
+  terrain or entities over fog. Native walls, light occluders, navigation, AI
+  sight, game progression and network rules remain as before.
+- A close-wall walking control caught the old lower canopy still hiding the
+  avatar under the surface fade. Sprite/body bounds now handle north overlaps
+  too, and the local fragment opening clears foliage around the body. A small
+  mask opening (under 29px) and 25px local glow preserve the known observer's
+  silhouette; both remain inside the forest-wall/peek budget. Hidden neighboring
+  floor/monster and native shadow controls still pass.
+- Smooth woods lookahead is bounded at 24px horizontal/down, 32px north; it
+  works for host/client replicas, keeps the player above the belt and recenters
+  in camp. No camera or foliage state is networked.
+
+Verification on macOS arm64 / Godot 4.7.2:
+
+- `python3 tools/verify.py`: **104/104 steps passed**, zero errors/warnings,
+  including import/startup, native navigation, active solo rounds and overhaul
+  regressions. Added the new headless/optional graphical treeline case.
+- Actual graphical cardinal/walking test: **20 assertions**, all pass. Four
+  facing directions at normal fog/night exposure, lit/unlit photos, foliage
+  pixel controls, hidden monsters, native collision, camera/HUD bounds, recenter
+  and visible avatar pixels at a north wall. The avatar negative control hides
+  only its own drawing, preserving lights and foliage.
+- Graphical sight: **7 assertions**, hidden floor luminance 0.0 vs control 0.187.
+  Graphical shadows: **12 assertions**, no adjacent-trail light gain, with
+  positive leakage after disabling native occluders.
+- Two actual graphical ENet peers/both modes: **273 assertions / 6 processes**,
+  zero failures/errors/warnings, including shared light/flare pixel checks.
+- Final import/startup rechecked after shader/overlap refinements. Documentation
+  links/anchors/images and `git diff --check` checked before publishing.
+
+Graphical fixtures now wait for loaded worlds and drawn frames/camera caches;
+old fixed-frame waits produced stale empty views. A sight positive probe moved
+from a trunk/shadow to actual adjacent floor; HUD/weather overlays are isolated
+for that strict test. The normal before/after photos retain HUD/weather and
+never boost ambient light. Representative lit/unlit directions and walking
+captures opened for inspection. Point FPS samples varied with concurrent work
+(37–145), not a performance benchmark or recorded human frame-rate acceptance.
+
+Updated README north/south screenshots, architecture, testing and brief. Matched
+[before/after images and raw evidence](evidence/forest_treeline/README.md) are
+preserved. Human play-feel/pacing, other-platform exports and real cross-machine
+Internet acceptance remain unrecorded; existing overhaul rules were retained.
+
 ## 2026-10-17 — Forest tree line along every trail; menu buttons on the right
 
 Playtest feedback: trail edges looked like a rigid black line with a few tree

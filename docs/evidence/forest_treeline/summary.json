@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "environment": "macOS arm64 / Godot 4.7.2 Compatibility renderer",
+  "offline_steps": 104,
+  "offline_report": "offline_summary.json",
+  "graphical_cardinal_checks": 20,
+  "graphical_visibility_checks": 7,
+  "graphical_shadow_checks": 12,
+  "network_process_runs": 6,
+  "network_checks": 273,
+  "network_report": "network_summary.json",
+  "errors": 0,
+  "warnings": 0,
+  "limits": [
+    "Scripted graphical placements and walking; no new human pacing playtest",
+    "Point FPS samples vary with concurrent verification; not a performance benchmark",
+    "Other platforms/exports and actual cross-machine Internet remain unverified"
+  ]
+}

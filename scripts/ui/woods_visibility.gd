@@ -13,9 +13,24 @@ var player: CampPlayer
 var canopy: Node2D
 var enabled := true
 var boundary := PackedVector2Array()
+var tree_line: Node2D
+var depth_image: Image
+var depth_texture: ImageTexture
 
 func _ready() -> void:
 	z_index = 100
+	var fog := ShaderMaterial.new()
+	fog.shader=preload("res://assets/shaders/forest_sight.gdshader")
+	material=fog
+	tree_line=preload("res://scripts/ui/forest_edge.gd").new()
+	tree_line.sight=self
+	var foliage := ShaderMaterial.new()
+	foliage.shader=preload("res://assets/shaders/forest_edge.gdshader")
+	depth_image=Image.create(RAYS,1,false,Image.FORMAT_RF)
+	depth_texture=ImageTexture.create_from_image(depth_image)
+	foliage.set_shader_parameter("sight_depth",depth_texture)
+	tree_line.material=foliage
+	add_child(tree_line)
 
 func _physics_process(_delta: float) -> void:
 	visible = enabled and CampMap.is_woods(player.global_position)
@@ -26,6 +41,11 @@ func _physics_process(_delta: float) -> void:
 			var target := global_position + Vector2.from_angle(index * TAU / RAYS) * RANGE
 			var hit := get_world_2d().direct_space_state.intersect_ray(PhysicsRayQueryParameters2D.create(global_position, target, 1))
 			boundary.append((hit["position"] if not hit.is_empty() else target) - global_position)
+		for index in range(RAYS): depth_image.set_pixel(index,0,Color(boundary[index].length()/RANGE,0,0))
+		depth_texture.update(depth_image)
+		material.set_shader_parameter("observer",player.global_position)
+		tree_line.material.set_shader_parameter("observer",player.global_position)
+		tree_line.queue_redraw()
 		queue_redraw()
 	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 		enemy.visible = not visible or can_see(enemy.global_position)
@@ -52,28 +72,14 @@ func _draw() -> void:
 		var far_b := near_b + dir_b * FADE
 		draw_polygon(PackedVector2Array([near_a, near_b, far_b, far_a]), PackedColorArray([clear, clear, Color.BLACK, Color.BLACK]))
 		draw_colored_polygon(PackedVector2Array([far_a, far_b, dir_b * 20000, dir_a * 20000]), Color.BLACK)
-	_draw_tree_line()
 
 
-## Trees standing at the edge of sight are drawn whole over the darkness, so the
-## forest rises as a silhouette instead of being clipped at the wall line.
-func _draw_tree_line() -> void:
-	if not is_instance_valid(canopy):
-		return
-	for tree: Array in canopy.trees:
-		if tree[3] == null:
-			continue
-		# Shown when the trail patch beside it is in sight, so grazing views of
-		# a wall still get their full tree line.
-		var anchor: Vector2 = tree[3] - global_position
-		var distance := anchor.length()
-		if distance > RANGE - FADE:
-			continue
-		var index := posmod(roundi(anchor.angle() / TAU * RAYS), RAYS)
-		if distance > boundary[index].length() + 6.0:
-			continue
-		var offset: Vector2 = tree[0] - global_position
-		var color: Color = tree[2]
-		if absf(offset.x) < 30 and offset.y > -4 and offset.y < 70:
-			color.a = 0.28
-		draw_texture(tree[1], canopy.tree_origin(tree) - global_position, color)
+
+func visible_edge_anchor(anchors: PackedVector2Array) -> Variant:
+	for point: Vector2 in anchors:
+		var delta := point-global_position
+		var distance := delta.length()
+		if distance>RANGE-FADE: continue
+		var index := posmod(roundi(delta.angle()/TAU*RAYS),RAYS)
+		if distance<=boundary[index].length()+2: return point
+	return null

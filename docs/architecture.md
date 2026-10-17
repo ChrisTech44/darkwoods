@@ -326,3 +326,41 @@ the round announcement. This is display scoping, not encryption. Without a
 medkit, nearby-down interaction no longer bypasses the pickup loop. All-down
 still evaluates current authoritative statuses, never a running count of downs.
 Network rules version `lnac-net-3` requires both peers to update.
+
+
+## Cardinal forest edge rendering
+
+WoodsTerrain uses deterministic world/seed jitter on staggered 32px trunk rows,
+60/75/90% native crown sizes, pine/spruce weighting, occasional birch and rare
+snags. Each tree caches multiple nearby trail anchors; any visible anchor can
+expose that tree's front surface. This avoids missing whole edge rows when the
+first sampled anchor belongs to the hidden side of a wall. Edge bracken reaches
+toward the trail while its base stays on solid forest ground. Collision, light
+occluders, occupancy, navigation and AI sight are unchanged.
+
+A small child CanvasItem above the sight mask draws foliage with its own bounded
+surface illumination from actual survivor flashlight/facing and flare positions.
+This is needed because upright sprites north of a trail otherwise lie entirely
+in the ground-plane wall shadow. It uses an original unshaded shader and the
+existing SpriteCook sprites, without generating/spending new image credits.
+A 256×1 float texture carries the observer's existing ray depths; foliage fades
+to black 28–60px beyond the first surface, before the adjacent corridor. Only
+foliage rises above fog; neither terrain nor actors are redrawn there. An
+elliptical fragment fade around the survivor replaces whole-crown transparency
+on the front-surface layer. Shader COLOR already includes the texture sample;
+see [Godot CanvasItem shader reference](https://docs.godotengine.org/en/latest/tutorials/shaders/shader_reference/canvas_item_shader.html).
+
+The local woods camera eases toward facing, at most 24px horizontally/downward
+or 32px northward, leaving the survivor above the belt. It works for host and
+client replicas and returns to center in camp. Explicit inspection placements
+with local physics disabled retain their test camera offsets. No camera or
+foliage data is replicated; peers derive it from existing authoritative state.
+
+The lower native canopy pass tests actual sprite/body rectangle overlap on all
+sides, rather than only south-side tree bases. It yields overlapping woods
+crowns to the surface pass to avoid an opaque duplicate behind the fragment
+fade. A local-silhouette opening in the mask stays under 29px; the observer's
+25px woods body glow does not self-shadow, so its head remains visible against
+the wall. Camp glows and other peers' native shadowing remain intact. These
+bounds fit inside the existing forest-edge peek budget, with hidden adjacent
+floor/monster and flashlight-occlusion pixel controls retained.

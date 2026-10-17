@@ -109,6 +109,18 @@ trail is lined with dense trees and undergrowth; your sight reaches just into
 that tree line and fades to darkness, so you see the forest rising around the
 path but never the next trail through it.
 
+Trees use staggered trunk positions, varied crown heights and a dense bracken
+fringe rather than a straight hedge. Visible foliage catches nearby flashlights
+and flares even along the north-facing border. Crowns fade locally around your
+survivor, and a small, smooth woods-camera lookahead gives north-side trees more
+room above you. The terrain and creatures behind the tree wall remain hidden.
+
+| Facing north at normal night exposure | Facing south at normal night exposure |
+| --- | --- |
+| ![North-facing forest edge](docs/screenshots/treeline_north.png) | ![South-facing forest edge](docs/screenshots/treeline_south.png) |
+
+[Before/after captures and verification](docs/evidence/forest_treeline/README.md).
+
 ## Play from source
 
 Use **Godot 4.7.2 stable**, standard/GDScript edition. Python 3 is optional for
@@ -628,7 +640,7 @@ recover units. Vehicle components and cutters remain separate from this limit.
 
 The current implementation includes solo and 1–4 player ENet co-op in both
 modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
-species. Full baseline verification passed **93 steps** with no errors/warnings,
+species. Full baseline verification passed **104 steps** with no errors/warnings,
 including the [navigation](docs/evidence/navigation/README.md),
 [night phase](docs/evidence/night_phases/README.md) and
 [chase toolkit](docs/evidence/chase_toolkit/README.md) and
@@ -642,7 +654,10 @@ host/client windows in both modes. See the
 [current network report](docs/evidence/active_ai/summary.json),
 [evidence notes](docs/evidence/active_ai/README.md), and
 [rendering/denser-forest evidence](docs/evidence/denser_forest/README.md).
-Earlier graphical baselines remain preserved separately.
+The latest [forest-rendering pass](docs/evidence/forest_treeline/README.md)
+adds 20 graphical cardinal/walking assertions, 7 sight and 12 shadow checks,
+plus 273 assertions across two graphical peers in both modes. Earlier graphical
+baselines remain preserved separately.
 
 ```sh
 python3 tools/verify.py             # Import, parse, and headless gameplay checks

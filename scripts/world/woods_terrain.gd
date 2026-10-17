@@ -8,8 +8,7 @@ var focus_cell := Vector2i(0x7fffffff,0x7fffffff)
 const ATLAS := preload("res://assets/tiles/camp_tiles.png")
 ## SpriteCook forest set: pines dominate, spruce adds dark mass, birch and a rare
 ## dead snag break up the silhouette.
-## Canopy trees for the current view: [base, texture, tint, anchor], sorted by y.
-## `anchor` is the nearest trail point for edge trees (null deeper in the woods).
+## Canopy trees: [base, texture, tint, trail anchors, scale], ordered by trunk y.
 var trees: Array = []
 const SHRUB := preload("res://assets/sprites/shrub.png")
 var textures: Array[Texture2D] = [preload("res://assets/sprites/pine_0.png"),preload("res://assets/sprites/pine_1.png"),preload("res://assets/sprites/pine_2.png"),preload("res://assets/sprites/birch.png"),preload("res://assets/sprites/spruce.png"),preload("res://assets/sprites/pine_0.png"),preload("res://assets/sprites/spruce.png"),preload("res://assets/sprites/dead_tree.png")]
@@ -69,34 +68,85 @@ func _draw() -> void:
 	for tree in trees:
 		var color: Color = tree[2]
 		if is_instance_valid(camp_map.focus):
-			var offset: Vector2 = tree[0] - camp_map.focus.global_position
-			if absf(offset.x) < 30 and offset.y > -4 and offset.y < 70:
-				color.a = 0.28
-		draw_texture(tree[1], tree_origin(tree), color)
+			var body := Rect2(camp_map.focus.global_position-Vector2(12,29),Vector2(24,32))
+			if tree_rect(tree).intersects(body):
+				# The surface pass supplies this crown with a per-pixel body opening.
+				# Do not leave an opaque duplicate underneath it, including north trees.
+				color.a = 0.0 if CampMap.is_woods(camp_map.focus.global_position) else 0.28
+		draw_texture_rect(tree[1],tree_rect(tree),false,color)
 
 
 static func tree_origin(tree: Array) -> Vector2:
-	return tree[0] - Vector2(32, 76)
+	return tree[0] - Vector2(32, 76)*tree[4]
 
 
-## Trees stand on a jittered 20 px grid inside the forest walls: dense along every
-## path edge so trails read as cut through woodland, sparser deeper in.
+static func tree_rect(tree: Array) -> Rect2:
+	return Rect2(tree_origin(tree),Vector2(64,80)*tree[4])
+
+
+## Staggered trunks and differing crown heights avoid a fence of identical tips.
 func _collect_trees() -> void:
 	trees.clear()
-	var step := 20
-	for y in range(int(floor(view.position.y / step)) - 1, int(ceil(view.end.y / step)) + 5):
-		for x in range(int(floor(view.position.x / step)), int(ceil(view.end.x / step))):
-			var h := hash(Vector2i(x, y) + Vector2i(7919, 104729))
-			var base := Vector2(x * step + posmod(h, 13) - 6, y * step + posmod(h >> 4, 13) - 6)
-			if not _solid(base) or not _solid(base + Vector2(-7, 0)) or not _solid(base + Vector2(7, 0)) or not _solid(base + Vector2(0, 5)):
-				continue
-			var anchor: Variant = _path_point(base, 44)
-			if anchor == null and posmod(h >> 8, 3) != 0:
-				continue
-			var shade := 0.82 + posmod(h >> 12, 19) * 0.01
-			if anchor == null:
-				shade *= 0.85
-			trees.append([base, textures[posmod(h >> 16, textures.size())], Color(shade, shade, shade * 0.97), anchor])
+	var step := 32
+	for y in range(int(floor(view.position.y/step))-1,int(ceil(view.end.y/step))+4):
+		for x in range(int(floor(view.position.x/step))-1,int(ceil(view.end.x/step))+1):
+			var h := hash(Vector3i(x,y,camp_map.seed_value))
+			var base := Vector2(x*step+posmod(y,2)*16+posmod(h,19)-9,y*step+posmod(h>>4,19)-9)
+			if not _solid(base) or not _solid(base+Vector2(-7,0)) or not _solid(base+Vector2(7,0)) or not _solid(base+Vector2(0,5)): continue
+			var anchors := _path_points(base)
+			if anchors.is_empty() and posmod(h>>8,3)!=0: continue
+			var shade := 0.82+posmod(h>>12,19)*0.01
+			if anchors.is_empty(): shade*=0.85
+			var crown_scale: float = [0.6,0.75,0.9][posmod(h>>20,3)]
+			var variant: int=[0,1,2,4,6,0,1,2,4,6,0,1,2,4,6,3,3,0,2,7][posmod(h>>16,20)]
+			trees.append([base,textures[variant],Color(shade,shade,shade*0.97),anchors,crown_scale])
+	trees.sort_custom(func(a,b): return a[0].y<b[0].y)
+
+
+func _path_points(point: Vector2) -> PackedVector2Array:
+	var anchors := PackedVector2Array()
+	for direction in [Vector2.UP,Vector2.DOWN,Vector2.LEFT,Vector2.RIGHT,Vector2(0.7,0.7),Vector2(-0.7,0.7),Vector2(0.7,-0.7),Vector2(-0.7,-0.7)]:
+		for distance in [16,32,48]:
+			var probe: Vector2=point+direction*distance
+			if not CampMap.CAMP_BOUNDS.has_point(probe) and camp_map.woods.walkable(probe):
+				anchors.append(probe)
+				break
+	return anchors
+
+
+func draw_edge(canvas: Node2D, sight: WoodsVisibility) -> void:
+	if sight.boundary.size()!=sight.RAYS: return
+	var lights: Array=get_tree().get_nodes_in_group("survivors")
+	var flares: Array=get_tree().get_nodes_in_group("flares")
+	for tree: Array in trees:
+		var anchor: Variant=sight.visible_edge_anchor(tree[3])
+		if anchor==null: continue
+		var strength := 0.22
+		for actor: CampPlayer in lights:
+			if not actor.flashlight_on or actor.status in [CampPlayer.Status.BOARDED,CampPlayer.Status.ESCAPED]: continue
+			var offset: Vector2=anchor-actor.global_position
+			var reach: float=actor.config.flashlight_range
+			if CampMap.is_woods(actor.global_position) and sight.get_parent().plan.weather=="fog": reach*=0.7
+			if offset.length()>reach: continue
+			if not get_world_2d().direct_space_state.intersect_ray(PhysicsRayQueryParameters2D.create(actor.global_position,anchor,1)).is_empty(): continue
+			var beam := smoothstep(0.78,0.96,actor.facing.dot(offset.normalized()))
+			strength=maxf(strength,0.2+beam*0.85*pow(1-offset.length()/reach,0.55))
+		for flare: Node2D in flares:
+			var distance: float=flare.global_position.distance_to(anchor)
+			if distance<145 and get_world_2d().direct_space_state.intersect_ray(PhysicsRayQueryParameters2D.create(flare.global_position,anchor,1)).is_empty(): strength=maxf(strength,0.2+(1-distance/145)*0.9)
+		var color: Color=tree[2]*Color(strength*0.87,strength,strength*1.04,1)
+		color.a=1
+		# Front-edge bracken breaks the straight ground-mask lip, especially to the north.
+		var brush: Vector2=tree[0]
+		for fraction in [0.75,0.5,0.25]:
+			var candidate: Vector2=tree[0].lerp(anchor,fraction)
+			if _solid(candidate):
+				brush=candidate
+				break
+		canvas.draw_texture(SHRUB,brush-Vector2(17,24)-sight.global_position,color*Color(0.9,0.96,0.86,1))
+		var rect := tree_rect(tree)
+		rect.position-=sight.global_position
+		canvas.draw_texture_rect(tree[1],rect,false,color)
 
 
 func _solid(point: Vector2) -> bool:

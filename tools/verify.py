@@ -48,6 +48,8 @@ def main():
     commands.append(("surround_world", ["--headless", *surround]))
     visibility = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/woods_visibility.gd"]
     commands.append(("woods_visibility", ["--headless", *visibility]))
+    treeline = ["--path", str(ROOT), "--script", "res://tests/integration/treeline.gd"]
+    commands.append(("treeline", ["--headless", *treeline]))
     defaults = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/menu_defaults.gd"]
     shadows = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/woods_shadows.gd"]
     commands.append(("menu_defaults", ["--headless", *defaults]))
@@ -86,6 +88,7 @@ def main():
         commands.append(("graphical_barriers", ["--audio-driver", "Dummy", *barriers, "--", "--capture"]))
         commands.append(("graphical_surround", [*surround, "--", "--capture"]))
         commands.append(("graphical_visibility", [*visibility, "--", "--capture"]))
+        commands.append(("graphical_treeline", treeline))
         commands.append(("graphical_defaults", [*defaults, "--", "--capture"]))
         commands.append(("graphical_shadows", [*shadows, "--", "--capture"]))
         commands.append(("graphical_audio", ["--audio-driver", "Dummy", *audio, "--", "--audio-test", "--capture"]))

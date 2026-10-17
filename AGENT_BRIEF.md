@@ -165,6 +165,14 @@ integrated:
 Gains are levelled from full-file decodes, with silent lead-ins skipped.
 Rules `lnac-net-10`.
 
+17 October forest presentation amendment: make trail borders read as a forest
+surrounding the survivor, especially facing north/south. Reuse the current art
+and preserve the overhaul work. Staggered tree sizes/rows, visible edge bracken,
+view-local foliage surface lighting and a small bounded camera lookahead are now
+implemented. Terrain/monsters behind walls stay occluded; no world generation,
+collision, AI, objective or networking-rule changes. See
+[cardinal visual evidence](docs/evidence/forest_treeline/README.md).
+
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 
 ## Mission & non-negotiables

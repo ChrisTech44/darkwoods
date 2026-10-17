@@ -1,0 +1,30 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"round_ready","milestone":"M1"}
+{"at":"(-672.0, 96.0)","direction":"north","edge_trees":18,"event":"treeline_view","neighbor":"(-672.0, -96.0)","trees":72}
+{"event":"assertion","name":"hidden_neighbor_north","passed":true}
+{"event":"assertion","name":"readable_foliage_at_night_north","passed":true}
+{"event":"assertion","name":"tree_wall_still_blocks_north","passed":true}
+{"event":"assertion","name":"cardinal_fixture_north","passed":true}
+{"at":"(-672.0, 672.0)","direction":"south","edge_trees":24,"event":"treeline_view","neighbor":"(-672.0, 864.0)","trees":69}
+{"event":"assertion","name":"hidden_neighbor_south","passed":true}
+{"event":"assertion","name":"readable_foliage_at_night_south","passed":true}
+{"event":"assertion","name":"tree_wall_still_blocks_south","passed":true}
+{"event":"assertion","name":"cardinal_fixture_south","passed":true}
+{"at":"(-672.0, 96.0)","direction":"west","edge_trees":18,"event":"treeline_view","neighbor":"(-864.0, 96.0)","trees":66}
+{"event":"assertion","name":"hidden_neighbor_west","passed":true}
+{"event":"assertion","name":"readable_foliage_at_night_west","passed":true}
+{"event":"assertion","name":"tree_wall_still_blocks_west","passed":true}
+{"event":"assertion","name":"cardinal_fixture_west","passed":true}
+{"at":"(-672.0, 288.0)","direction":"east","edge_trees":12,"event":"treeline_view","neighbor":"(-480.0, 288.0)","trees":55}
+{"event":"assertion","name":"hidden_neighbor_east","passed":true}
+{"event":"assertion","name":"readable_foliage_at_night_east","passed":true}
+{"event":"assertion","name":"tree_wall_still_blocks_east","passed":true}
+{"event":"assertion","name":"cardinal_fixture_east","passed":true}
+{"event":"assertion","name":"smooth_bounded_north_lookahead","passed":true}
+{"event":"assertion","name":"survivor_stays_above_belt","passed":true}
+{"event":"treeline_render_sample","fps":142.0,"hidden_spot":-1,"position":"(-672.0, 37.00008)","screen":"(191.9995, 139.9993)","status":0,"visible":true}
+{"event":"assertion","name":"survivor_visible_against_north_wall","passed":true}
+{"event":"assertion","name":"camp_camera_recenters","passed":true}
+{"checks":20,"event":"test_result","failures":0,"suite":"treeline"}

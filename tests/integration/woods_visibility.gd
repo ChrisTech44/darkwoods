@@ -12,7 +12,8 @@ func _run() -> void:
 	root.get_node("Session").mode = "woods"
 	root.get_node("Session").next_seed = 42
 	change_scene_to_file("res://scenes/world/forest_level.tscn")
-	await _frames(5)
+	while current_scene==null or current_scene.name!="ForestLevel": await process_frame
+	await _frames(3)
 	level = current_scene
 	for enemy in get_nodes_in_group("killers"):
 		enemy.enabled = false
@@ -34,17 +35,23 @@ func _run() -> void:
 		_check(not level.soundscape.play_cue("werewolf_howl", from + Vector2(200, 0)), "distant_monster_does_not_start_call")
 		_check(level.soundscape.play_cue("werewolf_howl", from + Vector2(60, 0)), "nearby_call_allowed")
 		if capture:
+			# Isolate world pixels: UI markers and weather haze are drawn above the sight mask.
+			for layer in level.get_children():
+				if layer is CanvasLayer: layer.hide()
 			for node in level.get_children():
 				if node.get_script() == load("res://scripts/ui/night_overlay.gd"):
 					node.set_process(false)
 					node.ambient.color = Color.WHITE
 			level.player.get_node("Camera2D").offset = Vector2(40, 0)
+			level.player.get_node("Camera2D").force_update_scroll()
+			for settled in range(3): await process_frame
 			await _frames(3)
 			var hidden := await _image()
-			var probe := Vector2i(level.player.get_global_transform_with_canvas().origin + Vector2(136, -12))
+			var probe := Vector2i(level.player.get_global_transform_with_canvas().origin + Vector2(176, 24))
 			level.sight.enabled = false
 			await _frames(3)
 			var shown := await _image()
+			print(JSON.stringify({"event":"sight_pixels","hidden":hidden.get_pixelv(probe).get_luminance(),"shown":shown.get_pixelv(probe).get_luminance(),"probe":probe}))
 			_check(hidden.get_pixelv(probe).get_luminance() < 0.001 and shown.get_pixelv(probe).get_luminance() > 0.02, "opaque_sight_mask_even_in_full_ambient_light")
 			hidden.save_png("res://artifacts/verification/sight_blocked.png")
 			shown.save_png("res://artifacts/verification/sight_control.png")
@@ -68,7 +75,7 @@ func _frames(count: int) -> void:
 
 func _image() -> Image:
 	await process_frame
-	RenderingServer.force_draw(true)
+	await RenderingServer.frame_post_draw
 	return root.get_texture().get_image()
 
 func _check(passed: bool, label: String) -> void:

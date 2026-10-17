@@ -14,7 +14,8 @@ func _run() -> void:
 	root.get_node("Session").mode = "woods"
 	root.get_node("Session").next_seed = 42
 	change_scene_to_file("res://scenes/world/forest_level.tscn")
-	await _frames(5)
+	while current_scene==null or current_scene.name!="ForestLevel": await process_frame
+	await _frames(3)
 	level = current_scene
 	for enemy in get_nodes_in_group("killers"):
 		enemy.enabled = false
@@ -116,7 +117,7 @@ func _patch(img: Image, point: Vector2i) -> float:
 
 func _image() -> Image:
 	await process_frame
-	RenderingServer.force_draw(true)
+	await RenderingServer.frame_post_draw
 	return root.get_texture().get_image()
 
 func _frames(count: int) -> void:

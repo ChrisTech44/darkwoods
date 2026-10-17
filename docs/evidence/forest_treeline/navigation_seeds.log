@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":1}
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":2}
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":3}
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":7}
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":42}
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":99}
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":2026}
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":6789}
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":12345}
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":76543}
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":998877}
+{"event":"round_ready","milestone":"M1"}
+{"event":"nav_stress","passed":true,"seed":2147483646}
+{"checks":12,"event":"test_result","failures":0,"suite":"navigation_seeds"}

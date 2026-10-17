@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"round_ready","milestone":"M1"}
+{"at":"(-672.0, 96.0)","direction":"north","edge_trees":0,"event":"treeline_view","neighbor":"(-672.0, -96.0)","trees":175}
+{"event":"assertion","name":"hidden_neighbor_north","passed":true}
+{"event":"assertion","name":"tree_wall_still_blocks_north","passed":true}
+{"event":"assertion","name":"cardinal_fixture_north","passed":true}
+{"at":"(-672.0, 672.0)","direction":"south","edge_trees":0,"event":"treeline_view","neighbor":"(-672.0, 864.0)","trees":182}
+{"event":"assertion","name":"hidden_neighbor_south","passed":true}
+{"event":"assertion","name":"tree_wall_still_blocks_south","passed":true}
+{"event":"assertion","name":"cardinal_fixture_south","passed":true}
+{"at":"(-672.0, 96.0)","direction":"west","edge_trees":0,"event":"treeline_view","neighbor":"(-864.0, 96.0)","trees":168}
+{"event":"assertion","name":"hidden_neighbor_west","passed":true}
+{"event":"assertion","name":"tree_wall_still_blocks_west","passed":true}
+{"event":"assertion","name":"cardinal_fixture_west","passed":true}
+{"at":"(-672.0, 288.0)","direction":"east","edge_trees":0,"event":"treeline_view","neighbor":"(-480.0, 288.0)","trees":148}
+{"event":"assertion","name":"hidden_neighbor_east","passed":true}
+{"event":"assertion","name":"tree_wall_still_blocks_east","passed":true}
+{"event":"assertion","name":"cardinal_fixture_east","passed":true}
+{"checks":12,"event":"test_result","failures":0,"suite":"treeline"}

@@ -36,6 +36,12 @@ func _lights_for(actor: CampPlayer) -> Array:
 func _process(_delta: float) -> void:
 	if not is_instance_valid(player):
 		return
+	# Make room for upright north-side crowns without putting the survivor under HUD.
+	var camera := get_viewport().get_camera_2d()
+	if camera==player.get_node("Camera2D") and (player.is_physics_processing() or (get_node("/root/Net").active and player.controls_enabled)):
+		var look := player.facing*Vector2(24,24)
+		if player.facing.y<0: look.y=player.facing.y*32
+		camera.offset=camera.offset.lerp(look if CampMap.is_woods(player.global_position) else Vector2.ZERO,1-exp(-_delta*5))
 	var woods := CampMap.is_woods(player.global_position)
 	ambient.color = player.config.night_ambient.lerp(Color(0.003, 0.008, 0.015, 1), 0.8 if woods else 0.0)
 	if level != null and level.night_clock != null and level.night_clock.lightning > 0.0:
@@ -48,6 +54,9 @@ func _process(_delta: float) -> void:
 		var glow: PointLight2D=pair[0]
 		var beam: PointLight2D=pair[1]
 		var in_woods := CampMap.is_woods(actor.global_position)
+		# A tiny local body light cannot reach across a forest wall. Keep the
+		# observer readable when the head sprite projects beyond its foot collider.
+		glow.shadow_enabled=not (actor==player and in_woods)
 		glow.texture_scale=(25.0 if in_woods else 38.0)/128.0
 		beam.position=_safe_emitter(Vector2(0,-12)+actor.facing*8,actor)
 		glow.position=_safe_emitter(Vector2(0,-10),actor)

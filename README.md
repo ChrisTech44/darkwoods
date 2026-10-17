@@ -19,6 +19,7 @@ and get your friends out together.
 ## Contents
 
 - [What kind of game is this?](#what-kind-of-game-is-this)
+- [See it in action (clips)](#see-it-in-action)
 - [Quick start: install and play](#quick-start-install-and-play)
 - [Your first night, step by step](#your-first-night-step-by-step)
 - [Controls](#controls)
@@ -50,6 +51,32 @@ and get your friends out together.
 - **Fear you can fight.** You cannot kill anything. You can run, hide in lockers
   and bushes, slam doors, throw flares, flash creatures with your light, set
   traps of noise, and use your survivor's special ability.
+
+## See it in action
+
+Short clips recorded from the real game (`tools/capture_clips.gd`, built into
+GIFs by `tools/build_clips.py`). The night is brightened a little so you can
+follow the action; real nights are darker.
+
+| A storm rolls in | Chased by a werewolf, saved by a flare |
+| --- | --- |
+| ![Rain and lightning flashes over a woods trail during a storm](docs/clips/storm.gif) | ![A werewolf chases a sprinting survivor until a thrown flare stops it](docs/clips/chase_flare.gif) |
+| Rain lashes down and lightning lights up the trees. Thunder masks your footsteps, so creatures hear you 40% less far. | Sprint (**Shift**), then turn and throw a flare (**Q**): teeth-and-claws creatures won't come near one. |
+
+| Flash-stun a hound | Hide and hold your breath |
+| --- | --- |
+| ![A switchback hound charges and is frozen by a flashlight burst](docs/clips/flash_stun.gif) | ![A survivor hides under a desk while the stalker searches the cabin](docs/clips/hide.gif) |
+| Face it and press **Space**: a burst of light stuns it for a moment. Costs battery; 8-second cooldown. | Press **E** at furniture or a thick bush. Your breath runs out if something lingers close by. |
+
+| Slam the door... until it breaks | The Groundskeeper's snare |
+| --- | --- |
+| ![A survivor sprints into a cabin and slams the door; the stalker smashes through](docs/clips/door.gif) | ![A survivor steps on a hidden snare and the Groundskeeper comes for them](docs/clips/snare.gif) |
+| **E** slams a cabin door behind you. It buys a few seconds, then the stalker breaks through. | Watch for the glint. Stepping on one holds you for 4 seconds and the rattle calls him; a teammate can free you. |
+
+| Starting the van | The Signal Fire |
+| --- | --- |
+| ![The repaired van starts, headlights blaze and a 20-second countdown begins](docs/clips/van.gif) | ![The quarry signal pyre is lit and roars up into a blaze](docs/clips/signal_fire.gif) |
+| Hold **E** at the rear. The engine roars, the headlights come on, and everyone has 20 seconds to climb aboard. | Bring two kerosene cans and the flare gun, then light the pyre and survive 45 seconds by the fire. |
 
 ## Quick start: install and play
 

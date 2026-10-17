@@ -1,5 +1,22 @@
 # Development log
 
+## 2026-10-17 — Gameplay clips in the README
+
+The user asked for clips "showing like storms, certain interactions" so people
+understand the game. `tools/capture_clips.gd` plays eight scripted moments in
+the real game (storm, werewolf chase and flare, flash-stun, hiding, door slam
+and break-in, Groundskeeper snare, van start, Signal Fire) and saves 15 fps
+frames; `tools/build_clips.py` turns them into native-size GIFs with ffmpeg
+(13 MB total). The README's new "See it in action" section shows them with
+captions. Staging is honest about two shortcuts: the night is brightened a
+little, and in the door clip the stalker is nudged the last few pixels onto the
+porch (navigation stops just short) before the real break-in rule runs.
+
+Storms now show on screen: heavy slanted rain on every storm (not only rain
+nights) and a full-screen lightning flash, alongside the existing world flash.
+
+**Verification:** `verify.py` 136/136; clip frames inspected.
+
 ## 2026-10-17 — Everything on screen from SpriteCook (fifth art batch)
 
 The user asked whether every image was SpriteCook-made "including backgrounds"

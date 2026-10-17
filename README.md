@@ -1,6 +1,6 @@
 # Last Night at Camp
 
-**Find the parts. Keep your light alive. Get in the van before it leaves.**
+**Find the parts. Keep your light alive. Escape by van or call for rescue.**
 
 An original top-down pixel-art survival horror game built in Godot 4. Explore
 Fernwood's cabins, follow twisting trails into the woods, and repair your escape
@@ -245,9 +245,44 @@ escapes, even if they have not been revived. The automated network tests
 use host-only placements for isolated authority checks; human co-op balance is
 still unrecorded.
 
-A round is won when at least one living passenger escapes, or when anyone is
-standing in camp at dawn. The results report your own outcome too; living
+A round is won when at least one living passenger escapes, a standing survivor
+is rescued from the radio landing circle, or anyone is standing in camp at dawn. The results report your own outcome too; living
 survivors left outside are left behind.
+
+### Radio Rescue (Woods Expedition)
+
+An alternate escape now crosses the **Flooded Mill → north Power Substation →
+east Radio Relay Station → landing zone south of the Drowned Chapel**. The van
+remains available; the first extraction to finish ends the round.
+
+1. Collect the **emergency fuse** beside the mill's central reward area. It uses
+   no belt slot and drops with your gear if you are downed or disconnect.
+2. Press **E** at the substation cabinet to restore its dedicated rescue circuit.
+   Camp blackouts do not undo this repair.
+3. At the east relay's ladder, **hold E for six seconds** to climb and transmit.
+   The rescue channel opens at **40:00**, preserving the expedition night length.
+   Moving away, releasing E, getting downed or changing operators resets the hold.
+4. Load one **flare** into each of the three marked holders by pressing **E**.
+   Three additional flares are stashed beside the chapel landing circle. Signals
+   stay lit; throwing an ordinary flare with Q does **not** count as a signal.
+   You can prepare the signals before transmitting.
+5. Gather the team, then press **E at the circle's centre** to start the
+   **40-second holdout**. The countdown does not wait for stragglers. Signal
+   noise draws nearby monsters through their normal hearing; resident guardians
+   keep their existing territory limits.
+6. Be **standing inside the 96 px landing circle** when rescue arrives. A successful
+   rescue also recovers connected downed teammates anywhere. Standing survivors
+   outside the circle, hidden survivors and van passengers are left behind by
+   radio rescue. If nobody standing reaches the circle, the round is lost.
+
+Press **T** to open/switch between the radio plan and van clues; **Tab** closes
+field notes. Quick Camp keeps its van-only escape.
+
+| North Power Substation | East Radio Relay Station |
+| --- | --- |
+| ![Powered substation at night](docs/screenshots/rescue_substation.png) | ![Relay mast, ladder and transmitter at night](docs/screenshots/rescue_relay.png) |
+
+![Three permanent signals around the chapel rescue circle](docs/screenshots/rescue_landing.png)
 
 ## Controls
 
@@ -256,7 +291,7 @@ survivors left outside are left behind.
 | **WASD / arrow keys** | Walk and face a direction |
 | **Shift** | Sprint while stamina lasts; sprinting makes noise |
 | **E** | Take items, open caches with cutters or a crowbar, install parts, enter a running van, hide/leave a hiding spot, slam/open doors, knock over woodpiles and deadfall |
-| **Hold E** | Start the repaired van, revive a nearby downed teammate, or (solo, downed) get back up once |
+| **Hold E** | Climb/transmit at the relay (6s), start the repaired van, revive a nearby downed teammate, or (solo, downed) get back up once |
 | **Space** | Flash-stun creatures close in your beam (costs light, 8 s cooldown) |
 | **F** | Toggle the flashlight |
 | **1–6 / keypad 1–6** | Select a belt slot |
@@ -267,6 +302,8 @@ survivors left outside are left behind.
 | **M** | Drop a team map pin where you stand (newest three kept) |
 | **Tab** | Toggle pack, objective clues, and field map |
 | **Esc** | Solo: pause/resume. Co-op: local menu; the shared world continues. |
+
+**T** opens/switches the expedition radio/van objective plan.
 
 ## Items
 
@@ -288,6 +325,7 @@ fuse, tire and spark plug; check Tab to see which two your night requires.
 | **Fuel** | Quick Camp: Maintenance. Woods: one of the three locked objective caches listed below. | Required van component in both modes. |
 | **Key** | Quick Camp: Ranger Lodge. Woods: Ranger Lodge or First Aid. | Required van component in both modes. |
 | **Drive belt** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
+| **Emergency fuse** | Woods only: Flooded Mill, beside its central reward area. | Repairs the north Power Substation for Radio Rescue. Separate objective inventory; no belt slot. Different from the van fuse. |
 | **Fuse** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
 | **Tire** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
 | **Spark plug** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
@@ -315,7 +353,7 @@ one of noise tin, salt ward or glow moss; the reward depends on its seeded site.
 
 | Supply | Where to find it | What it does / how to use it |
 | --- | --- | --- |
-| **Flare** | Start with 2; Woods loot; 3-flare Maintenance stash; Village well; Graveyard crypt. Medic and Overprepared start with +1. | **Q**, or select + **V**, throws it ahead. Lights the area for up to **9s** and repels enemies with clear sight nearby. Lantern Moths follow it; Candle Grazers can consume it. |
+| **Flare** | Start with 2; Woods loot; 3-flare Maintenance stash; 3-flare chapel rescue stash; Village well; Graveyard crypt. Medic and Overprepared start with +1. | **Q**, or select + **V**, throws it ahead. Lights the area for up to **9s** and repels enemies with clear sight nearby. **E at a rescue signal holder** instead spends one flare on a persistent signal light (no permanent repulsion). Lantern Moths follow it; Candle Grazers can consume it. |
 | **Spare flashlight battery** | Start with 1; Woods loot; extra campsite battery; Village well. Grease Monkey and Overprepared start with +1. | **R**, or select + **V**, restores **70 charge**, capped at 90, and switches the light on. Not consumed if already full. |
 | **Rations** | Start with 1; Woods loot; Village well. Scout and Overprepared start with +1. | **C**, or select + **V**, restores full stamina and clears exhaustion. Not consumed at full stamina. Eating can attract nearby Ration Moths. |
 | **Medkit** | First-Aid Kid starts with 1; Woods loot. | Select + **V** patches your own wound. Carried while you **hold E beside a downed teammate**, it speeds the revive to 3s (2.25s as First-Aid Kid) instead of 6s bare-handed, and is consumed on completion. Interrupted attempts keep it. |
@@ -526,12 +564,13 @@ Both modes vary building positions and surrounding trees within reserved camp
 lots. Bunk cabins can trade places, as can the bathhouse and first aid building. Door paths, loot and field-map markers move together. Roof footprints
 and main trails stay separate. Retrying a seed reproduces the camp too.
 
-![Current full-map example for Night 42 with all nine numbered regions, central Fernwood camp and 48 cryptid spawn positions](docs/screenshots/full_map.png)
+![Current full-map example for Night 42 with all eleven numbered regions, central Fernwood camp and 48 cryptid spawn positions](docs/screenshots/full_map.png)
 
 **Full-map example — Night 42.** Numbers match the region names around the map;
 **C** marks Fernwood camp and coral dots mark the 48 cryptid starting positions.
-The six optional biomes show their resident guardians, alongside the village,
-bog and graveyard required-cache regions. North is up. This is an inspection
+The atlas includes the new Power Substation and Radio Relay Station, the chapel
+rescue area, and the existing guardian regions. Van caches rotate across eight
+regions; labels identify possible cache regions rather than fixed objectives. North is up. This is an inspection
 atlas; the in-game field map still reveals only explored trails.
 
 ## Art

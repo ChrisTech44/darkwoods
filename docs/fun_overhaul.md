@@ -288,8 +288,13 @@ already has ENet authority), logged and pushed before the next one starts.
    clean gate)*: rework the woods generator into hub/ring/spokes/
    thickets with unlockable shortcuts, rotating objective regions and the
    camp → field → building clue chains that point to them.
-5. **F5 Escapes and new regions**: Radio Rescue first (Substation, Radio Relay
-   Station), then Boat (Logging Camp, Lakeshore Boathouse) and Ranger Gate; escape finales.
+5. **F5 Escapes and new regions** *(F5a implemented: secondary Radio Rescue,
+   Substation and Radio Relay Station; fuse → power → six-second transmit after
+   40:00 → three persistent signal flares → player-started 40s chapel holdout.
+   Both escapes remain available; Quick Camp stays van-only. Human pacing tests
+   deferred by user on 17 October)*: next Boat (Logging Camp, Lakeshore Boathouse),
+   Ranger Gate and remaining finales; primary/rumoured-secondary selection and
+   broader escape-chain rotation still pending. See [implemented radio rules](radio_rescue.md).
 6. **F6 Roles 2.0 and co-op actions**: active abilities, item passing, heavy
    items, two-person actions, ghost wisps, awards.
 7. **F7 Killers and modifiers**: stalker tiers and sabotage, first new headline

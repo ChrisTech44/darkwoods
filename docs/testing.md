@@ -480,3 +480,26 @@ must stay black even at full ambient, while disabling the mask exposes it.
 Shadow tests separately toggle native border occluders and require real light
 leakage in that positive control. Fixture startup waits for the ForestLevel to
 finish loading instead of assuming it exists after a fixed number of frames.
+
+
+## F5a Radio Rescue
+
+Run the focused objective suite (also included in `tools/verify.py`):
+
+```sh
+godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/radio_rescue.gd
+godot --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --script res://tests/integration/radio_rescue.gd -- --capture
+python3 tools/verify_network.py --mode woods --players 2 --graphical
+python3 tools/verify_network.py --mode woods --players 4
+```
+
+The solo fixture covers seeded, unique fuse generation; native paths to all
+seven actions; pickup/drop/recovery; circuit idempotence; the 40:00 gate; real
+held input; release/operator changes; exact flare spend; explicit ready start;
+pause; state restoration; and inside/outside/downed extraction. Captures include
+normal-night structures/signals, objective UI and a generated eleven-region atlas.
+The network fixture drives the radio chain from a real remote peer in the second
+round, checks all client signal lights and shared results, and recovers a downed
+host. Placements and time acceleration isolate mechanics, not human balance.
+Cross-machine Internet, listening tests and human pacing remain unverified;
+the user deferred human playtests for F5a.

@@ -6,6 +6,17 @@ Both modes keep the current survivor choices, items, enemies and escape rules.
 Voice chat follows the first [gameplay overhaul](fun_overhaul.md) slices; no
 microphone is opened or requested.
 
+## Radio Rescue (expedition)
+
+All peers must use rules `lnac-net-11` (the same build). The host owns the fuse,
+substation, six-second relay hold, persistent signal lights, countdown and
+extraction results. Clients send the usual E/hold intents. **T** switches only
+that player's objective page. A remote operator can complete the whole chain;
+any successful rescue also recovers connected downed teammates. Everyone standing
+must be inside the chapel landing circle; the van does not count as radio rescue.
+See the [Radio Rescue walkthrough](radio_rescue.md). Cross-machine and human
+pacing acceptance remain pending.
+
 ## Host and join
 
 1. Everyone uses the same repository revision and Godot 4.7.2, then runs

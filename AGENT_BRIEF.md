@@ -173,6 +173,20 @@ implemented. Terrain/monsters behind walls stay occluded; no world generation,
 collision, AI, objective or networking-rule changes. See
 [cardinal visual evidence](docs/evidence/forest_treeline/README.md).
 
+17 October F5a amendment: Radio Rescue is implemented as a secondary expedition
+escape alongside the van. Two new seeded regions bring the total to eleven:
+north Power Substation and east Radio Relay Station, with an open east-spoke
+approach. Recover a separate emergency fuse at the mill, restore the rescue
+circuit, hold E six seconds at the relay after 40:00, and load three persistent
+flare holders south of the chapel. Gather the team and E at the circle starts a
+40s holdout. Standing, unhidden survivors within 96px and clear sight of the
+circle escape; any successful extraction also rescues connected downed survivors.
+The first escape to finish ends the round. Host owns all progress/signals/results;
+T switches the local objective plan. Quick Camp stays van-only. Rules `lnac-net-11`.
+Primary/rumoured escape rotation, Boat/Ranger Gate/Signal Fire and other finales
+remain future F5 slices. User explicitly deferred human pacing tests until later.
+See [Radio Rescue guide](docs/radio_rescue.md).
+
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 
 ## Mission & non-negotiables

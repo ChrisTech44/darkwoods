@@ -78,6 +78,10 @@ func generate(value: int, mode: String) -> void:
 	_add("battery_pack", Vector2(168, 356), "CAMPSITE", false)
 	_add_spare_tools(value, battery_pool)
 	_add_notes()
+	# Separate objective/tool inventory, never a belt slot or a van component.
+	_add("rescue_fuse", woods.zones[3]["position"] + Vector2(76, 88), "FLOODED MILL / EMERGENCY FUSE", false)
+	for index in range(3):
+		_add("flare", woods.zones[8]["position"] + Vector2(-76 + index * 18, 230), "CHAPEL / RESCUE SIGNAL STASH", false)
 	_schedule_night(value)
 	for item in loot:
 		item["position"] = camp.remap(item["position"])

@@ -318,6 +318,8 @@ func _host() -> void:
 		harness.advance.rpc("guest_leave",{"departing":departing})
 		if not await _until(func(): return not net.actors.has(departing),5): return
 		_check(net.world.pickups.size()==initial_items+dropped_count and net.roster.size()==peers-1,"disconnect_drops_objective_and_removes_actor")
+	if selected_mode == "woods":
+		await _radio_round(net.world, guest)
 	harness.advance.rpc("host_loss")
 	await create_timer(0.3).timeout
 	net.leave("Host closed test camp.")
@@ -467,6 +469,30 @@ func _client() -> void:
 			"hazards":
 				await _until(func(): return get_nodes_in_group("hazards").size()>=2,5)
 				harness.report.rpc_id(1,handled,{"hazards":get_nodes_in_group("hazards").size()>=2 and get_nodes_in_group("hazards").all(func(node): return not node.is_physics_processing())})
+			"radio_take", "radio_power", "radio_signal_0", "radio_signal_1", "radio_signal_2", "radio_begin":
+				await create_timer(0.45).timeout
+				if mine == harness.data["guest"]: net.action("interact")
+				var accepted := func() -> bool:
+					match handled:
+						"radio_take": return "rescue_fuse" in net.actors[harness.data["guest"]].inventory
+						"radio_power": return net.world.rescue.powered
+						"radio_begin": return net.world.rescue.started
+						_: return net.world.rescue.signals[int(handled.right(1))]
+				await _until(accepted, 5)
+				harness.report.rpc_id(1, handled, {"accepted":accepted.call()})
+			"radio_transmit":
+				await create_timer(0.45).timeout
+				if mine == harness.data["guest"]: Input.action_press("interact")
+				await _until(func(): return net.world.rescue.transmitted, 9)
+				Input.action_release("interact")
+				harness.report.rpc_id(1, handled, {"sent":net.world.rescue.transmitted, "waiting":not net.world.rescue.started})
+			"radio_lamps":
+				await create_timer(0.4).timeout
+				var lit: bool = net.world.rescue.lamps.slice(0,3).all(func(lamp): return lamp.enabled)
+				harness.report.rpc_id(1, handled, {"lit":lit, "signals":net.world.rescue.signals.count(true)})
+			"radio_result":
+				await _until(func(): return net.world.finished, 5)
+				harness.report.rpc_id(1, handled, {"won":net.world.won, "escaped":net.world.player.status == CampPlayer.Status.ESCAPED, "route":net.world.escape_route})
 			"ignite":
 				if mine==harness.data["guest"]: Input.action_press("interact")
 			"board":
@@ -594,3 +620,47 @@ func _active_ai_round(level: Node2D, ids: Array, guest: int) -> void:
 		_check(target.status==CampPlayer.Status.ALIVE and rescuer.supplies["medkit"]==0,"alternating_revive_completes_%d"%turn)
 	for enemy: CampKiller in enemies: enemy.enabled=false
 	for actor: CampPlayer in net.actors.values(): actor.ward_remaining=0
+
+
+func _radio_round(level: Node2D, guest: int) -> void:
+	level.night_clock.director_enabled = false
+	var rescue: RadioRescue = level.rescue
+	var operator: CampPlayer = net.actors[guest]
+	var fuse: CampPickup
+	for pickup: CampPickup in level.pickups:
+		if pickup.kind == "rescue_fuse": fuse = pickup
+	operator.position = fuse.position
+	harness.advance.rpc("radio_take", {"guest":guest})
+	if not await _reports(net.actors.size()-1): return
+	_check("rescue_fuse" in operator.inventory and not fuse.available, "remote_collects_radio_fuse_authoritatively")
+	operator.position = rescue.power_point
+	harness.advance.rpc("radio_power", {"guest":guest})
+	if not await _reports(net.actors.size()-1): return
+	_check(rescue.powered and "rescue_fuse" not in operator.inventory, "remote_restores_substation")
+	level.night_clock.skip_to(2400)
+	operator.position = rescue.relay_point
+	harness.advance.rpc("radio_transmit", {"guest":guest})
+	if not await _reports(net.actors.size()-1): return
+	_check(rescue.transmitted and rescue.starter == operator and not rescue.started, "remote_holds_radio_without_starting_finale_early")
+	for report: Dictionary in harness.reports.values(): _check(report.get("sent",false) and report.get("waiting",false), "client_receives_radio_transmission")
+	operator.pack("flare",3)
+	for index in range(3):
+		operator.position = rescue.landing + RadioRescue.SOCKET_OFFSETS[index]
+		harness.advance.rpc("radio_signal_%d" % index, {"guest":guest})
+		if not await _reports(net.actors.size()-1): return
+		_check(rescue.signals[index], "remote_lights_signal_%d" % index)
+	for actor: CampPlayer in net.actors.values(): actor.position = rescue.landing
+	harness.advance.rpc("radio_lamps")
+	if not await _reports(net.actors.size()-1): return
+	for report: Dictionary in harness.reports.values(): _check(report.get("lit",false) and report.get("signals",0)==3, "all_client_signal_lights_enabled")
+	harness.advance.rpc("radio_begin", {"guest":guest})
+	if not await _reports(net.actors.size()-1): return
+	_check(rescue.started and rescue.remaining > 35, "remote_begins_full_host_owned_holdout")
+	level.player.position = Vector2(96,384)
+	level.player.set_status(CampPlayer.Status.DOWNED)
+	# Accelerate only the countdown tail; actual remote inputs drove every step.
+	rescue.advance(41)
+	_check(level.finished and level.won and net.actors.values().all(func(actor): return actor.status == CampPlayer.Status.ESCAPED), "radio_escape_rescues_connected_downed_host")
+	harness.advance.rpc("radio_result")
+	if not await _reports(net.actors.size()-1): return
+	for report: Dictionary in harness.reports.values(): _check(report.get("won",false) and report.get("escaped",false) and report.get("route", "") == "RADIO RESCUE", "client_radio_result_matches_authority")

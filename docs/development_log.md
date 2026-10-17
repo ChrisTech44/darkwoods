@@ -1,5 +1,46 @@
 # Development log
 
+## 2026-10-17 — F5a Radio Rescue and two new regions
+
+User approved F5 work and explicitly deferred normal-speed human playtests.
+Implemented one coherent slice: Radio Rescue alongside the van in expedition;
+Boat, Ranger Gate, other finales and primary/rumoured-escape rotation remain
+future work. Quick Camp keeps its original van flow. Reused existing SpriteCook
+art/materials with original pixel-drawn machinery; no new generation credits.
+
+- Added seeded north Power Substation/east Radio Relay Station clearings, an
+  east-spoke approach, textured service yards, transformers, insulators, fuse
+  cabinet, mast, platform, ladder, guy wires and bounded collision/navigation.
+  Only anchored machinery rises above floor fog; creatures/terrain stay hidden.
+- Added one emergency fuse at the mill (separate objective inventory; drops on
+  down/disconnect), dedicated persistent rescue power, and a six-second relay
+  hold after 40:00. Release, distance, down/disconnect and operator changes reset
+  incomplete progress. Camp blackouts cannot undo the rescue circuit.
+- Three persistent flare holders and a three-flare chapel stash prepare rescue.
+  E at the landing centre explicitly starts a 40-second holdout. Signal noise
+  uses ordinary bounded hearing without teleporting enemies or breaking leashes.
+  Standing/unhidden survivors within 96px and clear sight escape; any successful
+  rescue includes connected downed teammates anywhere. Other standing survivors
+  are left behind. First completed escape ends the night.
+- Added a local T objective page, region markers/signs, synchronized signal
+  lights/progress/countdown and escape-route results. Rules `lnac-net-11`.
+- Updated README item/escape rules, illustrated guide, plan/brief, architecture,
+  testing and multiplayer docs. Rebuilt the full-map example with eleven
+  numbered regions and current seed-42 spawn positions.
+
+Verification: `python3 tools/verify.py` passed all 109 steps with zero
+errors/warnings; final headless import/startup also exited 0 without diagnostics.
+Focused radio tests passed 34 headless / 36 graphical assertions, including
+actual rendered structure pixels. Independent ENet runs passed 170 assertions
+(two-peer graphical Woods), 276 (four-peer Woods) and 129 (two-peer Quick Camp).
+Checked local documentation/image links and `git diff --check`.
+Execution evidence is collected in [F5a evidence](evidence/radio_rescue/README.md).
+The first regression run exposed an old test indexing a relic action in every
+region. The two rescue sites deliberately have objective actions instead; the
+fixture now checks that distinction and skips relic assertions for those sites.
+No player-facing workaround or generic relic was added. Normal-speed human
+pacing/balance and cross-machine Internet remain unverified as requested.
+
 ## 2026-10-17 — Readable north/south forest borders and local canopy clearance
 
 Read the latest brief, fun overhaul direction and preceding SpriteCook/tree-line

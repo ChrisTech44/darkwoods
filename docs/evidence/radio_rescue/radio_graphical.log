@@ -1,0 +1,47 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"assert","name":"five_seeds_reproducible_unique_walkable_separate_fuse","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assert","name":"native_route_(-1844.0, 88.0)","passed":true}
+{"event":"assert","name":"native_route_(672.0, -1968.0)","passed":true}
+{"event":"assert","name":"native_route_(3744.0, -40.0)","passed":true}
+{"event":"assert","name":"native_route_(1536.0, 3686.0)","passed":true}
+{"event":"assert","name":"signal_socket_reachable_(-65.0, 32.0)","passed":true}
+{"event":"assert","name":"signal_socket_reachable_(65.0, 32.0)","passed":true}
+{"event":"assert","name":"signal_socket_reachable_(0.0, -65.0)","passed":true}
+{"event":"assert","name":"substation_requires_fuse","passed":true}
+{"event":"assert","name":"pickup_uses_separate_inventory","passed":true}
+{"event":"assert","name":"down_drops_emergency_fuse","passed":true}
+{"event":"assert","name":"recover_dropped_fuse","passed":true}
+{"event":"assert","name":"fuse_consumed_once_restores_circuit","passed":true}
+{"event":"assert","name":"repeated_power_interaction_idempotent","passed":true}
+{"event":"assert","name":"no_early_escape_before_40_minutes","passed":true}
+{"event":"night_phase","phase":"NIGHTFALL","revealed":["fuel"],"time":2400}
+{"event":"night_phase","phase":"DEEP NIGHT","revealed":["fuse"],"time":2400}
+{"event":"night_phase","phase":"WITCHING HOUR","revealed":["spark_plug"],"time":2400}
+{"event":"night_event","kind":"storm","time":2400}
+{"event":"night_event","kind":"blackout","time":2400}
+{"event":"assert","name":"camp_blackout_preserves_dedicated_rescue_power","passed":true}
+{"event":"assert","name":"release_resets_transmit_hold","passed":true}
+{"event":"assert","name":"operator_change_cannot_inherit_progress","passed":true}
+{"event":"assert","name":"real_hold_sends_distress_without_trapping_solo_runner","passed":true}
+{"event":"assert","name":"readable_structure_at_night_relay","passed":true}
+{"event":"assert","name":"readable_structure_at_night_substation","passed":true}
+{"event":"assert","name":"cannot_start_without_all_signals","passed":true}
+{"event":"assert","name":"distant_action_cannot_spend_flare","passed":true}
+{"event":"assert","name":"signal_spends_exactly_one_0","passed":true}
+{"event":"assert","name":"signal_repeat_idempotent_0","passed":true}
+{"event":"assert","name":"signal_spends_exactly_one_1","passed":true}
+{"event":"assert","name":"signal_repeat_idempotent_1","passed":true}
+{"event":"assert","name":"signal_spends_exactly_one_2","passed":true}
+{"event":"assert","name":"signal_repeat_idempotent_2","passed":true}
+{"event":"assert","name":"all_signals_wait_for_team_ready_at_circle","passed":true}
+{"event":"assert","name":"snapshot_restores_objective_state","passed":true}
+{"event":"assert","name":"all_roles_can_start_escape","passed":true}
+{"event":"assert","name":"player_starts_finale_from_landing_circle","passed":true}
+{"event":"assert","name":"offline_pause_freezes_finale","passed":true}
+{"event":"assert","name":"full_holdout_required","passed":true}
+{"event":"round_finished","result":"Radio rescue arrived. 2 survivor(s) recovered. You: escaped.","won":true}
+{"event":"assert","name":"extract_inside_rescue_downed_leave_standing_outside","passed":true}
+{"checks":36,"event":"test_result","failures":0,"suite":"radio_rescue"}

@@ -11,6 +11,7 @@ var pickups: Array[CampPickup] = []
 var van: CampVan
 var finished: bool = false
 var won: bool = false
+var escape_route: String = ""
 var message: String = "Search camp buildings. Tab shows where to find the supplies."
 var message_time: float = 6.0
 var killer: CampKiller
@@ -31,6 +32,7 @@ var soundscape: CampSoundscape
 var sight: WoodsVisibility
 var pins: Array[Dictionary] = []
 var night_clock: NightClock
+var rescue: RadioRescue
 var props: ChaseProps
 ## Team-wide clue chain per locked-cache part: 0 direction, 1 region named, 2 cache found.
 var clues: Dictionary = {}
@@ -116,6 +118,10 @@ func _ready() -> void:
 	night_clock.name = "NightClock"
 	night_clock.level = self
 	add_child(night_clock)
+	rescue = RadioRescue.new()
+	rescue.name = "RadioRescue"
+	rescue.level = self
+	add_child(rescue)
 	hud = preload("res://scenes/ui/hud.tscn").instantiate()
 	add_child(hud)
 	hud.chart.camp_map = camp_map
@@ -157,6 +163,8 @@ func _process(_delta: float) -> void:
 		heading = "VAN REPAIRED  ·  HOLD E AT THE REAR TO START"
 	if van.running:
 		heading = "DEPARTING IN %.1fs  ·  %d ABOARD" % [van.remaining, van.passengers.size()]
+	if plan.expedition and rescue.transmitted and (not van.running or (rescue.started and rescue.remaining <= van.remaining)):
+		heading = rescue.heading()
 	if finished:
 		heading = "ROUND COMPLETE  ·  ESCAPED" if won else "ROUND COMPLETE  ·  NO ESCAPE"
 	elif player.status == CampPlayer.Status.DEAD:
@@ -182,9 +190,9 @@ func _process(_delta: float) -> void:
 		detail = message + "\n" + detail
 	hud.set_status(heading, detail, player.stamina / player.config.stamina_max)
 	hud.inventory_label.text = "NIGHT %d / %s\nQ FLARE %d · R BATTERY %d · C FOOD %d\n" % [plan.seed_value, plan.weather.to_upper(), player.supplies["flare"], player.supplies["battery_pack"], player.supplies["rations"]]
-	hud.inventory_label.text += plan.pack_description(van.installed, night_clock.phase if plan.expedition else 3, clues)
+	hud.inventory_label.text += rescue.pack_text() if plan.expedition and rescue.show_in_pack(player) else plan.pack_description(van.installed, night_clock.phase if plan.expedition else 3, clues)
 	if plan.expedition:
-		hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINT./%s WOODS BOX" % plan.toolbox_hint) + (" +BAR" if "crowbar" in player.inventory else "") + " · TAB CLOSE"
+		hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINT./%s WOODS BOX" % plan.toolbox_hint) + (" +BAR" if "crowbar" in player.inventory else "") + (" · T VAN / TAB CLOSE" if rescue.pack_selected else " · T RADIO / TAB CLOSE")
 	else:
 		hud.inventory_label.text += "\nM PIN · TAB CLOSE"
 	hud.update_belt(player)
@@ -224,6 +232,9 @@ func _physics_process(delta: float) -> void:
 		if van.running and not was_running:
 			van.board(player)
 			announce("Engine started. Driver boarded automatically. Others: E to enter.")
+	rescue.advance(delta)
+	if finished:
+		return
 	_advance_chase_toolkit(delta)
 	_advance_clues()
 	var living := false
@@ -247,6 +258,7 @@ func _physics_process(delta: float) -> void:
 		var detail := "The van departed without a living survivor."
 		if escaped > 0:
 			detail = "%d survivor(s) escaped. You: %s." % [escaped, CampPlayer.Status.keys()[player.status].to_lower().replace("_", " ")]
+		escape_route = "VAN"
 		finish_round(escaped > 0, detail)
 
 
@@ -292,6 +304,8 @@ func try_interact(actor: CampPlayer) -> bool:
 				actor.inventory.append(pickup.kind)
 			if pickup.kind in plan.required:
 				announce(("Crowbar screech! " if pried else "") + "Found " + pickup.kind.replace("_", " ") + ". Install it at the van.",actor)
+			elif pickup.kind == "rescue_fuse":
+				announce("Emergency fuse found. Fit it at the north Power Substation; relay station lies east.", actor)
 			elif pickup.kind == "boltcutters":
 				announce("Boltcutters found. Woods caches can now be opened with E.",actor)
 			elif pickup.kind == "crowbar":
@@ -299,6 +313,8 @@ func try_interact(actor: CampPlayer) -> bool:
 			else:
 				announce("Packed " + pickup.kind.replace("_", " ") + ". Q flare / R battery / C food.",actor)
 			return true
+	if not rescue.prompt(actor).is_empty():
+		return rescue.interact(actor)
 	for site in camp_map.sites:
 		if not site.nearby(actor).is_empty():
 			return site.interact(actor)
@@ -509,6 +525,9 @@ func context_prompt() -> String:
 			if pickup.locked and "boltcutters" not in player.inventory:
 				return "E · PRY CACHE WITH CROWBAR (LOUD)" if "crowbar" in player.inventory else "E · LOCKED CACHE / NEED BOLTCUTTERS OR CROWBAR"
 			return "E · TAKE " + pickup.kind.replace("_", " ").to_upper()
+	var rescue_prompt := rescue.prompt(player)
+	if not rescue_prompt.is_empty():
+		return rescue_prompt
 	for site in camp_map.sites:
 		var action := site.nearby(player)
 		if not action.is_empty():
@@ -524,7 +543,7 @@ func context_prompt() -> String:
 		if van.installed.size() == plan.required.size():
 			return "HOLD E · START VAN  %d%%" % int(van.start_progress / player.config.start_hold_seconds * 100)
 		return "E · INSTALL SUPPLIES   |   NEED: " + ", ".join(missing_parts()).to_upper()
-	return "1-6 select · V use · G drop · E interact · Space flash · M pin" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
+	return "1-6 select · V use · G drop · E interact · Space flash · T plans · M pin" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
 
 
 ## Shared team pin at the actor's feet. Each owner keeps their newest three.
@@ -581,6 +600,7 @@ func dawn() -> void:
 			rescued += 1
 		elif actor.status in [CampPlayer.Status.ALIVE, CampPlayer.Status.DOWNED]:
 			actor.set_status(CampPlayer.Status.LEFT_BEHIND)
+	escape_route = "DAWN"
 	finish_round(rescued > 0, "Dawn broke. The ranger patrol rescued %d survivor(s) in camp. You: %s." % [rescued, CampPlayer.Status.keys()[player.status].to_lower().replace("_", " ")])
 
 
@@ -619,6 +639,12 @@ func finish_round(success: bool, detail: String) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if finished:
+		return
+	if plan.expedition and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_T:
+		rescue.pack_selected = not rescue.pack_selected
+		hud.inventory_label.show()
+		hud.chart.show()
+		get_viewport().set_input_as_handled()
 		return
 	if get_node("/root/Net").active:
 		get_node("/root/Net").handle_input(event)

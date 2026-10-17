@@ -16,11 +16,11 @@ func _draw() -> void:
 	if locked and PixelArt.draw_in(self, "cache_crate", Rect2(-12, -12, 24, 22)):
 		draw_string(ThemeDB.fallback_font, Vector2(-21, -15), "LOCKED CACHE", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("c4b58e"))
 		return
-	var icon := PixelArt.fit(kind, Vector2(16, 16)) if not locked else null
+	var icon := PixelArt.fit("fuse" if kind == "rescue_fuse" else kind, Vector2(16, 16)) if not locked else null
 	if icon != null:
 		draw_circle(Vector2(0, 1), 9, Color(0.8, 0.85, 0.6, 0.1))
 		draw_texture(icon, (-icon.get_size() * 0.5).round())
-		draw_string(ThemeDB.fallback_font, Vector2(-16, -12), kind.replace("_", " ").to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("d8d0a8"))
+		draw_string(ThemeDB.fallback_font, Vector2(-16, -12), ("EMERGENCY FUSE" if kind == "rescue_fuse" else kind.replace("_", " ").to_upper()), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("d8d0a8"))
 		return
 	if locked:
 		draw_rect(Rect2(-10, -9, 20, 16), Color("947b51"))

@@ -6,6 +6,14 @@ as requested. It began as an offline content increment. The current build also i
 [ENet co-op](multiplayer_guide.md); full human balance, real cross-machine Internet,
 synchronized-audio listening and proximity voice acceptance remain pending.
 
+## Radio Rescue regions (F5a)
+
+The current forest has **eleven regions**, adding the north Power Substation and
+an east Radio Relay Station. These support a secondary expedition escape with an
+emergency fuse, distress transmission, three permanent signal holders and a
+40-second chapel landing-zone finale. See the [illustrated Radio Rescue guide](radio_rescue.md).
+The van remains available; the first completed extraction ends the night.
+
 ## Rendering and denser roaming update
 
 Survivors now retain their texture for the actor lifetime instead of loading a
@@ -59,18 +67,19 @@ holding E at a downed teammate, rather than V. The hand displays the held supply
 
 ## Regions and encounters
 
-![Current Night 42 forest atlas with nine labeled regions, central camp and cryptid spawns](evidence/denser_forest/full_map.png)
+![Current Night 42 forest atlas with eleven labeled regions, central camp and cryptid spawns](screenshots/full_map.png)
 
 The full-map example is generated from the current Night 42 world recipe.
-Numbers identify all nine regions; C marks camp and coral dots show cryptid
+Numbers identify all eleven regions; C marks camp and coral dots show cryptid
 starting positions. This inspection atlas is separate from the explored-trail
 field map used during play.
 
-The original required-cache locations and five-part expedition recipe are
-preserved. Six new pockets are optional, graph-connected open loops with multiple
-entrances and 32px approach aprons. All nine regions fit inside the existing
-finite forest. The six remote ruins remain. New scenery represents walkable
-floors, shallow channels and dressing; there are no new impassable region props.
+The five-part van recipe is preserved; locked caches now rotate across eight
+regions under F4. Six guardian pockets remain optional for van escape, with
+graph-connected loops, multiple entrances and 32px approach aprons. All eleven
+regions fit inside the existing finite forest. The six remote ruins remain.
+The two rescue regions add solid machinery footprints with native navigation;
+other biome scenery still represents walkable floors, shallow channels and dressing.
 Interior architecture, deep water, advanced quests and varied region modules from
 the larger biome design remain future work. The variant footprint is currently
 fixed; the surrounding maze, ordinary supplies and weather remain seeded.

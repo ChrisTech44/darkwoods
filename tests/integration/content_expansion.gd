@@ -120,7 +120,7 @@ func _run() -> void:
 	player.flashlight_charge=10
 	player.hex_remaining=3
 	_check(level.use_supply(player,"glow_moss") and player.flashlight_charge==45 and player.hex_remaining==0,"moss_restores_light_clears_hex")
-	_check(level.plan.woods.zones.size()==9 and level.plan.encounters.size()==RoundPlan.CRYPTID_COUNT,"nine_biomes_bounded_roster")
+	_check(level.plan.woods.zones.size()==11 and level.plan.encounters.size()==RoundPlan.CRYPTID_COUNT,"eleven_biomes_bounded_roster")
 	for zone in level.plan.woods.zones:
 		var bounds: Rect2 = zone["bounds"]
 		var outside := {}

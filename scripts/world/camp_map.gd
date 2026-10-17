@@ -282,6 +282,12 @@ func _build_sites() -> void:
 				add_child(roof)
 				CampLights.lamp(self, building.door - Vector2(0,4), 70, Color("bdab84"), 0.7)
 			CampLights.lamp(self, site.definition["position"] + Vector2(0, 48), 88, Color("beaa78"), 0.8)
+		elif definition["kind"] == "substation":
+			for x in [-112,112]:
+				add_wall(Rect2(definition["position"] + Vector2(x - 32, -38), Vector2(64, 50)))
+			add_wall(Rect2(definition["position"] + Vector2(-22, 12), Vector2(44, 20)))
+		elif definition["kind"] == "relay":
+			add_wall(Rect2(definition["position"] + Vector2(-24, 12), Vector2(48, 28)))
 		elif definition["kind"] == "bog":
 			CampLights.lamp(self, definition["position"] - Vector2(0, 13), 66, Color("a0b876"), 0.65)
 		else:

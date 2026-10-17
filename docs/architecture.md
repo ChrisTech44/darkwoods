@@ -364,3 +364,27 @@ fade. A local-silhouette opening in the mask stays under 29px; the observer's
 the wall. Camp glows and other peers' native shadowing remain intact. These
 bounds fit inside the existing forest-edge peek budget, with hidden adjacent
 floor/monster and flashlight-occlusion pixel controls retained.
+
+
+## Radio Rescue (F5a)
+
+`RadioRescue` is a small alternate-expedition state machine owned by the round.
+`RoundPlan` adds the unique emergency fuse and three chapel supply flares;
+`WoodsLayout` adds two reserved clearings and the east-spoke relay approach.
+`CampMap` supplies native collision, shadows and navigation around cabinet,
+transformers and mast base. Scene indices 9/10 identify the appended regions,
+leaving existing region IDs/rotating cache pools intact.
+
+The host processes validated E actions and chooses one held-input operator each
+physics tick. A changed operator resets the six-second transmission. The
+40-second finale begins only from an explicit landing-centre interaction.
+Snapshots carry circuit, transmission, signals, hold progress, countdown and
+started state; all peers derive lamps and sparks from those accepted values.
+The input protocol is unchanged; compatibility rules advance to `lnac-net-11`.
+T is local UI state, intercepted before network gameplay intents.
+
+`RescueArt` draws textured aprons and original machinery. `rescue_structures.gd`
+raises only machinery above floor fog when the observer is inside its clearing
+and can see the front anchor. Its illumination reflects rescue power or the
+observer's beam. This never reveals ground or enemies behind collision.
+The circuit stays powered independently of camp blackouts.

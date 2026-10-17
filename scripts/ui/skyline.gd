@@ -32,6 +32,8 @@ static func beacons(plan: RoundPlan, from: Vector2) -> Array[Dictionary]:
 ## Regions the team knows hold a missing part show its name on the marker.
 static func beacon_label(level: Node2D, beacon: Dictionary) -> String:
 	var label: String = beacon["label"]
+	if beacon["kind"] == "chapel" and level.rescue.transmitted:
+		label += " · RESCUE"
 	for kind: String in level.clues:
 		var zone: Dictionary = level.plan.woods.zones[level.plan.cache_zone[kind]]
 		if zone["kind"] == beacon["kind"] and level.clues[kind] >= 1 and kind not in level.van.installed:
@@ -99,6 +101,14 @@ func _icon(at: Vector2, kind: String, color: Color) -> void:
 		"pin":
 			draw_line(at + Vector2(-2, 4), at + Vector2(-2, -5), color, 1)
 			draw_colored_polygon(PackedVector2Array([at + Vector2(-2, -5), at + Vector2(4, -3), at + Vector2(-2, -1)]), color)
+		"relay":
+			draw_line(at + Vector2(-3, 4), at + Vector2(0, -5), color)
+			draw_line(at + Vector2(3, 4), at + Vector2(0, -5), color)
+			draw_arc(at + Vector2(0, -4), 4, PI, TAU, 8, color)
+		"substation":
+			draw_line(at + Vector2(2, -5), at + Vector2(-2, 0), color, 2)
+			draw_line(at + Vector2(-2, 0), at + Vector2(2, 0), color, 2)
+			draw_line(at + Vector2(2, 0), at + Vector2(-2, 5), color, 2)
 		"village":
 			draw_rect(Rect2(at + Vector2(-2, -1), Vector2(4, 5)), color)
 			draw_colored_polygon(PackedVector2Array([at + Vector2(-3, -1), at + Vector2(0, -5), at + Vector2(3, -1)]), color)

@@ -28,6 +28,11 @@ func _draw() -> void:
 	draw_rect(Rect2(0, 0, 154, 112), Color("1c2b28"))
 	draw_string(ThemeDB.fallback_font, Vector2(4, 10), "THE WOODS / N ↑" if in_woods else "FERNWOOD / N ↑", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("cfc89f"))
 	if in_woods:
+		# The Lodge wall map prints the ring road and spokes from the start.
+		for road: Rect2 in plan.woods.roads:
+			if road.intersects(bounds):
+				var piece := road.intersection(bounds)
+				draw_rect(Rect2(origin + (piece.position - bounds.position) * factor, (piece.size * factor).max(Vector2.ONE * 2)), Color("8a7a58"))
 		for zone in plan.woods.zones:
 			var known := false
 			for cell: Vector2i in plan.woods.visited:

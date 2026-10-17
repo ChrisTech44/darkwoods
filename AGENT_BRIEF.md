@@ -131,6 +131,14 @@ Rules `lnac-net-6`. F3b is implemented:
   in a survivor.
 
 Rules `lnac-net-7`. Vaults move to F4 with fences.
+F4a (road network) is implemented. A deterministic ring road (cells x16–33,
+y17–31, 160px wide) passes through the village, bog and graveyard. Four straight
+spokes run from the camp exits to the map edges. About 34 lamp posts on the ring
+and inner spokes run on camp power, so blackouts darken them. The field map
+prints the roads, and the maze between roads remains as thickets. Measured
+walking time from camp: graveyard 18s, bog 28s, village 30s; optional regions
+41–69s. Rules `lnac-net-8`. F4b (rotating objective regions with clue chains,
+shortcuts, fences/vaults) follows.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 

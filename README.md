@@ -72,6 +72,16 @@ points back toward camp. The village lies northwest, bog east and graveyard sout
 
 ### Find your way
 
+- **The ring road and spokes.** A wide dirt **ring road** circles camp about
+  1,500 px out and runs straight through the Abandoned Village, Witch's Bog and
+  Old Graveyard. Four straight **spoke roads** leave the camp exits (north,
+  east, south, west) and run to the edges of the map. Lamp posts light the
+  ring and the inner spokes as long as camp has power; in a blackout the roads
+  go dark too. The outer spokes are dark **logging roads**. Everything between
+  the roads is the old maze ("the thickets"): shorter as the crow flies, but
+  darker and unmarked. From camp, the graveyard is about 18 s on foot, the bog
+  28 s and the village 30 s.
+
 - **Signposts** stand at about 120 trail junctions per night. Each board points
   along the real shortest trail to **camp** and the two nearest regions. Stand
   beside one to read its full directions on the HUD
@@ -80,8 +90,9 @@ points back toward camp. The village lies northwest, bog east and graveyard sout
   plus up to four regions within about 2,400 px (bell tower, bog glow, dome,
   rail signal and others). They sit at the screen edge in that direction and
   never reveal trails, caches or creatures.
-- **Region names from the start.** The field map (Tab) outlines every nearby
-  region from the Ranger Lodge wall map; regions brighten once you have walked them.
+- **Region names and roads from the start.** The field map (Tab) prints the ring
+  road, spokes and every nearby region outline from the Ranger Lodge wall map;
+  regions brighten once you have walked them.
   Trails still appear only where you have explored.
 - **Team pins.** Press **M** to drop a pin where you stand. Everyone sees it on
   their field map and as an edge marker, with a shared "pinned WITCH'S BOG"
@@ -162,7 +173,7 @@ phase and clock; in the Witching Hour it counts down to dawn.
 | **Witching Hour** | 40:00–60:00 | Radio reveals the **last extra part**. The stalker chases faster. Escape before dawn. |
 
 - **Parts arrive by radio.** Tab lists every required part; unrevealed ones show
-  when the radio will announce them, e.g. `FUEL / RANGER RADIO AT NIGHTFALL (10:00)`.
+  when the radio will announce them, e.g. `FUEL / RADIO AT 10:00`.
   The van can't be finished before 40:00, so most escapes happen between 40 and 60 minutes.
 - **Supply drops.** Each new phase leaves 2 flashlight batteries, a flare and a
   ration at the Maintenance stash.
@@ -568,11 +579,12 @@ recover units. Vehicle components and cutters remain separate from this limit.
 
 The current implementation includes solo and 1–4 player ENet co-op in both
 modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
-species. Full baseline verification passed **87 steps** with no errors/warnings,
+species. Full baseline verification passed **89 steps** with no errors/warnings,
 including the [navigation](docs/evidence/navigation/README.md),
 [night phase](docs/evidence/night_phases/README.md) and
 [chase toolkit](docs/evidence/chase_toolkit/README.md) and
-[hiding/doors](docs/evidence/chase_props/README.md) suites;
+[hiding/doors](docs/evidence/chase_props/README.md) and
+[road network](docs/evidence/road_network/README.md) suites;
 final content checks passed **350 assertions**. Current graphical ENet tests passed **654
 assertions across 14 process runs**, including two/four peers and graphical
 host/client windows in both modes. See the

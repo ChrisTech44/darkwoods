@@ -405,3 +405,22 @@ Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tes
 `network_peer.gd` adds a guest hiding via interact and a host door slam, both
 replicated, with the client door collision checked by raycast (`lnac-net-7`).
 Evidence: [hiding/doors](evidence/chase_props/README.md).
+
+## Road network (overhaul F4a)
+
+Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/road_network.gd`
+(add `-- --capture` without `--headless` for the lit-road and field-map captures).
+It covers:
+
+- the same road layout on three seeds, with every clearing still connected;
+- the ring loop size, and every spoke reaching the map edge;
+- the ring passing through all three objective regions;
+- every non-region road segment clear across three parallel lanes, and road
+  tiles marked;
+- native-navigation walking times from camp to every region, with the three
+  required regions under 60 s;
+- road lamps on camp power, going dark in a blackout and returning;
+- the "LIT ROAD" location label.
+
+The expedition bot (`woods_playthrough`) runs unmodified on the new map.
+Evidence: [road network](evidence/road_network/README.md).

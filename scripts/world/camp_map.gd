@@ -97,6 +97,11 @@ func location_label(point: Vector2) -> String:
 		for landmark in woods.landmarks:
 			if point.distance_to(landmark["position"]) < 90:
 				return "THE WOODS / " + landmark["label"]
+		if woods.on_road(point):
+			for lamp: Vector2 in woods.lamps:
+				if point.distance_to(lamp) < 260:
+					return "THE WOODS / LIT ROAD" if not night_dark() else "THE WOODS / ROAD (POWER OUT)"
+			return "THE WOODS / LOGGING ROAD"
 		return "THE WOODS / NO SAFE LIGHT"
 	for building in buildings:
 		if building.bounds.grow(16).has_point(point):
@@ -108,6 +113,10 @@ func location_label(point: Vector2) -> String:
 	if point.x > 760:
 		return "EAST SERVICE TRAIL"
 	return "FERNWOOD CAMPSITE"
+
+
+func night_dark() -> bool:
+	return not camp_lamps.is_empty() and not camp_lamps[0].enabled
 
 
 func add_wall(rect: Rect2, shadow: bool = true) -> void:
@@ -147,6 +156,9 @@ func _canopy(at: Vector2, variant: int) -> void:
 func _build_woods() -> void:
 	for wall in woods.walls:
 		add_wall(wall,true)
+	# Road lamps run on camp power: a blackout darkens the ring and inner spokes too.
+	for post in woods.lamps:
+		camp_lamps.append(CampLights.lamp(self, post + Vector2(0, -14), 120, Color("f2c47a"), 1.15))
 	for canopy in [false,true]:
 		var renderer := preload("res://scripts/world/woods_terrain.gd").new()
 		renderer.camp_map = self

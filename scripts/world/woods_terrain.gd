@@ -39,6 +39,8 @@ func _draw() -> void:
 				var tile := Vector2i(posmod(x+y,2),1)
 				if camp_map.woods.walkable(at + Vector2.ONE * detail/2):
 					tile.x = 2 + posmod(x+y,2)
+				if camp_map.woods.on_road(at + Vector2.ONE * detail/2):
+					tile = Vector2i(4 + posmod(x + y, 3), 0)
 				var zone := camp_map.woods.zone_at(at + Vector2.ONE*detail/2)
 				if not zone.is_empty():
 					tile = Vector2i(2+posmod(x+y,2),3) if zone["kind"] == "village" else Vector2i(0 if zone["kind"] == "bog" else 7,1)

@@ -20,6 +20,15 @@ var visited: Dictionary = {}
 var landmark_distances: Dictionary = {}
 var open_tiles: Dictionary = {}
 var signposts: Array[Dictionary] = []
+## F4a road network: a ring road through the three objective regions and four
+## straight spokes from the camp exits to the map edges. The maze between them
+## stays as the dark "thickets".
+const ROAD_HALF := 80
+const RING := Rect2i(16, 17, 17, 14)
+var roads: Array[Rect2] = []
+var road_cells: Dictionary = {}
+var road_tiles: Dictionary = {}
+var lamps: Array[Vector2] = []
 const SIGN_SPACING := 640.0
 const SIGN_OFFSET := Vector2(-44, -40)
 const SIGN_NAMES := {"village":"VILLAGE", "bog":"BOG", "graveyard":"GRAVES", "mill":"MILL", "orchard":"ORCHARD", "observatory":"DOME", "rail":"RAILS", "quarry":"QUARRY", "chapel":"CHAPEL"}
@@ -34,6 +43,10 @@ func generate(seed_value: int) -> void:
 	visited.clear()
 	open_tiles.clear()
 	signposts.clear()
+	roads.clear()
+	road_cells.clear()
+	road_tiles.clear()
+	lamps.clear()
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var stack: Array[Vector2i] = [ENTRY]
@@ -58,6 +71,7 @@ func generate(seed_value: int) -> void:
 		if valid(cell) and valid(neighbor):
 			_link(cell, neighbor)
 	_make_zones(rng)
+	_make_roads()
 	# Traversable approach routes keep objectives reachable without flattening the outer maze.
 	_connect_grid(ENTRIES[0], zones[0]["cell"] + Vector2i(2,2))
 	_connect_grid(ENTRIES[1], zones[1]["cell"] + Vector2i(1,1))
@@ -70,6 +84,8 @@ func generate(seed_value: int) -> void:
 				continue
 			var other := center(next)
 			_carve(Rect2(at.min(other) - Vector2.ONE * HALF_TRAIL, (other-at).abs() + Vector2.ONE * HALF_TRAIL * 2))
+	for road in roads:
+		_carve(road)
 	for zone in zones:
 		_carve(zone["bounds"].grow(32))
 	_carve(CAMP_BOUNDS)
@@ -91,6 +107,68 @@ func generate(seed_value: int) -> void:
 			break
 	landmark_distances.clear()
 	_make_signposts()
+
+## Deterministic (no RNG) so roads never shift other seeded content.
+func _make_roads() -> void:
+	var ring: Array[Vector2i] = []
+	for x in range(RING.position.x, RING.end.x):
+		ring.append(Vector2i(x, RING.position.y))
+	for y in range(RING.position.y, RING.end.y):
+		ring.append(Vector2i(RING.end.x, y))
+	for x in range(RING.end.x, RING.position.x, -1):
+		ring.append(Vector2i(x, RING.end.y))
+	for y in range(RING.end.y, RING.position.y - 1, -1):
+		ring.append(Vector2i(RING.position.x, y))
+	_road(ring, true)
+	# Spokes: lit from each camp exit out to the ring, dark beyond it.
+	var spokes: Array = [[ENTRIES[0], Vector2i.LEFT, 1], [ENTRIES[1], Vector2i.RIGHT, SIZE.x - 2], [ENTRIES[2], Vector2i.UP, 1], [ENTRIES[3], Vector2i.DOWN, SIZE.y - 2]]
+	for spoke: Array in spokes:
+		var cells: Array[Vector2i] = []
+		var cell: Vector2i = spoke[0]
+		var step: Vector2i = spoke[1]
+		var limit: int = spoke[2]
+		while valid(cell) and (cell.x if step.x != 0 else cell.y) != limit + (step.x if step.x != 0 else step.y):
+			cells.append(cell)
+			cell += step
+		var inner: Array[Vector2i] = []
+		for index in range(cells.size()):
+			inner.append(cells[index])
+			if ring.has(cells[index]):
+				break
+		_road(inner, true)
+		_road(cells.slice(inner.size() - 1), false)
+
+
+func _road(cells: Array[Vector2i], lit: bool) -> void:
+	for index in range(cells.size()):
+		var cell := cells[index]
+		road_cells[cell] = true
+		if index > 0:
+			var previous := cells[index - 1]
+			_link(previous, cell)
+			var a := center(previous)
+			var b := center(cell)
+			# Wide across the road, but only a normal trail half-width past each end,
+			# so road ends meet existing trail squares without new wall stubs.
+			var along := (b - a).normalized().abs()
+			var half := along * HALF_TRAIL + (Vector2.ONE - along) * ROAD_HALF
+			var rect := Rect2(a.min(b) - half, (b - a).abs() + half * 2)
+			roads.append(rect)
+			for y in range(int(floor(rect.position.y / 32)), int(ceil(rect.end.y / 32))):
+				for x in range(int(floor(rect.position.x / 32)), int(ceil(rect.end.x / 32))):
+					road_tiles[Vector2i(x, y)] = true
+		if lit and index % 2 == 0 and zone_at(center(cell)).is_empty():
+			var along := Vector2(cells[mini(index + 1, cells.size() - 1)] - cells[maxi(index - 1, 0)]).normalized()
+			var side := along.orthogonal() * (1.0 if (index / 2) % 2 == 0 else -1.0)
+			var post := center(cell) + side * (ROAD_HALF - 12)
+			if not lamps.has(post):
+				lamps.append(post)
+
+
+## True on the dirt road surface (outside region clearings, which keep their own ground).
+func on_road(point: Vector2) -> bool:
+	return road_tiles.has(Vector2i((point / 32).floor())) and zone_at(point).is_empty()
+
 
 func _make_signposts() -> void:
 	# Graph data only (no RNG), so adding signs never shifts other seeded content.

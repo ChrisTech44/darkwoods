@@ -46,7 +46,8 @@ Map pins (**M**) are sent to the host, which keeps each player's newest three
 and shares them with everyone. The host also owns the 60-minute night clock, part reveals, storms and blackouts.
 Flash-stuns (Space) and help calls are host-validated intents.
 Hiding, doors and knock-overs use the normal E intent; the host owns breath,
-door breaking and blocking. Both copies must run rules version `lnac-net-7`.
+door breaking and blocking. The road network changes the generated woods, so
+both copies must run rules version `lnac-net-8`.
 Nearby teammates show their names; each survivor keeps their own flashlight,
 limited sight, stamina, inventory and role advantage.
 

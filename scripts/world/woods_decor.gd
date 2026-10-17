@@ -83,6 +83,11 @@ func _draw() -> void:
 		draw_string(ThemeDB.fallback_font, at + Vector2(-38, 32), landmark["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("c2b58b"))
 	for post: Dictionary in woods.signposts:
 		_signpost(post)
+	for lamp: Vector2 in woods.lamps:
+		draw_rect(Rect2(lamp + Vector2(-1, -16), Vector2(3, 18)), Color("4a4438"))
+		draw_rect(Rect2(lamp + Vector2(-4, -20), Vector2(9, 5)), Color("2d2a24"))
+		draw_rect(Rect2(lamp + Vector2(-2, -18), Vector2(5, 2)), Color("f6d58f"))
+		draw_rect(Rect2(lamp + Vector2(-3, 2), Vector2(7, 2)), Color("2f2b23"))
 
 
 func _signpost(post: Dictionary) -> void:

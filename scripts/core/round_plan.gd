@@ -163,7 +163,7 @@ func pack_description(installed: Array[String], phase: int = 3) -> String:
 	for kind in required:
 		if reveal_phase.get(kind, 0) > phase:
 			var due: int = reveal_phase[kind]
-			lines.append("· %s / RANGER RADIO AT %s (%s)" % [kind.replace("_", " ").to_upper(), NightClock.PHASES[due], NightClock.clock_text(NightClock.PHASE_STARTS[due])])
+			lines.append("· %s / RADIO AT %s" % [kind.replace("_", " ").to_upper(), NightClock.clock_text(NightClock.PHASE_STARTS[due])])
 			continue
 		var clue := ""
 		for item in loot:

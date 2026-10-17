@@ -1,5 +1,43 @@
 # Development log
 
+## 2026-10-16 — Overhaul F4a: ring road, spokes and lamps
+
+First half of the map redesign, aimed at the original "puzzling, tedious to
+search" complaint.
+
+- `WoodsLayout._make_roads()` adds a deterministic ring road around camp (cells
+  x16–33 by y17–31). It passes through the village, bog and graveyard. Four
+  straight spokes run from the camp exits to the map edges. It uses no RNG, so
+  every other seeded element is unchanged. Road links are added to the graph and
+  carved 160 px wide (64 px past each end, so road ends meet existing trail
+  squares). Road tiles render as dirt; region clearings keep their own ground.
+- Lamp posts every two cells on the ring and inner spokes (not inside regions;
+  about 33–34 per night) use camp power: they join `camp_lamps`, so blackouts
+  darken them. The outer spokes are unlit logging roads. The field map prints
+  the roads from the start, and the location line reads LIT ROAD, ROAD (POWER
+  OUT) or LOGGING ROAD.
+- Pack radio lines are shortened to `PART / RADIO AT mm:ss` so they no longer run
+  under the field map.
+
+**Regression found and fixed:** the first carve extended roads 80 px past their
+ends. That widened the camp's west exit into a thin wall stub, and the
+expedition bot snagged on the stub's corner. Rather than special-case the bot,
+roads now extend only the trail half-width along their length. The camp edge is
+back to its original solid wall and the unmodified bot completes the
+expedition.
+
+Measured on night 42 (native navigation from camp centre at 70 px/s):
+graveyard 17.5 s, bog 28.0 s, village 30.1 s, mill 40.5 s, orchard 43.7 s,
+chapel 44.9 s, rail 50.1 s, observatory 54.8 s, quarry 69.4 s. Rules
+`lnac-net-8` because generated woods differ from older builds.
+
+**Verification:** `python3 tools/verify.py` 89/89 steps, no errors or warnings
+(new `road_network`: 19 headless / 22 graphical assertions).
+`verify_network.py --mode all`: 2 peers 269 and 4 peers 455 assertions, all
+passing. Evidence: [road network](evidence/road_network/README.md). Not
+verified: human route feel, light performance on slower hardware, other
+platforms.
+
 ## 2026-10-16 — Playtest fixes: knock-overs close the trail; doors close on the run
 
 User playtest feedback, three points:

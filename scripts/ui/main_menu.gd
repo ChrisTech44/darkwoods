@@ -105,11 +105,14 @@ func _build_journal() -> void:
 	heading.text = "CAMP JOURNAL"
 	heading.add_theme_font_size_override("font_size", 14)
 	column.add_child(heading)
-	var body := Label.new()
+	# Scrollable (mouse wheel / arrow keys): the bestiary outgrows one screen.
+	var body := RichTextLabel.new()
 	body.name = "Body"
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.fit_content = false
+	body.scroll_active = true
+	body.focus_mode = Control.FOCUS_ALL
 	body.custom_minimum_size = Vector2(352, 150)
-	body.add_theme_font_size_override("font_size", 6)
+	body.add_theme_font_size_override("normal_font_size", 7)
 	column.add_child(body)
 	var back := Button.new()
 	back.name = "Back"

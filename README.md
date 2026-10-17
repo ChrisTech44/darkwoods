@@ -748,6 +748,29 @@ noticeably bigger than the campers.
 
 ## Screenshots
 
+### New this update (17 October 2026)
+
+Inspection lighting (ambient raised, sight mask off) so the art is readable;
+normal nights are far darker. Captured by `tools/capture_showcase.gd`.
+
+| Signal Fire hold-out | The Groundskeeper and a snare |
+| --- | --- |
+| ![The quarry-rim signal pyre blazing during its 45-second hold-out](docs/screenshots/signal_fire.png) | ![The straw-hatted Groundskeeper beside a steel snare on a walked trail](docs/screenshots/groundskeeper_snare.png) |
+
+| Scout's Mark | Lost Camper |
+| --- | --- |
+| ![The Scout marking a Sasquatch in sight for the team](docs/screenshots/scout_mark.png) | ![A lost camper following the survivor who found them](docs/screenshots/lost_camper.png) |
+
+| The Stalker's Gift | Van finale |
+| --- | --- |
+| ![A pinned gift crate in the Drowned Chapel court](docs/screenshots/stalkers_gift.png) | ![The repaired van running its 20-second departure](docs/screenshots/van_finale.png) |
+
+| Score, awards and badges | Camp Journal |
+| --- | --- |
+| ![Results screen with score, grade, awards, a new badge and the best score](docs/screenshots/results_score.png) | ![Camp Journal with bestiary tips and badges](docs/screenshots/camp_journal.png) |
+
+### The rest of the game
+
 Actual Godot viewport captures with the current SpriteCook art, retaken on
 17 October 2026 (see [screenshot sources](docs/screenshots/README.md)). The camp
 images use Quick Camp. Region and landmark shots deliberately raise ambient

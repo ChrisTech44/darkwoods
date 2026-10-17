@@ -1,7 +1,7 @@
 # README screenshots
 
 Unedited Godot viewport captures used by the main README, retaken on
-17 October 2026 after the SpriteCook art passes. Each file is copied from the
+17 October 2026 after the SpriteCook art passes (again after the fourth art batch). Each file is copied from the
 `artifacts/verification/` (or `artifacts/network/`) capture named below,
 produced by `python3 tools/verify.py --graphical` and
 `python3 tools/verify_network.py --mode all --players 2`.
@@ -24,6 +24,7 @@ produced by `python3 tools/verify.py --graphical` and
 | `item_belt.png` | `item_belt.png` | `content_expansion.gd` |
 | `woods_loading.png` | `woods_loading.png` | `woods_replay.gd` |
 | `woods_playthrough_win.png` | `woods_playthrough_win.png` | `woods_playthrough.gd` |
+| `signal_fire.png`, `groundskeeper_snare.png`, `scout_mark.png`, `stalkers_gift.png`, `lost_camper.png`, `van_finale.png`, `results_score.png`, `camp_journal.png` | `artifacts/showcase/` | `tools/capture_showcase.gd` |
 
 Camp shots use Quick Camp with controlled player placements and the stalker
 paused for inspection. Creature portraits disable AI. Landmark close-ups

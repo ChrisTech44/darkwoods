@@ -181,8 +181,15 @@ func show_result(won: bool, detail: String) -> void:
 	pause_panel.hide()
 	result_panel.show()
 	var column := result_panel.get_child(0)
-	column.get_node("Heading").text = "DAWN AWAITS" if won else "LOST IN THE WOODS"
+	column.get_node("Heading").text = "YOU GOT OUT" if won else "LOST IN THE WOODS"
 	column.get_node("Detail").text = detail
+	# Scores, awards and badges make the summary long: widen and compact it.
+	result_panel.position = Vector2(10, 4)
+	result_panel.size = Vector2(364, 0)
+	column.get_node("Heading").add_theme_font_size_override("font_size", 13)
+	column.get_node("Detail").add_theme_font_size_override("font_size", 7)
+	column.get_node("Detail").custom_minimum_size = Vector2(344, 25)
+	column.add_theme_constant_override("separation", 2)
 	if column.get_node("Restart").disabled:
 		column.get_node("Menu").grab_focus()
 	else:

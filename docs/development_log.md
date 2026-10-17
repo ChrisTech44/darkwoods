@@ -1,5 +1,19 @@
 # Development log
 
+## 2026-10-17 — README screenshots retaken; results and journal panels fit
+
+- Retook every README screenshot with the new art (one graphical suite at a
+  time) and added a "New this update" gallery from the new
+  `tools/capture_showcase.gd`: Signal Fire, Groundskeeper and snare, Scout mark,
+  Lost Camper, Stalker's Gift, van finale, results with score, Camp Journal.
+- The captures exposed two overflow bugs, both fixed: the results panel (score,
+  awards and badges pushed MAIN MENU off-screen) is now wider and compact, with a
+  "YOU GOT OUT" heading now that there is no dawn; the Camp Journal body is a
+  scrollable rich-text box.
+
+**Verification:** `verify.py` 134/134 (two temporary probe scripts removed, one
+capture tool added); all graphical capture suites 0 failures; README links checked.
+
 ## 2026-10-17 — Art pass: no more boxy ground, placeholders or flat roofs
 
 The user asked that every boxy graphic be replaced ("no cheap looking ground")

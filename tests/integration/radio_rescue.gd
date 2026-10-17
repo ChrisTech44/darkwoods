@@ -171,11 +171,18 @@ func _snapshot(label: String, point: Vector2, offset: Vector2, zoom: float) -> v
 	image.save_png("res://artifacts/verification/rescue_%s.png" % label)
 	if label in ["relay", "substation"]:
 		var structures: Node2D = rescue.get_child(0)
+		# Tall props are depth-sorted world sprites (StandingProps): hide those too.
+		var standing: StandingProps = level.get_node("StandingProps")
+		var sprites: Array = standing.props.values().filter(func(entry: Dictionary) -> bool: return entry["canvas"] == structures.get_instance_id()).map(func(entry: Dictionary) -> Sprite2D: return entry["sprite"])
 		structures.hide()
+		for sprite: Sprite2D in sprites:
+			sprite.hide()
 		await process_frame
 		await RenderingServer.frame_post_draw
 		var control := root.get_texture().get_image()
 		structures.show()
+		for sprite: Sprite2D in sprites:
+			sprite.show()
 		var visible_pixels := 0
 		for y in range(40,145):
 			for x in range(384):

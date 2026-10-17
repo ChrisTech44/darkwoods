@@ -95,8 +95,13 @@ static func draw_structure(canvas: Node2D, zone: Dictionary, powered: bool, open
 			PixelArt.draw_standing(canvas,"f5_breaker",at+Vector2(-116,13),32)
 			for side in [-1,1]:
 				PixelArt.draw_standing(canvas,"rail_signal",at+Vector2(side*88,-24),28)
-				canvas.draw_line(at+Vector2(side*105,-24),at+Vector2(side*105,-93),Color("879d89"),4)
-				canvas.draw_rect(Rect2(at+Vector2(side*105-12,-96),Vector2(24,9)),Color("ead8a1") if powered else Color("506b65"))
+				# SpriteCook floodlight posts; the lamp glows when the circuit is live.
+				if PixelArt.draw_standing(canvas,"lamp_post",at+Vector2(side*105,-20),18,80):
+					if powered:
+						canvas.draw_circle(at+Vector2(side*105,-86),6,Color(1.0,0.9,0.6,0.55))
+				else:
+					canvas.draw_line(at+Vector2(side*105,-24),at+Vector2(side*105,-93),Color("879d89"),4)
+					canvas.draw_rect(Rect2(at+Vector2(side*105-12,-96),Vector2(24,9)),Color("ead8a1") if powered else Color("506b65"))
 				if powered and int(pulse*3)%2==0:
 					canvas.draw_circle(at+Vector2(side*88,-65),4,Color("e5ab6f"))
 			if not opened:

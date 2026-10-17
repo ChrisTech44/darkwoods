@@ -40,10 +40,15 @@ func place(canvas: CanvasItem, name: String, texture: Texture2D, base: Vector2, 
 	var size := texture.get_size()
 	node.position = at.round()
 	node.offset = (-Vector2(size.x * 0.5, size.y)).round()
-	node.modulate = modulate_color
+	# Keep the source layer's look: e.g. the escape structures are unshaded
+	# night silhouettes whose brightness depends on power and flashlights.
+	node.material = canvas.material
+	node.modulate = modulate_color * canvas.self_modulate
 	node.visible = true
 	node.set_meta("prop", name)
 	entry["touched"] = frame
+	# Silhouette layers (z >= 100) rise above the sight mask; keep that height.
+	entry["z"] = canvas.z_index
 
 
 func _process(delta: float) -> void:
@@ -58,9 +63,16 @@ func _process(delta: float) -> void:
 			continue
 		# A tall prop standing in front of your survivor turns see-through.
 		var behind := false
+		var in_front := false
 		if focus != null and sprite.texture != null:
 			var area := Rect2(sprite.position + sprite.offset, sprite.texture.get_size())
 			var feet: Vector2 = focus.global_position
-			behind = feet.y < sprite.position.y and area.grow(-2).has_point(feet + Vector2(0, -10)) and area.size.y > 24
+			var overlapping := area.grow(-2).has_point(feet + Vector2(0, -10)) or area.grow(-2).has_point(feet + Vector2(0, -24))
+			behind = feet.y < sprite.position.y and overlapping and area.size.y > 24
+			in_front = feet.y >= sprite.position.y and overlapping
+		# Silhouettes stay above the sight mask unless your survivor stands in
+		# front of them, when depth order puts the survivor on top.
+		var layer_z: int = entry.get("z", 0)
+		sprite.z_index = 0 if layer_z < 100 or in_front else layer_z
 		var target := 0.42 if behind else 1.0
 		sprite.self_modulate.a = move_toward(sprite.self_modulate.a, target, delta * 4.0)

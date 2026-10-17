@@ -1,5 +1,27 @@
 # Development log
 
+## 2026-10-17 — Ranger checkpoint and escape screenshots refreshed
+
+The user noticed the ranger checkpoint screenshot looked hand-drawn. It was a
+stale capture from the previous session, and the live gate still drew its two
+floodlight posts as plain lines (the open barrier arm already used the
+SpriteCook sprite). The posts are now the SpriteCook lamp post with a glow
+when the circuit is powered. All 13 boat, gate and radio screenshots used in the
+README and guides were retaken from the current build.
+
+Retaking them exposed a regression from the depth-sorting change: the radio
+mast, substation and other escape structures are drawn on a silhouette layer
+above the sight mask, and their new world sprites had lost that (the mast
+vanished into the dark). `StandingProps` now copies the layer's material and
+brightness and keeps silhouette sprites above the mask, dropping them into depth
+order only while your survivor stands in front of and overlapping them. The
+radio readability test also hides the new sprites in its control frame.
+One graphical field-escapes run showed five lake/boat timing failures that did
+not reproduce (headless and a repeat graphical run both passed).
+
+**Verification:** `verify.py` 137/137; graphical `field_escapes` and
+`radio_rescue` captures 0 failures; `verify_network.py --players 2` (below).
+
 ## 2026-10-17 — Heartbeat replaces the monster readouts
 
 Per the user: no on-screen indication of which monster is nearby or which is

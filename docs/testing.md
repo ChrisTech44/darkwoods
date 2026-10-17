@@ -462,4 +462,3 @@ Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tes
 thud, wood_falling, the radio broadcast, a call per species, decoded gain
 staging for all 23 cues). `network_peer.gd` checks that a host-opened gate and
 its nav link replicate.
-

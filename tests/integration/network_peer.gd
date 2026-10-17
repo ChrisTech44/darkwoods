@@ -300,7 +300,8 @@ func _host() -> void:
 	harness.advance.rpc("board")
 	if not await _reports(peers-1): return
 	_check(level.van.passengers.size()==peers-1,"living_survivors_board_while_teammate_downed")
-	if not await _until(func(): return level.finished,12): return
+	# Expedition departures are a 20 s hold-out (Quick Camp: 8 s).
+	if not await _until(func(): return level.finished,25): return
 	_check(level.won and net.actors.values().all(func(actor): return actor.status==CampPlayer.Status.ESCAPED),"van_escape_also_rescues_downed_teammate")
 	harness.advance.rpc("result")
 	if not await _reports(peers-1): return

@@ -51,7 +51,7 @@ static func capture(net: Node) -> Dictionary:
 		entities[entity.get_meta("network_id")]=row
 	return {"players":players,"enemies":enemies,"items":items,"sites":sites,"entities":entities,
 		"van":{"installed":level.van.installed,"progress":level.van.start_progress,"running":level.van.running,"remaining":level.van.remaining},
-		"escapes":level.escapes.snapshot(),"rescue":level.rescue.snapshot(),"pins":level.pins,"clues":level.clues,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"props":level.props.snapshot(),"abilities":level.abilities.snapshot(),"awards":level.awards_text,"revive":level.revive_progress,"finished":level.finished,"won":level.won,"escape_route":level.escape_route,"message":level.message,"message_time":level.message_time}
+		"escapes":level.escapes.snapshot(),"rescue":level.rescue.snapshot(),"pins":level.pins,"clues":level.clues,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"props":level.props.snapshot(),"abilities":level.abilities.snapshot(),"signal":level.signal_fire.snapshot(),"awards":level.awards_text,"revive":level.revive_progress,"finished":level.finished,"won":level.won,"escape_route":level.escape_route,"message":level.message,"message_time":level.message_time}
 
 static func apply(net: Node, state: Dictionary) -> void:
 	var level: Node2D=net.world
@@ -150,6 +150,7 @@ static func apply(net: Node, state: Dictionary) -> void:
 	level.escapes.restore(state["escapes"])
 	level.props.restore(state["props"])
 	level.abilities.restore(state.get("abilities", {}))
+	level.signal_fire.restore(state.get("signal", {}))
 	level.awards_text=state.get("awards", "")
 	level.revive_progress=state["revive"]
 	level.message=state["message"]

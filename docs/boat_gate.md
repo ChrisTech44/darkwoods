@@ -1,7 +1,8 @@
 # Boat, Ranger Gate and F5 art polish
 
-Woods Expedition now offers **Van, Radio Rescue, Boat and Ranger Gate**. All four
-are available; the first completed extraction ends the round. Boat and Gate
+Woods Expedition offers the **Van plus one rumoured escape per night** (Radio
+Rescue, Boat, Ranger Gate or, since F5c, Signal Fire); see the README. Tests use
+`--all-escapes` to enable every escape on one seed. When offered, the first completed extraction ends the round. Boat and Gate
 launch/open as soon as they are prepared (no clock gate). Quick Camp is unchanged.
 Press **T** to cycle objective pages; **Tab** closes field notes. Human pacing
 tests remain deferred by the user. This slice does not claim all of F5 is done:

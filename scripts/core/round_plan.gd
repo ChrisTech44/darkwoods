@@ -21,6 +21,13 @@ const REGION_POOL := {"NORTH": [0, 5], "EAST": [1, 6], "SOUTH": [2, 8], "WEST": 
 var cache_zone: Dictionary = {}
 var cache_direction: Dictionary = {}
 var gate_regions: Dictionary = {}
+## F5c: tonight's escapes. The van always, plus one rumoured secondary chosen by seed.
+const SECONDARY_ESCAPES: Array[String] = ["radio", "boat", "gate", "signal"]
+const ESCAPE_NAMES := {"van": "THE CAMP VAN", "radio": "RADIO RESCUE", "boat": "THE LAKESHORE BOAT", "gate": "THE RANGER GATE", "signal": "THE SIGNAL FIRE"}
+## Test fixtures set this (launch flag --all-escapes) to exercise every escape on one seed.
+static var force_all_escapes := false
+var escape_options: Array[String] = ["van"]
+var signal_regions: Dictionary = {}
 
 
 func generate(value: int, mode: String) -> void:
@@ -36,6 +43,8 @@ func generate(value: int, mode: String) -> void:
 	cache_zone.clear()
 	cache_direction.clear()
 	gate_regions.clear()
+	signal_regions.clear()
+	escape_options.assign(["van"])
 	required.assign(["battery", "fuel", "key"])
 	var rng := RandomNumberGenerator.new()
 	rng.seed = value + 771
@@ -80,11 +89,16 @@ func generate(value: int, mode: String) -> void:
 	_add("battery_pack", Vector2(168, 356), "CAMPSITE", false)
 	_add_spare_tools(value, battery_pool)
 	_add_notes()
+	_choose_escapes(value)
 	# Separate objective/tool inventory, never a belt slot or a van component.
-	_add("rescue_fuse", woods.zones[3]["position"] + Vector2(76, 88), "FLOODED MILL / EMERGENCY FUSE", false)
-	for index in range(3):
-		_add("flare", woods.zones[8]["position"] + Vector2(-76 + index * 18, 230), "CHAPEL / RESCUE SIGNAL STASH", false)
+	# The substation fuse powers both the radio relay and the gate floodlights.
+	if has_escape("radio") or has_escape("gate"):
+		_add("rescue_fuse", woods.zones[3]["position"] + Vector2(76, 88), "FLOODED MILL / EMERGENCY FUSE", false)
+	if has_escape("radio"):
+		for index in range(3):
+			_add("flare", woods.zones[8]["position"] + Vector2(-76 + index * 18, 230), "CHAPEL / RESCUE SIGNAL STASH", false)
 	_add_field_escapes(value)
+	_add_signal_fire(value)
 	_schedule_night(value)
 	for item in loot:
 		# Keep ordinary seeded supplies off the new solid lake banks.
@@ -263,10 +277,57 @@ func region_name(kind: String) -> String:
 	return WoodsLayout.short_name(woods.zones[cache_zone[kind]]) if cache_zone.has(kind) else ""
 
 
+func has_escape(id: String) -> bool:
+	return id in escape_options
+
+
+## One rumoured secondary escape per night (separate RNG: other content unchanged).
+func _choose_escapes(value: int) -> void:
+	if force_all_escapes:
+		escape_options.assign(["van"] + SECONDARY_ESCAPES)
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = value + 4242
+	escape_options.assign(["van", SECONDARY_ESCAPES[rng.randi_range(0, SECONDARY_ESCAPES.size() - 1)]])
+
+
+func rumour_text() -> String:
+	var others: Array[String] = []
+	for id in escape_options:
+		if id != "van":
+			others.append(ESCAPE_NAMES[id])
+	return " / ".join(others)
+
+
+## Signal Fire: two kerosene cans and a flare gun from three directions; the pyre
+## stands on the White Stone Quarry rim (zone 7).
+func _add_signal_fire(value: int) -> void:
+	if not has_escape("signal"):
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = value + 6363
+	var pools := [[0, 5], [1, 6], [2, 8]]
+	var kinds := ["kerosene_1", "kerosene_2", "flare_gun"]
+	for index in range(3):
+		var region: int = pools[index][rng.randi_range(0, 1)]
+		signal_regions[kinds[index]] = region
+		_add(kinds[index], woods.zones[region]["position"] + Vector2(112, -140), WoodsLayout.short_name(woods.zones[region]), false)
+
+
 func _add_field_escapes(value: int) -> void:
+	if not has_escape("boat") and not has_escape("gate"):
+		return
+	if not has_escape("boat"):
+		_add_gate_codes(value)
+		return
 	_add("outboard_motor", woods.zones[11]["position"] + Vector2(-70,48), "WEST / LOGGING CAMP", false)
 	_add("boat_fuel", woods.zones[6]["position"] + Vector2(-92,72), "EAST / RAIL YARD", false)
 	_add("drain_plug", woods.zones[5]["position"] + Vector2(-96,96), "NORTH / OBSERVATORY", false)
+	if has_escape("gate"):
+		_add_gate_codes(value)
+
+
+func _add_gate_codes(value: int) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = value + 8181
 	for index in range(3):

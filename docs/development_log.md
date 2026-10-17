@@ -1,5 +1,28 @@
 # Development log
 
+## 2026-10-17 — F5c Signal Fire, rumoured escapes and the van finale
+
+- **One rumoured escape per night.** `RoundPlan.escape_options` is the van plus
+  one seeded secondary (Radio Rescue, Boat, Ranger Gate or the new Signal Fire).
+  Only tonight's parts spawn (the substation fuse appears for radio or gate,
+  which share it). The Dusk message names the rumour and T cycles tonight's plans
+  only. Absent escapes have no prompts, progress or extraction. Fixtures and
+  network peers pass `--all-escapes` to exercise every escape on one seed.
+- **Signal Fire.** Two kerosene cans and a flare gun in three directions (seeded
+  among village/observatory, bog/rail yard, graveyard/chapel), carried without
+  belt slots to a pyre on the White Stone Quarry rim. Lighting starts a 45s
+  hold-out: a big firelight, a 1,500 px beacon and the stalker called from
+  anywhere, repeating every 6s. Standing survivors in the 110 px ring are
+  rescued with downed teammates. Counts as escape progress; replicated.
+- **Van finale.** Expedition departures take 20s (Quick Camp stays 8s); the
+  engine start calls the stalker and roars to 1,200 px, then revs every 5s.
+- Fixed a voice robustness bug found by the network run: speaker routing could
+  assign a just-freed survivor to a typed variable at round end.
+
+**Verification:** `signal_fire.gd` 25 checks; `verify.py` 123/123;
+`verify_network.py` woods 236 and camp 133 assertions, 0 failures (the boarding
+wait now allows the 20s departure); `verify_voice.py` passes.
+
 ## 2026-10-17 — F6a Roles 2.0: abilities, item passing, team hooks, awards
 
 - New `SurvivorAbilities` node (host-validated, replicated): X uses the role's

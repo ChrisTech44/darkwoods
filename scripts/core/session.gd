@@ -5,6 +5,7 @@ var notice := ""
 var survivor: String = "jock"
 
 func _ready() -> void:
+	RoundPlan.force_all_escapes = "--all-escapes" in OS.get_cmdline_user_args()
 	var saved := ConfigFile.new()
 	if saved.load("user://survivor.cfg") == OK:
 		survivor = SurvivorRoster.valid(str(saved.get_value("player", "role", "jock")))

@@ -562,3 +562,17 @@ H hands one flare only to an adjacent teammate; the Jock hauls the motor at full
 walk, the Quiet Kid leaves no blood, two survivors restart the generator
 quietly while one is loud; awards appear on the results screen.
 `network_peer.gd` adds a guest Jury-Rig accepted by the host and replicated.
+
+## Signal Fire, rumoured escapes and the van finale (overhaul F5c)
+
+`tests/integration/signal_fire.gd` (in `verify.py`) checks that across 40 seeds
+each night offers the van plus exactly one secondary, all four secondaries
+rotate, only tonight's escape parts (and the shared fuse for radio/gate) spawn,
+Signal Fire parts sit in three different regions, and the choice is
+reproducible; Quick Camp stays van-only. With `--all-escapes` it walks the full
+Signal Fire chain (reachable pyre and parts, no belt slots, ready pyre brings
+the Witching Hour, lighting draws the stalker, 45s hold-out, escape from the
+ring), the 20s expedition van departure whose start and revs call creatures,
+and then, on a real Signal Fire seed, that absent escapes have no prompts, the
+Dusk message names the rumour and T shows the pyre plan. `radio_rescue.gd`,
+`field_escapes.gd` and all network peers run with `--all-escapes`.

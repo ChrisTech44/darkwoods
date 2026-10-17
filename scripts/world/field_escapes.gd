@@ -9,6 +9,9 @@ const OPEN_SECONDS := 4.0
 const LAKE_TIMES: Array[float] = [20.0, 12.0, 4.0]
 var level: Node2D
 var active := false
+## Tonight's field escapes (see RoundPlan.escape_options).
+var boat_enabled := false
+var gate_enabled := false
 var boat_point := Vector2.ZERO
 var gate_point := Vector2.ZERO
 var breaker_point := Vector2.ZERO
@@ -34,7 +37,9 @@ var pulse := 0.0
 var alarm_clock := 0.0
 
 func _ready() -> void:
-	active = level.plan.expedition
+	boat_enabled = level.plan.expedition and level.plan.has_escape("boat")
+	gate_enabled = level.plan.expedition and level.plan.has_escape("gate")
+	active = boat_enabled or gate_enabled
 	if not active:
 		return
 	boat_point = level.plan.woods.zones[12]["position"] + Vector2(0,-95)
@@ -78,12 +83,14 @@ func near(actor: CampPlayer, point: Vector2) -> bool:
 func prompt(actor: CampPlayer) -> String:
 	if not active:
 		return ""
-	if near(actor, boat_point):
+	if boat_enabled and near(actor, boat_point):
 		if boat_started:
 			return "BOAT %.1fs · STAY ON DOCK / DODGE RIPPLE CIRCLES" % boat_remaining
 		if boat_installed.size() < 3:
 			return "E · FIT MOTOR / BOAT FUEL / DRAIN PLUG (%d/3)" % boat_installed.size()
 		return "E · START 25s LAUNCH / GATHER TEAM"
+	if not gate_enabled:
+		return ""
 	if near(actor, breaker_point):
 		return "FLOODLIGHTS ON · GATE ALARM DRAWS THE STALKER" if gate_powered else "E · POWER FLOODLIGHTS / NEED NORTH SUBSTATION"
 	if near(actor, gate_point):
@@ -101,7 +108,7 @@ func prompt(actor: CampPlayer) -> String:
 func interact(actor: CampPlayer) -> bool:
 	if not active or not level.rescue.authority() or level.paused or level.finished:
 		return false
-	if near(actor, boat_point):
+	if boat_enabled and near(actor, boat_point):
 		if boat_started:
 			return true
 		var count := _install(actor, BOAT_PARTS, boat_installed)
@@ -114,6 +121,8 @@ func interact(actor: CampPlayer) -> bool:
 			level.announce("BOAT LAUNCH IN 25s. Everyone standing: reach the dock. Dodge glowing ripples or interrupt them with a flare!")
 			return true
 		level.announce(prompt(actor), actor)
+		return false
+	if not gate_enabled:
 		return false
 	if near(actor, breaker_point):
 		if gate_powered:
@@ -196,7 +205,7 @@ func _assistance() -> void:
 				break
 
 func advance_gate(actor: CampPlayer, delta: float) -> void:
-	if not active or not level.rescue.authority() or level.paused or level.finished or gate_open:
+	if not active or not gate_enabled or not level.rescue.authority() or level.paused or level.finished or gate_open:
 		return
 	if actor == null or not near(actor,gate_point) or not gate_powered or gate_installed.size() != 3:
 		gate_progress = 0
@@ -260,8 +269,8 @@ func heading() -> String:
 		return "RANGER GATE OPEN · RUN NORTH TO THE BRIDGE"
 	return ""
 
-func pack_text(page: int) -> String:
-	if page == 2:
+func pack_text(page: String) -> String:
+	if page == "boat":
 		var text := "BOAT · LAKESHORE BOATHOUSE SOUTHEAST\n"
 		for kind in BOAT_PARTS:
 			text += ("✓ " if kind in boat_installed else "· ") + kind.replace("_"," ").to_upper() + " / " + {"outboard_motor":"LOGGING CAMP WEST", "boat_fuel":"RAIL YARD EAST", "drain_plug":"OBSERVATORY NORTH"}[kind] + "\n"
@@ -285,11 +294,13 @@ func restore(state: Dictionary) -> void:
 func _draw() -> void:
 	if not active:
 		return
-	FieldEscapeArt.draw_boat(self,boat_point,boat_installed,boat_started,pulse)
-	draw_arc(boat_point,80,0,TAU,48,Color("b6c6a0"),1)
+	if boat_enabled:
+		FieldEscapeArt.draw_boat(self,boat_point,boat_installed,boat_started,pulse)
+		draw_arc(boat_point,80,0,TAU,48,Color("b6c6a0"),1)
 	if lake_tell > 0 or lake_flash > 0:
 		var tint := Color("c2e0b1") if lake_tell > 0 else Color("edc08b")
 		draw_arc(lake_target,26+sin(pulse*10)*2,0,TAU,32,tint,2)
 		draw_arc(lake_target,18,0,TAU,24,Color("689c93"),2)
 		FieldEscapeArt.draw_lake_thing(self,lake_target + Vector2(0,-10),lake_flash>0)
-	draw_arc(bridge,64,0,TAU,40,Color("bfd5b9"),2)
+	if gate_enabled:
+		draw_arc(bridge,64,0,TAU,40,Color("bfd5b9"),2)

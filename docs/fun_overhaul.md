@@ -297,7 +297,11 @@ already has ENet authority), logged and pushed before the next one starts.
    Logging Camp, Boathouse, 25s Lake Thing launch; Ranger Gate with three regional
    code fragments, floodlights, 4s opening hold and north bridge run)*: Signal Fire,
    revised van finale, primary/rumoured-secondary selection and broader escape-chain
-   rotation still pending. See [radio rules](radio_rescue.md) and [Boat/Gate rules](boat_gate.md).
+   rotation still pending. **F5c implemented (17 October):** Signal Fire (two kerosene
+   cans + flare gun from three directions, quarry-rim pyre, 45s beacon hold-out),
+   the revised van finale (20s expedition departure with engine-rev beacons) and
+   one rumoured secondary escape per night beside the van (only its parts spawn).
+   See [radio rules](radio_rescue.md) and [Boat/Gate rules](boat_gate.md).
 6. **F6 Roles 2.0 and co-op actions** *(F6a implemented: six active abilities on
    X, item passing on H, Jock heavy haul, Scout free clue, Quiet no blood, quiet
    two-person generator restart, awards. Ghost wisps deferred: no mid-round

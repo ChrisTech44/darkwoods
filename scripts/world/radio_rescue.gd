@@ -7,6 +7,8 @@ const ZONE_RADIUS := 96.0
 const SOCKET_OFFSETS: Array[Vector2] = [Vector2(-65, 32), Vector2(65, 32), Vector2(0, -65)]
 var level: Node2D
 var active := false
+## Relay/landing only on radio nights; the substation also powers the Ranger Gate.
+var relay_enabled := false
 var powered := false
 var transmitted := false
 var signals: Array[bool] = [false, false, false]
@@ -24,7 +26,8 @@ var noise_clock := 0.0
 
 
 func _ready() -> void:
-	active = level.plan.expedition
+	relay_enabled = level.plan.expedition and level.plan.has_escape("radio")
+	active = level.plan.expedition and (relay_enabled or level.plan.has_escape("gate"))
 	if not active:
 		return
 	power_point = level.plan.woods.zones[9]["position"] + Vector2(0, 48)
@@ -66,6 +69,8 @@ func prompt(actor: CampPlayer) -> String:
 		return ""
 	if near(actor, power_point):
 		return "SUBSTATION ONLINE · RELAY STATION EAST" if powered else "E · FIT EMERGENCY FUSE (FLOODED MILL)"
+	if not relay_enabled:
+		return ""
 	if near(actor, relay_point):
 		if transmitted:
 			return "DISTRESS SENT · SIGNAL LANDING ZONE SOUTH OF CHAPEL"
@@ -92,8 +97,10 @@ func interact(actor: CampPlayer) -> bool:
 		actor.inventory.erase("rescue_fuse")
 		powered = true
 		level.loud_noise(power_point, 750)
-		level.announce("Rescue circuit restored. Transmit from the East Relay Station and light three chapel signals.")
+		level.announce("Rescue circuit restored. Transmit from the East Relay Station and light three chapel signals." if relay_enabled else "Substation restored. The Ranger Gate breaker can now power its floodlights.")
 		return true
+	if not relay_enabled:
+		return false
 	if near(actor, relay_point):
 		level.announce(prompt(actor), actor)
 		return powered
@@ -121,6 +128,8 @@ func interact(actor: CampPlayer) -> bool:
 
 func advance(delta: float) -> void:
 	if not active or not authority() or level.paused or level.finished:
+		return
+	if not relay_enabled:
 		return
 	var net: Node = get_node("/root/Net")
 	var actor: CampPlayer
@@ -190,7 +199,7 @@ func heading() -> String:
 
 
 func show_in_pack(_actor: CampPlayer) -> bool:
-	return pack_selected
+	return pack_selected and relay_enabled
 
 
 func pack_text() -> String:
@@ -212,6 +221,8 @@ func restore(state: Dictionary) -> void:
 
 func _draw() -> void:
 	if not active:
+		return
+	if not relay_enabled:
 		return
 	var tint := Color("e1c28b") if transmitted else Color("8a9b86")
 	draw_arc(landing, ZONE_RADIUS, 0, TAU, 64, tint, 2)

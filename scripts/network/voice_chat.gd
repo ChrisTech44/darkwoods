@@ -295,9 +295,9 @@ func _route(peer: int) -> String:
 	var net: Node = get_node("/root/Net")
 	if net.world == null or not is_instance_valid(net.world):
 		return "global"
-	var speaker: CampPlayer = net.actors.get(peer)
-	var listener: CampPlayer = net.actors.get(multiplayer.get_unique_id())
-	if speaker == null or not is_instance_valid(speaker) or listener == null or not is_instance_valid(listener):
+	var speaker: Variant = net.actors.get(peer)
+	var listener: Variant = net.actors.get(multiplayer.get_unique_id())
+	if not is_instance_valid(speaker) or not is_instance_valid(listener):
 		return "none"
 	return route_between(listener, speaker)
 
@@ -321,7 +321,9 @@ static func route_for(listener_status: int, listener_at: Vector2, speaker_status
 
 func _update_speakers() -> void:
 	var net: Node = get_node("/root/Net")
-	var listener: CampPlayer = net.actors.get(multiplayer.get_unique_id()) if _session_live() else null
+	# Actors are freed when a round ends: never hold a freed instance in a typed var.
+	var found: Variant = net.actors.get(multiplayer.get_unique_id()) if _session_live() else null
+	var listener: CampPlayer = found if is_instance_valid(found) else null
 	for peer: int in _speakers.keys():
 		var speaker: Dictionary = _speakers[peer]
 		var player: AudioStreamPlayer2D = speaker["player"]
@@ -331,7 +333,8 @@ func _update_speakers() -> void:
 			_speakers.erase(peer)
 			continue
 		var route := _route(peer)
-		var actor: CampPlayer = net.actors.get(peer)
+		var other: Variant = net.actors.get(peer)
+		var actor: CampPlayer = other if is_instance_valid(other) else null
 		var camera := get_viewport().get_camera_2d()
 		var here: Vector2 = camera.get_screen_center_position() if camera != null else Vector2.ZERO
 		player.volume_db = -80.0 if route == "none" else 0.0

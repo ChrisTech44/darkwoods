@@ -100,10 +100,13 @@ static func phase_for(value: float) -> int:
 ## Best fraction of any escape's preparation steps the team has secured (0–1).
 func progress() -> float:
 	var best: float = level.van.installed.size() / float(maxi(1, level.plan.required.size()))
-	if level.rescue != null and level.rescue.active:
+	if level.signal_fire != null:
+		best = maxf(best, level.signal_fire.progress())
+	if level.rescue != null and level.rescue.relay_enabled:
 		best = maxf(best, (int(level.rescue.powered) + int(level.rescue.transmitted) + level.rescue.signals.count(true)) / 5.0)
-	if level.escapes != null and level.escapes.active:
+	if level.escapes != null and level.escapes.boat_enabled:
 		best = maxf(best, level.escapes.boat_installed.size() / 3.0)
+	if level.escapes != null and level.escapes.gate_enabled:
 		best = maxf(best, (level.escapes.gate_installed.size() + int(level.escapes.gate_powered)) / 4.0)
 	return best
 

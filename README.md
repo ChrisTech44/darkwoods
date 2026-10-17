@@ -244,6 +244,12 @@ Quick Camp stays a short mode with no night clock.
 
 ## How to escape
 
+**Each Woods Expedition night offers two ways out: the camp van, plus one
+rumoured escape** (Radio Rescue, the Boat, the Ranger Gate or the Signal Fire),
+chosen by the night's seed. The Dusk message names the rumour, and **T** cycles
+through tonight's plans only; parts for other escapes do not appear. Whichever
+escape finishes first ends the round.
+
 1. **Prepare in camp.** Check **Tab** for component clues. In Woods Expedition,
    find reusable **boltcutters** (Maintenance, or a second pair in a woods
    toolbox) or the noisy **crowbar** (a bunk cabin) before opening locked caches.
@@ -255,8 +261,11 @@ Quick Camp stays a short mode with no night clock.
    components. You can make several trips; all required parts must be installed.
 4. **Hold E for two seconds (1.5s as Grease Monkey)** at the rear to start the repaired van. Letting go
    or moving out of range resets the start hold.
-5. **Stay aboard.** Starting automatically seats the driver. The van departs
-   after **eight seconds**, and passengers are safe inside.
+5. **Stay aboard.** Starting automatically seats the driver. In Quick Camp the
+   van departs after **eight seconds**. On an expedition the engine roar is a
+   finale: departure takes **20 seconds**, the engine revs every 5 seconds, and
+   every creature in earshot (and the stalker, from anywhere) comes for the van.
+   Passengers are safe inside; everyone else must get aboard in time.
 
 Living survivors board with **E beside the running van**; standing nearby does
 not count. Downed survivors are rescued automatically when at least one passenger
@@ -265,7 +274,8 @@ use host-only placements for isolated authority checks; human co-op balance is
 still unrecorded.
 
 A round is won when at least one living passenger escapes, a standing survivor
-is rescued from the radio landing circle, boat dock or ranger bridge. The results report your own outcome too; living
+is rescued from the radio landing circle, boat dock, ranger bridge or signal
+fire ring. The results report your own outcome too; living
 survivors left outside are left behind.
 
 ### Radio Rescue (Woods Expedition)
@@ -302,6 +312,16 @@ field notes. Quick Camp keeps its van-only escape.
 | ![Powered substation at night](docs/screenshots/rescue_substation.png) | ![Relay mast, ladder and transmitter at night](docs/screenshots/rescue_relay.png) |
 
 ![Three permanent signals around the chapel rescue circle](docs/screenshots/rescue_landing.png)
+
+### Signal Fire (Woods Expedition)
+
+On Signal Fire nights, **T** names three regions (one each to the north, east and
+south) holding **two kerosene cans and a flare gun**. They use no belt slot. Carry
+them to the **signal pyre on the White Stone Quarry rim** and press **E** to fit
+them, then **E** again to light it. The blaze starts a **45-second hold-out**: it
+lights up the quarry and beacons every creature in the woods toward the fire,
+pulsing every 6 seconds. Standing survivors inside the **fire ring (110 px)** when
+the rescue plane passes are recovered, along with any downed teammates.
 
 ### Boat and Ranger Gate (Woods Expedition)
 

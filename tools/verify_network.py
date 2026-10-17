@@ -13,7 +13,7 @@ def run_case(mode,players,graphical=False):
         cmd=[engine,'--path',str(ROOT),'--audio-driver','Dummy','--script','res://tests/integration/network_peer.gd']
         if not graphical:cmd.insert(1,'--headless')
         else:cmd[1:1]=['--position',f'{index*600},40','--resolution','576x324']
-        cmd+=['--','--side',side,'--mode',mode,'--port',str(port),'--peers',str(players),'--index',str(index)]
+        cmd+=['--','--all-escapes','--side',side,'--mode',mode,'--port',str(port),'--peers',str(players),'--index',str(index)]
         if graphical:cmd+=['--capture']
         process=subprocess.Popen(cmd,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT)
         running.append((name,process,path,cmd))

@@ -6,6 +6,7 @@ var checks := 0
 var failures := 0
 var side := "host"
 var port := 28311
+var heard_peak := 0.0
 
 
 func _initialize() -> void:
@@ -53,9 +54,15 @@ func _run() -> void:
 	started = Time.get_ticks_msec()
 	while voice.decoded_frames(other) < 30 * voice.FRAME and Time.get_ticks_msec() - started < 4000:
 		await process_frame
+	# The audio mixer must actually output it (TwoVoIP playback starts paused).
+	started = Time.get_ticks_msec()
+	while Time.get_ticks_msec() - started < 1500:
+		heard_peak = maxf(heard_peak, voice.output_peak(other))
+		await process_frame
 	var decoded: int = voice.decoded_frames(other)
 	_check(voice.received_packets >= 30 and decoded >= 30 * voice.FRAME, side + "_decoded_%d_frames_from_peer" % decoded)
 	_check(voice.rejected_packets == 0, side + "_no_rejected_packets")
+	_check(heard_peak > 0.05, side + "_peer_voice_reaches_the_mixer_peak_%.2f" % heard_peak)
 	print(JSON.stringify({"event": "voice_stats", "side": side, "sent": voice.sent_packets, "received": voice.received_packets, "decoded": decoded}))
 	await create_timer(1.0).timeout
 	await _round_checks(net, voice, other)

@@ -1,5 +1,24 @@
 # Development log
 
+## 2026-10-17 — Voice fix: received voice was decoded but never played
+
+The user tested two local sessions with the mic on: audio was picked up but
+nothing was heard. Cause (in our code, not their setup): TwoVoIP's
+`AudioStreamPlaybackOpus` starts paused at an end mark (`bufferstreamend = 0`),
+and `VoiceChat` never called `mark_end_opus_stream(true)`, so decoded voice sat
+in a paused buffer and the mixer output exact silence. The old tests only
+counted decoded frames. Fix: clear the mark once the jitter buffer is queued
+(per utterance). Lobby voices are now centred on the screen rather than placed
+at the world origin, so they play at full level without a camera.
+
+The two-process test now samples the mixer's output peak for the other peer:
+on the old code it was **0.00** (the user's symptom); with the fix **0.07**
+(the synthetic tone is partly suppressed by RNNoise, as noise). Human listening
+on real hardware is still the final check.
+
+**Verification:** `verify_voice.py` passes (codec 25 checks, host and client
+round trip with output peak); `verify.py` 137/137.
+
 ## 2026-10-17 — Ranger checkpoint and escape screenshots refreshed
 
 The user noticed the ranger checkpoint screenshot looked hand-drawn. It was a

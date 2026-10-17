@@ -236,6 +236,7 @@ func accept_packet(peer: int, stream: int, seq: int, packet: PackedByteArray) ->
 		speaker["next"] = seq
 		speaker["buffer"] = []
 		speaker["primed"] = false
+		speaker["released"] = false
 	speaker["last"] = now
 	if seq < speaker["next"]:
 		return false
@@ -256,7 +257,19 @@ func accept_packet(peer: int, stream: int, seq: int, packet: PackedByteArray) ->
 	for queued: PackedByteArray in speaker["buffer"]:
 		speaker["decoded"] += maxi(0, playback.push_opus_packet(queued, 0, 0))
 	speaker["buffer"] = []
+	# TwoVoIP playback starts paused at an end mark; clear it once audio is
+	# queued or the decoded voice is never mixed (silent but "received").
+	if not speaker.get("released", false):
+		playback.mark_end_opus_stream(true)
+		speaker["released"] = true
 	return true
+
+
+## Loudest sample the mixer has recently output for `peer` (0 when paused/silent).
+func output_peak(peer: int) -> float:
+	if not _speakers.has(peer) or _speakers[peer]["playback"] == null:
+		return 0.0
+	return _speakers[peer]["playback"].get_chunk_max()
 
 
 func decoded_frames(peer: int) -> int:
@@ -336,7 +349,7 @@ func _update_speakers() -> void:
 		var other: Variant = net.actors.get(peer)
 		var actor: CampPlayer = other if is_instance_valid(other) else null
 		var camera := get_viewport().get_camera_2d()
-		var here: Vector2 = camera.get_screen_center_position() if camera != null else Vector2.ZERO
+		var here: Vector2 = camera.get_screen_center_position() if camera != null else get_viewport().get_visible_rect().get_center()
 		player.volume_db = -80.0 if route == "none" else 0.0
 		player.global_position = actor.global_position if route == "proximity" and actor != null and is_instance_valid(actor) else here
 		player.bus = "VoiceMuffled" if route == "proximity" and listener != null and actor != null and _occluded(listener, actor) else "Voice"

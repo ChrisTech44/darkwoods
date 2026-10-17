@@ -179,6 +179,8 @@ the project.
 `voice_peer.gd` in two processes over ENet (lobby exchange: 73 packets each way,
 about 70,000 decoded frames per side; then a real Quick Camp round: positional
 voice from the teammate's survivor, silence beyond range, ghosts isolated from
-the living; 7 client + 12 host checks). **Not verified:** a real microphone and a
-human listening test. The unattended probe could not answer macOS's microphone
+the living; 7 client + 12 host checks). 17 October: a user test found received
+voice was silent (playback started paused); fixed, and the two-process test now
+checks the mixer's actual output level. **Not verified:** a human listening test
+after the fix. The unattended probe could not answer macOS's microphone
 permission dialog, and cross-machine Internet latency was not measured.

@@ -298,7 +298,10 @@ already has ENet authority), logged and pushed before the next one starts.
    code fragments, floodlights, 4s opening hold and north bridge run)*: Signal Fire,
    revised van finale, primary/rumoured-secondary selection and broader escape-chain
    rotation still pending. See [radio rules](radio_rescue.md) and [Boat/Gate rules](boat_gate.md).
-6. **F6 Roles 2.0 and co-op actions**: active abilities, item passing, heavy
+6. **F6 Roles 2.0 and co-op actions** *(F6a implemented: six active abilities on
+   X, item passing on H, Jock heavy haul, Scout free clue, Quiet no blood, quiet
+   two-person generator restart, awards. Ghost wisps deferred: no mid-round
+   spectators exist under current rules)*: active abilities, item passing, heavy
    items, two-person actions, ghost wisps, awards.
 7. **F7 Killers and modifiers**: stalker tiers and sabotage, first new headline
    killer, night modifiers.

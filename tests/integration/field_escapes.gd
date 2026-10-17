@@ -24,6 +24,8 @@ func _run() -> void:
 	quit(0 if failures==0 else 1)
 
 func _load_round() -> void:
+	# Not the Jock: the motor-carry checks need the ordinary 75% heavy walk.
+	root.get_node("Session").survivor="mechanic"
 	root.get_node("Session").mode="woods"
 	root.get_node("Session").next_seed=42
 	change_scene_to_file("res://scenes/world/forest_level.tscn")

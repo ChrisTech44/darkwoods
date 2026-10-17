@@ -60,7 +60,7 @@ func _add_building(building: CampBuilding, camp_map: CampMap) -> void:
 	occluder.occluder = polygon
 	occluder.visible = false
 	body.add_child(occluder)
-	doors.append({"rect": building.door_rect, "body": body, "open": true, "progress": 0.0, "broken": 0.0, "label": building.label})
+	doors.append({"rect": building.door_rect, "body": body, "open": true, "progress": 0.0, "broken": 0.0, "barricade": 0.0, "label": building.label})
 
 
 func _add_woods(woods: WoodsLayout, seed_value: int) -> void:
@@ -289,7 +289,8 @@ func advance(delta: float) -> void:
 			continue
 		var at: Vector2 = spots[actor.hidden_spot]["position"]
 		var threatened := enemies.any(func(enemy: CampKiller) -> bool: return enemy.enabled and enemy.global_position.distance_to(at) <= BREATH_THREAT)
-		actor.breath = clampf(actor.breath + (-BREATH_DRAIN if threatened else BREATH_RECOVER) * delta, 0.0, 1.0)
+		var drain := BREATH_DRAIN * (0.5 if actor.silent() else 1.0)
+		actor.breath = clampf(actor.breath + (-drain if threatened else BREATH_RECOVER) * delta, 0.0, 1.0)
 		if actor.breath <= 0.0:
 			leave(actor)
 			actor.breath = 0.35
@@ -311,6 +312,7 @@ func advance(delta: float) -> void:
 		witnesses[spot_index] = kept
 	for door in doors:
 		door["broken"] = maxf(0.0, door["broken"] - delta)
+		door["barricade"] = maxf(0.0, door["barricade"] - delta)
 		if door["open"]:
 			continue
 		var center: Vector2 = door["rect"].get_center()
@@ -319,7 +321,8 @@ func advance(delta: float) -> void:
 			if enemy.enabled and enemy.stun_remaining <= 0.0 and door["rect"].grow(DOOR_REACH + 2.0).has_point(enemy.global_position):
 				pushers.append(enemy)
 				enemy.stuck_clock = 0.0
-		var pushing := not pushers.is_empty()
+		# A jury-rigged barricade holds while it lasts; pushing makes no progress.
+		var pushing: bool = not pushers.is_empty() and door["barricade"] <= 0.0
 		door["progress"] = door["progress"] + delta if pushing else maxf(0.0, door["progress"] - delta * 0.5)
 		if door["progress"] >= DOOR_BREAK_SECONDS:
 			door["open"] = true
@@ -553,7 +556,7 @@ func _draw_rails(rect: Rect2, wood: Color, latched: bool) -> void:
 func snapshot() -> Dictionary:
 	var door_rows := []
 	for door in doors:
-		door_rows.append([door["open"], door["progress"], door["broken"]])
+		door_rows.append([door["open"], door["progress"], door["broken"], door["barricade"]])
 	var knock_rows := []
 	for knock in knocks:
 		knock_rows.append([knock["state"], knock["remaining"], knock["rect"]])
@@ -574,6 +577,7 @@ func restore(state: Dictionary) -> void:
 		door["open"] = row[0]
 		door["progress"] = row[1]
 		door["broken"] = row[2]
+		door["barricade"] = row[3] if row.size() > 3 else 0.0
 	for index in range(mini(knocks.size(), state["knocks"].size())):
 		var row: Array = state["knocks"][index]
 		var knock: Dictionary = knocks[index]
@@ -618,6 +622,10 @@ func _draw() -> void:
 			for x in range(int(rect.position.x) + 4, int(rect.end.x), 6):
 				draw_line(Vector2(x, rect.position.y), Vector2(x, rect.end.y), Color("8c6a45"))
 			draw_rect(Rect2(rect.end.x - 6, rect.get_center().y - 1, 2, 2), Color("d6c08a"))
+			if door["barricade"] > 0.0:
+				# Jury-rigged planks across the door.
+				draw_line(rect.position + Vector2(1, 1), rect.end - Vector2(1, 1), Color("a98252"), 2)
+				draw_line(Vector2(rect.position.x + 1, rect.end.y - 1), Vector2(rect.end.x - 1, rect.position.y + 1), Color("a98252"), 2)
 		elif door["broken"] > 0.0:
 			for index in range(4):
 				draw_line(rect.position + Vector2(index * 7, 2), rect.position + Vector2(index * 7 + 5, rect.size.y), Color("5a4430"), 2)

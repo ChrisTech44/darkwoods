@@ -109,7 +109,7 @@ the in-game map still reveals only explored trails.
 ![Seed 42 atlas with fourteen regions](screenshots/full_map.png)
 
 Host authority covers parts, assistance, attacks, gates, holds, countdowns and
-results under `lnac-net-12`. See [execution evidence](evidence/boat_gate/README.md)
+results under `lnac-net-12` (now `lnac-net-13`). See [execution evidence](evidence/boat_gate/README.md)
 and [multiplayer setup](multiplayer_guide.md). Automated fixtures use placements
 and accelerated clock/countdown tails. They do not prove normal-speed human
 balance, real cross-machine Internet or Windows/Linux/export behavior. No

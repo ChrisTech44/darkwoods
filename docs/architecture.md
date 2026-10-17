@@ -397,7 +397,7 @@ regions 11–13 without changing earlier region IDs/cache pools. `RoundPlan` use
 a separate RNG for three regional gate fragments and adds unique boat parts.
 All parts stay in objective inventory. Host input chooses a single gate operator;
 progress resets on operator changes. `WorldSync` captures both route states,
-fixed lake tells, lamp/arm state, and carry assistance flags. Rules are `lnac-net-12`.
+fixed lake tells, lamp/arm state, and carry assistance flags. Rules are `lnac-net-13` (17 October: progress pacing, abilities, marks, awards).
 A rising gate flag disables its layer-8 body on all peers; surrounding paths
 remain connected. Boathouse water strips are layer-1 geometry in native bake,
 collision, shadow and sight. Seeded supplies landing there move to dry shore.

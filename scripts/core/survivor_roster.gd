@@ -4,12 +4,12 @@ extends RefCounted
 const IDS: Array[String] = ["jock", "mechanic", "scout", "medic", "quiet", "quartermaster"]
 const NAMES := ["THE JOCK", "GREASE MONKEY", "THE SCOUT", "FIRST-AID KID", "THE QUIET KID", "OVERPREPARED"]
 const DETAILS := [
-	"5s sprint stamina (baseline 4s).\nSame speed and recovery. Run between cover.",
-	"Engine start 1.5s (baseline 2s).\n+1 spare battery. Bring every part home.",
-	"Light drain 0.8/s (baseline 1/s).\n+1 ration. Read trails before moving.",
-	"Medkit revive 2.25s (baseline 3s).\n+1 medkit, +1 flare. No self-revive.",
-	"Sprint hearing reach x0.75.\nSight unchanged. Break sight, then walk.",
-	"+1 flare, +1 battery, +1 ration.\nFinite supplies. Leave room for discoveries."
+	"5s sprint stamina (baseline 4s).\nX SECOND WIND: full stamina + faster\nsprint, once each night phase.",
+	"Engine start 1.5s, +1 spare battery.\nX JURY-RIG (2/night): barricade a door\n8s or restart dead power quietly.",
+	"Light drain 0.8/s, +1 ration.\nX MARK: tag a creature, cache or site\nyou can see for the team (30s).",
+	"Medkit revive 2.25s, +1 medkit/flare.\nX PATCH (2/night): heal a wound on\nyou or a teammate, no medkit.",
+	"Sprint hearing reach x0.75.\nX HOLD BREATH: 6s silent steps and\nslow breath when hidden (45s).",
+	"+1 flare, +1 battery, +1 ration.\nX UNPACK (1/night): drop a stash of\nfour supplies for the team."
 ]
 
 static func valid(id: String) -> String:

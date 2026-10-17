@@ -25,14 +25,21 @@ preview, saved choice, Random Survivor and Settings. The Jock has 5s stamina;
 Grease Monkey starts the engine in 1.5s; Scout saves light; First-Aid Kid rescues
 faster; Quiet Kid reduces sprint hearing; Overprepared starts with extra supplies.
 
-| Survivor | Advantage | Survival tip |
-| --- | --- | --- |
-| **The Jock** | 5s sprint stamina instead of 4s; unchanged speed/recovery | Save the longer burst for reaching cover. |
-| **Grease Monkey** | 1.5s engine ignition instead of 2s; +1 spare battery | Bring all parts home before starting; departure still takes 8s. |
-| **The Scout** | Woods light drain 0.8 charge/s instead of 1; +1 ration | Stretch batteries on long trips; beam range stays unchanged. |
-| **First-Aid Kid** | Medkit teammate revive 2.25s instead of 3s; +1 medkit and +1 flare | Extra flare helps solo; the revive bonus needs a teammate. No self-revive. |
-| **The Quiet Kid** | Sprint AI hearing reach ×0.75 after weather | Walk after breaking sight. Interactions and flare noise keep their normal reach. |
-| **Overprepared** | +1 flare, +1 spare battery and +1 ration | Use the extra margin to explore, then keep room for rare tools. |
+Every survivor also has one **active ability on X** and a **team bonus**.
+
+| Survivor | Advantage | Ability (X) | Team bonus |
+| --- | --- | --- | --- |
+| **The Jock** | 5s sprint stamina instead of 4s | **Second Wind**: full stamina and +10% sprint for 2s; once per night phase | Hauls the heavy boat motor alone at full walking pace. |
+| **Grease Monkey** | 1.5s engine ignition; +1 spare battery | **Jury-Rig** (2 per night): shut and barricade the nearest cabin door for 8s (nothing can push through), or restart the dead generator silently | |
+| **The Scout** | Light drain 0.8/s; +1 ration | **Mark** (30s cooldown): tag the creature, locked cache or site you are facing and can see, for the whole team, for 6s | Starts the night knowing one extra part's region. |
+| **First-Aid Kid** | Medkit revive 2.25s; +1 medkit, +1 flare | **Patch** (2 per night): heal your own or an adjacent teammate's wound without a medkit | |
+| **The Quiet Kid** | Sprint hearing reach ×0.75 | **Hold Breath** (45s cooldown): 6s of silent sprinting; breath lasts twice as long while hidden | Leaves no blood trail while wounded. |
+| **Overprepared** | +1 flare, +1 battery, +1 ration | **Unpack** (once per night): drop a stash of flare, battery, rations and medkit for anyone | |
+
+**H** hands one of your held supply to a teammate standing right beside you.
+Two survivors at the dead generator restart it quietly; alone it roars.
+At the end of a night the results screen hands out **awards** such as *Never
+Left Behind*, *Most Flares Wasted*, *Bait*, *Pack Mule* and *Show-Off*.
 
 Your choice is remembered. **Random Survivor** reveals a role before confirmation;
 it is independent of **Random Night**. All roles can collect every part and escape.
@@ -349,6 +356,8 @@ round. Quick Camp keeps its original van-only rules.
 | **C** | Eat rations to restore stamina |
 | **M** | Drop a team map pin where you stand (newest three kept) |
 | **B** (hold) | Push to talk, when voice is set to push-to-talk in co-op |
+| **X** | Use your survivor's ability |
+| **H** | Hand the held supply to an adjacent teammate |
 | **Tab** | Toggle pack, objective clues, and field map |
 | **Esc** | Solo: pause/resume. Co-op: local menu; the shared world continues. |
 

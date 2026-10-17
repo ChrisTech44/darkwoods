@@ -36,6 +36,9 @@ var objective_page := 0
 var escapes: FieldEscapes
 var rescue: RadioRescue
 var props: ChaseProps
+var abilities: SurvivorAbilities
+## End-of-night award titles (host computes, clients receive in snapshots).
+var awards_text := ""
 ## Team-wide clue chain per locked-cache part: 0 direction, 1 region named, 2 cache found.
 var clues: Dictionary = {}
 const PINS_PER_PLAYER := 3
@@ -47,6 +50,12 @@ func _ready() -> void:
 	plan.generate(session.begin_run(), session.mode)
 	for kind: String in plan.cache_zone:
 		clues[kind] = 1 if kind == "fuel" else 0
+	# The Scout read the trail maps before dark: one extra part's region is known.
+	if session.survivor == "scout":
+		for kind: String in plan.cache_zone:
+			if clues[kind] == 0:
+				clues[kind] = 1
+				break
 	if plan.expedition:
 		message = "DUSK. Camp corkboard: fuel is at the %s. Ranger notes on the roads name the rest." % plan.region_name("fuel")
 	world_objects = Node2D.new()
@@ -116,6 +125,10 @@ func _ready() -> void:
 	props.name = "ChaseProps"
 	props.level = self
 	add_child(props)
+	abilities = SurvivorAbilities.new()
+	abilities.name = "Abilities"
+	abilities.level = self
+	add_child(abilities)
 	night_clock = NightClock.new()
 	night_clock.name = "NightClock"
 	night_clock.level = self
@@ -212,6 +225,7 @@ func _process(_delta: float) -> void:
 		if not post.is_empty() and sight.can_see(post["position"]):
 			hud.location_label.text = WoodsLayout.signpost_text(post)
 	hud.supplies_label.text = "LIGHT %ds / FLARES %d" % [int(player.flashlight_charge), player.supplies["flare"]] if plan.expedition else "QUICK CAMP"
+	hud.ability_label.text = abilities.status_text(player) + " · H GIVE" if player.status == CampPlayer.Status.ALIVE else ""
 	for enemy: CampKiller in get_tree().get_nodes_in_group("cryptids"):
 		if player.global_position.distance_to(enemy.global_position) < 180 and sight.can_see(enemy.global_position):
 			hud.threat_label.text = enemy.species.replace("_", " ").to_upper() + " NEARBY"
@@ -375,6 +389,7 @@ func advance_revive(actor: CampPlayer, target: CampPlayer, holding: bool, delta:
 		if kit:
 			actor.supplies["medkit"] -= 1
 			actor.tidy_belt()
+		abilities.stat(actor)["revives"] += 1
 		target.set_status(CampPlayer.Status.ALIVE)
 		revive_target = null
 		revive_progress = 0.0
@@ -605,7 +620,6 @@ func near_generator(actor: CampPlayer) -> bool:
 	return night_clock.blackout and actor.global_position.distance_to(night_clock.generator_point()) <= config.interact_radius * 1.5 and clear_path(actor.global_position, night_clock.generator_point())
 
 
-## First light: the ranger patrol reaches camp. Survivors in camp or aboard are rescued.
 func missing_parts() -> Array[String]:
 	var missing: Array[String] = []
 	for part in plan.required:
@@ -635,7 +649,9 @@ func finish_round(success: bool, detail: String) -> void:
 		enemy.enabled = false
 	for hazard in get_tree().get_nodes_in_group("hazards"):
 		hazard.set_physics_process(false)
-	hud.show_result(success, detail + "\nNight %d / %s" % [plan.seed_value, plan.weather])
+	var titles := abilities.awards()
+	awards_text = ("\n" + "\n".join(titles)) if not titles.is_empty() else ""
+	hud.show_result(success, detail + "\nNight %d / %s" % [plan.seed_value, plan.weather] + awards_text)
 	print(JSON.stringify({"event": "round_finished", "won": success, "result": detail}))
 
 
@@ -667,6 +683,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		if event.physical_keycode == KEY_V:
 			use_supply(player, player.held_item())
+			return
+		if event.physical_keycode == KEY_X:
+			abilities.use(player)
+			return
+		if event.physical_keycode == KEY_H:
+			abilities.give(player)
 			return
 	if event.is_action_pressed("pause"):
 		paused = not paused
@@ -738,6 +760,7 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 	if paused or finished or actor.status != CampPlayer.Status.ALIVE or not actor.is_in_group("survivors") or actor.supplies.get(kind, 0) <= 0:
 		return false
 	if kind == "flare":
+		abilities.stat(actor)["flares"] += 1
 		var flare := preload("res://scripts/items/flare.gd").new()
 		var target := actor.global_position + actor.facing * 28
 		flare.position = target if clear_path(actor.global_position, target) else actor.global_position
@@ -883,6 +906,7 @@ func spawn_dropped(kind: String, at: Vector2) -> CampPickup:
 func on_survivor_downed(actor: CampPlayer) -> void:
 	if get_node("/root/Net").active and not multiplayer.is_server(): return
 	drop_all_items(actor)
+	abilities.stat(actor)["downs"] += 1
 	announce("Survivor down! Gear dropped nearby. Hold E beside them to revive (a medkit is faster).")
 
 

@@ -157,8 +157,15 @@ func restart_generator(actor: CampPlayer) -> bool:
 	if not blackout:
 		return false
 	blackout = false
+	# Two-person action: one cranks while the other resets the breaker, so the
+	# restart is clean and quiet. Alone, it coughs and roars.
+	for other: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if other != actor and other.status == CampPlayer.Status.ALIVE and other.global_position.distance_to(generator_point()) <= 40.0:
+			level.announce("Crank and breaker together: the generator hums back quietly.")
+			print(JSON.stringify({"event": "night_generator", "time": int(elapsed), "actor": actor.peer_name, "team": true}))
+			return true
 	level.loud_noise(generator_point(), 450)
-	level.announce("Generator roars back to life. Camp lights are on, and the woods heard it.")
+	level.announce("Generator roars back to life. Camp lights are on, and the woods heard it. (Two survivors restart it quietly.)")
 	print(JSON.stringify({"event": "night_generator", "time": int(elapsed), "actor": actor.peer_name}))
 	return true
 
@@ -220,6 +227,8 @@ func _reveal(up_to: int) -> Array[String]:
 
 
 func _enter_phase(next: int) -> void:
+	if level.abilities != null:
+		level.abilities.on_phase()
 	var revealed := _reveal(next)
 	var drop: Vector2 = level.plan.camp.remap(Vector2(1304, 312))
 	var index := 0

@@ -19,6 +19,8 @@ var belt_icons: Array[TextureRect] = []
 var supplies_label: Label
 ## Proximity voice: who is talking nearby, and your own mic state.
 var voice_label: Label
+## F6 active ability state, e.g. "X MARK READY · H GIVE".
+var ability_label: Label
 
 
 func _ready() -> void:
@@ -59,6 +61,8 @@ func _ready() -> void:
 	threat_label = _label(Vector2(190, 25), Vector2(185, 14), 9)
 	threat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	threat_label.add_theme_color_override("font_color", Color("e7aa83"))
+	ability_label = _label(Vector2(9, 33), Vector2(180, 10), 7)
+	ability_label.add_theme_color_override("font_color", Color("c9d7a4"))
 	voice_label = _label(Vector2(190, 37), Vector2(185, 10), 7)
 	voice_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	voice_label.add_theme_color_override("font_color", Color("a9c8d6"))

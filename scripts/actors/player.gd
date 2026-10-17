@@ -58,10 +58,15 @@ var assisting_motor := false
 var vault_time: float = 0.0
 const BARRIER_LAYER := 8
 var breath: float = 1.0
+## F6 active ability state (see SurvivorAbilities).
+var ability_charges: int = 0
+var ability_cooldown: float = 0.0
+var ability_active: float = 0.0
 
 
 func _ready() -> void:
 	apply_role()
+	SurvivorAbilities.setup(self)
 	sheet = load("res://assets/sprites/survivor_" + role + ".png")
 	stamina = config.stamina_max
 	flashlight_charge = config.flashlight_capacity
@@ -129,7 +134,10 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 	else:
 		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery)
 	velocity = movement * (config.sprint_speed * (WOUNDED_SPRINT if wounded else 1.0) if sprinting else config.walk_speed)
-	if heavy and not motor_assisted:
+	if role == "jock" and ability_active > 0.0 and sprinting:
+		velocity *= SurvivorAbilities.SECOND_WIND_SPEED
+	# The Jock hauls heavy objectives alone at full walking pace.
+	if heavy and not motor_assisted and role != "jock":
 		velocity *= 0.75
 	if hex_remaining > 0:
 		velocity *= 0.6
@@ -137,21 +145,27 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 	move_and_slide()
 	var distance := position.distance_to(previous)
 	stride += distance
-	if wounded:
+	if wounded and role != "quiet":
 		# A short-lived trail: the newest drops show where a wounded survivor went.
+		# The Quiet Kid binds wounds tight and leaves none.
 		blood_distance += distance
 		if blood_distance >= 18.0:
 			blood_distance = 0.0
 			blood.append(global_position.round())
 			if blood.size() > 14:
 				blood.pop_front()
-	if sprinting and distance > 0.1:
+	if sprinting and distance > 0.1 and not silent():
 		noise_clock -= delta
 		if noise_clock <= 0.0:
 			noise_clock = config.sprint_noise_interval
 			sprint_noise_emitted.emit(global_position)
 	else:
 		noise_clock = 0.0
+
+
+## The Quiet Kid holding their breath makes no footstep noise for monsters.
+func silent() -> bool:
+	return role == "quiet" and ability_active > 0.0
 
 
 func receive_hit() -> void:

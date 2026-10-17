@@ -66,8 +66,14 @@ Avoid adding a timer shortcut that makes the van depart before teammates board.
 
 ## Roles 2.0: active abilities and team play
 
-Planned for overhaul slice **F6** ([overhaul plan](fun_overhaul.md)); not
-implemented. Current stat bonuses rarely change decisions. Each role keeps a
+**F6a implemented (17 October 2026):** every active ability below, item passing
+(H), the Jock/Scout/Quiet team hooks, a two-person quiet generator restart and
+end-of-night awards; see the README and `tests/integration/roles_abilities.gd`.
+Not implemented: Mechanic workbench/hotwire, First-Aid long-range pings, the
+seventh belt slot, unlockable roles, and **ghost wisps**. Wisps have no use under
+current rules: the first extraction ends the round and downs never become
+deaths, so no player is a spectator while others still play.
+Original planning notes (overhaul slice **F6**, [overhaul plan](fun_overhaul.md)): Current stat bonuses rarely change decisions. Each role keeps a
 small passive and gains **one active ability** (new `ability` action, proposed
 default **X**) with a cooldown or per-night charges, plus a **team hook** that is
 useful with friends but never required. Values are starting proposals.

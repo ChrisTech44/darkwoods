@@ -1,5 +1,31 @@
 # Development log
 
+## 2026-10-17 — F6a Roles 2.0: abilities, item passing, team hooks, awards
+
+- New `SurvivorAbilities` node (host-validated, replicated): X uses the role's
+  ability. Jock **Second Wind** (stamina + 10% sprint 2s, once per phase),
+  Grease Monkey **Jury-Rig** (2/night: barricade a door 8s so pushing makes no
+  progress, or silently restart dead power; the generator takes priority during
+  a blackout), Scout **Mark** (30s cooldown; tags the creature/cache/site faced and
+  in clear sight for 6s; never an unseen one), First-Aid Kid **Patch** (2/night,
+  self or adjacent teammate, no medkit), Quiet Kid **Hold Breath** (6s silent
+  sprinting, half breath drain hidden; 45s), Overprepared **Unpack** (once: four
+  supplies on the ground for the team).
+- H hands one held supply to an adjacent standing teammate with belt room.
+- Team hooks: Jock hauls the motor at full walk; Scout starts knowing one extra
+  part's region; Quiet Kid leaves no blood; two survivors restart the generator
+  quietly (solo stays loud). Barricaded doors show crossed planks.
+- Host-tracked stats give results-screen awards (Never Left Behind, Most Flares
+  Wasted, Bait, Hid In A Locker For Two Minutes, Pack Mule, Always Gets Caught,
+  Show-Off), replicated to clients. Selection cards and HUD show each ability.
+- Rules `lnac-net-13`. Ghost wisps deferred: under current rules nobody is a
+  spectator while the round continues.
+
+**Verification:** `roles_abilities.gd` 33 checks; `verify.py` 120/120;
+`verify_network.py --players 2` 369 assertions, 0 failures, including a guest
+Jury-Rig accepted by the host and replicated. The boat test now runs as Grease
+Monkey, since the Jock no longer slows down with the motor.
+
 ## 2026-10-17 — Opt-in proximity voice chat (TwoVoIP)
 
 The user cloned TwoVoIP into the project and asked for proximity chat, tested if

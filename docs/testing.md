@@ -548,3 +548,17 @@ then ready up into a Quick Camp round where the host checks positional playback
 from the teammate's survivor, silence beyond 420 px, and ghost isolation.
 Logs and `summary.json` go to `artifacts/voice/`. A real microphone needs a
 person to approve the macOS permission dialog once, so it is not automated.
+
+## Roles 2.0 abilities (overhaul F6a)
+
+`tests/integration/roles_abilities.gd` (in `verify.py`) checks every role has an
+ability; Second Wind refills stamina, adds 10% sprint, is spent until the next
+phase and shows on the HUD; Jury-Rig barricades a door that a pushing stalker
+cannot break until it expires, restarts dead power, and has two charges; Mark
+tags a creature in sight, has a 30s cooldown, fades after 6s and never tags an
+unseen creature; Patch heals a teammate and self with two charges; Hold Breath
+silences sprint noise and has a 45s cooldown; Unpack drops four supplies once;
+H hands one flare only to an adjacent teammate; the Jock hauls the motor at full
+walk, the Quiet Kid leaves no blood, two survivors restart the generator
+quietly while one is loud; awards appear on the results screen.
+`network_peer.gd` adds a guest Jury-Rig accepted by the host and replicated.

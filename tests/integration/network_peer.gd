@@ -109,6 +109,16 @@ func _host() -> void:
 	if not await _reports(peers-1): return
 	_check(level.pins.size()==1 and level.pins[0]["owner"]==guest,"guest_pin_accepted_by_host")
 	for report: Dictionary in harness.reports.values(): _check(report.get("pin",false),"guest_pin_replicated_to_clients")
+	# F6 ability: a guest's X is a host-validated intent; its charge replicates.
+	var rigger: CampPlayer=net.actors[guest]
+	var rig_spot: Vector2=rigger.position
+	level.night_clock.blackout=true
+	rigger.position=level.night_clock.generator_point()
+	harness.advance.rpc("ability",{"guest":guest})
+	if not await _reports(peers-1): return
+	_check(not level.night_clock.blackout and rigger.ability_charges==1,"guest_ability_accepted_by_host")
+	for report: Dictionary in harness.reports.values(): _check(report.get("ability",false),"guest_ability_state_replicated")
+	rigger.position=rig_spot
 	# A guest's flash is a host-validated intent; the stun replicates to every peer.
 	var flasher: CampPlayer=net.actors[guest]
 	flasher.facing=Vector2.RIGHT
@@ -431,6 +441,10 @@ func _client() -> void:
 				var night_ok: bool=net.world.night_clock.phase==1 and fuel.available and fuel.visible and net.world.hud.title.text.contains("NIGHTFALL") and net.world.clues.get(harness.data["note"],0)==1
 				if not night_ok: print(JSON.stringify({"event":"night_replica","phase":net.world.night_clock.phase,"elapsed":net.world.night_clock.elapsed,"fuel":fuel.available,"visible":fuel.visible,"title":net.world.hud.title.text}))
 				harness.report.rpc_id(1,handled,{"night":night_ok})
+			"ability":
+				if mine==harness.data["guest"]: net.action("ability")
+				await _until(func(): return net.actors[harness.data["guest"]].ability_charges==1 and not net.world.night_clock.blackout,5)
+				harness.report.rpc_id(1,handled,{"ability":net.actors[harness.data["guest"]].ability_charges==1 and not net.world.night_clock.blackout})
 			"map_pin":
 				if mine==harness.data["guest"]: net.action("pin")
 				await _until(func(): return net.world.pins.size()==1,5)

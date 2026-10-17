@@ -242,14 +242,14 @@ func _draw() -> void:
 		draw_set_transform(Vector2(10, -2), -PI * 0.5)
 		draw_texture_rect_region(sheet, Rect2(-12, -29, 24, 32), Rect2(0, 0, 24, 32), Color.WHITE if status == Status.DOWNED else Color("738080"))
 		draw_set_transform(Vector2.ZERO)
-		if status == Status.DOWNED:
+		if status == Status.DOWNED and not PixelArt.draw_in(self, "fx_help", Rect2(-6, -26, 12, 12)):
 			draw_line(Vector2(-2, -12), Vector2(2, -12), Color("ecd6a0"), 2)
 			draw_line(Vector2(0, -14), Vector2(0, -10), Color("ecd6a0"), 2)
 		return
 	draw_texture_rect_region(sheet, Rect2(-12, -29, 24, 32), Rect2(frame * 24, row * 32, 24, 32))
 	if "outboard_motor" in inventory:
 		PixelArt.draw_in(self,"outboard_motor",Rect2(-20,-18,14,20))
-	if wounded:
+	if wounded and not PixelArt.draw_in(self, "fx_blood_trail", Rect2(-5, -15, 9, 7), Color(1, 1, 1, 0.85)):
 		draw_rect(Rect2(-4, -14, 3, 3), Color("a8322c"))
 		draw_rect(Rect2(2, -9, 2, 2), Color("8c2a25"))
 	if flash_time > 0.0:
@@ -257,14 +257,10 @@ func _draw() -> void:
 		var reach := facing * 90 + Vector2(0, -12)
 		draw_colored_polygon(PackedVector2Array([Vector2(0, -12), reach + spread, reach - spread]), Color(1, 0.98, 0.85, flash_time / 0.18 * 0.55))
 	if not held_item().is_empty() and facing.y >= -0.5:
-		# A small held supply at the SpriteCook figures' hand; hidden in the back view.
-		var hand := Vector2(6 if facing.x >= 0 else -9, -11)
-		var colors := {"flare":"d58460", "battery_pack":"9bb5ad", "rations":"d1ae72", "medkit":"e5dfc2", "noise_tin":"a5b9bd", "salt_ward":"ded9bb", "glow_moss":"a6d99a"}
-		draw_rect(Rect2(hand - Vector2(0.5, 0.5), Vector2(4, 5)), Color(0.08, 0.08, 0.07))
-		draw_rect(Rect2(hand, Vector2(3, 4)), Color(colors.get(held_item(), "e1c47c")))
-		draw_line(hand, hand + Vector2(2, 0), Color("fff0ba"))
-		if held_item() == "medkit":
-			draw_rect(Rect2(hand + Vector2(1, 1), Vector2(1, 2)), Color("b56051"))
+		# The held supply's own SpriteCook icon at the figure's hand; hidden in the back view.
+		var hand := Vector2(5 if facing.x >= 0 else -11, -14)
+		if not PixelArt.draw_in(self, held_item(), Rect2(hand, Vector2(7, 7))):
+			draw_rect(Rect2(hand, Vector2(3, 4)), Color("e1c47c"))
 	if ward_remaining > 0:
 		draw_arc(Vector2.ZERO, 12, 0, TAU, 20, Color("ded9b2"), 1)
 

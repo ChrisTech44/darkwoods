@@ -37,4 +37,5 @@ func _physics_process(delta: float) -> void:
 func _draw() -> void:
 	for index in range(5):
 		draw_circle(-direction * index * 4, 3 - index * 0.4, Color(0.62, 0.5, 0.8, 0.8 - index * 0.14))
-	draw_rect(Rect2(-2, -2, 4, 4), Color("e2d3f3"))
+	if not PixelArt.draw_in(self, "fx_hex", Rect2(-6, -6, 12, 12)):
+		draw_rect(Rect2(-2, -2, 4, 4), Color("e2d3f3"))

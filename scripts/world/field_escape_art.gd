@@ -101,6 +101,8 @@ static func draw_structure(canvas: Node2D, zone: Dictionary, powered: bool, open
 					canvas.draw_circle(at+Vector2(side*88,-65),4,Color("e5ab6f"))
 			if not opened:
 				PixelArt.draw_standing(canvas,"f5_gate",at+Vector2(0,-12),166)
+			elif PixelArt.draw_standing(canvas,"barrier_raised",at+Vector2(-62,-14),44):
+				pass
 			else:
 				var start := at+Vector2(-78,-28)
 				var end := start+Vector2(12,-120)

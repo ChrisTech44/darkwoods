@@ -226,9 +226,10 @@ func _draw() -> void:
 		return
 	var tint := Color("e1c28b") if transmitted else Color("8a9b86")
 	draw_arc(landing, ZONE_RADIUS, 0, TAU, 64, tint, 2)
-	for side in [-1, 1]:
-		draw_line(landing + Vector2(side * 20, -27), landing + Vector2(side * 20, 27), tint, 4)
-	draw_line(landing + Vector2(-20, 0), landing + Vector2(20, 0), tint, 4)
+	if not PixelArt.draw_in(self, "helipad", Rect2(landing - Vector2(40, 26), Vector2(80, 50))):
+		for side in [-1, 1]:
+			draw_line(landing + Vector2(side * 20, -27), landing + Vector2(side * 20, 27), tint, 4)
+		draw_line(landing + Vector2(-20, 0), landing + Vector2(20, 0), tint, 4)
 	for index in range(3):
 		var at := landing + SOCKET_OFFSETS[index]
 		draw_circle(at, 10, Color("182c2c"))

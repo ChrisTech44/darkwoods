@@ -15,6 +15,14 @@ const GRIDS := {
 		"helicopter", "apple_tree", "trellis", "mossy_log", "tire_stack", "drum_side", "cooler", "glow_mushrooms"],
 	"ground_decals_sheet": ["decal_grass_tall", "decal_grass_short", "decal_fern", "decal_clover", "decal_rock", "decal_pebbles", "decal_mossy_stone", "decal_root",
 		"decal_leaves", "decal_needles", "decal_puddle", "decal_flowers", "decal_mushrooms", "decal_dry_grass", "decal_weeds", "decal_branch"],
+	"world_objects_sheet": ["fence_h", "fence_v", "gate_closed", "gate_open", "door_closed", "door_broken", "woodpile_fallen", "rail_track",
+		"helipad", "barrier_raised", "abandoned_car", "scarecrow", "fire_pit", "totem", "fallen_tree", "torn_tent"],
+	"forest_dressing_sheet": ["rock_formation", "ferns", "berry_bush", "fairy_ring", "hollow_log", "hunting_stand", "missing_poster", "cooking_pot",
+		"broken_canoe", "old_bench", "birdhouse", "bone_pile", "standing_stones", "bicycle", "lantern_post_old", "forest_shrine"],
+	"effects_sheet": ["fx_flare", "fx_blood", "fx_blood_trail", "fx_tin", "fx_hex", "fx_thorns", "fx_pin", "fx_help",
+		"fx_mark", "fx_ripple", "fx_ember", "fx_footprints", "fx_stun", "fx_alert", "fx_suspicion", "fx_skull"],
+	"ui_sheet": ["ui_panel", "ui_slot", "ui_slot_selected", "ui_button", "ui_button_hover", "ui_map", "ui_compass", "ui_battery",
+		"sky_campfire", "sky_bell", "sky_dome", "sky_bog", "sky_mast", "sky_signal", "ui_badge", "ui_plaque"],
 }
 ## Extra copies for objective kinds that share one picture.
 const ALIASES := {"kerosene_2": "kerosene_1"}

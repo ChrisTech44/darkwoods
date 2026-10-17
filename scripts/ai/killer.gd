@@ -147,6 +147,10 @@ func stun(seconds: float) -> bool:
 func draw_stun(top: float) -> void:
 	if stun_remaining <= 0.0:
 		return
+	if PixelArt.fit("fx_stun", Vector2(16, 12)) != null:
+		var wobble := Vector2(sin(stun_remaining * 9.0) * 3.0, 0)
+		PixelArt.draw_in(self, "fx_stun", Rect2(Vector2(-8, top - 8) + wobble, Vector2(16, 12)))
+		return
 	for index in range(3):
 		var at := Vector2.from_angle(index * TAU / 3 + stun_remaining * 6) * 7 + Vector2(0, top)
 		draw_rect(Rect2(at - Vector2.ONE, Vector2(3, 3)), Color("f3e7a8"))
@@ -264,4 +268,8 @@ func _draw() -> void:
 	elif state in [State.INVESTIGATE, State.SEARCH]:
 		cue = "?"
 		color = Color("dfc18e")
-	draw_string(ThemeDB.fallback_font, Vector2(-3, -48), cue, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)
+	# SpriteCook alert / suspicion bubbles; a quiet patrol shows nothing.
+	var bubble := "fx_alert" if state == State.CHASE else ("fx_suspicion" if state in [State.INVESTIGATE, State.SEARCH] else "")
+	if bubble.is_empty() or not PixelArt.draw_in(self, bubble, Rect2(-6, -60, 12, 13)):
+		if cue != ".":
+			draw_string(ThemeDB.fallback_font, Vector2(-3, -48), cue, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)

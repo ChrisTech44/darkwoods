@@ -19,11 +19,26 @@ func _initialize() -> void:
 		var used := region.get_used_rect()
 		figures.append(region.get_region(used))
 		factor = minf(factor, minf(float(FRAME.y - 1) / used.size.y, float(FRAME.x - 1) / used.size.x))
+	# Optional mid-stride edit of the same grid: real walk frames instead of a bob.
+	var strides: Array[Image] = []
+	var stride_path := ProjectSettings.globalize_path(SHEET.replace("_sheet.png", "_stride_sheet.png"))
+	if FileAccess.file_exists(stride_path):
+		var stride_source := Image.load_from_file(stride_path)
+		stride_source.convert(Image.FORMAT_RGBA8)
+		var cell := stride_source.get_width() / 2
+		for grid_cell in CELLS:
+			var region := stride_source.get_region(Rect2i(grid_cell * cell, Vector2i(cell, cell)))
+			strides.append(region.get_region(region.get_used_rect()))
 	var sheet := Image.create(FRAME.x * 3, FRAME.y * 4, false, Image.FORMAT_RGBA8)
 	for row in range(4):
 		var pose := _pose(figures[row], factor)
+		var frames: Array[Image] = [pose, _step(pose, 1), _step(pose, 2)]
+		if not strides.is_empty():
+			var stride := _pose(strides[row], factor)
+			# No mirrored frame: it would swap the weapon to the other hand each step.
+			frames = [pose, stride, _step(pose, 2)]
 		for frame in range(3):
-			sheet.blit_rect(_step(pose, frame), Rect2i(Vector2i.ZERO, FRAME), Vector2i(frame * FRAME.x, row * FRAME.y))
+			sheet.blit_rect(frames[frame], Rect2i(Vector2i.ZERO, FRAME), Vector2i(frame * FRAME.x, row * FRAME.y))
 	sheet.save_png(ProjectSettings.globalize_path("res://assets/sprites/stalker.png"))
 	print("stalker.png scale %.3f" % factor)
 	quit()

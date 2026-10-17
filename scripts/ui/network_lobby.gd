@@ -14,6 +14,19 @@ func _ready() -> void:
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	add_child(background)
+	# SpriteCook campfire illustration, dimmed so the lobby controls read clearly.
+	if ResourceLoader.exists("res://assets/sprites/sc/lobby_art.png"):
+		var art := TextureRect.new()
+		art.texture=load("res://assets/sprites/sc/lobby_art.png")
+		art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		art.stretch_mode=TextureRect.STRETCH_SCALE
+		art.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		add_child(art)
+		var shade := ColorRect.new()
+		shade.color=Color(0.02,0.04,0.05,0.5)
+		shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		shade.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		add_child(shade)
 	_label("NETWORK CAMP / 1-4 SURVIVORS",Vector2(14,6),17)
 	_line("Name","Camper",Vector2(14,32),Vector2(145,23))
 	var role := OptionButton.new()
@@ -114,7 +127,7 @@ func _process(delta: float) -> void:
 	for id: int in ids:
 		var entry: Dictionary=net.roster[id]
 		lines.append("%s%s / %s / %s" % [entry["name"]," (HOST)" if id==1 else "",SurvivorRoster.NAMES[SurvivorRoster.IDS.find(entry["role"])],"READY" if entry["ready"] else "CHOOSING"])
-	roster_label.text="\n".join(lines) if not lines.is_empty() else "Same Wi-Fi/LAN: use host's local IP.\nInternet: reachable public UDP port or virtual LAN.\nVoice chat is the next feature; no microphone is used."
+	roster_label.text="\n".join(lines) if not lines.is_empty() else "Same Wi-Fi/LAN: use host's local IP.\nInternet: reachable public UDP port or virtual LAN.\nVoice: Settings > MIC (push-to-talk B), then restart once."
 	if net.active and not multiplayer.is_server():
 		fields["Mode"].select(1 if net.mode=="woods" else 0)
 		fields["Seed"].text=str(net.seed_value) if net.seed_value>0 else ""

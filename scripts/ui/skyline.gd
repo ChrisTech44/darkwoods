@@ -89,9 +89,18 @@ func _marker(point: Vector2, view: Vector2, kind: String, label: String, color: 
 	draw_string(ThemeDB.fallback_font, text_at, label, HORIZONTAL_ALIGNMENT_LEFT, -1, 6, faded)
 
 
+## SpriteCook icon per marker kind (skyline sheet, effects sheet or landmark art).
+const ICONS := {"camp": "sky_campfire", "help": "fx_help", "pin": "fx_pin", "village": "sky_bell", "observatory": "sky_dome",
+	"bog": "sky_bog", "relay": "sky_mast", "substation": "f5_transformer", "rail": "sky_signal", "ranger": "ui_badge",
+	"logging": "f5_logs", "boathouse": "f5_boathouse", "graveyard": "gravestone", "mill": "waterwheel", "orchard": "apple_tree",
+	"quarry": "cave", "chapel": "shrine"}
+
 func _icon(at: Vector2, kind: String, color: Color) -> void:
 	var dark := Color(0.04, 0.06, 0.06, 0.75)
-	draw_circle(at, 6, dark)
+	draw_circle(at, 7, dark)
+	draw_arc(at, 7, 0.0, TAU, 16, Color(color, 0.7), 1.0)
+	if ICONS.has(kind) and PixelArt.draw_in(self, ICONS[kind], Rect2(at - Vector2(6, 6), Vector2(12, 12)), Color(1, 1, 1, color.a)):
+		return
 	match kind:
 		"camp":
 			draw_colored_polygon(PackedVector2Array([at + Vector2(-3, 3), at + Vector2(0, -5), at + Vector2(3, 3)]), Color("e9a65f"))

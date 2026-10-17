@@ -1,4 +1,5 @@
 extends Control
+var chart_frame: StyleBox
 ## Field notes: camp and region names are printed (Lodge wall map); woods trails are revealed only by exploration.
 
 var camp_map: CampMap
@@ -25,7 +26,9 @@ func _draw() -> void:
 	var bounds := Rect2(player.global_position - Vector2(768,768),Vector2(1536,1536)) if in_woods else Rect2(0, 0, 1536, 960)
 	var factor := Vector2(146, 91) / bounds.size
 	var origin := Vector2(3, 15)
-	draw_rect(Rect2(0, 0, 154, 112), Color("1c2b28"))
+	if chart_frame == null:
+		chart_frame = CampStyle.art("ui_panel", 9, 0, CampStyle.box("1c2b28", "1c2b28", 0))
+	draw_style_box(chart_frame, Rect2(-3, -3, 160, 118))
 	draw_string(ThemeDB.fallback_font, Vector2(4, 10), "THE WOODS / N ↑" if in_woods else "FERNWOOD / N ↑", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("cfc89f"))
 	if in_woods:
 		# The Lodge wall map prints the ring road and spokes from the start.

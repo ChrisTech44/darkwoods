@@ -299,8 +299,9 @@ func _draw() -> void:
 		draw_arc(boat_point,80,0,TAU,48,Color("b6c6a0"),1)
 	if lake_tell > 0 or lake_flash > 0:
 		var tint := Color("c2e0b1") if lake_tell > 0 else Color("edc08b")
+		if not PixelArt.draw_in(self,"fx_ripple",Rect2(lake_target-Vector2(28,20),Vector2(56,40)),Color(tint,0.9)):
+			draw_arc(lake_target,18,0,TAU,24,Color("689c93"),2)
 		draw_arc(lake_target,26+sin(pulse*10)*2,0,TAU,32,tint,2)
-		draw_arc(lake_target,18,0,TAU,24,Color("689c93"),2)
 		FieldEscapeArt.draw_lake_thing(self,lake_target + Vector2(0,-10),lake_flash>0)
 	if gate_enabled:
 		draw_arc(bridge,64,0,TAU,40,Color("bfd5b9"),2)

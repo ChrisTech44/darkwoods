@@ -959,7 +959,15 @@ The game's art was redrawn with SpriteCook in October 2026:
   helicopter, orchard trees and trellises, ground decals that soften every path
   edge, and asphalt, gravel, flagstone, court-tile, orchard and plank surfaces.
   Roofs are shaded gables and interior walls are timber, so nothing in the world
-  is a flat box any more (48 credits; 656 kept in reserve);
+  is a flat box any more (48 credits);
+- (17 October, fifth batch, 132 credits; 524 kept in reserve) fences, gates,
+  doors, fallen woodpiles, helipad, 26 kinds of trail-side forest dressing,
+  every effect and marker (flares, blood, hex bolts, alerts, pins, marks), the
+  wooden interface (panels, buttons, belt slots, map frame, skyline icons),
+  illustrated loading, survivor-selection and lobby screens, survivor portraits,
+  and real stepping walk cycles for the survivors, the Stalker and the
+  Groundskeeper. Only light, weather, sparks and on-screen text are still
+  drawn in code;
 - the title screen.
 
 See [art evidence](docs/evidence/spritecook/README.md). The stalker is now

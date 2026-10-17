@@ -82,3 +82,25 @@ per stash of identical pickups.
 | Signal pyre | Groundskeeper on a trail | Orchard | Flooded Mill | Interior walls |
 | --- | --- | --- | --- | --- |
 | ![Pyre](batch3_pyre.png) | ![Groundskeeper](batch3_woods_trail.png) | ![Orchard](batch3_zone_04_orchard.png) | ![Mill](batch3_zone_03_mill.png) | ![Interior](batch3_interior.png) |
+
+**Fifth batch (17 October, 132 of an approved 196 credits; 524 left):** the user
+asked that everything on screen come from SpriteCook, backgrounds included.
+- [World objects](world_objects_sheet.png): fences, gates (open/closed), cabin
+  doors, a fallen woodpile, helipad, raised barrier arm, abandoned car,
+  scarecrow, fire pit, totem, fallen tree, torn tent.
+- [Forest dressing](forest_dressing_sheet.png): rock formations, ferns, berry
+  bushes (also the woods hiding spots), fairy rings, hollow logs, hunting stand,
+  missing-person poster, bones, standing stones, bicycle, shrine and more,
+  scattered (seeded) beside about one in ten straight trail sections.
+- [Effects and markers](effects_sheet.png): flare, blood, noise tin, hex bolt,
+  thorns, map pin, help call, Scout mark, lake ripple, stun stars, alert and
+  suspicion bubbles.
+- [Interface](ui_sheet.png): wooden panels, buttons and belt slots (nine-slice
+  theme), the field-map frame and skyline icons.
+- Backgrounds: [loading screen](loading_art.png), [survivor selection](selection_art.png),
+  [co-op lobby](lobby_art.png), plus six [survivor portraits](portraits_sheet.png).
+- Walking: one edit each of the survivor, stalker and Groundskeeper grids into
+  [mid-stride](survivors_stride_sheet.png) poses ([stalker](stalker_stride_sheet.png),
+  [Groundskeeper](groundskeeper_stride_sheet.png)); the importers now build real
+  stepping walk cycles instead of a 1-pixel bob. Full SpriteCook animation sets
+  (about 130 credits per character) were judged too expensive.

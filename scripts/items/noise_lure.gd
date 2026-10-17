@@ -14,5 +14,6 @@ func _physics_process(delta: float) -> void:
 	if pulses >= 3:
 		queue_free()
 func _draw() -> void:
-	draw_rect(Rect2(-4,-6,8,10), Color("c5b49b"))
+	if not PixelArt.draw_in(self, "fx_tin", Rect2(-7, -9, 14, 12)):
+		draw_rect(Rect2(-4,-6,8,10), Color("c5b49b"))
 	draw_arc(Vector2.ZERO, 8 + pulses * 4, 0, TAU, 16, Color("c7b882"))

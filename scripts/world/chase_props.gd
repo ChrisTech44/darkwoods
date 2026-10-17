@@ -533,6 +533,44 @@ func _nearest_hunter(from: Vector2, radius: float) -> CampKiller:
 	return best
 
 
+## SpriteCook fence/gate sections tiled along the barrier. False when art is missing.
+func _draw_fence_art(rect: Rect2, kind: String) -> bool:
+	var long := rect.size.x > rect.size.y
+	var name := kind if kind != "fence" else ("fence_h" if long else "fence_v")
+	if kind == "gate_closed" and not long:
+		name = "fence_v"
+	if PixelArt.texture(name) == null and PixelArt.fit(name, Vector2(32, 32)) == null:
+		return false
+	var span := rect.size.x if long else rect.size.y
+	if long:
+		var pieces := maxi(1, int(round(span / 30.0)))
+		var width := span / pieces
+		for index in range(pieces):
+			PixelArt.draw_standing(self, name, Vector2(rect.position.x + width * (index + 0.5), rect.get_center().y + 9), width + 2, 30)
+	else:
+		var step := 22.0
+		var y := rect.position.y + step
+		while y <= rect.end.y + 4:
+			PixelArt.draw_standing(self, name, Vector2(rect.get_center().x, y), 14, 30)
+			y += step
+	return true
+
+
+## A knocked-over woodpile: fallen-log sprites laid along the blocked lane.
+func _draw_fallen(rect: Rect2) -> bool:
+	if PixelArt.fit("woodpile_fallen", Vector2(32, 32)) == null:
+		return false
+	draw_rect(Rect2(rect.position + Vector2(2, 3), rect.size), Color(0, 0, 0, 0.3))
+	var long := rect.size.x > rect.size.y
+	var span := rect.size.x if long else rect.size.y
+	var count := maxi(1, int(round(span / 26.0)))
+	for index in range(count):
+		var t := (index + 0.5) / count
+		var at := rect.position + (Vector2(rect.size.x * t, rect.size.y * 0.5 + 8) if long else Vector2(rect.size.x * 0.5, rect.size.y * t + 8))
+		PixelArt.draw_standing(self, "woodpile_fallen", at, 30, 22)
+	return true
+
+
 func _draw_rails(rect: Rect2, wood: Color, latched: bool) -> void:
 	var long := rect.size.x > rect.size.y
 	var span := rect.size.x if long else rect.size.y
@@ -602,13 +640,20 @@ func _draw() -> void:
 	# The Maintenance generator the blackout event asks you to restart.
 	PixelArt.draw_standing(self, "generator", level.night_clock.generator_point() + Vector2(-26, 6), 22)
 	for fence: Dictionary in level.plan.woods.fences:
-		_draw_rails(fence["rect"], Color("9a7b52"), false)
+		if not _draw_fence_art(fence["rect"], "fence"):
+			_draw_rails(fence["rect"], Color("9a7b52"), false)
 	for gate: Dictionary in level.plan.woods.gates:
 		if not gate["open"]:
-			_draw_rails(gate["rect"], Color("b39c6a"), true)
+			if not _draw_fence_art(gate["rect"], "gate_closed"):
+				_draw_rails(gate["rect"], Color("b39c6a"), true)
+		else:
+			var rect: Rect2 = gate["rect"]
+			PixelArt.draw_standing(self, "gate_open", rect.position + Vector2(8, rect.size.y * 0.5 + 8), 22)
 	for spot in spots:
 		var at: Vector2 = spot["position"]
-		if spot["woods"]:
+		if spot["woods"] and PixelArt.draw_standing(self, "berry_bush" if int(at.x + at.y) % 2 == 0 else "ferns", at + Vector2(0, 6), 30):
+			pass
+		elif spot["woods"]:
 			for index in range(7):
 				var leaf := at + Vector2.from_angle(index * TAU / 7) * 8 + Vector2(0, -4)
 				draw_circle(leaf, 7, Color("23402c"))
@@ -620,17 +665,22 @@ func _draw() -> void:
 	for door in doors:
 		var rect: Rect2 = door["rect"]
 		if not door["open"]:
-			draw_rect(rect, Color("6b4f33"))
-			for x in range(int(rect.position.x) + 4, int(rect.end.x), 6):
-				draw_line(Vector2(x, rect.position.y), Vector2(x, rect.end.y), Color("8c6a45"))
+			# SpriteCook planks, iron strap hinges and a latch.
+			draw_rect(rect.grow(1), Color("1d160f"))
+			if not PixelArt.draw_material(self, "dock_planks", rect, Color(0.62, 0.44, 0.28)):
+				draw_rect(rect, Color("6b4f33"))
+			for x in [rect.position.x + 3, rect.end.x - 7]:
+				draw_rect(Rect2(x, rect.position.y + 1, 4, 1), Color("3b3b36"))
+				draw_rect(Rect2(x, rect.end.y - 2, 4, 1), Color("3b3b36"))
 			draw_rect(Rect2(rect.end.x - 6, rect.get_center().y - 1, 2, 2), Color("d6c08a"))
 			if door["barricade"] > 0.0:
 				# Jury-rigged planks across the door.
 				draw_line(rect.position + Vector2(1, 1), rect.end - Vector2(1, 1), Color("a98252"), 2)
 				draw_line(Vector2(rect.position.x + 1, rect.end.y - 1), Vector2(rect.end.x - 1, rect.position.y + 1), Color("a98252"), 2)
 		elif door["broken"] > 0.0:
-			for index in range(4):
-				draw_line(rect.position + Vector2(index * 7, 2), rect.position + Vector2(index * 7 + 5, rect.size.y), Color("5a4430"), 2)
+			if not PixelArt.draw_standing(self, "door_broken", Vector2(rect.position.x + 4, rect.end.y + 2), 16, 30):
+				for index in range(4):
+					draw_line(rect.position + Vector2(index * 7, 2), rect.position + Vector2(index * 7 + 5, rect.size.y), Color("5a4430"), 2)
 	for knock in knocks:
 		var at: Vector2 = knock["position"]
 		match int(knock["state"]):
@@ -643,6 +693,8 @@ func _draw() -> void:
 						draw_circle(at + Vector2(-8 + column * 8 + row * 4, -row * 6), 2, Color("b3926a"))
 			1:
 				var rect: Rect2 = knock["rect"]
+				if _draw_fallen(rect):
+					continue
 				var long := rect.size.x > rect.size.y
 				draw_rect(Rect2(rect.position + Vector2(2, 3), rect.size), Color(0, 0, 0, 0.35))
 				draw_rect(rect.grow(1), Color("2e2318"))
@@ -659,5 +711,8 @@ func _draw() -> void:
 					draw_circle(end, 6, Color("c9a575"))
 					draw_arc(end, 3, 0, TAU, 10, Color("8a6440"), 1)
 			2:
+				if PixelArt.draw_in(self, "decal_branch", Rect2(at - Vector2(10, 8), Vector2(20, 14))):
+					PixelArt.draw_in(self, "decal_needles", Rect2(at + Vector2(-2, -4), Vector2(14, 10)))
+					continue
 				for index in range(5):
 					draw_rect(Rect2(at + Vector2(-12 + index * 6, index % 2 * 4), Vector2(5, 2)), Color("5d4630"))

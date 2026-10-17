@@ -192,7 +192,8 @@ func _draw() -> void:
 	# SpriteCook creature art (64x64 frames); the old procedural overlays are gone.
 	draw_texture_rect_region(sheet, Rect2(-32, -58, 64, 64), Rect2(frame * 64, row * 64, 64, 64))
 	if state == State.CHASE:
-		draw_string(ThemeDB.fallback_font, Vector2(-18, -63), "HEX!" if casting else ("HOWL!" if species == "werewolf" else "!"), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("d9b581"))
+		if not PixelArt.draw_in(self, "fx_alert", Rect2(-6, -74, 12, 13)):
+			draw_string(ThemeDB.fallback_font, Vector2(-18, -63), "HEX!" if casting else ("HOWL!" if species == "werewolf" else "!"), HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("d9b581"))
 	if casting:
 		draw_arc(Vector2(0, -20), 22, 0, TAU * (1 - cast_remaining / 0.8), 24, Color("c4aadf"), 2)
 	draw_stun(-66)

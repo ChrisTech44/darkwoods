@@ -261,6 +261,7 @@ func _draw() -> void:
 	for mark: Dictionary in marks:
 		var at: Vector2 = mark["position"]
 		var pulse := 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.008)
-		draw_arc(at, 12.0, 0.0, TAU, 24, Color(0.62, 0.86, 0.95, pulse), 1.5)
+		if not PixelArt.draw_in(self, "fx_mark", Rect2(at - Vector2(12, 10), Vector2(24, 22)), Color(1, 1, 1, pulse)):
+			draw_arc(at, 12.0, 0.0, TAU, 24, Color(0.62, 0.86, 0.95, pulse), 1.5)
 		draw_line(at + Vector2(0, -20), at + Vector2(0, -13), Color(0.62, 0.86, 0.95, pulse), 2.0)
 		draw_string(ThemeDB.fallback_font, at + Vector2(-ThemeDB.fallback_font.get_string_size(mark["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x * 0.5, -23), mark["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("bfe3f0"))

@@ -4,6 +4,8 @@ extends SceneTree
 ## palette, crisp alpha, then a 1px step-bob with alternating leg shift.
 ## Run: godot --headless --path . --script res://tools/import_spritecook_survivors.gd
 const SHEET := "res://art_sources/spritecook/survivors_sheet.png"
+## Optional mid-stride edit of the same grid: real walk frames instead of a bob.
+const STRIDE := "res://art_sources/spritecook/survivors_stride_sheet.png"
 const ROLES: Array[String] = ["jock", "mechanic", "scout", "medic", "quiet", "quartermaster"]
 const CELL := Vector2i(40, 60)
 const FRAME := Vector2i(24, 32)
@@ -14,12 +16,24 @@ const LEG_ROWS := 7
 func _initialize() -> void:
 	var source := Image.load_from_file(ProjectSettings.globalize_path(SHEET))
 	source.convert(Image.FORMAT_RGBA8)
+	var stride_source: Image
+	if FileAccess.file_exists(ProjectSettings.globalize_path(STRIDE)):
+		stride_source = Image.load_from_file(ProjectSettings.globalize_path(STRIDE))
+		stride_source.convert(Image.FORMAT_RGBA8)
 	for column in range(ROLES.size()):
 		var sheet := Image.create(FRAME.x * 3, FRAME.y * 4, false, Image.FORMAT_RGBA8)
 		for row in range(4):
 			var pose := _pose(source.get_region(Rect2i(column * CELL.x, row * CELL.y, CELL.x, CELL.y)))
+			var frames: Array[Image] = [pose, _step(pose, 1), _step(pose, 2)]
+			if stride_source != null:
+				var cell := Vector2i(stride_source.get_width() / 6, stride_source.get_height() / 4)
+				var stride := _pose(stride_source.get_region(Rect2i(column * cell.x, row * cell.y, cell.x, cell.y)))
+				var other := stride.duplicate()
+				other.flip_x()
+				# Front/back: stride, then the mirrored stride (other leg). Sides keep one stride + bob.
+				frames = [pose, stride, other if row < 2 else _step(pose, 2)]
 			for frame in range(3):
-				sheet.blit_rect(_step(pose, frame), Rect2i(Vector2i.ZERO, FRAME), Vector2i(frame * FRAME.x, row * FRAME.y))
+				sheet.blit_rect(frames[frame], Rect2i(Vector2i.ZERO, FRAME), Vector2i(frame * FRAME.x, row * FRAME.y))
 		sheet.save_png(ProjectSettings.globalize_path("res://assets/sprites/survivor_%s.png" % ROLES[column]))
 		if ROLES[column] == "scout":
 			# The menu backdrop's generic camper.

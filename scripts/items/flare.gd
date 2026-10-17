@@ -21,7 +21,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(-3, -3, 7, 3), Color("b9ad87"))
+	if not PixelArt.draw_in(self, "fx_flare", Rect2(-7, -10, 14, 12)):
+		draw_rect(Rect2(-3, -3, 7, 3), Color("b9ad87"))
 	for index in range(8):
 		var phase := fmod(time * 10 + index * 1.7, 12)
 		draw_rect(Rect2(sin(index + time) * 5, -phase - 4, 1, 2), Color("f7c37f"))

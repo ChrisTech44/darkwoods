@@ -5,15 +5,46 @@ const RUINS: Array[String] = ["stump", "hunter_blind", "cave", "watchtower", "sh
 const RUIN_WIDTHS: Array[float] = [34.0, 36.0, 56.0, 50.0, 34.0, 50.0]
 
 
+## Seeded trail-side dressing so straight trails stop looking alike: [sprite, width].
+const DRESSING := [["rock_formation", 34], ["ferns", 28], ["berry_bush", 26], ["fairy_ring", 30], ["hollow_log", 36], ["hunting_stand", 30],
+	["missing_poster", 18], ["cooking_pot", 22], ["broken_canoe", 40], ["old_bench", 30], ["birdhouse", 16], ["bone_pile", 28],
+	["standing_stones", 36], ["bicycle", 28], ["lantern_post_old", 14], ["forest_shrine", 26], ["abandoned_car", 48], ["scarecrow", 24],
+	["fire_pit", 26], ["totem", 18], ["fallen_tree", 44], ["torn_tent", 36], ["glow_mushrooms", 18], ["mossy_log", 34], ["tire_stack", 22], ["cooler", 20]]
+
+
+func _draw_dressing() -> void:
+	for cell: Vector2i in woods.links:
+		var links: Array = woods.links[cell]
+		if links.size() != 2:
+			continue
+		var h := hash(cell + Vector2i(31337, 4242))
+		if posmod(h, 100) >= 11:
+			continue
+		var at := woods.center(cell)
+		if not woods.zone_at(at).is_empty() or woods.on_road(at) or not woods.signpost_near(at, 140).is_empty():
+			continue
+		if woods.landmarks.any(func(landmark: Dictionary) -> bool: return landmark["position"].distance_to(at) < 220):
+			continue
+		# Beside the trail, never in the middle of it.
+		var along: Vector2 = Vector2(links[0] - cell)
+		var side := Vector2(-along.y, along.x) * (1 if posmod(h >> 8, 2) == 0 else -1)
+		var pick: Array = DRESSING[posmod(h >> 12, DRESSING.size())]
+		var spot := at + side * 46.0 + along * float(posmod(h >> 16, 41) - 20)
+		draw_circle(spot + Vector2(0, -2), pick[1] * 0.36, Color(0.02, 0.04, 0.03, 0.3))
+		PixelArt.draw_standing(self, pick[0], spot, pick[1])
+
+
 func _draw() -> void:
-	# Warning gate, broken fencing and footprints at the east approach.
-	draw_rect(Rect2(1552, 488, 7, 24), Color("70654c"))
-	draw_rect(Rect2(1552, 536, 7, 42), Color("70654c"))
-	draw_rect(Rect2(1544, 490, 50, 18), Color("947e53"))
-	draw_line(Vector2(1545, 493), Vector2(1592, 493), Color("b9a775"))
-	draw_string(ThemeDB.fallback_font, Vector2(1547, 503), "THE WOODS", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("242f28"))
-	for index in range(6):
-		draw_rect(Rect2(1590 + index * 20, 518 + (index % 2) * 7, 3, 5), Color("4c5a43"))
+	# Warning gate at the east approach: SpriteCook gate, a plaque and footprints.
+	if PixelArt.draw_standing(self, "gate_closed", Vector2(1568, 540), 40):
+		PixelArt.draw_in(self, "ui_plaque", Rect2(1544, 478, 52, 22))
+		draw_string(ThemeDB.fallback_font, Vector2(1551, 493), "THE WOODS", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("2a2216"))
+		for index in range(3):
+			PixelArt.draw_in(self, "fx_footprints", Rect2(1590 + index * 24, 512 + (index % 2) * 7, 14, 12), Color(1, 1, 1, 0.7))
+	else:
+		draw_rect(Rect2(1544, 490, 50, 18), Color("947e53"))
+		draw_string(ThemeDB.fallback_font, Vector2(1547, 503), "THE WOODS", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("242f28"))
+	_draw_dressing()
 	for index in range(woods.landmarks.size()):
 		var landmark: Dictionary = woods.landmarks[index]
 		var at: Vector2 = landmark["position"] + Vector2(0, -24)

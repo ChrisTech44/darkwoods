@@ -43,7 +43,7 @@ func _ready() -> void:
 	title = _label(Vector2(9, 6), Vector2(366, 15), 10)
 	for index in range(6):
 		var slot := _label(Vector2(9 + index * 61, 150), Vector2(59, 17), 7)
-		slot.add_theme_stylebox_override("normal", CampStyle.box("101e22ee", "63705b", 2))
+		slot.add_theme_stylebox_override("normal", CampStyle.art("ui_slot", 6, 3, CampStyle.box("101e22ee", "63705b", 2)))
 		belt_labels.append(slot)
 		var icon := TextureRect.new()
 		icon.position = Vector2(44, 2)
@@ -78,7 +78,7 @@ func _ready() -> void:
 	inventory_label = _label(Vector2(9, 40), Vector2(366, 104), 8)
 	var pack_style := style.duplicate() as StyleBoxFlat
 	pack_style.bg_color = Color("101c1c")
-	inventory_label.add_theme_stylebox_override("normal", pack_style)
+	inventory_label.add_theme_stylebox_override("normal", CampStyle.art("ui_panel", 9, 10, pack_style))
 	location_label = _label(Vector2(9, 169), Vector2(366, 12), 8)
 	location_label.add_theme_color_override("font_color", Color("c3c6a1"))
 	inventory_label.hide()
@@ -144,6 +144,12 @@ func _panel(heading: String, detail: String, replay: bool) -> PanelContainer:
 		retry.pressed.connect(_retry)
 		column.add_child(retry)
 	if not replay:
+		# The mixer plus voice rows are tall: keep the pause panel compact.
+		panel.position = Vector2(54, 2)
+		label.add_theme_font_size_override("font_size", 13)
+		description.add_theme_font_size_override("font_size", 7)
+		description.custom_minimum_size = Vector2(240, 10)
+		column.add_theme_constant_override("separation", 1)
 		column.add_child(preload("res://scripts/ui/audio_controls.gd").new())
 	var menu := Button.new()
 	menu.name = "Menu"
@@ -202,5 +208,9 @@ func update_belt(actor: CampPlayer) -> void:
 		var kind := actor.belt[index]
 		belt_labels[index].text = "%s%d %s" % [">" if actor.selected_slot == index else "", index+1, short.get(kind, "--")]
 		belt_labels[index].modulate = Color("ffe3a3") if actor.selected_slot == index else Color("a0b69e")
+		var selected := actor.selected_slot == index
+		if not belt_labels[index].has_meta("selected") or belt_labels[index].get_meta("selected") != selected:
+			belt_labels[index].set_meta("selected", selected)
+			belt_labels[index].add_theme_stylebox_override("normal", CampStyle.art("ui_slot_selected" if selected else "ui_slot", 6, 3, CampStyle.box("101e22ee", "63705b", 2)))
 		belt_icons[index].texture = PixelArt.fit(kind, Vector2(13, 13)) if not kind.is_empty() else null
 		belt_icons[index].self_modulate = Color.WHITE / belt_labels[index].modulate if not kind.is_empty() else Color.WHITE

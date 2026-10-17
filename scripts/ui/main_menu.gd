@@ -215,6 +215,20 @@ func _show_survivors() -> void:
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	selection.add_child(background)
+	# SpriteCook cabin illustration behind the cards, dimmed on the menu side.
+	if ResourceLoader.exists("res://assets/sprites/sc/selection_art.png"):
+		var art := TextureRect.new()
+		art.texture = load("res://assets/sprites/sc/selection_art.png")
+		art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		art.stretch_mode = TextureRect.STRETCH_SCALE
+		art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		selection.add_child(art)
+		var shade := ColorRect.new()
+		shade.color = Color(0.02, 0.04, 0.05, 0.55)
+		shade.position = Vector2(0, 0)
+		shade.size = Vector2(384, 216)
+		shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		selection.add_child(shade)
 	var heading := Label.new()
 	heading.text = "CHOOSE YOUR SURVIVOR"
 	heading.position = Vector2(14, 8)
@@ -222,14 +236,20 @@ func _show_survivors() -> void:
 	selection.add_child(heading)
 	var detail := Label.new()
 	detail.name = "Detail"
-	detail.position = Vector2(155, 70)
-	detail.size = Vector2(218, 84)
-	detail.add_theme_font_size_override("font_size", 10)
+	detail.position = Vector2(155, 96)
+	detail.size = Vector2(218, 60)
+	detail.add_theme_font_size_override("font_size", 8)
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	selection.add_child(detail)
+	var portrait := TextureRect.new()
+	portrait.name = "Portrait"
+	portrait.position = Vector2(156, 30)
+	portrait.size = Vector2(52, 64)
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	selection.add_child(portrait)
 	var preview := TextureRect.new()
 	preview.name = "Preview"
-	preview.position = Vector2(243, 31)
+	preview.position = Vector2(222, 42)
 	preview.size = Vector2(24, 32)
 	preview.scale = Vector2(1.5, 1.5)
 	selection.add_child(preview)
@@ -270,6 +290,8 @@ func _show_survivors() -> void:
 func _select_survivor(index: int) -> void:
 	session.select_survivor(SurvivorRoster.IDS[index])
 	$SurvivorSelection/Detail.text = SurvivorRoster.NAMES[index] + "\n" + SurvivorRoster.DETAILS[index]
+	var face := "res://assets/sprites/sc/portrait_%s.png" % SurvivorRoster.IDS[index]
+	$SurvivorSelection/Portrait.texture = load(face) if ResourceLoader.exists(face) else null
 	var atlas := AtlasTexture.new()
 	atlas.atlas = load("res://assets/sprites/survivor_" + session.survivor + ".png")
 	atlas.region = Rect2(0, 0, 24, 32)

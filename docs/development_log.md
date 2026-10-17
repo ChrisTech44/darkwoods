@@ -1,5 +1,34 @@
 # Development log
 
+## 2026-10-17 — Everything on screen from SpriteCook (fifth art batch)
+
+The user asked whether every image was SpriteCook-made "including backgrounds"
+and approved 196 credits to "make the game awesome looking". An honest audit
+found that all image files were SpriteCook art but many things were still drawn
+in code. Eleven generations (**132 credits; 524 left**) replaced them:
+- World: fences and gates (tiled sprites), plank doors with hinges and a broken
+  door sprite, fallen woodpile logs, helipad, raised ranger-gate arm, bush
+  hiding spots, the "THE WOODS" gate, and seeded trail-side dressing (26
+  pieces) beside about one in ten straight trail sections.
+- Effects/markers: flare, blood trail and wound, noise tin, hex bolt, thorn
+  patches, Scout mark, lake ripple, stun stars, alert/suspicion bubbles over
+  hunters, help sign over downed survivors, held items drawn with their icons,
+  and skyline/pin icons.
+- Interface: nine-slice wooden panels, buttons, belt slots (selected state) and
+  the field-map frame via `CampStyle.art`; illustrated loading, survivor
+  selection (with portraits) and lobby backgrounds.
+- Walk cycles: mid-stride edits of the survivor, stalker and Groundskeeper
+  grids feed real stepping frames (survivors mirror the front/back stride; the
+  killers do not, so their weapon stays in one hand).
+- `tools/slice_spritecook_components.gd` slices sheets by connected shape when
+  pieces overflow their grid cells (UI, portraits). Fixed: the loading art drew
+  blank when loaded mid-draw (now loaded once), and a belt-slot meta lookup error.
+- Still code-drawn by design: light, fog/rain, flashlight cones and sparks
+  (animated effects), the signpost text boards and HUD text.
+
+**Verification:** `verify.py` 135/135; `verify_network.py --players 2` 375
+assertions, 0 failures; screenshots retaken.
+
 ## 2026-10-17 — README reorganised for new players
 
 The user found the README hard to use ("unsure how to play the game and what it

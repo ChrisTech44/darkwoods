@@ -23,6 +23,12 @@ func _physics_process(delta: float) -> void:
 	queue_redraw()
 func _draw() -> void:
 	draw_circle(Vector2.ZERO,23,Color(0.6,0.65,0.4,0.25))
+	if thorns and PixelArt.fit("fx_thorns", Vector2(20, 20)) != null:
+		for index in range(5):
+			var spot := Vector2.from_angle(index * TAU / 5) * 12
+			PixelArt.draw_in(self, "fx_thorns", Rect2(spot - Vector2(9, 9), Vector2(18, 16)))
+		draw_arc(Vector2.ZERO,23,0,TAU,24,Color("d6c28d"))
+		return
 	for index in range(9):
 		var at := Vector2.from_angle(index*TAU/9)*18
 		draw_line(at,at+Vector2(3,-9 if thorns else -18),Color("b4bc89") if thorns else Color("d0d4bc"),2)

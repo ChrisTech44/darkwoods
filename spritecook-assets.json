@@ -234,6 +234,72 @@
       "label": "seamless surface textures 3x3 (asphalt, quarry gravel, mossy flagstones, court tiles, orchard soil, dock planks, lawn, leaf litter, mossy floor)",
       "file": "art_sources/spritecook/surface_textures_sheet.png",
       "sha12": "d87d9652930d"
+    },
+    {
+      "asset_id": "fc9cc664-2002-4a18-a3e9-fd06d3d8f28d",
+      "label": "world objects 4x4 (fences, gates, doors, fallen woodpile, track, helipad, barrier, car, scarecrow, fire pit, totem, fallen tree, torn tent)",
+      "file": "art_sources/spritecook/world_objects_sheet.png",
+      "sha12": "50f0d62cb7f7"
+    },
+    {
+      "asset_id": "de4ead72-5027-4523-b29a-275b3576f468",
+      "label": "forest dressing 4x4 (rocks, ferns, berry bush, fairy ring, hollow log, hunting stand, poster, pot, canoe, bench, birdhouse, bones, standing stones, bicycle, lantern post, shrine)",
+      "file": "art_sources/spritecook/forest_dressing_sheet.png",
+      "sha12": "b770fa24bf35"
+    },
+    {
+      "asset_id": "a72439a4-a21b-44b2-b986-e525df8e5f89",
+      "label": "effects and markers 4x4 (flare, blood, tin, hex, thorns, pin, help, mark, ripple, ember, footprints, stun, alert, suspicion, skull)",
+      "file": "art_sources/spritecook/effects_sheet.png",
+      "sha12": "4bab07d9177d"
+    },
+    {
+      "asset_id": "afba93aa-9fc2-422e-b116-05e43ff607f8",
+      "label": "UI pieces 4x4 (panel, slots, buttons, map frame, compass, battery, skyline icons, badge, plaque); sliced by tools/slice_spritecook_components.gd",
+      "file": "art_sources/spritecook/ui_sheet.png",
+      "sha12": "bcb8deb305d8"
+    },
+    {
+      "asset_id": "4479377e-cb79-4216-ab1b-caf730983e5d",
+      "label": "loading screen illustration 384x216",
+      "file": "art_sources/spritecook/loading_art.png",
+      "sha12": "454db32ab932"
+    },
+    {
+      "asset_id": "048c20c3-4385-4c1e-a579-98440fd5e56b",
+      "label": "survivor selection illustration 384x216 (cabin interior)",
+      "file": "art_sources/spritecook/selection_art.png",
+      "sha12": "8ea7d5e114df"
+    },
+    {
+      "asset_id": "2dfbbdd7-33d7-4a2b-9844-7995c3855044",
+      "label": "co-op lobby illustration 384x216 (campfire clearing)",
+      "file": "art_sources/spritecook/lobby_art.png",
+      "sha12": "0dcb6fbd6c2c"
+    },
+    {
+      "asset_id": "70bcb8a3-3ec2-4e02-bd52-0f66ecce00dd",
+      "label": "survivor portraits (4x2 returned; six used)",
+      "file": "art_sources/spritecook/portraits_sheet.png",
+      "sha12": "0174c4051544"
+    },
+    {
+      "asset_id": "ce808f12-9900-4755-b02e-6b5bd7014bb3",
+      "label": "survivors 6x4 mid-stride walk poses (edit of 68dff824)",
+      "file": "art_sources/spritecook/survivors_stride_sheet.png",
+      "sha12": "fc125f8646f9"
+    },
+    {
+      "asset_id": "5682a6ba-4e3e-4e14-98d9-359027e121df",
+      "label": "stalker 2x2 mid-stride poses (edit of 3ae44181)",
+      "file": "art_sources/spritecook/stalker_stride_sheet.png",
+      "sha12": "c50893f95bd0"
+    },
+    {
+      "asset_id": "4256fff8-407c-4483-a595-dc80ed965e23",
+      "label": "groundskeeper 2x2 mid-stride poses (edit of bc1d5e5d)",
+      "file": "art_sources/spritecook/groundskeeper_stride_sheet.png",
+      "sha12": "0c9b236c189d"
     }
   ]
 }

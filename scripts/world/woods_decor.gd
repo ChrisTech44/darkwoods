@@ -96,8 +96,9 @@ func _draw() -> void:
 
 func _signpost(post: Dictionary) -> void:
 	var at: Vector2 = post["position"]
-	draw_rect(Rect2(at + Vector2(-1, -10), Vector2(3, 30)), Color("5d4a33"))
-	draw_rect(Rect2(at + Vector2(-2, 18), Vector2(5, 2)), Color("3a3326"))
+	draw_rect(Rect2(at + Vector2(-2, -10), Vector2(4, 30)), Color("2e2619"))
+	draw_rect(Rect2(at + Vector2(-1, -10), Vector2(2, 29)), Color("6b5538"))
+	PixelArt.draw_in(self, "decal_grass_short", Rect2(at + Vector2(-8, 12), Vector2(16, 10)))
 	var targets: Array = post["targets"]
 	for index in range(targets.size()):
 		var target: Dictionary = targets[index]
@@ -105,8 +106,16 @@ func _signpost(post: Dictionary) -> void:
 		var top := at.y - 12 + index * 9
 		var board := Rect2(at.x - 22, top, 45, 8)
 		var face := Color("b49b69") if index == 0 else Color("8f7d57")
-		draw_rect(board, face)
-		draw_rect(Rect2(board.position + Vector2(0, 7), Vector2(45, 1)), Color("51432f"))
+		# A weathered plank with a pointed end toward its trail, grain and nails.
+		var pointed_right := step.x >= 0
+		var tip_x := board.end.x + 4 if pointed_right else board.position.x - 4
+		var body := PackedVector2Array([board.position, Vector2(board.end.x, board.position.y), Vector2(tip_x if pointed_right else board.end.x, board.get_center().y), board.end, Vector2(board.position.x, board.end.y)])
+		if not pointed_right:
+			body = PackedVector2Array([board.position, Vector2(board.end.x, board.position.y), board.end, Vector2(board.position.x, board.end.y), Vector2(tip_x, board.get_center().y)])
+		draw_colored_polygon(body, face)
+		draw_polyline(body + PackedVector2Array([body[0]]), Color("2e2619"), 1.0)
+		draw_line(board.position + Vector2(2, 3), board.position + Vector2(40, 3), face.darkened(0.18), 1.0)
+		draw_rect(Rect2(board.position + Vector2(20, 3), Vector2(1, 1)), Color("3a3326"))
 		# Painted arrow in the board's left notch: the real next trail toward that place.
 		var tip := Vector2(board.position.x + 5, top + 4)
 		var arrow := Vector2(step).normalized()

@@ -308,7 +308,7 @@ func _ground() -> void:
 			source.create_tile(Vector2i(x, y))
 	tile_set.add_source(source, 0)
 	# SpriteCook seamless materials as world-aligned 16px sub-tiles (sources 1-3).
-	var materials := {1: "grass", 2: "road", 3: "water"}
+	var materials := {1: "lawn" if PixelArt.texture("lawn") != null else "grass", 2: "road", 3: "water"}
 	var spans := {}
 	for id: int in materials:
 		var tex := PixelArt.texture(materials[id])
@@ -378,11 +378,53 @@ func _outline(rect: Rect2) -> PackedVector2Array:
 	return PackedVector2Array([rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)])
 
 
+## Ground-cover decals: tufts break up road edges, litter breaks up the tiling.
+const DECALS_GRASS: Array[String] = ["decal_grass_short", "decal_clover", "decal_grass_tall", "decal_flowers", "decal_mushrooms", "decal_mossy_stone", "decal_fern", "decal_leaves", "decal_pebbles", "decal_rock"]
+const DECALS_EDGE: Array[String] = ["decal_grass_tall", "decal_grass_short", "decal_fern", "decal_weeds", "decal_dry_grass", "decal_grass_tall"]
+const DECALS_ROAD: Array[String] = ["decal_pebbles", "decal_leaves", "decal_needles", "decal_puddle", "decal_branch"]
+
+
+func _draw_decals() -> void:
+	var local_obstacles := obstacles.filter(func(rect: Rect2) -> bool: return CAMP_BOUNDS.intersects(rect))
+	var floors: Array[Rect2] = []
+	for building in buildings + forest_buildings:
+		if CAMP_BOUNDS.intersects(building.bounds):
+			floors.append(building.bounds.grow(6))
+	for y in range(8, 960, 18):
+		for x in range(8, 1536, 18):
+			var h := hash(Vector2i(x, y) + Vector2i(seed_value % 997, 17))
+			var at := Vector2(x + posmod(h, 11) - 5, y + posmod(h >> 4, 11) - 5)
+			if lake.has_point(at) or floors.any(func(rect: Rect2) -> bool: return rect.has_point(at)):
+				continue
+			var on_road := roads.any(func(road: Rect2) -> bool: return road.has_point(at))
+			var edge := not on_road and roads.any(func(road: Rect2) -> bool: return road.grow(9).has_point(at))
+			var roll := posmod(h >> 8, 100)
+			var name := ""
+			var size := 13.0
+			if edge and roll < 75:
+				name = DECALS_EDGE[posmod(h >> 12, DECALS_EDGE.size())]
+				size = 12.0 + posmod(h >> 16, 5)
+			elif on_road and roll < 6:
+				name = DECALS_ROAD[posmod(h >> 12, DECALS_ROAD.size())]
+				size = 11.0
+			elif not on_road and not edge and roll < 16:
+				name = DECALS_GRASS[posmod(h >> 12, DECALS_GRASS.size())]
+				size = 10.0 + posmod(h >> 16, 6)
+			if name.is_empty() or local_obstacles.any(func(rect: Rect2) -> bool: return rect.has_point(at)):
+				continue
+			PixelArt.draw_in(self, name, Rect2(at - Vector2(size * 0.5, size), Vector2(size, size)), Color(0.82, 0.84, 0.8))
+
+
 func _draw() -> void:
+	_draw_decals()
 	# Dock, piles and lantern posts are aligned to the world pixel grid.
-	for y in range(784, 912, 8):
-		draw_rect(Rect2(1296, y, 48, 7), Color("9b805a"))
-		draw_line(Vector2(1300, y+2), Vector2(1340, y+2), Color("bba073"))
+	var dock := Rect2(1296, 784, 48, 128)
+	draw_rect(Rect2(dock.position + Vector2(3, 4), dock.size), Color(0, 0, 0, 0.35))
+	for y in range(784, 912, 16):
+		for x in range(1296, 1344, 16):
+			if not PixelArt.draw_material(self, "dock_planks", Rect2(x, y, 16, 16), Color(0.9, 0.88, 0.84)):
+				draw_rect(Rect2(x, y, 16, 16), Color("9b805a"))
+	draw_rect(dock, Color("2a2219"), false, 1.0)
 	for y in [792, 848, 904]:
 		draw_rect(Rect2(1292, y, 5, 9), Color("4f4936"))
 		draw_rect(Rect2(1343, y, 5, 9), Color("4f4936"))

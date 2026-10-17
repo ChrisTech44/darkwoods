@@ -53,3 +53,32 @@ figure's own palette. Walk frames are a 1 px step-bob with alternating legs,
 not drawn animation. Terrain tiles and code-drawn buildings keep their
 original art. Some generated side views faced the wrong way; the importer
 mirrors or swaps those rows per species.
+
+**Fourth batch (17 October, 48 credits; 656 left):** four NB 2.1 generations to
+replace the last boxy and placeholder art.
+- [Groundskeeper](groundskeeper_sheet.png): an edit of the stalker pose grid, so
+  the F7 headline killer has real art (`tools/import_spritecook_groundskeeper.gd`).
+- [Night props](night_props_sheet.png): signal pyre (unlit/lit), kerosene, flare
+  gun, snare (open/sprung), gift crate, signpost, rescue helicopter, apple tree,
+  trellis, mossy log, tires, drum, cooler, glow mushrooms.
+- [Ground decals](ground_decals_sheet.png): grass tufts, ferns, rocks, leaves,
+  puddles, flowers and more, scattered (seeded) along every camp road edge and
+  woods trail edge so paths no longer end in hard straight lines, and sparsely
+  across grass and trails to hide texture tiling.
+- [Surface textures](surface_textures_sheet.png): asphalt (Ranger Road),
+  quarry gravel, mossy flagstones, court tiles, orchard soil, dock planks
+  (docks, bog boardwalk, mill decks, cabin walls and thresholds), a calmer lawn
+  for camp grass, leaf litter and mossy floor.
+
+Code-side, with no credits: gable roofs with a lit and a shaded slope, ridge
+cap, eaves, fieldstone chimney and shingled porch awning; plank interior walls
+and mullioned windows; textured bog pools; pointed signpost planks; one label
+per stash of identical pickups.
+
+| Camp road edges | Ranger Road | Drowned Chapel | Witch's bog |
+| --- | --- | --- | --- |
+| ![Camp](batch3_camp_west.png) | ![Road](batch3_zone_13_ranger.png) | ![Chapel](batch3_zone_08_chapel.png) | ![Bog](batch3_zone_01_bog.png) |
+
+| Signal pyre | Groundskeeper on a trail | Orchard | Flooded Mill | Interior walls |
+| --- | --- | --- | --- | --- |
+| ![Pyre](batch3_pyre.png) | ![Groundskeeper](batch3_woods_trail.png) | ![Orchard](batch3_zone_04_orchard.png) | ![Mill](batch3_zone_03_mill.png) | ![Interior](batch3_interior.png) |

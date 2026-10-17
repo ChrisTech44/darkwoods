@@ -246,6 +246,7 @@ func _draw() -> void:
 		# A distant approach silhouette, revealed only within the landing-zone view.
 		var at := landing + Vector2(0, -160 - remaining * 3)
 		if started and remaining < 12:
-			draw_rect(Rect2(at - Vector2(9, 15), Vector2(18, 30)), Color("7d9690"))
-			draw_line(at - Vector2(39, 10), at + Vector2(39, -10), tint, 2)
-			draw_line(at + Vector2(0, 15), at + Vector2(0, 32), Color("bac5b1"), 3)
+			if not PixelArt.draw_in(self, "helicopter", Rect2(at - Vector2(30, 30), Vector2(60, 50))):
+				draw_rect(Rect2(at - Vector2(9, 15), Vector2(18, 30)), Color("7d9690"))
+			# Spinning rotor blur over the airframe.
+			draw_line(at + Vector2.from_angle(pulse * 20.0) * 34, at - Vector2.from_angle(pulse * 20.0) * 34, Color(0.85, 0.88, 0.8, 0.5), 2)

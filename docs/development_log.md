@@ -1,5 +1,34 @@
 # Development log
 
+## 2026-10-17 — Art pass: no more boxy ground, placeholders or flat roofs
+
+The user asked that every boxy graphic be replaced ("no cheap looking ground")
+while keeping credits in reserve. An audit capture of every area (camp, 14
+regions, escape sites, new props) found the worst offenders: flat grey Ranger
+Road, grid-tiled court floors, striped orchard ground, hard straight path edges,
+visible grass tiling, flat roofs, line-drawn walls, and placeholders (pyre,
+snare, gift crate, a tinted stalker as the Groundskeeper).
+
+- SpriteCook: four generations, **48 credits (704 → 656 left)**: Groundskeeper
+  sheet (edit of the stalker grid), 16 night props, 16 ground decals, 9 seamless
+  surfaces. Recorded in `spritecook-assets.json`; sliced/imported by
+  `tools/slice_spritecook_grid.gd`, `import_spritecook_textures.gd` and the new
+  `import_spritecook_groundskeeper.gd`.
+- Ground: seeded decals soften every camp road edge and woods trail edge and
+  break up tiling; camp grass uses the calmer lawn; Ranger Road is asphalt with
+  crumbling shoulders; landmarks use their own floors (mossy flagstones, court
+  tiles, orchard soil, quarry gravel) with sprite dressing instead of speckles
+  and survey circles; the bog has textured pools and a plank boardwalk.
+- Buildings: gable roofs with lit and shaded slopes, ridge cap, eaves, chimney,
+  awning and subtle moss; plank interior walls, mullioned windows, plank
+  thresholds; plank docks.
+- Fixed: the Groundskeeper sheet drew as a white box when loaded at draw time;
+  both killer sheets are now preloaded constants. Stacks of identical pickups
+  show one label.
+
+**Verification:** `verify.py` 135/135; `verify_network.py --players 2` 375
+assertions, 0 failures. Evidence: [art batch 4](evidence/spritecook/README.md).
+
 ## 2026-10-17 — Story events, build-ups and the creature audio revamp
 
 The user noted creatures "do not really make that much noise".

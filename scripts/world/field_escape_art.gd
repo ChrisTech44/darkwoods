@@ -13,7 +13,9 @@ static func draw_site(canvas: Node2D, zone: Dictionary) -> void:
 	for y in range(int(bounds.position.y),int(bounds.end.y),16):
 		for x in range(int(bounds.position.x),int(bounds.end.x),16):
 			var at := Vector2(x,y)
-			PixelArt.draw_material(canvas,"forest_floor" if kind=="logging" else "road",Rect2(at,Vector2(16,16)),Color("b3b69b") if kind=="logging" else Color("828f7b"))
+			var ground := "forest_floor" if kind=="logging" else "leaf_litter"
+			if not PixelArt.draw_material(canvas,ground,Rect2(at,Vector2(16,16)),Color("b3b69b") if kind=="logging" else Color(0.82,0.84,0.8)):
+				PixelArt.draw_material(canvas,"road",Rect2(at,Vector2(16,16)),Color("828f7b"))
 	if kind=="logging":
 		for side in [-1,1]:
 			for index in range(4):
@@ -31,9 +33,14 @@ static func draw_site(canvas: Node2D, zone: Dictionary) -> void:
 			for y in range(int(rect.position.y),int(rect.end.y),16):
 				for x in range(int(rect.position.x),int(rect.end.x),16):
 					PixelArt.draw_material(canvas,"water",Rect2(Vector2(x,y),Vector2(16,16)),Color("71968d"))
-		for y in range(-238,100,8):
-			canvas.draw_rect(Rect2(center+Vector2(-46,y),Vector2(92,6)),Color("9e8962") if y%16==0 else Color("746f50"))
-			canvas.draw_line(center+Vector2(-42,y+1),center+Vector2(41,y+1),Color("c0a477"))
+		# Launch dock: weathered SpriteCook planks with a dark edge and drop shadow.
+		var dock := Rect2(center+Vector2(-46,-238),Vector2(92,338))
+		canvas.draw_rect(Rect2(dock.position+Vector2(3,4),dock.size),Color(0,0,0,0.35))
+		for y in range(int(dock.position.y),int(dock.end.y),16):
+			for x in range(int(dock.position.x),int(dock.end.x),16):
+				if not PixelArt.draw_material(canvas,"dock_planks",Rect2(x,y,mini(16,int(dock.end.x)-x),mini(16,int(dock.end.y)-y)),Color(0.92,0.9,0.86)):
+					canvas.draw_rect(Rect2(x,y,16,16),Color("9e8962"))
+		canvas.draw_rect(dock,Color("2a2219"),false,2.0)
 		PixelArt.draw_standing(canvas,"f5_pier",center+Vector2(0,80),90)
 		for x in [-49,46]:
 			for y in [-216,-120,-24,72]:
@@ -44,9 +51,17 @@ static func draw_site(canvas: Node2D, zone: Dictionary) -> void:
 		PixelArt.draw_standing(canvas,"barrel",center+Vector2(180,137),29)
 	else:
 		# Floodlit road and traversable wooden evacuation bridge, with clear shoulders.
-		canvas.draw_rect(Rect2(center+Vector2(-72,-650),Vector2(144,1260)),Color("6d6c54"))
+		var road := Rect2(center+Vector2(-72,-650),Vector2(144,1260))
+		for y in range(int(road.position.y),int(road.end.y),16):
+			for x in range(int(road.position.x),int(road.end.x),16):
+				if not PixelArt.draw_material(canvas,"asphalt",Rect2(x,y,mini(16,int(road.end.x)-x),16),Color(0.86,0.86,0.84)):
+					canvas.draw_rect(Rect2(x,y,16,16),Color("6d6c54"))
+		# Crumbling shoulders and a faded centre line.
+		for side in [-1,1]:
+			canvas.draw_line(center+Vector2(side*72,-650),center+Vector2(side*72,610),Color(0.1,0.12,0.1,0.8),3)
+			canvas.draw_line(center+Vector2(side*64,-650),center+Vector2(side*64,610),Color(0.78,0.74,0.6,0.35),1)
 		for y in range(-620,620,28):
-			canvas.draw_rect(Rect2(center+Vector2(-2,y),Vector2(4,13)),Color("d0bd83"))
+			canvas.draw_rect(Rect2(center+Vector2(-2,y),Vector2(3,13)),Color(0.82,0.74,0.5,0.55))
 		for y in range(-582,-420,7):
 			canvas.draw_rect(Rect2(center+Vector2(-63,y),Vector2(126,5)),Color("9b8d6b"))
 		PixelArt.draw_standing(canvas,"f5_bridge",center+Vector2(0,-460),145)

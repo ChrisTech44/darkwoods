@@ -732,6 +732,11 @@ The game's art was redrawn with SpriteCook in October 2026:
 - every item and belt icon, the van, tent, campfire and camp props;
 - building interiors and furniture, the landmark props;
 - seamless ground, floor, roof and water textures;
+- (17 October) the Groundskeeper, Signal Fire props, snares, gift crate, rescue
+  helicopter, orchard trees and trellises, ground decals that soften every path
+  edge, and asphalt, gravel, flagstone, court-tile, orchard and plank surfaces.
+  Roofs are shaded gables and interior walls are timber, so nothing in the world
+  is a flat box any more (48 credits; 656 kept in reserve);
 - the title screen.
 
 See [art evidence](docs/evidence/spritecook/README.md). The stalker is now

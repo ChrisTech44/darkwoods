@@ -84,6 +84,7 @@ func interact(actor: CampPlayer) -> bool:
 
 
 func _draw() -> void:
+	texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 	var bounds: Rect2 = definition["bounds"]
 	var center := bounds.get_center()
 	if definition["kind"] in ["logging", "boathouse", "ranger"]:
@@ -91,24 +92,47 @@ func _draw() -> void:
 	elif definition["kind"] in ["substation", "relay"]:
 		RescueArt.draw_site(self, definition)
 	elif definition["kind"] == "village":
-		for y in range(int(bounds.position.y), int(bounds.end.y), 16):
-			for x in range(int(bounds.position.x), int(bounds.end.x), 16):
-				if (x / 16 + y / 16) % 3 == 0:
-					draw_rect(Rect2(x + 2, y + 2, 11, 10), Color("687263"))
 		# Timber bell frame and a stone well, both used from the open square.
 		if PixelArt.draw_standing(self, "bell_frame", center + Vector2(0, -22), 34) and PixelArt.draw_standing(self, "well", center + Vector2(0, 56), 36):
 			pass
 		else:
 			_draw_village_fallback(center)
 	elif definition["kind"] == "bog":
+		# Murky pools: irregular textured water with reeds at the banks.
+		var water := PixelArt.texture("water")
 		for index in range(65):
 			var at := bounds.position + Vector2(24 + (index * 71) % int(bounds.size.x-48), 24 + (index * 43) % int(bounds.size.y-48))
-			draw_circle(at, 22 + index % 3 * 4, Color("25443e"))
-			draw_arc(at, 16, 0, PI, 12, Color("497258"))
-			draw_line(at + Vector2(18, 4), at + Vector2(21, -13), Color("72825a"))
-		# Planks keep the central ritual space readable.
-		for y in range(-int(bounds.size.y/2)+48, int(bounds.size.y/2)-48, 9):
-			draw_rect(Rect2(center + Vector2(-40, y), Vector2(80, 7)), Color("766443"))
+			if absf(at.x - center.x) < 52:
+				continue
+			var radius := 20.0 + index % 3 * 4
+			var points := PackedVector2Array()
+			var uvs := PackedVector2Array()
+			for step in range(12):
+				var corner := at + Vector2.from_angle(step * TAU / 12) * radius * (0.82 + 0.18 * sin(step * 2.3 + index))
+				points.append(corner)
+				uvs.append(corner / 64.0)
+			draw_colored_polygon(points.duplicate(), Color("1b302d"))
+			if water != null:
+				var inner := PackedVector2Array()
+				for corner in points:
+					inner.append(at + (corner - at) * 0.88)
+				draw_polygon(inner, PackedColorArray([Color(0.62, 0.78, 0.72)]), PackedVector2Array(Array(inner).map(func(point: Vector2) -> Vector2: return point / 64.0)), water)
+			if index % 2 == 0:
+				PixelArt.draw_in(self, "decal_weeds", Rect2(at + Vector2(radius * 0.7, -8), Vector2(14, 14)))
+			else:
+				PixelArt.draw_in(self, "decal_grass_tall", Rect2(at + Vector2(-radius, -6), Vector2(12, 12)))
+		# A plank boardwalk keeps the central ritual space readable.
+		var walk := Rect2(center + Vector2(-40, -int(bounds.size.y/2)+48), Vector2(80, bounds.size.y - 96))
+		draw_rect(Rect2(walk.position + Vector2(3, 4), walk.size), Color(0, 0, 0, 0.35))
+		for y in range(int(walk.position.y), int(walk.end.y), 16):
+			for x in range(int(walk.position.x), int(walk.end.x), 16):
+				if not PixelArt.draw_material(self, "dock_planks", Rect2(x, y, mini(16, int(walk.end.x) - x), mini(16, int(walk.end.y) - y)), Color(0.78, 0.74, 0.66)):
+					draw_rect(Rect2(x, y, 16, 16), Color("766443"))
+		draw_rect(walk, Color("231d15"), false, 2.0)
+		for y in range(int(walk.position.y) + 20, int(walk.end.y), 96):
+			for side in [walk.position.x - 1, walk.end.x - 3]:
+				draw_rect(Rect2(side, y, 4, 9), Color("3a2e20"))
+				draw_rect(Rect2(side, y, 4, 2), Color("8c7552"))
 		if not PixelArt.draw_standing(self, "cauldron", center + Vector2(0, 8), 36):
 			draw_circle(center + Vector2(0, -12), 19, Color("152c2c"))
 			draw_circle(center + Vector2(0, -15), 13, Color("6b9861"))
@@ -134,55 +158,34 @@ func _draw() -> void:
 func center_hash() -> int:
 	return int(definition["cell"].x + definition["cell"].y)
 
+## Seamless SpriteCook floor per landmark (procedural colour as fallback).
+const FLOORS := {"mill": "mossy_flagstones", "orchard": "orchard_soil", "observatory": "court_tiles", "rail": "quarry_gravel", "quarry": "quarry_gravel", "chapel": "mossy_flagstones"}
+## Ground dressing sprites per landmark: [sprite, width].
+const DRESSING := {"orchard": [["apple_tree", 46]], "mill": [["mossy_log", 40], ["barrel", 14]], "rail": [["tire_stack", 26], ["drum_side", 26], ["crates", 30]],
+	"observatory": [["glow_mushrooms", 20], ["decal_mossy_stone", 18]], "quarry": [["boulder", 30], ["decal_pebbles", 18]], "chapel": [["gravestone", 16], ["grave_cross", 16]]}
+
 func _draw_landmark(bounds: Rect2, center: Vector2) -> void:
 	var kind: String = definition["kind"]
 	var palettes := {"mill":"4f6661", "orchard":"46583b", "observatory":"414b62", "rail":"66584c", "quarry":"68736d", "chapel":"465763"}
-	draw_rect(bounds, Color(palettes[kind]))
+	if PixelArt.texture(FLOORS[kind]) != null:
+		for y in range(int(bounds.position.y), int(bounds.end.y), 16):
+			for x in range(int(bounds.position.x), int(bounds.end.x), 16):
+				PixelArt.draw_material(self, FLOORS[kind], Rect2(x, y, mini(16, int(bounds.end.x) - x), mini(16, int(bounds.end.y) - y)), Color(0.86, 0.86, 0.86))
+	else:
+		draw_rect(bounds, Color(palettes[kind]))
 	# Walkable dressing, no decorative prop changes collision or hides a route.
 	_draw_biome_floor(kind, bounds, center)
-	for index in range(170):
-		var at := bounds.position + Vector2(12 + posmod(index*137, int(bounds.size.x)-24), 12 + posmod(index*83, int(bounds.size.y)-24))
-		draw_rect(Rect2(at,Vector2(2+index%4,1)), Color("8a9177"))
+	var options: Array = DRESSING[kind]
 	for index in range(16):
 		var at := bounds.position + Vector2(80 + index%4 * (bounds.size.x-160)/3, 80 + index/4 * (bounds.size.y-160)/3)
 		if at.distance_to(center) < 100:
 			continue
-		draw_circle(at + Vector2(0,9), 24, Color(0.05,0.09,0.1,0.3))
-		match kind:
-			"orchard":
-				for side in [-1,1]:
-					draw_line(at, at+Vector2(side*21,-20), Color("80654a"),3)
-				draw_rect(Rect2(at+Vector2(-3,-23),Vector2(6,35)),Color("6b503b"))
-				draw_circle(at+Vector2(0,-26),22,Color("304832"))
-				for fruit in range(7):
-					draw_circle(at+Vector2(-15+fruit*5,-23-fruit%3*5),2,Color("c39463"))
-			"mill":
-				draw_rect(Rect2(at-Vector2(23,12),Vector2(46,27)),Color("284445"))
-				for plank in range(6):
-					draw_rect(Rect2(at+Vector2(-24,-15+plank*5),Vector2(48,3)),Color("8e7958"))
-				draw_line(at+Vector2(-20,-19),at+Vector2(18,-19),Color("b2996a"),4)
-			"rail":
-				for rail_x in [-20,20]:
-					draw_line(at+Vector2(rail_x,-30),at+Vector2(rail_x,30),Color("a7a38c"),2)
-				for y in range(-25,30,8):
-					draw_line(at+Vector2(-25,y),at+Vector2(25,y),Color("352e2b"),3)
-				draw_rect(Rect2(at+Vector2(-16,-22),Vector2(32,32)),Color("806449"))
-				draw_rect(Rect2(at+Vector2(-12,-18),Vector2(24,12)),Color("26353b"))
-			"observatory":
-				draw_circle(at,23,Color("273846"))
-				draw_arc(at,21,PI,TAU,20,Color("a0a799"),3)
-				draw_line(at+Vector2(-17,-13),at+Vector2(20,-28),Color("b0af9b"),7)
-				draw_circle(at+Vector2(20,-28),4,Color("3a4c59"))
-			"quarry":
-				for rock in range(4):
-					var point := at+Vector2(rock*8-20,rock%2*8-10)
-					draw_texture(preload("res://assets/sprites/boulder.png"),point)
-				draw_line(at+Vector2(-20,17),at+Vector2(20,17),Color("c6b994"),2)
-			"chapel":
-				draw_rect(Rect2(at+Vector2(-20,-6),Vector2(40,10)),Color("756b58"))
-				for x in [-16,14]:
-					draw_rect(Rect2(at+Vector2(x,-21),Vector2(3,14)),Color("c2bd9e"))
-					draw_circle(at+Vector2(x+1,-23),2,Color("efbf7a"))
+		var pick: Array = options[posmod(index * 7 + center_hash(), options.size())]
+		draw_circle(at + Vector2(0, 8), pick[1] * 0.4, Color(0.03, 0.06, 0.06, 0.32))
+		if pick[0] == "boulder":
+			draw_texture(preload("res://assets/sprites/boulder.png"), at - Vector2(16, 24))
+		elif not PixelArt.draw_standing(self, pick[0], at + Vector2(0, 10), pick[1]):
+			draw_circle(at, 8, Color("566b58"))
 	if not _draw_centerpiece_sprite(kind, center + Vector2(0,-95)):
 		_draw_centerpiece(kind, center + Vector2(0,-95))
 	# Central reward altar is visually distinct from surrounding dressing.
@@ -193,50 +196,34 @@ func _draw_landmark(bounds: Rect2, center: Vector2) -> void:
 
 
 func _draw_biome_floor(kind: String, bounds: Rect2, center: Vector2) -> void:
-	# Inlaid floors and shallow channels are walkable; geometry stays truthful.
-	for y in range(int(bounds.position.y)+8,int(bounds.end.y)-8,16):
-		for x in range(int(bounds.position.x)+8,int(bounds.end.x)-8,16):
-			var at := Vector2(x,y)
-			var hash_value := posmod(x*31+y*17,71)
-			if kind in ["chapel","observatory","quarry"]:
-				draw_rect(Rect2(at,Vector2(14,14)),Color("556467") if hash_value<30 else Color("465659"))
-				draw_line(at+Vector2(1,1),at+Vector2(12,1),Color("78807a"))
-			elif kind == "orchard":
-				draw_rect(Rect2(at,Vector2(13,3)),Color("36482e"))
-				if hash_value<12:
-					draw_line(at,at+Vector2(3,-5),Color("a0a66a"))
-			elif kind == "mill":
-				draw_line(at,at+Vector2(14,0),Color("617e75"))
-			else:
-				if hash_value<22:
-					draw_rect(Rect2(at,Vector2(7,3)),Color("8b7b63"))
+	# Inlaid tracks, channels and rows are walkable; geometry stays truthful.
 	if kind == "rail":
 		for offset in [-105,105]:
 			for y in range(int(bounds.position.y),int(bounds.end.y),12):
-				draw_rect(Rect2(center.x+offset-27,y,54,5),Color("302e2b"))
+				draw_rect(Rect2(center.x+offset-27,y,54,5),Color("2b2622"))
+				draw_line(Vector2(center.x+offset-27,y),Vector2(center.x+offset+27,y),Color("4a3f35"))
 			for x in [-19,19]:
-				draw_line(Vector2(center.x+offset+x,bounds.position.y),Vector2(center.x+offset+x,bounds.end.y),Color("b0b4a5"),2)
+				draw_line(Vector2(center.x+offset+x,bounds.position.y),Vector2(center.x+offset+x,bounds.end.y),Color("3a3a36"),3)
+				draw_line(Vector2(center.x+offset+x,bounds.position.y),Vector2(center.x+offset+x,bounds.end.y),Color("b8bcae"),1)
 	elif kind == "mill":
 		for offset in [-105,105]:
-			draw_rect(Rect2(center.x+offset-22,bounds.position.y,44,bounds.size.y),Color("254445"))
-			for y in range(int(bounds.position.y),int(bounds.end.y),13):
-				draw_line(Vector2(center.x+offset-18,y),Vector2(center.x+offset+14,y),Color("6b9186"))
+			var channel := Rect2(center.x+offset-22,bounds.position.y,44,bounds.size.y)
+			for y in range(int(channel.position.y), int(channel.end.y), 16):
+				if not PixelArt.draw_material(self, "water", Rect2(channel.position.x, y, 44, mini(16, int(channel.end.y) - y))):
+					draw_rect(Rect2(channel.position.x, y, 44, 16), Color("254445"))
+			draw_line(Vector2(channel.position.x, channel.position.y), Vector2(channel.position.x, channel.end.y), Color("1d2a28"), 2)
+			draw_line(Vector2(channel.end.x, channel.position.y), Vector2(channel.end.x, channel.end.y), Color("1d2a28"), 2)
 		for y in [-45,65]:
-			for x in range(-150,151,8):
-				draw_rect(Rect2(center+Vector2(x,y),Vector2(6,36)),Color("8b7857"))
+			var deck := Rect2(center + Vector2(-150, y), Vector2(306, 36))
+			for x in range(int(deck.position.x), int(deck.end.x), 16):
+				if not PixelArt.draw_material(self, "dock_planks", Rect2(x, deck.position.y, mini(16, int(deck.end.x) - x), 36)):
+					draw_rect(Rect2(x, deck.position.y, 16, 36), Color("8b7857"))
+			draw_rect(deck, Color("2c2419"), false, 1.0)
 	elif kind == "orchard":
 		for offset in [-160,160]:
 			for y in range(int(bounds.position.y)+32,int(bounds.end.y)-32,64):
-				var at := Vector2(center.x+offset,y)
-				draw_line(at-Vector2(32,0),at+Vector2(32,0),Color("aa9a70"))
-				for x in [-32,32]:
-					draw_rect(Rect2(at+Vector2(x,-12),Vector2(3,24)),Color("6e5d42"))
-	else:
-		for radius in [78,82,128,132]:
-			draw_arc(center,radius,0,TAU,64,Color("9d9d85"),1)
-		for index in range(12):
-			var ray := Vector2.from_angle(index*TAU/12)
-			draw_line(center+ray*85,center+ray*127,Color("969780"))
+				if not PixelArt.draw_standing(self, "trellis", Vector2(center.x+offset, y + 14), 64):
+					draw_line(Vector2(center.x+offset-32, y),Vector2(center.x+offset+32, y),Color("aa9a70"))
 
 ## SpriteCook landmark pieces; false keeps the procedural centrepiece.
 func _draw_centerpiece_sprite(kind: String, at: Vector2) -> bool:
@@ -252,6 +239,14 @@ func _draw_centerpiece_sprite(kind: String, at: Vector2) -> bool:
 			PixelArt.draw_standing(self, "column", at + Vector2(-44, 36), 24)
 			PixelArt.draw_standing(self, "column", at + Vector2(44, 36), 24)
 			return PixelArt.draw_standing(self, "shrine", at + Vector2(0, 40), 40)
+		"quarry":
+			# Off to the west: the Signal Fire pyre stands on the north rim.
+			PixelArt.draw_standing(self, "boulder", at + Vector2(-96, 44), 30)
+			return PixelArt.draw_standing(self, "cave", at + Vector2(-140, 40), 72)
+		"orchard":
+			PixelArt.draw_standing(self, "apple_tree", at + Vector2(-46, 30), 56)
+			PixelArt.draw_standing(self, "trellis", at + Vector2(30, 34), 70)
+			return PixelArt.draw_standing(self, "apple_tree", at + Vector2(92, 30), 50)
 	return false
 
 

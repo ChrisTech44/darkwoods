@@ -80,22 +80,32 @@ func _draw() -> void:
 		for x in range(int(bounds.position.x), int(bounds.end.x), 16):
 			if not PixelArt.draw_material(self, floor_material, Rect2(x, y, 16, 16)):
 				draw_texture_rect_region(ATLAS, Rect2(x, y, 16, 16), Rect2(tile * 16, Vector2(16, 16)))
+	# Timber walls: warm-tinted SpriteCook planks, a lit top edge and a shaded base.
 	for wall in walls:
-		draw_rect(wall, Color("3c3d32"))
-		for y in range(int(wall.position.y), int(wall.end.y), 4):
-			draw_line(Vector2(wall.position.x, y), Vector2(wall.end.x, y), Color("887355"))
-		draw_line(wall.position, Vector2(wall.end.x, wall.position.y), Color("baa17a"), 2)
-		draw_line(Vector2(wall.position.x, wall.end.y), wall.end, Color("272f29"), 2)
+		draw_rect(wall.grow(1), Color("1c1a14"))
+		for y in range(int(wall.position.y), int(wall.end.y), 16):
+			for x in range(int(wall.position.x), int(wall.end.x), 16):
+				var piece := Rect2(x, y, mini(16, int(wall.end.x) - x), mini(16, int(wall.end.y) - y))
+				if not PixelArt.draw_material(self, "dock_planks", piece, Color(0.82, 0.62, 0.42)):
+					draw_rect(piece, Color("6b5638"))
+		draw_line(wall.position, Vector2(wall.end.x, wall.position.y), Color(0.86, 0.74, 0.52, 0.8), 1.0)
+		draw_line(Vector2(wall.position.x, wall.end.y), wall.end, Color(0.08, 0.08, 0.06, 0.8), 2.0)
 	for x in range(int(bounds.position.x) + 32, int(bounds.end.x) - 20, 64):
 		var window := Rect2(x, bounds.position.y + 3, 22, 8)
-		draw_rect(window.grow(2), Color("293c37"))
-		draw_rect(window, Color("789d9b"))
-		draw_line(window.position + Vector2(10, 0), window.position + Vector2(10, 8), Color("c5b894"))
+		draw_rect(window.grow(2), Color("2a231a"))
+		draw_rect(window, Color("4f6f72"))
+		draw_rect(Rect2(window.position + Vector2(1, 1), Vector2(9, 3)), Color(0.72, 0.84, 0.82, 0.55))
+		draw_line(window.position + Vector2(11, 0), window.position + Vector2(11, 8), Color("8a7352"), 1.0)
+		draw_line(window.position + Vector2(0, 4), window.position + Vector2(22, 4), Color("8a7352"), 1.0)
+		draw_rect(Rect2(window.position + Vector2(-2, 9), Vector2(26, 2)), Color("a58b62"))
 	for furnishing in furnishings:
 		_draw_furniture(furnishing["rect"], furnishing["type"])
-	draw_rect(Rect2(door - Vector2(18, 0), Vector2(36, 20)), Color("77684c"))
-	for y in range(0, 20, 4):
-		draw_line(door + Vector2(-18, y), door + Vector2(18, y), Color("ac9468"))
+	# Plank threshold at the doorway.
+	var step := Rect2(door - Vector2(18, 0), Vector2(36, 20))
+	for x in range(int(step.position.x), int(step.end.x), 16):
+		if not PixelArt.draw_material(self, "dock_planks", Rect2(x, step.position.y, mini(16, int(step.end.x) - x), 20), Color(0.86, 0.72, 0.52)):
+			draw_rect(Rect2(x, step.position.y, 16, 20), Color("77684c"))
+	draw_rect(step, Color("2a231a"), false, 1.0)
 	draw_string(ThemeDB.fallback_font, bounds.position + Vector2(28, 20), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("dec99c"))
 
 

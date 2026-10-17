@@ -11,7 +11,13 @@ const GRIDS := {
 		"basin", "cot", "bench", "bookshelf", "canoe_rack", "rug", "chair", "nightstand"],
 	"landmarks_sheet": ["bell_frame", "well", "cauldron", "crypt", "gravestone", "grave_cross", "altar", "waterwheel",
 		"observatory", "rail_signal", "column", "shrine", "hunter_blind", "cave", "watchtower", "scrap_pile"],
+	"night_props_sheet": ["pyre", "pyre_lit", "kerosene_1", "flare_gun", "snare", "snare_sprung", "gift_crate", "signpost_arrows",
+		"helicopter", "apple_tree", "trellis", "mossy_log", "tire_stack", "drum_side", "cooler", "glow_mushrooms"],
+	"ground_decals_sheet": ["decal_grass_tall", "decal_grass_short", "decal_fern", "decal_clover", "decal_rock", "decal_pebbles", "decal_mossy_stone", "decal_root",
+		"decal_leaves", "decal_needles", "decal_puddle", "decal_flowers", "decal_mushrooms", "decal_dry_grass", "decal_weeds", "decal_branch"],
 }
+## Extra copies for objective kinds that share one picture.
+const ALIASES := {"kerosene_2": "kerosene_1"}
 
 
 func _initialize() -> void:
@@ -26,4 +32,6 @@ func _initialize() -> void:
 			var used := region.get_used_rect()
 			region.get_region(used).save_png(ProjectSettings.globalize_path("res://assets/sprites/sc/%s.png" % names[index]))
 			print("%s %s" % [names[index], used.size])
+	for alias: String in ALIASES:
+		DirAccess.copy_absolute(ProjectSettings.globalize_path("res://assets/sprites/sc/%s.png" % ALIASES[alias]), ProjectSettings.globalize_path("res://assets/sprites/sc/%s.png" % alias))
 	quit()

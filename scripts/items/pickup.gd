@@ -21,7 +21,9 @@ func _draw() -> void:
 	if icon != null:
 		draw_circle(Vector2(0, 1), 9, Color(0.8, 0.85, 0.6, 0.1))
 		draw_texture(icon, (-icon.get_size() * 0.5).round())
-		draw_string(ThemeDB.fallback_font, Vector2(-16, -12), ("EMERGENCY FUSE" if kind == "rescue_fuse" else kind.replace("_", " ").to_upper()), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("d8d0a8"))
+		if _labelled():
+			var title := "EMERGENCY FUSE" if kind == "rescue_fuse" else kind.trim_suffix("_1").trim_suffix("_2").replace("_", " ").to_upper()
+			draw_string(ThemeDB.fallback_font, Vector2(-16, -12), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("d8d0a8"))
 		return
 	if locked:
 		draw_rect(Rect2(-10, -9, 20, 16), Color("947b51"))
@@ -91,3 +93,11 @@ func _draw() -> void:
 		draw_line(Vector2(-1, 0), Vector2(6, 0), color, 2)
 		draw_line(Vector2(5, 0), Vector2(5, 3), color, 2)
 	draw_string(ThemeDB.fallback_font, Vector2(-16, -12), kind.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, color)
+
+
+## One label per cluster: a stash of the same supply shows its name once.
+func _labelled() -> bool:
+	for other in get_parent().get_children():
+		if other != self and other is CampPickup and other.available and other.kind == kind and other.position.x < position.x and other.position.distance_to(position) < 40.0:
+			return false
+	return true

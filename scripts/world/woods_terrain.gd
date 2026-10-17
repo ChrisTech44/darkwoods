@@ -167,8 +167,36 @@ func _path_point(point: Vector2, reach: float) -> Variant:
 	return null
 
 
+## Decals soften trail edges (tufts, ferns) and break up tiling (litter).
+const EDGE_DECALS: Array[String] = ["decal_grass_tall", "decal_fern", "decal_weeds", "decal_dry_grass", "decal_grass_short", "decal_root"]
+const TRAIL_DECALS: Array[String] = ["decal_pebbles", "decal_leaves", "decal_needles", "decal_branch", "decal_puddle", "decal_rock", "decal_mushrooms"]
+
+
+func _draw_decals() -> void:
+	var step := 20
+	for y in range(int(floor(view.position.y / step)), int(ceil(view.end.y / step))):
+		for x in range(int(floor(view.position.x / step)), int(ceil(view.end.x / step))):
+			var h := hash(Vector2i(x, y) + Vector2i(4441, 87))
+			var at := Vector2(x * step + posmod(h, 13) - 6, y * step + posmod(h >> 4, 13) - 6)
+			if CampMap.CAMP_BOUNDS.has_point(at) or not camp_map.woods.walkable(at) or not camp_map.woods.zone_at(at).is_empty():
+				continue
+			var roll := posmod(h >> 8, 100)
+			var near_wall := _solid(at + Vector2(0, 10)) or _solid(at + Vector2(0, -10)) or _solid(at + Vector2(10, 0)) or _solid(at + Vector2(-10, 0))
+			var name := ""
+			var size := 12.0
+			if near_wall and roll < 70:
+				name = EDGE_DECALS[posmod(h >> 12, EDGE_DECALS.size())]
+				size = 12.0 + posmod(h >> 16, 6)
+			elif roll < 9:
+				name = TRAIL_DECALS[posmod(h >> 12, TRAIL_DECALS.size())]
+				size = 10.0 + posmod(h >> 16, 4)
+			if not name.is_empty():
+				PixelArt.draw_in(self, name, Rect2(at - Vector2(size * 0.5, size), Vector2(size, size)), Color(0.8, 0.82, 0.78))
+
+
 ## Shrubs fill the gaps between trunks along every trail edge.
 func _draw_undergrowth() -> void:
+	_draw_decals()
 	var step := 14
 	for y in range(int(floor(view.position.y / step)), int(ceil(view.end.y / step))):
 		for x in range(int(floor(view.position.x / step)), int(ceil(view.end.x / step))):

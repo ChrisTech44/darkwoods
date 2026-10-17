@@ -210,6 +210,30 @@
       "label": "F5 slice f5_codes; reproduce with tools/slice_escape_props.gd",
       "file": "assets/sprites/sc/f5_codes.png",
       "sha12": "840f376e1ac1"
+    },
+    {
+      "asset_id": "bc1d5e5d-12dc-4f2e-a563-de7e9ba99899",
+      "label": "Groundskeeper 2x2 pose grid (edit of stalker grid 3ae44181; side cells swapped on import)",
+      "file": "art_sources/spritecook/groundskeeper_sheet.png",
+      "sha12": "ea79b2c35c5c"
+    },
+    {
+      "asset_id": "3515fa92-b210-4c00-9754-46ccb24de32e",
+      "label": "night props 4x4 (pyre, lit pyre, kerosene, flare gun, snares, gift crate, signpost, helicopter, apple tree, trellis, mossy log, tires, drum, cooler, glow mushrooms)",
+      "file": "art_sources/spritecook/night_props_sheet.png",
+      "sha12": "0e942e911399"
+    },
+    {
+      "asset_id": "e0f0b0e5-1285-4778-9212-e2c4906ed10d",
+      "label": "ground decals 4x4 (grass tufts, fern, clover, rocks, pebbles, root, leaves, needles, puddle, flowers, mushrooms, dry grass, weeds, branch)",
+      "file": "art_sources/spritecook/ground_decals_sheet.png",
+      "sha12": "d5c69a454a9d"
+    },
+    {
+      "asset_id": "37bc6d77-b5ed-40d8-9d62-83b5e42e2071",
+      "label": "seamless surface textures 3x3 (asphalt, quarry gravel, mossy flagstones, court tiles, orchard soil, dock planks, lawn, leaf litter, mossy floor)",
+      "file": "art_sources/spritecook/surface_textures_sheet.png",
+      "sha12": "d87d9652930d"
     }
   ]
 }

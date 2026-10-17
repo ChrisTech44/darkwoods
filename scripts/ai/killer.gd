@@ -30,6 +30,8 @@ var headline := "stalker"
 ## Escalation tier = night phase + 1 (1 Dusk … 4 Witching Hour), set by NightClock.
 var tier := 1
 const INNER_RING := 1600.0
+const STALKER_SHEET := preload("res://assets/sprites/stalker.png")
+const GROUNDSKEEPER_SHEET := preload("res://assets/sprites/groundskeeper.png")
 @onready var agent: NavigationAgent2D = $NavigationAgent2D
 
 
@@ -252,14 +254,8 @@ func _draw() -> void:
 		row = 1
 	var frame := 0 if velocity.length() < 1.0 else 1 + int(stride / 9.0) % 2
 	# SpriteCook stalker: 40x48 frames, feet at the body origin like the old 32x40 art.
-	var sheet: Texture2D = preload("res://assets/sprites/stalker.png")
-	var tint := Color.WHITE
-	if headline == "groundskeeper":
-		if ResourceLoader.exists("res://assets/sprites/groundskeeper.png"):
-			sheet = load("res://assets/sprites/groundskeeper.png")
-		else:
-			tint = Color("b9c79a")
-	draw_texture_rect_region(sheet, Rect2(-20, -44, 40, 48), Rect2(frame * 40, row * 48, 40, 48), tint)
+	var sheet: Texture2D = GROUNDSKEEPER_SHEET if headline == "groundskeeper" else STALKER_SHEET
+	draw_texture_rect_region(sheet, Rect2(-20, -44, 40, 48), Rect2(frame * 40, row * 48, 40, 48))
 	var cue := "."
 	var color := Color("a7b194")
 	if state == State.CHASE:

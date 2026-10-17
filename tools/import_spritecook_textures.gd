@@ -7,6 +7,8 @@ const SHEETS := {
 	"ground_textures_sheet": {"grid": 2, "size": 96, "names": ["grass", "forest_floor", "trail", "road"]},
 	"material_textures_sheet": {"grid": 3, "size": 64, "names": ["floorboards", "bath_tiles", "shingles_brown",
 		"shingles_green", "water", "cobbles", "bog_mud", "dead_grass", "flagstones"]},
+	"surface_textures_sheet": {"grid": 3, "size": 64, "names": ["asphalt", "quarry_gravel", "mossy_flagstones",
+		"court_tiles", "orchard_soil", "dock_planks", "lawn", "leaf_litter", "mossy_floor"]},
 }
 
 

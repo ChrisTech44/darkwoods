@@ -3,6 +3,9 @@ extends Node
 
 var notice := ""
 var survivor: String = "jock"
+## F8: local meta progress and whether this run is today's Daily Night.
+var profile := CampProfile.new()
+var daily := false
 
 func _ready() -> void:
 	RoundPlan.force_all_escapes = "--all-escapes" in OS.get_cmdline_user_args()

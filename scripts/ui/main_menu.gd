@@ -15,18 +15,28 @@ func _ready() -> void:
 	online.name="Online"
 	online.text="HOST / JOIN CO-OP"
 	online.add_theme_font_size_override("font_size",8)
-	online.custom_minimum_size=Vector2(116,19)
+	online.custom_minimum_size=Vector2(116,18)
 	$Menu.add_child(online)
 	$Menu.move_child(online,$Menu/Play.get_index()+1)
 	online.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/ui/network_lobby.tscn"))
 	if not session.notice.is_empty():
 		$Status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-		$Status.size=Vector2(344,24)
+		$Status.size=Vector2(216,24)
 		$Status.text=session.notice
 		session.notice=""
 	$Menu/Mode.add_item("WOODS EXPEDITION")
 	$Menu/Mode.add_item("QUICK CAMP")
+	$Menu/Mode.add_item("DAILY NIGHT")
 	$Menu/Mode.select(1 if session.mode == "camp" else 0)
+	$Menu/Mode.item_selected.connect(_mode_selected)
+	var journal := Button.new()
+	journal.name = "Journal"
+	journal.text = "CAMP JOURNAL"
+	journal.custom_minimum_size = Vector2(116, 17)
+	$Menu.add_child(journal)
+	$Menu.move_child(journal, $Menu/Controls.get_index())
+	journal.pressed.connect(_show_journal)
+	_build_journal()
 	var audio := preload("res://scripts/ui/menu_audio.gd").new()
 	audio.name = "MenuAudio"
 	add_child(audio)
@@ -64,8 +74,62 @@ func _ready() -> void:
 
 func _play() -> void:
 	session.mode = "camp" if $Menu/Mode.selected == 1 else "woods"
+	session.daily = $Menu/Mode.selected == 2
 	session.next_seed = 0 if $Menu/RandomNight.button_pressed else clampi(int($Menu/Seed.text), 0, 2147483646)
+	if session.daily:
+		session.next_seed = CampProfile.daily_seed(Time.get_date_dict_from_system())
 	_show_survivors()
+
+
+## Daily Night: one shared expedition seed per calendar day.
+func _mode_selected(index: int) -> void:
+	var daily := index == 2
+	$Menu/RandomNight.disabled = daily
+	if daily:
+		$Menu/RandomNight.button_pressed = true
+		$Menu/Seed.placeholder_text = "TODAY: NIGHT %d" % CampProfile.daily_seed(Time.get_date_dict_from_system())
+	else:
+		_random_toggled($Menu/RandomNight.button_pressed)
+
+
+func _build_journal() -> void:
+	var panel := PanelContainer.new()
+	panel.name = "JournalPanel"
+	panel.position = Vector2(8, 6)
+	panel.size = Vector2(368, 204)
+	add_child(panel)
+	var column := VBoxContainer.new()
+	column.name = "Content"
+	panel.add_child(column)
+	var heading := Label.new()
+	heading.text = "CAMP JOURNAL"
+	heading.add_theme_font_size_override("font_size", 14)
+	column.add_child(heading)
+	var body := Label.new()
+	body.name = "Body"
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.custom_minimum_size = Vector2(352, 150)
+	body.add_theme_font_size_override("font_size", 6)
+	column.add_child(body)
+	var back := Button.new()
+	back.name = "Back"
+	back.text = "BACK"
+	back.pressed.connect(_hide_journal)
+	column.add_child(back)
+	panel.hide()
+
+
+func _show_journal() -> void:
+	$JournalPanel/Content/Body.text = session.profile.journal_text()
+	$Menu.hide()
+	$JournalPanel.show()
+	$JournalPanel/Content/Back.grab_focus()
+
+
+func _hide_journal() -> void:
+	$JournalPanel.hide()
+	$Menu.show()
+	$Menu/Journal.grab_focus()
 
 
 func _random_toggled(enabled: bool) -> void:

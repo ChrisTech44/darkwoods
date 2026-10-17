@@ -51,7 +51,7 @@ static func capture(net: Node) -> Dictionary:
 		entities[entity.get_meta("network_id")]=row
 	return {"players":players,"enemies":enemies,"items":items,"sites":sites,"entities":entities,
 		"van":{"installed":level.van.installed,"progress":level.van.start_progress,"running":level.van.running,"remaining":level.van.remaining},
-		"escapes":level.escapes.snapshot(),"rescue":level.rescue.snapshot(),"pins":level.pins,"clues":level.clues,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"props":level.props.snapshot(),"abilities":level.abilities.snapshot(),"signal":level.signal_fire.snapshot(),"snares":level.snares.snapshot(),"killer_kind":level.killer.headline,"sabotage":level.night_clock.sabotage_state(),"awards":level.awards_text,"revive":level.revive_progress,"finished":level.finished,"won":level.won,"escape_route":level.escape_route,"message":level.message,"message_time":level.message_time}
+		"escapes":level.escapes.snapshot(),"rescue":level.rescue.snapshot(),"pins":level.pins,"clues":level.clues,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"props":level.props.snapshot(),"abilities":level.abilities.snapshot(),"signal":level.signal_fire.snapshot(),"snares":level.snares.snapshot(),"killer_kind":level.killer.headline,"sabotage":level.night_clock.sabotage_state(),"awards":level.awards_text,"score":level.score_card,"revive":level.revive_progress,"finished":level.finished,"won":level.won,"escape_route":level.escape_route,"message":level.message,"message_time":level.message_time}
 
 static func apply(net: Node, state: Dictionary) -> void:
 	var level: Node2D=net.world
@@ -153,6 +153,7 @@ static func apply(net: Node, state: Dictionary) -> void:
 	level.signal_fire.restore(state.get("signal", {}))
 	level.snares.restore(state.get("snares", []))
 	level.awards_text=state.get("awards", "")
+	level.score_card=state.get("score", {})
 	level.revive_progress=state["revive"]
 	level.message=state["message"]
 	level.message_time=state["message_time"]
@@ -162,4 +163,4 @@ static func apply(net: Node, state: Dictionary) -> void:
 		level.won=state["won"]
 		net.phase="results"
 		level.soundscape.stop_round()
-		level.hud.show_result(level.won,level.escape_route + "\nYou: %s.\nNight %d" % [CampPlayer.Status.keys()[level.player.status].to_lower().replace("_"," "),net.seed_value] + level.awards_text)
+		level.hud.show_result(level.won,level.escape_route + "\nYou: %s.\nNight %d" % [CampPlayer.Status.keys()[level.player.status].to_lower().replace("_"," "),net.seed_value] + level.awards_text + level.record_profile(level.won))

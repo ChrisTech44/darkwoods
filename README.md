@@ -242,6 +242,22 @@ phase and how long you have been out.
 
 Quick Camp stays a short mode with no night clock.
 
+## Score, Daily Night and the Camp Journal
+
+Every Woods Expedition night ends with a **score and grade** (S ≥ 1800, A ≥ 1400,
+B ≥ 1000, C ≥ 600, otherwise D): escape +1000, using the rumoured escape +200,
+landmark relics +150 each, ranger notes +25, rescues and patches +100, creatures
+sighted +10 each, then ×1.15 per night modifier. Your best score per seed is kept.
+
+Pick **DAILY NIGHT** in the mode list to play the same seeded expedition as
+everyone else today (the seed is the date, e.g. Night 20261017).
+
+**CAMP JOURNAL** on the main menu shows your nights and escapes, a **bestiary**
+(each creature's survival tip unlocks the first time you see it) and **merit
+badges** such as First Light, Route Master, Pyromaniac, Lake Legend, Snare
+Dancer, Red Sky, Daily Dose, Field Guide, Top Marks and Team Player. New badges
+appear on the results screen. Progress is saved locally on each player's machine.
+
 ## Tonight's killer and night modifiers
 
 Each Woods Expedition night has a **headline killer** and **0–2 modifiers**, both

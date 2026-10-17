@@ -1,5 +1,24 @@
 # Development log
 
+## 2026-10-17 — F8 score, Daily Night, Camp Journal and merit badges
+
+- `CampProfile` (local `user://profile.cfg`; test runs use `profile_test.cfg`)
+  keeps nights, escapes, routes, best score per seed, daily bests, creature
+  sightings and twelve merit badges.
+- Expedition results show **score and grade** (escape, rumoured route, relics,
+  notes, rescues, sightings, ×1.15 per modifier), new badges and the best score
+  for the seed. The host computes the card; clients receive it and record their
+  own local profile.
+- First sightings (creature in sight within 180 px, or the killer within 155 px)
+  unlock bestiary tips and announce "New journal entry".
+- Menu: **DAILY NIGHT** mode (seed = date) and a **CAMP JOURNAL** panel. The right
+  column was tightened to fit both.
+- Not done: cosmetic/role unlocks and the campaign (they need profile data the
+  lobby can validate).
+
+**Verification:** `meta_progress.gd` 27 checks; `verify.py` 129/129;
+`verify_network.py --players 2` 375 assertions, 0 failures.
+
 ## 2026-10-17 — F7 headline killers, stalker escalation and night modifiers
 
 - `RoundPlan` seeds a **headline killer** (Stalker or H01 **Groundskeeper**) and

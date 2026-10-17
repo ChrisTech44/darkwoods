@@ -41,6 +41,11 @@ var signal_fire: SignalFire
 var snares: Snares
 ## End-of-night award titles (host computes, clients receive in snapshots).
 var awards_text := ""
+## F8: tonight's score card (host computes; clients receive it) and local journal.
+var score_card: Dictionary = {}
+var notes_read := 0
+var tonight_seen: Dictionary = {}
+var profile_recorded := false
 ## Team-wide clue chain per locked-cache part: 0 direction, 1 region named, 2 cache found.
 var clues: Dictionary = {}
 const PINS_PER_PLAYER := 3
@@ -230,6 +235,8 @@ func _process(_delta: float) -> void:
 	if player.hidden_spot >= 0:
 		hud.threat_label.text = "HOLD YOUR BREATH" if player.breath < 0.999 else "HIDDEN"
 		hud.stamina.value = player.breath * 100.0
+	if not finished and killer.global_position.distance_to(player.global_position) < 155.0 and sight.can_see(killer.global_position):
+		note_sighting(plan.headline)
 	if not finished and killer.global_position.distance_to(player.global_position) < 155.0:
 		hud.threat_label.text = "SPOTTED · RUN!" if killer.state == CampKiller.State.CHASE else "FOOTSTEPS NEARBY · KEEP QUIET"
 	if player.notice_time > 0.0:
@@ -259,6 +266,7 @@ func _process(_delta: float) -> void:
 	for enemy: CampKiller in get_tree().get_nodes_in_group("cryptids"):
 		if player.global_position.distance_to(enemy.global_position) < 180 and sight.can_see(enemy.global_position):
 			hud.threat_label.text = enemy.species.replace("_", " ").to_upper() + " NEARBY"
+			note_sighting(enemy.species)
 	if player.hex_remaining > 0:
 		hud.threat_label.text = "HEXED %.1fs / SLOWED!" % player.hex_remaining
 	for lamp in camp_map.camp_lamps:
@@ -511,6 +519,7 @@ func read_note(kind: String) -> void:
 	var region := plan.region_name(kind)
 	if clues[kind] < 1:
 		clues[kind] = 1
+		notes_read += 1
 		announce("Ranger note: the %s was stashed at the %s." % [kind.replace("_", " ").to_upper(), region])
 	else:
 		announce("Ranger note: %s at the %s. You already knew." % [kind.replace("_", " ").to_upper(), region])
@@ -681,6 +690,45 @@ func _scatter_survivors() -> void:
 		actors[index].position = doors[(plan.seed_value + index * 3) % doors.size()]
 
 
+func compute_score(success: bool) -> Dictionary:
+	var relics := 0
+	for site: ForestSite in camp_map.sites:
+		for action in site.actions:
+			if action["kind"] == "relic" and action["used"]:
+				relics += 1
+	var revives := 0
+	for row: Dictionary in abilities.stats.values():
+		revives += int(row["revives"])
+	return CampProfile.score_night(success, escape_route, relics, notes_read, revives, tonight_seen.size(), plan.modifiers.size(), success and escape_route != "VAN")
+
+
+## Local journal/badges for this machine's player (once per night). Returns any
+## newly earned badges as result-screen lines.
+func record_profile(success: bool) -> String:
+	if profile_recorded or not plan.expedition:
+		return ""
+	profile_recorded = true
+	var session: Node = get_node("/root/Session")
+	var helped: bool = int(abilities.stat(player)["revives"]) > 0
+	var earned: Array[String] = session.profile.record_night(plan.seed_value, score_card, success, escape_route, plan.headline, plan.modifiers, session.daily, helped)
+	var text := ""
+	for id in earned:
+		text += "\nNEW BADGE: " + CampProfile.BADGES[id][0]
+	var best: int = session.profile.best(plan.seed_value)
+	if best > 0:
+		text += "\nBEST ON NIGHT %d: %d" % [plan.seed_value, best]
+	return text
+
+
+## First sightings unlock journal entries (local to this player).
+func note_sighting(species: String) -> void:
+	if tonight_seen.has(species):
+		return
+	tonight_seen[species] = true
+	if plan.expedition and get_node("/root/Session").profile.record_sighting(species):
+		announce("New journal entry: %s." % species.replace("_", " ").to_upper(), player)
+
+
 func _van_started() -> void:
 	if plan.expedition:
 		van_rev_clock = VAN_REV_SECONDS
@@ -728,8 +776,11 @@ func finish_round(success: bool, detail: String) -> void:
 	for hazard in get_tree().get_nodes_in_group("hazards"):
 		hazard.set_physics_process(false)
 	var titles := abilities.awards()
+	if plan.expedition:
+		score_card = compute_score(success)
+		titles.push_front("SCORE %d · GRADE %s" % [score_card["score"], score_card["grade"]])
 	awards_text = ("\n" + "\n".join(titles)) if not titles.is_empty() else ""
-	hud.show_result(success, detail + "\nNight %d / %s" % [plan.seed_value, plan.weather] + awards_text)
+	hud.show_result(success, detail + "\nNight %d / %s" % [plan.seed_value, plan.weather] + awards_text + record_profile(success))
 	print(JSON.stringify({"event": "round_finished", "won": success, "result": detail}))
 
 

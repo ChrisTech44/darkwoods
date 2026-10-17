@@ -313,8 +313,11 @@ already has ENet authority), logged and pushed before the next one starts.
    alternative headline killer with snares; six night modifiers. Hunter's Moon
    and the other headline killers remain planned)*: stalker tiers and sabotage,
    first new headline killer, night modifiers.
-8. **F8 Meta**: score/grades, daily seed, journal, merit badges and unlocks;
-   campaign after that.
+8. **F8 Meta** *(implemented 17 October: per-night score and grade, local best
+   per seed, Daily Night date seed, Camp Journal bestiary tips unlocked by
+   sighting, twelve merit badges. Not implemented: cosmetic/role unlocks and the
+   campaign, which need lobby-validated profiles)*: score/grades, daily seed,
+   journal, merit badges and unlocks; campaign after that.
 
 F1–F3 come before proximity voice (M3-V). They change moment-to-moment play
 the most, and voice should be tuned on the game it will ship with. Voice

@@ -591,3 +591,13 @@ Witching Hour power cut, and 1.5× door breaking. Modifier effects: Dead
 Batteries (40 charge), Silent Night hearing, Blood Moon speed, Lone Wolf
 spawns. `woods_replay.gd` runs with `--no-modifiers` because it checks the
 baseline loot recipe; `network_peer.gd` checks a host snare reaches clients.
+
+## Score, profile and journal (overhaul F8)
+
+`tests/integration/meta_progress.gd` (in `verify.py`) confirms tests use
+`user://profile_test.cfg` (never the real profile), grade boundaries, the daily
+date seed, score arithmetic, badge awards (once only), best-per-seed retention,
+three-route Route Master, sighting/journal text and persistence. In a real round
+it checks a first sighting unlocks a journal entry, notes count, and the results
+screen shows score, grade, new badges and the best score; on the menu, Daily
+Night uses today's seed and the Camp Journal opens and closes.

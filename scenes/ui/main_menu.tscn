@@ -53,8 +53,8 @@ text = "A fresh random camp every night."
 offset_left = 248.0
 offset_top = 10.0
 offset_right = 364.0
-offset_bottom = 186.0
-theme_override_constants/separation = 3
+offset_bottom = 200.0
+theme_override_constants/separation = 2
 
 [node name="Mode" type="OptionButton" parent="Menu"]
 custom_minimum_size = Vector2(116, 20)
@@ -78,33 +78,33 @@ placeholder_text = "AUTO: FRESH NIGHT"
 max_length = 10
 
 [node name="Play" type="Button" parent="Menu"]
-custom_minimum_size = Vector2(116, 19)
+custom_minimum_size = Vector2(116, 18)
 layout_mode = 2
 text = "ENTER THE NIGHT"
 
 [node name="Settings" type="Button" parent="Menu"]
-custom_minimum_size = Vector2(116, 19)
+custom_minimum_size = Vector2(116, 18)
 layout_mode = 2
 text = "SETTINGS"
 
 [node name="Controls" type="Button" parent="Menu"]
-custom_minimum_size = Vector2(116, 19)
+custom_minimum_size = Vector2(116, 18)
 layout_mode = 2
 text = "CONTROLS"
 
 [node name="Quit" type="Button" parent="Menu"]
-custom_minimum_size = Vector2(116, 19)
+custom_minimum_size = Vector2(116, 18)
 layout_mode = 2
 text = "QUIT"
 
 [node name="Status" type="Label" parent="."]
 offset_left = 20.0
 offset_top = 194.0
-offset_right = 364.0
+offset_right = 236.0
 offset_bottom = 210.0
 theme_override_colors/font_color = Color(0.66, 0.72, 0.65, 1)
 theme_override_font_sizes/font_size = 8
-text = "SOLO FIELD TEST  •  CO-OP IN DEVELOPMENT  /  EVERY NIGHT IS DIFFERENT"
+text = "EVERY NIGHT IS DIFFERENT · 1-4 PLAYERS"
 
 [node name="ControlsPanel" type="PanelContainer" parent="."]
 visible = false

@@ -22,7 +22,10 @@ the new art.
   Quit in the right-hand column (`Menu/Online`, `Menu/Settings`), so the left
   side shows the title illustration. The translucent panel now spans the column.
 
-**Verification:** `python3 tools/verify.py` 101/101 steps.
+**Verification:** `python3 tools/verify.py` 101/101 steps;
+`verify_network.py --mode all --players 2` passed (woods host 109 checks,
+client 29, 0 failures). Not yet verified: a human playtest of the tree line at
+normal night darkness and frame rate.
 
 ## 2026-10-17 — README screenshots retaken with the new art
 

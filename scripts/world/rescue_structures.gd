@@ -3,6 +3,7 @@ extends Node2D
 var rescue: RadioRescue
 
 func _ready() -> void:
+	set_meta("stand_in_world", true)
 	z_index = 101
 	var unshaded := Shader.new()
 	unshaded.code = "shader_type canvas_item; render_mode unshaded;"

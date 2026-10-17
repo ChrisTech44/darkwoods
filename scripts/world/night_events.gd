@@ -32,6 +32,7 @@ var rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
+	set_meta("stand_in_world", true)
 	z_index = 0
 	rng.seed = level.plan.seed_value + 9393
 

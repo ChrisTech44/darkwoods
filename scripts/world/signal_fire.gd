@@ -21,6 +21,7 @@ var glow: PointLight2D
 
 
 func _ready() -> void:
+	set_meta("stand_in_world", true)
 	z_index = 1
 	active = level.plan.expedition and level.plan.has_escape("signal")
 	if not active:

@@ -100,6 +100,20 @@ func _fire_checks() -> void:
 	stalker.enabled = false
 	await _frames(2)
 	_check(level.hud.title.text.contains("SIGNAL FIRE"), "heading_shows_signal_fire_countdown")
+	# Tall props are depth-sorted world sprites: behind them they turn see-through.
+	var standing: StandingProps = level.get_node("StandingProps")
+	var pyre_sprite: Sprite2D
+	for entry: Dictionary in standing.props.values():
+		if entry["sprite"].get_meta("prop", "") == "pyre_lit":
+			pyre_sprite = entry["sprite"]
+	_check(pyre_sprite != null and pyre_sprite.get_parent() == level.world_objects and level.world_objects.y_sort_enabled, "pyre_is_a_depth_sorted_world_sprite")
+	var before_y: Vector2 = player.position
+	player.position = fire.pyre + Vector2(0, -12)
+	for step in range(40):
+		await process_frame
+	_check(pyre_sprite != null and pyre_sprite.self_modulate.a < 0.6, "pyre_turns_see_through_when_survivor_behind")
+	player.position = before_y
+	fire.remaining = SignalFire.HOLD_SECONDS
 	for step in range(int(SignalFire.HOLD_SECONDS * 10) - 5):
 		fire.advance(0.1)
 	_check(not level.finished, "holdout_not_finished_early")

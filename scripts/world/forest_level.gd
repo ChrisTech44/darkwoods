@@ -82,6 +82,10 @@ func _ready() -> void:
 	world_objects.name = "WorldObjects"
 	world_objects.y_sort_enabled = true
 	add_child(world_objects)
+	var standing := StandingProps.new()
+	standing.name = "StandingProps"
+	standing.world = world_objects
+	add_child(standing)
 	camp_map = CampMap.new()
 	camp_map.z_index = -1
 	camp_map.objects = world_objects
@@ -358,6 +362,7 @@ func try_interact(actor: CampPlayer) -> bool:
 			if pickup.locked and "boltcutters" not in actor.inventory:
 				if "crowbar" not in actor.inventory:
 					announce("Locked cache! Boltcutters: Maintenance or the woods toolbox. A crowbar works, loudly.",actor)
+					soundscape.play_cue("lock_rattle", pickup.global_position)
 					actor.noise_emitted.emit(actor.global_position)
 					return false
 				pried = true

@@ -26,6 +26,7 @@ var noise_clock := 0.0
 
 
 func _ready() -> void:
+	set_meta("stand_in_world", true)
 	relay_enabled = level.plan.expedition and level.plan.has_escape("radio")
 	active = level.plan.expedition and (relay_enabled or level.plan.has_escape("gate"))
 	if not active:

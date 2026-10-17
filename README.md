@@ -714,6 +714,11 @@ in when the stalker or a cryptid sees you, then fades away after pursuit.
 
 ## The world and finding your way
 
+Tall structures (the radio mast, boathouse, logging shed, ranger booth, pyre,
+bell frame, ruins, trees by the trail and more) are depth-sorted with you: walk
+north of one and you pass behind it, south and you pass in front. When one
+hides you, it turns see-through so you never lose your survivor.
+
 Fernwood camp now sits at the exact centre of a **9,600×9,408** world, with a
 massive forest on every side—about **35 times the previous woods area**.
 **2,410 connected forest clearings**, loops and six remote ruins surround the
@@ -786,6 +791,16 @@ call every 6–12 s, monster footsteps are heavier (pitched by size) and carry
 240 px, the headline killer screams when it hunts and growls while
 investigating, and a faint chorus of far-off calls drifts in every 18–35 s.
 None of this changes what monsters hear.
+
+Storms rain hard with thunder after each lightning flash; rain nights drizzle.
+Your footsteps change on roads (gravel) and in the bog (mud). Hide near danger
+and you hear yourself holding your breath; run yourself out and you pant. A chase
+music layer swells while something hunts you. The van engine, the stolen-part car
+alarm, snare jaws and chains, the gift crate's bells, the hunting horn, the
+pyre's roar, the boat's outboard, door creaks, locked caches and the camp
+generator all have their own sounds, and owls, wind and stranger things call out
+in the woods now and then. Ten creatures that used to share screeches now have
+their own voices.
 
 The supplied MP3s now provide forest/bog ambience, a positional campfire,
 restrained music, surface-specific walking/running sounds, a call for every

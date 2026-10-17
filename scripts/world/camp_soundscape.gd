@@ -15,9 +15,9 @@ const KILLER_CUES := {"stalker": ["screech_3", 0.7], "groundskeeper": ["screech_
 ## Heavier creatures step lower and louder.
 const STEP_PITCH := {"bigfoot": 0.55, "stoneback_ram": 0.6, "boiler_saint": 0.62, "werewolf": 0.7, "switchback_hound": 0.9, "relay_jackal": 1.0, "lantern_moth": 1.3, "ration_moth": 1.35}
 const CREATURE_CUES := {"werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl",
-	"switchback_hound": "screech_4", "relay_jackal": "screech_4", "shutter_wraith": "screech_1", "lens_eater": "screech_1",
-	"bramble_seamstress": "screech_2", "candle_grazer": "screech_2", "boiler_saint": "screech_3", "last_car_conductor": "screech_3",
-	"stoneback_ram": "screech_5", "ration_moth": "screech_5"}
+	"switchback_hound": "monster_10", "relay_jackal": "monster_6", "shutter_wraith": "monster_9", "lens_eater": "screech_1",
+	"bramble_seamstress": "monster_7", "candle_grazer": "screech_2", "boiler_saint": "screech_3", "last_car_conductor": "screech_3",
+	"stoneback_ram": "monster_8", "ration_moth": "screech_5"}
 ## The second species sharing a screech is pitched lower so the two stay distinct.
 const CREATURE_PITCH := {"relay_jackal": 0.8, "lens_eater": 0.78, "candle_grazer": 0.82, "last_car_conductor": 0.8, "ration_moth": 1.25}
 const RADIO_TALK_SECONDS := 7.0
@@ -39,6 +39,14 @@ var heard_phase := 0
 var prop_state := {}
 var chorus_clock := 20.0
 var killer_call_clock := 0.0
+## Ambient one-shots (owl, wind, eerie) and thunder scheduled after lightning.
+var ambient_clock := 18.0
+var thunder_delay := -1.0
+var last_lightning := 0.0
+## Positional loops placed in the world (generator, signal pyre, boat).
+const WORLD_LOOPS := ["generator", "fire_loop", "boat_engine"]
+## Alarm-like one-shots carry much farther than ordinary effects.
+const LOUD_CUES := {"car_alarm": 1400.0, "bells": 1000.0, "car_start": 700.0, "fire_whoosh": 600.0, "thunder": 600.0, "metal_clang": 400.0, "chain_rattle": 400.0}
 
 
 func _ready() -> void:
@@ -49,13 +57,21 @@ func _ready() -> void:
 	var listener := AudioListener2D.new()
 	level.player.add_child(listener)
 	listener.make_current()
-	for cue in ["woods", "swamp", "music", "heartbeat", "running_grass", "walking_indoor", "campfire"]:
+	for cue in ["woods", "swamp", "music", "heartbeat", "running_grass", "walking_indoor", "campfire", "rain_heavy", "rain_light", "chase_music", "breathing", "gravel_steps", "wet_steps"] + WORLD_LOOPS:
 		var node: Node
 		if cue == "campfire":
 			node = AudioStreamPlayer2D.new()
 			node.position = Vector2(168, 336)
 			node.max_distance = 270
 			node.attenuation = 1.5
+		elif cue in WORLD_LOOPS:
+			node = AudioStreamPlayer2D.new()
+			node.max_distance = 420 if cue != "generator" else 220
+			node.attenuation = 1.4
+			match cue:
+				"generator": node.position = level.night_clock.generator_point() if level.night_clock != null else Vector2(1256, 400)
+				"fire_loop": node.position = level.signal_fire.pyre if level.signal_fire != null else Vector2.ZERO
+				"boat_engine": node.position = level.escapes.boat_point if level.escapes != null else Vector2.ZERO
 		else:
 			node = AudioStreamPlayer.new()
 		node.stream = mixer.stream_for(cue)
@@ -130,6 +146,8 @@ func _physics_process(delta: float) -> void:
 			enemy_steps.erase(id)
 			call_timers.erase(id)
 	_chorus(delta)
+	_weather_and_world(actor, indoor, delta)
+	_events()
 	threat_gain = move_toward(threat_gain, 1.0 if spotted and alive else 0.0, delta * (0.9 if spotted else 0.28))
 	_mix_loop("heartbeat", threat_gain, delta)
 	loops["heartbeat"].pitch_scale = lerpf(0.94, 1.12, threat_gain)
@@ -140,12 +158,36 @@ func _physics_process(delta: float) -> void:
 	var dread: float = level.night_clock.dread if level.night_clock.active else 40.0
 	# Silent Night modifier: no music, only the woods.
 	var music_gain := 0.0 if level.plan.has_modifier("silent_night") else clampf(0.45 + dread * 0.0055, 0.0, 1.0) * (1.0 - threat_gain * 0.35)
-	_mix_loop("music", music_gain, delta)
+	_mix_loop("music", music_gain * (1.0 - threat_gain * 0.8), delta)
+	# Chase layer: swells in while something is actively hunting you.
+	_mix_loop("chase_music", 0.0 if level.plan.has_modifier("silent_night") else threat_gain, delta, 1.2)
+	# Held breath while hidden near a threat; panting when exhausted.
+	var gasping: bool = alive and actor.exhausted
+	var holding: bool = actor.hidden_spot >= 0 and actor.breath < 0.98
+	_mix_loop("breathing", 1.0 if holding else (0.6 if gasping else 0.0), delta, 2.0)
+	loops["breathing"].pitch_scale = 1.15 if holding and actor.breath < 0.4 else 1.0
 	loops["music"].pitch_scale = lerpf(1.0, 0.9, dread / 100.0)
 	if level.night_clock.phase != heard_phase:
 		heard_phase = level.night_clock.phase
 		radio_broadcast(heard_phase)
 	_prop_sounds()
+	# Surface footsteps: bog mud and roads have their own step loops.
+	var zone: Dictionary = level.plan.woods.zone_at(actor.global_position) if level.plan.expedition else {}
+	var in_bog: bool = not zone.is_empty() and zone["kind"] == "bog"
+	var road: bool = not indoor and not in_bog and (level.plan.woods.on_road(actor.global_position) if CampMap.is_woods(actor.global_position) else level.camp_map.roads.any(func(rect: Rect2) -> bool: return rect.has_point(actor.global_position)))
+	var surface := "wet_steps" if in_bog else ("gravel_steps" if road else "")
+	var stepping: bool = moving and not indoor and not surface.is_empty()
+	_mix_loop("wet_steps", 1.0 if stepping and surface == "wet_steps" else 0.0, delta, 10.0)
+	_mix_loop("gravel_steps", 1.0 if stepping and surface == "gravel_steps" else 0.0, delta, 10.0)
+	for cue in ["wet_steps", "gravel_steps"]:
+		loops[cue].pitch_scale = 1.3 if actor.sprinting else 1.0
+	if stepping:
+		last_step_cue = surface
+		step_distance = 0.0
+		_mix_loop("running_grass", 0.0, delta, 10.0)
+		_mix_loop("walking_indoor", 0.0, delta, 10.0)
+		_remote_steps(actor)
+		return
 	_mix_loop("running_grass", 1.0 if moving and actor.sprinting and not indoor else 0.0, delta, 10.0)
 	_mix_loop("walking_indoor", 1.0 if moving and indoor else 0.0, delta, 10.0)
 	loops["walking_indoor"].pitch_scale = 1.35 if actor.sprinting else 1.0
@@ -157,7 +199,11 @@ func _physics_process(delta: float) -> void:
 			play_cue("footstep", actor.global_position, 0.0, rng.randf_range(0.94, 1.06))
 	else:
 		step_distance = 0.0
-	# Remote survivors use local positional playback from accepted host movement.
+	_remote_steps(actor)
+
+
+## Remote survivors use local positional playback from accepted host movement.
+func _remote_steps(actor: CampPlayer) -> void:
 	var active_survivors := {}
 	for other: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if other==actor: continue
@@ -223,7 +269,8 @@ func _killer_voice(enemy: CampKiller, delta: float) -> void:
 		if play_cue(voice[0], enemy.global_position, 2.0, voice[1], enemy):
 			killer_call_clock = rng.randf_range(4.0, 6.0)
 	elif enemy.state == CampKiller.State.INVESTIGATE:
-		if play_cue("screech_5", enemy.global_position, 6.0, 0.55, enemy):
+		var growl := "monster_8" if enemy.headline == "groundskeeper" else "screech_5"
+		if play_cue(growl, enemy.global_position, 6.0, 0.8 if growl == "monster_8" else 0.55, enemy):
 			killer_call_clock = rng.randf_range(7.0, 11.0)
 
 
@@ -256,12 +303,70 @@ func distant_call(enemy: CampKiller, gain_db: float = -6.0) -> bool:
 ## The Hunt Begins: a long, low horn-like howl over the whole camp.
 func hunting_horn() -> bool:
 	played_counts["hunting_horn"] = played_counts.get("hunting_horn", 0) + 1
-	return play_cue("werewolf_howl", level.player.global_position + Vector2(0, -200), 4.0, 0.5)
+	return play_cue("hunt_horn", level.player.global_position + Vector2(0, -120), 0.0, 1.0)
+
+
+## Rain, thunder, positional world loops and ambient one-shots.
+func _weather_and_world(actor: CampPlayer, indoor: bool, delta: float) -> void:
+	var clock: NightClock = level.night_clock
+	var storm: bool = clock != null and clock.storm_remaining > 0.0
+	var shelter := 0.35 if indoor else 1.0
+	_mix_loop("rain_heavy", (1.0 if storm else 0.0) * shelter, delta, 0.5)
+	_mix_loop("rain_light", (1.0 if level.plan.weather == "rain" and not storm else 0.0) * shelter, delta, 0.5)
+	if clock != null:
+		if clock.lightning > 0.0 and last_lightning <= 0.0:
+			thunder_delay = rng.randf_range(0.25, 1.4)
+		last_lightning = clock.lightning
+	if thunder_delay >= 0.0:
+		thunder_delay -= delta
+		if thunder_delay < 0.0:
+			played_counts["thunder"] = played_counts.get("thunder", 0) + 1
+			play_cue("thunder", actor.global_position + Vector2(rng.randf_range(-120, 120), -150), 0.0, rng.randf_range(0.9, 1.05))
+	_mix_loop("generator", 0.0 if clock == null or clock.blackout else 1.0, delta)
+	_mix_loop("fire_loop", 1.0 if level.signal_fire != null and level.signal_fire.started else 0.0, delta)
+	_mix_loop("boat_engine", 1.0 if level.escapes != null and level.escapes.boat_started else 0.0, delta)
+	if level.plan.expedition and CampMap.is_woods(actor.global_position):
+		ambient_clock -= delta
+		if ambient_clock <= 0.0:
+			ambient_clock = rng.randf_range(22.0, 48.0)
+			var pick: String = ["owl", "owl", "wind", "wind", "eerie"][rng.randi_range(0, 4)]
+			played_counts["ambient_" + pick] = played_counts.get("ambient_" + pick, 0) + 1
+			play_cue(pick, actor.global_position + Vector2.from_angle(rng.randf() * TAU) * 160.0)
+
+
+## One-shots for world state changes, detected from replicated state so every
+## peer hears them: van start, sabotage alarm, snares, gift bell, pyre.
+func _events() -> void:
+	var edges := {
+		"van": level.van.running,
+		"alarm": level.night_clock != null and level.night_clock.sabotage_done,
+		"gift": level.events != null and level.events.gift_open,
+		"pyre": level.signal_fire != null and level.signal_fire.started,
+	}
+	for key: String in edges:
+		var before: bool = prop_state.get("event_" + key, edges[key])
+		prop_state["event_" + key] = edges[key]
+		if before or not edges[key]:
+			continue
+		played_counts["event_" + key] = played_counts.get("event_" + key, 0) + 1
+		match key:
+			"van": play_cue("car_start", level.van.global_position)
+			"alarm": play_cue("car_alarm", level.van.global_position)
+			"gift": play_cue("bells", level.events.gift_at)
+			"pyre": play_cue("fire_whoosh", level.signal_fire.pyre)
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		var key := "snare%d" % actor.get_instance_id()
+		var held: bool = actor.snared > 0.0
+		if held and not prop_state.get(key, false):
+			played_counts["snare"] = played_counts.get("snare", 0) + 1
+			play_cue("metal_clang", actor.global_position)
+			play_cue("chain_rattle", actor.global_position)
+		prop_state[key] = held
 
 
 func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float = 1.0, source: Node2D = null) -> bool:
 	var monster := cue in CREATURE_CUES.values() or cue.begins_with("screech")
-	var radius := MONSTER_RANGE if monster else (ENEMY_STEP_RANGE if source is CampKiller else 230.0)
+	var radius: float = LOUD_CUES.get(cue, MONSTER_RANGE if monster else (ENEMY_STEP_RANGE if source is CampKiller else 230.0))
 	if level.paused or level.finished or not mixer.cues.has(cue) or origin.distance_to(level.player.global_position) >= radius:
 		return false
 	# Instrument accepted local cues even with Dummy/headless output; no device needed.
@@ -352,6 +457,8 @@ func _prop_sounds() -> void:
 			var before: Array = prop_state[key]
 			if before[0] and not now[0]:
 				play_cue("thud", door["rect"].get_center(), 0.0, 1.0)
+			elif not before[0] and now[0] and not now[1]:
+				play_cue("door_creak", door["rect"].get_center())
 			elif not before[1] and now[1]:
 				play_cue("thud", door["rect"].get_center(), 6.0, 0.7)
 				play_cue("wood_falling", door["rect"].get_center(), 0.0, 1.2)

@@ -53,6 +53,7 @@ var camp_lamps: Array[PointLight2D] = []
 
 
 func _ready() -> void:
+	set_meta("stand_in_world", true)
 	if objects == null:
 		objects = Node2D.new()
 		add_child(objects)

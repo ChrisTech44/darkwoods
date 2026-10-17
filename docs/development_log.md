@@ -1,5 +1,31 @@
 # Development log
 
+## 2026-10-17 — Twenty-seven new sounds; depth-sorted structures
+
+**Audio.** The user added 27 MP3s, two with instructions in their names. Per those:
+the gravel footsteps were cut to the first 6 s and the breathing to the first
+half (5.5 s), both renamed to clean cue files with an 80 ms fade; the heavy rain
+loop lost 0.4 s of trailing silence so it loops seamlessly. All 50 cues are in the
+manifest with measured gains. New playback: thunder after lightning, storm and
+rain loops, van start, sabotage car alarm, snare clang and chain, gift bells,
+hunting horn, pyre whoosh and blaze loop, boat outboard, generator hum, door
+creak, locked-cache rattle, owl/wind/eerie ambience, gravel and mud footstep
+loops, held breath and panting, a chase music layer, and five new creature
+voices (including the Groundskeeper's growl). Event sounds trigger from
+replicated state so every peer hears them; alarm-type cues carry 400–1,400 px.
+
+**Structures from every side.** A four-side capture of 12 structures showed
+tall props painted flat under the survivor (standing north of the relay mast put
+you in front of its legs). New `StandingProps`: canvases that opt in turn
+`PixelArt.draw_standing` props into depth-sorted Sprite2Ds in the level's
+y-sorted world (hidden again when their canvas stops drawing them, e.g. an
+opened gate), and a prop hiding your survivor fades to 42%.
+
+**Verification:** `verify.py` 138/138 (new: every MP3 registered and every cue
+loads; thunder, storm rain, chase layer, held breath, van/snare/gift sounds,
+road footsteps, positional generator; pyre is a depth-sorted sprite that turns
+see-through); `verify_network.py --players 2` 375 assertions, 0 failures.
+
 ## 2026-10-17 — Gameplay clips in the README
 
 The user asked for clips "showing like storms, certain interactions" so people

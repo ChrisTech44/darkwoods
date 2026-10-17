@@ -13,7 +13,11 @@ func _initialize() -> void:
 func _run() -> void:
 	mixer = root.get_node("AudioManager")
 	capture = "--capture" in OS.get_cmdline_user_args()
-	_check(mixer.cues.size() == 23, "all_twenty_three_supplied_files_registered")
+	# Every supplied MP3 is registered, and every registered cue loads.
+	var files := Array(DirAccess.get_files_at("res://assets/audio")).filter(func(name: String) -> bool: return name.ends_with(".mp3"))
+	var paths: Array = mixer.cues.values().map(func(cue: Dictionary) -> String: return cue["path"].get_file())
+	_check(mixer.cues.size() == 50 and files.all(func(name: String) -> bool: return name in paths), "all_fifty_supplied_files_registered")
+	_check(mixer.cues.keys().all(func(cue: String) -> bool: return mixer.stream_for(cue) != null), "every_cue_stream_loads")
 	for bus in mixer.BUSES:
 		_check(AudioServer.get_bus_index(bus) >= 0, "bus_" + bus)
 	for cue in mixer.cues:

@@ -5,6 +5,10 @@ const RUINS: Array[String] = ["stump", "hunter_blind", "cave", "watchtower", "sh
 const RUIN_WIDTHS: Array[float] = [34.0, 36.0, 56.0, 50.0, 34.0, 50.0]
 
 
+func _ready() -> void:
+	set_meta("stand_in_world", true)
+
+
 ## Seeded trail-side dressing so straight trails stop looking alike: [sprite, width].
 const DRESSING := [["rock_formation", 34], ["ferns", 28], ["berry_bush", 26], ["fairy_ring", 30], ["hollow_log", 36], ["hunting_stand", 30],
 	["missing_poster", 18], ["cooking_pot", 22], ["broken_canoe", 40], ["old_bench", 30], ["birdhouse", 16], ["bone_pile", 28],

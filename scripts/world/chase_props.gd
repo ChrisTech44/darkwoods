@@ -30,6 +30,7 @@ var witnesses: Dictionary = {}
 
 
 func _ready() -> void:
+	set_meta("stand_in_world", true)
 	z_index = 0
 	var camp_map: CampMap = level.camp_map
 	for building in camp_map.buildings + camp_map.forest_buildings:

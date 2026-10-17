@@ -9,6 +9,7 @@ var level: Node2D
 
 
 func _ready() -> void:
+	set_meta("stand_in_world", true)
 	var center: Vector2 = definition["position"]
 	if definition["kind"] == "village":
 		actions = [

@@ -40,12 +40,18 @@ static func draw_in(canvas: CanvasItem, name: String, rect: Rect2, modulate := C
 
 ## Draw `name` scaled to `width`, standing on `base` (centre-bottom), allowed to
 ## rise above a thin collision footprint like a 3/4 view object.
-static func draw_standing(canvas: CanvasItem, name: String, base: Vector2, width: float, max_height: float = 999.0) -> bool:
+## Canvases with meta "stand_in_world" get a depth-sorted world sprite instead
+## (see StandingProps), so actors walk behind tall props from every side.
+static func draw_standing(canvas: CanvasItem, name: String, base: Vector2, width: float, max_height: float = 999.0, modulate_color := Color.WHITE) -> bool:
 	var texture := fit(name, Vector2(width, max_height))
 	if texture == null:
 		return false
+	var layer := StandingProps.for_canvas(canvas)
+	if layer != null:
+		layer.place(canvas, name, texture, base, modulate_color)
+		return true
 	var size := texture.get_size()
-	canvas.draw_texture(texture, (base - Vector2(size.x * 0.5, size.y)).round())
+	canvas.draw_texture(texture, (base - Vector2(size.x * 0.5, size.y)).round(), modulate_color)
 	return true
 
 

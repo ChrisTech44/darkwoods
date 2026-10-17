@@ -33,6 +33,7 @@ func _run() -> void:
 	await _camper_checks()
 	_buildup_checks()
 	_audio_checks()
+	await _new_audio_checks()
 	RoundPlan.force_modifiers = null
 	root.get_node("Session").select_survivor(previous_role)
 	print(JSON.stringify({"event": "test_result", "suite": "night_events", "checks": checks, "failures": failures}))
@@ -168,6 +169,85 @@ func _audio_checks() -> void:
 	sound.call_timers[roamer.get_instance_id()] = 0.0
 	sound._creature_call(roamer)
 	_check(sound.played_counts.get(cue, 0) == before + 1, "creature_call_heard_at_450px")
+
+
+## The 17 October sound pack: weather, world loops, event one-shots, surfaces.
+func _new_audio_checks() -> void:
+	var sound: CampSoundscape = level.soundscape
+	var clock: NightClock = level.night_clock
+	# The camper/score checks above end the round; reopen it for live audio.
+	level.finished = false
+	player.set_status(CampPlayer.Status.ALIVE)
+	player.set_physics_process(true)
+	player.controls_enabled = true
+	sound.set_physics_process(true)
+	for enemy: CampKiller in get_nodes_in_group("killers"):
+		enemy.enabled = false
+	for voice in sound.voices:
+		voice.queue_free()
+	sound.voices.clear()
+	clock._start_event("storm")
+	clock.lightning = 0.0
+	await physics_frame
+	clock.lightning = 0.18
+	var thunder: int = sound.played_counts.get("thunder", 0)
+	for step in range(100):
+		await physics_frame
+	_check(sound.played_counts.get("thunder", 0) > thunder, "thunder_follows_lightning")
+	_check(sound.gains["rain_heavy"] > 0.3, "storm_brings_heavy_rain_loop")
+	clock.storm_remaining = 0.0
+	sound.threat_gain = 1.0
+	sound._mix_loop("chase_music", 1.0, 2.0, 1.2)
+	_check(sound.gains["chase_music"] > 0.9, "chase_music_layer_mixes_in")
+	sound.threat_gain = 0.0
+	player.position = level.plan.woods.center(Vector2i(18, 24))
+	var stalker: CampKiller = level.killer
+	var spot := -1
+	for index in range(level.props.spots.size()):
+		if not level.props.spots[index]["woods"]:
+			spot = index
+			break
+	player.position = level.props.spots[spot]["position"]
+	level.props.hide_actor(player, spot)
+	player.breath = 0.5
+	for step in range(30):
+		await physics_frame
+		player.breath = 0.5
+	_check(sound.gains["breathing"] > 0.5, "held_breath_audible_while_hidden")
+	level.props.leave(player)
+	var van: int = sound.played_counts.get("event_van", 0)
+	level.van.remaining = 20.0
+	level.van.running = true
+	await physics_frame
+	await physics_frame
+	_check(sound.played_counts.get("event_van", 0) == van + 1, "van_start_plays_engine")
+	level.van.running = false
+	var snares: int = sound.played_counts.get("snare", 0)
+	player.snared = 4.0
+	await physics_frame
+	await physics_frame
+	_check(sound.played_counts.get("snare", 0) == snares + 1, "snare_clang_and_rattle")
+	player.snared = 0.0
+	level.events.gift_open = false
+	level.events.gift_at = player.position
+	await physics_frame
+	level.events.gift_open = true
+	await physics_frame
+	await physics_frame
+	_check(sound.played_counts.get("event_gift", 0) >= 1, "gift_bell_rings")
+	var road: Vector2 = level.plan.woods.center(Vector2i(24, 14))
+	for cell: Vector2i in level.plan.woods.links:
+		if level.plan.woods.on_road(level.plan.woods.center(cell)) and level.plan.woods.zone_at(level.plan.woods.center(cell)).is_empty():
+			road = level.plan.woods.center(cell)
+			break
+	player.position = road
+	await physics_frame
+	player.local_input = false
+	for step in range(20):
+		player.apply_intent(Vector2.RIGHT, false, 1.0 / 60.0)
+		await physics_frame
+	_check(sound.last_step_cue == "gravel_steps", "roads_use_gravel_footsteps")
+	_check(sound.loops.has("generator") and sound.loops["generator"] is AudioStreamPlayer2D, "generator_hum_is_positional")
 
 
 func _frames(count: int) -> void:

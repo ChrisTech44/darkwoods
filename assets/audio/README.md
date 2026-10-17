@@ -69,3 +69,38 @@ Windows/Linux, exported audio and two-client synchronized sound remain unverifie
 Creature calls now start only within 160 pixels and follow their source, with
 quadratic native distance attenuation. Enemy steps use 110 pixels. These local
 limits do not change AI hearing. Menu knobs are accessed through Settings.
+
+## 17 October 2026 sound pack
+
+Twenty-seven more user-supplied files (provenance pending documentation, as
+above). Three were edited, per the user's instructions in the file names or
+to loop cleanly; everything else is unchanged and gain-balanced at runtime.
+
+| File | Cue | Playback |
+| --- | --- | --- |
+| `thunder_clap.mp3` | `thunder` | 0.25–1.4 s after each storm lightning flash |
+| `heavy_rain_loop.mp3` | `rain_heavy` | Storm downpour; quieter indoors. **Edited:** trailing 0.4 s silence trimmed (29.5 s) |
+| `light_rain_loop.mp3` | `rain_light` | Rain-night drizzle |
+| `car_start.mp3` | `car_start` | Van engine start (heard to 700 px) |
+| `car_alarm.mp3` | `car_alarm` | Van alarm when the stalker steals a part (1,400 px); skips 1.8 s lead silence |
+| `boat_engine_loop.mp3` | `boat_engine` | Positional outboard during the 25 s boat launch |
+| `metal_clang.mp3` + `chain_rattle.mp3` | `metal_clang`, `chain_rattle` | Snare jaws and chain when a survivor is caught |
+| `scary_bells_ringing.mp3` | `bells` | The Stalker's Gift bell (1,000 px) |
+| `hunt_horn_single.mp3` | `hunt_horn` | The Hunt Begins |
+| `fire_whoosh.mp3` / `fire_burning_loop.mp3` | `fire_whoosh`, `fire_loop` | Signal pyre ignition, then a positional blaze |
+| `generator_sound_loop.mp3` | `generator` | Positional hum by Maintenance while camp has power |
+| `door_creak.mp3` | `door_creak` | Opening a cabin door |
+| `lock_rattle.mp3` | `lock_rattle` | Trying a locked cache without tools |
+| `owl_hooting.mp3`, `wind_gust.mp3`, `random_eerie_sound.mp3` | `owl`, `wind`, `eerie` | Random woods ambience every 22–48 s |
+| `wet_footsteps.mp3` | `wet_steps` | Footstep loop in the bog |
+| `gravel_footsteps_loop.mp3` | `gravel_steps` | Footstep loop on roads. **Edited:** first 6 s of `dirt_gravel_footsteps_use_only_first_6_seconds_loop.mp3` |
+| `fast_breathing_loop.mp3` | `breathing` | Held breath while hidden near danger; panting when exhausted. **Edited:** first half (5.5 s) of `fast_breaking_use_first_half_only_on_loop.mp3` |
+| `chase_music.mp3` | `chase_music` | Music layer that swells while you are chased (off on Silent Night) |
+| `monster_noise_6.mp3` | `monster_6` | Relay Jackal |
+| `monster_noise_7_female.mp3` | `monster_7` | Bramble Seamstress |
+| `monster_noise_8.mp3` | `monster_8` | Stoneback Ram; the Groundskeeper's growl |
+| `monster_scream_9.mp3` | `monster_9` | Shutter Wraith |
+| `monster_scream_10.mp3` | `monster_10` | Switchback Hound |
+
+Every event sound is triggered from replicated world state, so all co-op peers
+hear it, not only the host.

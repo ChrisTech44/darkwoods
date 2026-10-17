@@ -2,6 +2,7 @@ extends Node2D
 ## Upright props have visible floor anchors; actors and ground stay under sight fog.
 var escapes: FieldEscapes
 func _ready() -> void:
+	set_meta("stand_in_world", true)
 	z_index = 101
 	var shader := Shader.new()
 	shader.code = "shader_type canvas_item; render_mode unshaded;"

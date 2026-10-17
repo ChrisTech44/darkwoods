@@ -1,2 +1,4 @@
 # Preserve native engine log output, including its trailing empty line.
 docs/evidence/**/*.log whitespace=-blank-at-eof,-blank-at-eol
+# Windows batch files need CRLF line endings when checked out.
+*.bat text eol=crlf

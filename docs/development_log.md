@@ -1,5 +1,24 @@
 # Development log
 
+## 2026-10-17 — Fresh-clone launch fix (Windows report)
+
+A friend on Windows got parse errors for every global class (`CampProfile`,
+`RoundPlan`, `CampPlayer`…) and missing `.godot/imported/*.ctex` textures. Cause:
+the game was run before Godot had ever imported the project, so the untracked
+`.godot/` cache (class list and imported textures) did not exist. Not a Windows
+or code bug: reproduced on macOS by deleting `.godot/`.
+- `tools/run_game.py` now imports automatically when the cache is missing
+  (`--reimport` forces it), and finds versioned `Godot_v4*` executables beside
+  the project, in Downloads or on the Desktop.
+- New `Play (Windows).bat` launcher (uses Python if present, otherwise finds
+  Godot itself and imports on first run).
+- README quick start stresses waiting for the first import and gains a
+  troubleshooting section quoting these errors.
+
+**Verification:** with `.godot/` removed, `python3 tools/run_game.py --headless
+--quit-after 30` imported and reached `menu_ready` with no script errors. The
+`.bat` file could not be executed here (macOS).
+
 ## 2026-10-17 — Voice fix: received voice was decoded but never played
 
 The user tested two local sessions with the mic on: audio was picked up but

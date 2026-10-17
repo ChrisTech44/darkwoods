@@ -96,10 +96,30 @@ You need two things: the free **Godot 4.7.2** engine and this project's files.
    ```
 
 3. **Open it in Godot.** Start Godot. In the Project Manager click **Import**,
-   pick the `project.godot` file inside the game folder, and confirm. The first
-   import takes a minute.
+   pick the `project.godot` file inside the game folder, and confirm. **Let the
+   editor finish importing** (a progress bar, about a minute) before playing.
+   This first import is required: it builds Godot's hidden `.godot` folder,
+   which is not included in the download.
 4. **Play.** Press **F5** (or the ▶ button at the top right of the editor).
    The title screen opens in its own window.
+
+**Even easier on Windows:** double-click **`Play (Windows).bat`** in the game
+folder. It finds Godot (put the Godot `.exe` in the game folder, your Downloads
+or your Desktop, or set `GODOT_BIN`), imports the project on the first run, and
+starts the game. On any system, `python3 tools/run_game.py` does the same.
+
+### Troubleshooting
+
+- **A wall of errors like `Identifier "CampProfile" not declared`,
+  `Could not find type "CampPlayer"`, or `Unable to open file:
+  res://.godot/imported/....ctex`:** the project was run before Godot imported
+  it. Open it once in the Godot editor and wait for the import to finish, or use
+  `Play (Windows).bat` / `python3 tools/run_game.py`, which import automatically.
+  From a terminal: `godot --headless --path <game folder> --import`, then run.
+- **Still broken after updating with git pull?** Run the launcher with
+  `--reimport` (or delete the `.godot` folder) to rebuild Godot's cache.
+- **Voice chat silent:** see [Play with friends](#play-with-friends); turn MIC on,
+  restart once, allow the microphone, and wear headphones.
 
 Prefer the terminal? `python3 tools/run_game.py` launches the game directly
 (it finds Godot on your PATH or in Applications; set `GODOT_BIN` to point at it

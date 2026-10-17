@@ -271,8 +271,9 @@ already has ENet authority), logged and pushed before the next one starts.
    pacing, ranger-radio part reveals, dread, director with relief windows,
    phase supply drops, Storm Front and Blackout/generator, dread-scaled music
    with phase stingers, modest stalker escalation and dawn rescue. Deferred:
-   distant-call/flicker build-ups, separate chase music layers (needs new
-   licensed audio), and the Lost Camper, Hunt Begins and Stalker's Gift events.
+   separate chase music layers (needs new licensed audio). *(17 October: the
+   distant-call/flicker build-ups and the Lost Camper, Hunt Begins and Stalker's
+   Gift events are now implemented.)*
 3. **F3 Chase toolkit** *(implemented: F3a Wounded state, blood trail, medkit
    patch, kitless revive, downed crawl/help ping, solo self-recovery, flash-stun;
    F3b hiding spots with breath and witnesses, slam/break doors, knock-overs.

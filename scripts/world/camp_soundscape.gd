@@ -2,9 +2,18 @@ class_name CampSoundscape
 extends Node
 ## Round-owned playback. All loops/voices are freed with the round.
 
-const MAX_VOICES := 12
-const MONSTER_RANGE := 160.0
-const ENEMY_STEP_RANGE := 110.0
+const MAX_VOICES := 20
+## Audio revamp (17 October): creatures carry. Calls are heard well beyond the
+## screen, chases scream, footsteps are heavy, and a faint chorus of far calls
+## keeps the woods alive. AI hearing is unaffected by any of this.
+const MONSTER_RANGE := 560.0
+const ENEMY_STEP_RANGE := 240.0
+const CHORUS_RANGE := 2000.0
+const CHORUS_DISTANCE := 480.0
+## Headline killers vocalise on the hunt: [cue, pitch].
+const KILLER_CUES := {"stalker": ["screech_3", 0.7], "groundskeeper": ["screech_2", 0.62]}
+## Heavier creatures step lower and louder.
+const STEP_PITCH := {"bigfoot": 0.55, "stoneback_ram": 0.6, "boiler_saint": 0.62, "werewolf": 0.7, "switchback_hound": 0.9, "relay_jackal": 1.0, "lantern_moth": 1.3, "ration_moth": 1.35}
 const CREATURE_CUES := {"werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl",
 	"switchback_hound": "screech_4", "relay_jackal": "screech_4", "shutter_wraith": "screech_1", "lens_eater": "screech_1",
 	"bramble_seamstress": "screech_2", "candle_grazer": "screech_2", "boiler_saint": "screech_3", "last_car_conductor": "screech_3",
@@ -28,6 +37,8 @@ var last_step_cue := ""
 var survivor_steps := {}
 var heard_phase := 0
 var prop_state := {}
+var chorus_clock := 20.0
+var killer_call_clock := 0.0
 
 
 func _ready() -> void:
@@ -108,13 +119,17 @@ func _physics_process(delta: float) -> void:
 			data["distance"] += travel
 			if data["distance"] >= 24.0:
 				data["distance"] = 0.0
-				play_cue("footstep", enemy.global_position, -12.0, 0.72, enemy)
+				var weight: float = STEP_PITCH.get(enemy.species, 0.72) if enemy is CampCryptid else 0.66
+				play_cue("footstep", enemy.global_position, -4.0 if weight < 0.8 else -7.0, weight, enemy)
 		if enemy is CampCryptid and enemy.enabled and call_timers[id] <= 0 and enemy.global_position.distance_to(actor.global_position) < MONSTER_RANGE:
 			_creature_call(enemy)
+		elif not enemy is CampCryptid and enemy.enabled:
+			_killer_voice(enemy, delta)
 	for id in enemy_steps.keys():
 		if not active_ids.has(id):
 			enemy_steps.erase(id)
 			call_timers.erase(id)
+	_chorus(delta)
 	threat_gain = move_toward(threat_gain, 1.0 if spotted and alive else 0.0, delta * (0.9 if spotted else 0.28))
 	_mix_loop("heartbeat", threat_gain, delta)
 	loops["heartbeat"].pitch_scale = lerpf(0.94, 1.12, threat_gain)
@@ -192,12 +207,60 @@ func _creature_call(enemy: CampCryptid) -> void:
 	var id := enemy.get_instance_id()
 	if call_timers.get(id, 0.0) > 0:
 		return
-	if play_cue(CREATURE_CUES.get(enemy.species, "revenant_screech"), enemy.global_position, 0, CREATURE_PITCH.get(enemy.species, 1.0), enemy):
-		call_timers[id] = rng.randf_range(8.0, 14.0)
+	if play_cue(CREATURE_CUES.get(enemy.species, "revenant_screech"), enemy.global_position, 3.0 if enemy.state == CampKiller.State.CHASE else 0.0, CREATURE_PITCH.get(enemy.species, 1.0), enemy):
+		# Hunting creatures scream often; wandering ones call every so often.
+		call_timers[id] = rng.randf_range(3.5, 5.0) if enemy.state == CampKiller.State.CHASE else rng.randf_range(6.0, 12.0)
+
+
+## The headline killer: a scream when the chase starts and every few seconds
+## during it, a low growl while investigating.
+func _killer_voice(enemy: CampKiller, delta: float) -> void:
+	killer_call_clock = maxf(0.0, killer_call_clock - delta)
+	if killer_call_clock > 0.0 or enemy.global_position.distance_to(level.player.global_position) > MONSTER_RANGE:
+		return
+	var voice: Array = KILLER_CUES.get(enemy.headline, KILLER_CUES["stalker"])
+	if enemy.state == CampKiller.State.CHASE:
+		if play_cue(voice[0], enemy.global_position, 2.0, voice[1], enemy):
+			killer_call_clock = rng.randf_range(4.0, 6.0)
+	elif enemy.state == CampKiller.State.INVESTIGATE:
+		if play_cue("screech_5", enemy.global_position, 6.0, 0.55, enemy):
+			killer_call_clock = rng.randf_range(7.0, 11.0)
+
+
+## Every 18–35 s a creature far out in the woods calls; it is placed toward
+## that creature but close enough to hear, faint and slightly lowered.
+func _chorus(delta: float) -> void:
+	chorus_clock -= delta
+	if chorus_clock > 0.0 or not level.plan.expedition:
+		return
+	chorus_clock = rng.randf_range(18.0, 35.0)
+	var listener: Vector2 = level.player.global_position
+	var options: Array = get_tree().get_nodes_in_group("cryptids").filter(func(enemy: CampCryptid) -> bool:
+		var distance := enemy.global_position.distance_to(listener)
+		return enemy.enabled and distance > MONSTER_RANGE and distance < CHORUS_RANGE)
+	if options.is_empty():
+		return
+	distant_call(options[rng.randi_range(0, options.size() - 1)], -10.0)
+
+
+## A creature's call from its direction, heard faintly (director build-ups too).
+func distant_call(enemy: CampKiller, gain_db: float = -6.0) -> bool:
+	var listener: Vector2 = level.player.global_position
+	var cue: String = CREATURE_CUES.get(enemy.species, "revenant_screech") if enemy is CampCryptid else KILLER_CUES.get(enemy.headline, KILLER_CUES["stalker"])[0]
+	var pitch: float = CREATURE_PITCH.get(enemy.species, 1.0) * 0.94 if enemy is CampCryptid else 0.68
+	var at := listener + listener.direction_to(enemy.global_position) * minf(CHORUS_DISTANCE, listener.distance_to(enemy.global_position))
+	played_counts["distant_call"] = played_counts.get("distant_call", 0) + 1
+	return play_cue(cue, at, gain_db, pitch)
+
+
+## The Hunt Begins: a long, low horn-like howl over the whole camp.
+func hunting_horn() -> bool:
+	played_counts["hunting_horn"] = played_counts.get("hunting_horn", 0) + 1
+	return play_cue("werewolf_howl", level.player.global_position + Vector2(0, -200), 4.0, 0.5)
 
 
 func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float = 1.0, source: Node2D = null) -> bool:
-	var monster := cue in CREATURE_CUES.values()
+	var monster := cue in CREATURE_CUES.values() or cue.begins_with("screech")
 	var radius := MONSTER_RANGE if monster else (ENEMY_STEP_RANGE if source is CampKiller else 230.0)
 	if level.paused or level.finished or not mixer.cues.has(cue) or origin.distance_to(level.player.global_position) >= radius:
 		return false
@@ -215,7 +278,8 @@ func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float =
 	voice.position = origin
 	voice.bus = mixer.cues[cue]["bus"]
 	voice.max_distance = radius
-	voice.attenuation = 2.0
+	# Gentler roll-off for calls so they carry; footsteps stay local.
+	voice.attenuation = 1.2 if monster else 2.0
 	voice.volume_db = float(mixer.cues[cue]["gain_db"]) + gain_db
 	voice.pitch_scale = pitch
 	if source != null:

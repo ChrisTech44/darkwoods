@@ -241,6 +241,14 @@ func _schedule_night(value: int) -> void:
 	night_events.append({"kind": "storm", "phase": 1, "delay": rng.randf_range(120.0, 360.0)})
 	night_events.append({"kind": "blackout", "phase": 2, "delay": rng.randf_range(120.0, 300.0)})
 	night_events.append({"kind": "storm" if rng.randf() < 0.5 else "blackout", "phase": 3, "delay": rng.randf_range(60.0, 180.0)})
+	# Two of the three story events, each in a seeded phase (separate RNG).
+	var story := RandomNumberGenerator.new()
+	story.seed = value + 7474
+	var kinds: Array[String] = ["hunt", "gift", "camper"]
+	kinds.remove_at(story.randi_range(0, 2))
+	for kind in kinds:
+		night_events.append({"kind": kind, "phase": story.randi_range(1, 3), "delay": story.randf_range(30.0, 240.0)})
+	night_events.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a["phase"] < b["phase"] or a["phase"] == b["phase"] and a["delay"] < b["delay"])
 
 
 ## Extra lock tools so a team can split up. A separate RNG keeps older seeded content unchanged.

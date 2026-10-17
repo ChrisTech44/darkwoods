@@ -63,6 +63,8 @@ func _process(_delta: float) -> void:
 		beam.rotation=actor.facing.angle()
 		beam.texture_scale=actor.config.flashlight_range/128.0*(0.7 if in_woods and weather=="fog" else 1.0)
 		beam.enabled=actor.flashlight_on and actor.status in [CampPlayer.Status.ALIVE,CampPlayer.Status.DOWNED]
+		# Build-up tell: the beam stutters before something is sent your way.
+		beam.energy=1.6 if actor.flicker<=0.0 else (0.35 if int(actor.flicker*14.0)%2==0 else 1.4)
 		glow.enabled=actor.status not in [CampPlayer.Status.BOARDED,CampPlayer.Status.ESCAPED]
 
 

@@ -32,7 +32,8 @@ func _run() -> void:
 		await _frames(3)
 		_check(level.sight.can_see(from + Vector2(24, 0)), "current_path_visible")
 		_check(not level.sight.can_see(to) and not monster.visible, "tree_border_hides_entire_monster")
-		_check(not level.soundscape.play_cue("werewolf_howl", from + Vector2(200, 0)), "distant_monster_does_not_start_call")
+		# Audio revamp: calls carry (200 px plays), but beyond MONSTER_RANGE they do not.
+		_check(not level.soundscape.play_cue("werewolf_howl", from + Vector2(CampSoundscape.MONSTER_RANGE + 40.0, 0)), "distant_monster_does_not_start_call")
 		_check(level.soundscape.play_cue("werewolf_howl", from + Vector2(60, 0)), "nearby_call_allowed")
 		if capture:
 			# Isolate world pixels: UI markers and weather haze are drawn above the sight mask.

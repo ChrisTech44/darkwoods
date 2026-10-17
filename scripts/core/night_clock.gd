@@ -198,6 +198,11 @@ func direct() -> int:
 			options.append(enemy)
 	options.sort_custom(func(a: CampCryptid, b: CampCryptid) -> bool: return a.global_position.distance_to(focus.global_position) < b.global_position.distance_to(focus.global_position))
 	var sent := 0
+	# Build-up before a peak: a distant call and the focus survivor's light flickers.
+	if not options.is_empty():
+		focus.flicker = 0.8
+		if level.soundscape != null:
+			level.soundscape.distant_call(options[0])
 	for enemy in options.slice(0, 1 if dread < 50.0 else 2):
 		var area := focus.global_position + Vector2.from_angle(rng.randf() * TAU) * rng.randf_range(150.0, 300.0)
 		var map := level.get_world_2d().navigation_map
@@ -275,6 +280,8 @@ func _start_event(kind: String) -> void:
 	elif kind == "blackout" and not blackout:
 		blackout = true
 		level.announce("BLACKOUT. The camp generator died. Restart it at Maintenance (E, loud).")
+	elif kind in ["hunt", "gift", "camper"]:
+		level.events.start(kind)
 	print(JSON.stringify({"event": "night_event", "kind": kind, "time": int(elapsed)}))
 
 

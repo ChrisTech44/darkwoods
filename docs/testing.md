@@ -601,3 +601,15 @@ three-route Route Master, sighting/journal text and persistence. In a real round
 it checks a first sighting unlocks a journal entry, notes count, and the results
 screen shows score, grade, new badges and the best score; on the menu, Daily
 Night uses today's seed and the Camp Journal opens and closes.
+
+## Story events, build-ups and the audio revamp
+
+`tests/integration/night_events.gd` (in `verify.py`) checks the Hunt Begins
+(remembers only inner-ring loud noises, the horn plays, roamers go to the last
+noise), the Stalker's Gift (placed and pinned, gives supplies, its bell calls
+the killer, pin cleared), the Lost Camper (pinned, follows the first survivor,
+panics when chased, reaches camp for a medkit, +250 score), director build-ups
+(flashlight flicker and a distant call) and the audio revamp (wider call and
+step ranges, the killer screams in a chase, the distant chorus, a call heard at
+450 px). `night_phases.gd` checks the schedule now carries two of the three
+story events in sorted phases; `woods_visibility.gd` checks the new call range.

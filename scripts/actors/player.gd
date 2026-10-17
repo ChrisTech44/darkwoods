@@ -64,6 +64,8 @@ var ability_cooldown: float = 0.0
 var ability_active: float = 0.0
 ## Seconds left held in a Groundskeeper snare.
 var snared: float = 0.0
+## Seconds of flashlight flicker (a build-up tell before the director's peaks).
+var flicker: float = 0.0
 
 
 func _ready() -> void:
@@ -83,6 +85,7 @@ func _physics_process(delta: float) -> void:
 	flash_time = maxf(0.0, flash_time - delta)
 	flash_cooldown = maxf(0.0, flash_cooldown - delta)
 	help_cooldown = maxf(0.0, help_cooldown - delta)
+	flicker = maxf(0.0, flicker - delta)
 	if expedition and CampMap.is_woods(global_position) and flashlight_on and status == Status.ALIVE:
 		flashlight_charge = maxf(0.0, flashlight_charge - delta * light_drain)
 		if flashlight_charge <= 0:

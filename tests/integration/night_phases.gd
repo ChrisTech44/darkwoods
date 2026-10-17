@@ -49,10 +49,15 @@ func _plan_checks() -> void:
 		again.generate(seed_value, "woods")
 		_check(plan.reveal_phase == again.reveal_phase and plan.night_events == again.night_events, "seed_%d_night_schedule_reproducible" % seed_value)
 		_check(plan.reveal_phase["battery"] == 0 and plan.reveal_phase["key"] == 0 and plan.reveal_phase["fuel"] == 1 and plan.reveal_phase[plan.required[3]] == 2 and plan.reveal_phase[plan.required[4]] == 3, "seed_%d_parts_staged_across_four_phases" % seed_value)
-		var placed := plan.night_events.size() == 3
-		for index in range(plan.night_events.size()):
-			var event: Dictionary = plan.night_events[index]
-			placed = placed and event["phase"] == index + 1 and event["delay"] > 0.0 and event["delay"] <= 360.0 and event["kind"] in ["storm", "blackout"]
+		var weather := plan.night_events.filter(func(event: Dictionary) -> bool: return event["kind"] in ["storm", "blackout"])
+		var story := plan.night_events.filter(func(event: Dictionary) -> bool: return event["kind"] in ["hunt", "gift", "camper"])
+		var placed: bool = weather.size() == 3 and story.size() == 2 and story[0]["kind"] != story[1]["kind"]
+		for index in range(weather.size()):
+			placed = placed and weather[index]["phase"] == index + 1 and weather[index]["delay"] > 0.0 and weather[index]["delay"] <= 360.0
+		for event: Dictionary in story:
+			placed = placed and event["phase"] >= 1 and event["phase"] <= 3
+		for index in range(1, plan.night_events.size()):
+			placed = placed and plan.night_events[index - 1]["phase"] <= plan.night_events[index]["phase"]
 		_check(placed, "seed_%d_events_inside_their_phases" % seed_value)
 	var camp := RoundPlan.new()
 	camp.generate(42, "camp")

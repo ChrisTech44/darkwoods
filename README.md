@@ -239,6 +239,17 @@ phase and how long you have been out.
   Maintenance door (**E**, loud). The campfire keeps burning.
 - **No dawn rescue.** The only way out is an escape you build yourselves; the
   Witching Hour never ends on its own.
+- **Story events** (two per night, in seeded phases):
+  - **The Hunt Begins:** a horn sounds; for a minute every roaming creature
+    converges on the last loud noise made near camp. Go quiet.
+  - **The Stalker's Gift:** a crate tied with a bow appears in a named region
+    (pinned GIFT). It holds two flares, a battery and a medkit, but the bell on
+    the lid calls the killer from anywhere.
+  - **Lost Camper:** a counselor calls from a region (pinned CAMPER). The first
+    survivor to reach them is followed home; they freeze in panic if something
+    chases nearby. Getting them into camp earns a medkit and +250 score.
+- **Build-ups:** before the woods send something your way you hear a distant
+  call from its direction and your flashlight stutters for a moment.
 
 Quick Camp stays a short mode with no night clock.
 
@@ -628,12 +639,18 @@ in when the stalker or a cryptid sees you, then fades away after pursuit.
 
 ## Sound and volume
 
+**Creatures are loud now.** Calls carry about 560 px (well off-screen) with a
+gentler fall-off, chasing creatures scream every few seconds, wandering ones
+call every 6–12 s, monster footsteps are heavier (pitched by size) and carry
+240 px, the headline killer screams when it hunts and growls while
+investigating, and a faint chorus of far-off calls drifts in every 18–35 s.
+None of this changes what monsters hear.
+
 The supplied MP3s now provide forest/bog ambience, a positional campfire,
 restrained music, surface-specific walking/running sounds, a call for every
 creature species, pursuit heartbeat, a ranger-radio broadcast (static, then
 chatter) at each night phase, door slams and break-ins, gate and vault thuds,
-and crashing woodpiles. Creature calls start only nearby (within 160 pixels), fade with distance and
-follow the moving source; enemy footsteps use a shorter 110-pixel range. Calls have cooldowns; visual cues remain usable
+and crashing woodpiles. Calls follow their moving source and have cooldowns; visual cues remain usable
 with sound muted. **Esc** opens Master, Effects, Ambience and Music sliders;
 the same controls are behind **Settings** on the main menu, with music and subdued forest
 ambience playing. Settings persist and zero mutes. Pause suspends round sound, results stop it, and

@@ -39,6 +39,7 @@ var props: ChaseProps
 var abilities: SurvivorAbilities
 var signal_fire: SignalFire
 var snares: Snares
+var events: NightEvents
 ## End-of-night award titles (host computes, clients receive in snapshots).
 var awards_text := ""
 ## F8: tonight's score card (host computes; clients receive it) and local journal.
@@ -161,6 +162,10 @@ func _ready() -> void:
 	escapes.name = "FieldEscapes"
 	escapes.level = self
 	add_child(escapes)
+	events = NightEvents.new()
+	events.name = "NightEvents"
+	events.level = self
+	add_child(events)
 	snares = Snares.new()
 	snares.name = "Snares"
 	snares.level = self
@@ -338,6 +343,8 @@ func try_interact(actor: CampPlayer) -> bool:
 		return props.interact(actor)
 	if not snares.prompt(actor).is_empty():
 		return snares.interact(actor)
+	if not events.prompt(actor).is_empty():
+		return events.interact(actor)
 	if van.can_board(actor):
 		var entered := van.board(actor)
 		if entered:
@@ -559,6 +566,8 @@ func on_survivor_wounded(actor: CampPlayer) -> void:
 func _on_noise(origin: Vector2) -> void:
 	if not paused and not finished:
 		night_clock.note_noise()
+		if events != null:
+			events.heard_loud(origin)
 		for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 			enemy.hear_stimulus(origin, enemy.config.hearing_radius * night_clock.hearing_scale())
 
@@ -573,6 +582,8 @@ func loud_noise(origin: Vector2, radius: float) -> void:
 	if paused or finished:
 		return
 	night_clock.note_noise()
+	if events != null:
+		events.heard_loud(origin)
 	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 		enemy.hear_stimulus(origin, radius * night_clock.hearing_scale())
 
@@ -596,6 +607,9 @@ func context_prompt() -> String:
 	var snare_prompt := snares.prompt(player)
 	if not snare_prompt.is_empty():
 		return snare_prompt
+	var event_prompt := events.prompt(player)
+	if not event_prompt.is_empty():
+		return event_prompt
 	if player.status == CampPlayer.Status.DOWNED:
 		if solo_recovery_available(player):
 			return "HOLD E (8s) · DRAG YOURSELF UP · ONCE PER NIGHT, LOUD"
@@ -699,7 +713,12 @@ func compute_score(success: bool) -> Dictionary:
 	var revives := 0
 	for row: Dictionary in abilities.stats.values():
 		revives += int(row["revives"])
-	return CampProfile.score_night(success, escape_route, relics, notes_read, revives, tonight_seen.size(), plan.modifiers.size(), success and escape_route != "VAN")
+	var card := CampProfile.score_night(success, escape_route, relics, notes_read, revives, tonight_seen.size(), plan.modifiers.size(), success and escape_route != "VAN")
+	if events.camper_saved:
+		card["score"] = int(card["score"]) + 250
+		card["grade"] = CampProfile.grade(card["score"])
+		card["lines"].append("LOST CAMPER +250")
+	return card
 
 
 ## Local journal/badges for this machine's player (once per night). Returns any

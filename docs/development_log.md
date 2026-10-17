@@ -1,5 +1,29 @@
 # Development log
 
+## 2026-10-17 — Story events, build-ups and the creature audio revamp
+
+The user noted creatures "do not really make that much noise".
+
+- **Audio revamp** (`CampSoundscape`): creature calls carry 560 px (was 160)
+  with a gentler roll-off; chasing creatures call every 3.5–5s (louder),
+  wandering ones every 6–12s; monster footsteps carry 240 px (was 110), louder and
+  pitched by size; the headline killer screams in a chase and growls while
+  investigating; a distant chorus (every 18–35s) places a far creature's call
+  toward it within 480 px; voice pool 12 → 20. AI hearing is unchanged.
+- **Story events** (`NightEvents`, two of three per night in seeded phases):
+  The Hunt Begins (horn; 60s of roamers converging on the last inner-ring loud
+  noise), The Stalker's Gift (pinned bait crate; supplies plus a bell the killer
+  hears from anywhere), Lost Camper (pinned NPC who follows the first survivor
+  home on the navmesh, panics when chased, +medkit and +250 score).
+- **Build-ups:** each director peak flickers the focus survivor's flashlight and
+  plays a distant call from the steered creature's direction.
+- Found and fixed while testing: the horn's own noise overwrote the "last loud
+  noise" it should point creatures at. Rules `lnac-net-15`.
+
+**Verification:** `night_events.gd` 22 checks; `verify.py` 132/132;
+`verify_network.py --players 2` 375 assertions, 0 failures; `verify_voice.py`
+passes.
+
 ## 2026-10-17 — F8 score, Daily Night, Camp Journal and merit badges
 
 - `CampProfile` (local `user://profile.cfg`; test runs use `profile_test.cfg`)

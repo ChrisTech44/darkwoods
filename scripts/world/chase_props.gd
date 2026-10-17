@@ -16,6 +16,11 @@ const KNOCK_BLOCK_SECONDS := 6.0
 const KNOCK_STUN := 2.0
 const KNOCK_MAX_SPAN := 180.0
 const CAMP_PILES := 4
+const BARRIER_REACH := 22.0
+const VAULT_SECONDS := 0.45
+var gate_links: Array[NavigationLink2D] = []
+var gate_bodies: Array[StaticBody2D] = []
+var vaults: Dictionary = {}
 const SPOT_LABELS := {"bed": "UNDER BUNK", "medical": "UNDER COT", "shelf": "IN LOCKER", "crate": "BEHIND CRATES", "canoe": "UNDER CANOE", "shower": "IN SHOWER STALL", "table": "UNDER TABLE", "desk": "UNDER DESK", "bench": "UNDER BENCH"}
 var level: Node2D
 var spots: Array[Dictionary] = []
@@ -30,6 +35,7 @@ func _ready() -> void:
 	for building in camp_map.buildings + camp_map.forest_buildings:
 		_add_building(building, camp_map)
 	_add_woods(level.plan.woods, level.plan.seed_value)
+	_add_barriers(level.plan.woods)
 
 
 func _add_building(building: CampBuilding, camp_map: CampMap) -> void:
@@ -90,7 +96,7 @@ func _add_woods(woods: WoodsLayout, seed_value: int) -> void:
 			logs.append(middle)
 			piles += 1
 	for cell in corridors:
-		var bush := woods.center(cell) + Vector2(rng.randi_range(-36, 36), rng.randi_range(-36, 36))
+		var bush := CampMap.off_seam(woods.center(cell) + Vector2(rng.randi_range(-36, 36), rng.randi_range(-36, 36)))
 		if _spaced(bush, brush, 520) and woods.signpost_near(bush, 120).is_empty():
 			brush.append(bush)
 			spots.append({"position": bush.round(), "label": "IN THICK BRUSH", "woods": true})
@@ -98,6 +104,93 @@ func _add_woods(woods: WoodsLayout, seed_value: int) -> void:
 		var middle := _straight_middle(woods, cell)
 		if middle != Vector2.INF and logs.size() < 60 + piles and _spaced(middle, logs, 900) and middle.distance_to(bush) > 60 and _add_knock(woods, middle, _across(woods, cell), "DEADFALL"):
 			logs.append(middle)
+
+
+func _add_barriers(woods: WoodsLayout) -> void:
+	for fence in woods.fences:
+		_barrier_body(fence["rect"])
+	for gate in woods.gates:
+		gate_bodies.append(_barrier_body(gate["rect"]))
+		# Closed gates are baked as obstacles; this link restores the route once opened.
+		var link := NavigationLink2D.new()
+		var travel: Vector2 = gate["toward_zone"]
+		link.position = gate["position"]
+		link.start_position = travel * 20.0
+		link.end_position = -travel * 20.0
+		link.bidirectional = true
+		link.enabled = false
+		add_child(link)
+		gate_links.append(link)
+
+
+func _barrier_body(rect: Rect2) -> StaticBody2D:
+	var body := StaticBody2D.new()
+	body.collision_layer = CampPlayer.BARRIER_LAYER
+	body.collision_mask = 0
+	var shape := CollisionShape2D.new()
+	shape.shape = RectangleShape2D.new()
+	(shape.shape as RectangleShape2D).size = rect.size
+	body.position = rect.get_center()
+	body.add_child(shape)
+	add_child(body)
+	return body
+
+
+func gate_near(actor: CampPlayer) -> int:
+	var gates: Array[Dictionary] = level.plan.woods.gates
+	for index in range(gates.size()):
+		if not gates[index]["open"] and gates[index]["rect"].grow(BARRIER_REACH).has_point(actor.global_position):
+			return index
+	return -1
+
+
+func fence_near(actor: CampPlayer) -> int:
+	var fences: Array[Dictionary] = level.plan.woods.fences
+	for index in range(fences.size()):
+		if fences[index]["rect"].grow(BARRIER_REACH).has_point(actor.global_position):
+			return index
+	return -1
+
+
+## Only the region side has the latch, so you earn the shortcut by going deep.
+func open_gate(actor: CampPlayer, index: int) -> bool:
+	var gate: Dictionary = level.plan.woods.gates[index]
+	var zone_side: bool = (actor.global_position - gate["position"]).dot(gate["toward_zone"]) > 0.0
+	if not zone_side:
+		level.announce("Ranger gate: the latch is on the far side.", actor)
+		return false
+	gate["open"] = true
+	_apply_gate(index)
+	level.loud_noise(gate["position"], 200)
+	level.announce("Shortcut open: %s to the road. It's open for everything now." % WoodsLayout.short_name(level.plan.woods.zones[gate["zone"]]))
+	return true
+
+
+func _apply_gate(index: int) -> void:
+	var open: bool = level.plan.woods.gates[index]["open"]
+	(gate_bodies[index].get_child(0) as CollisionShape2D).set_deferred("disabled", open)
+	gate_links[index].enabled = open
+	queue_redraw()
+
+
+## Hop a fence: half a second, quiet at a walk, loud at a sprint.
+func vault(actor: CampPlayer, index: int) -> bool:
+	var fence: Dictionary = level.plan.woods.fences[index]
+	var travel: Vector2 = fence["travel"]
+	var side := signf((actor.global_position - fence["position"]).dot(travel))
+	if side == 0.0:
+		side = 1.0
+	var across := travel.orthogonal().abs()
+	var lateral: float = (actor.global_position - fence["position"]).dot(across)
+	var target: Vector2 = fence["position"] + across * lateral - travel * side * 18.0
+	if not level.clear_path(actor.global_position, target):
+		return false
+	vaults[actor.get_instance_id()] = {"actor": weakref(actor), "from": actor.global_position, "to": target}
+	actor.vault_time = VAULT_SECONDS
+	actor.velocity = Vector2.ZERO
+	actor.collision_mask &= ~CampPlayer.BARRIER_LAYER
+	level.loud_noise(actor.global_position, 220.0 if actor.sprinting else 90.0)
+	return true
 
 
 ## Midpoint of a straight corridor's trail segment, or INF if the cell bends.
@@ -126,7 +219,7 @@ func _add_knock(woods: WoodsLayout, at: Vector2, axis: Vector2, label: String) -
 	var finish: Vector2 = at + axis * (reach[0] + 8.0)
 	var thickness := Vector2.ONE * 16.0 - axis * 16.0
 	var block := Rect2(start.min(finish) - thickness * 0.5, (finish - start).abs() + thickness)
-	var pile: Vector2 = (at + axis * (reach[0] - 14.0)).round()
+	var pile: Vector2 = CampMap.off_seam((at + axis * (reach[0] - 14.0)).round())
 	knocks.append({"position": pile, "label": label, "state": 0, "remaining": 0.0, "rect": Rect2(), "block": block, "travel": axis.orthogonal().abs(), "body": _body(Rect2(pile, Vector2.ONE * 4))})
 	return true
 
@@ -176,6 +269,17 @@ func _physics_process(delta: float) -> void:
 
 
 func advance(delta: float) -> void:
+	for id in vaults.keys():
+		var hop: Dictionary = vaults[id]
+		var actor: CampPlayer = hop["actor"].get_ref()
+		if not is_instance_valid(actor):
+			vaults.erase(id)
+			continue
+		actor.vault_time = maxf(0.0, actor.vault_time - delta)
+		actor.position = hop["from"].lerp(hop["to"], 1.0 - actor.vault_time / VAULT_SECONDS)
+		if actor.vault_time <= 0.0:
+			actor.collision_mask |= CampPlayer.BARRIER_LAYER
+			vaults.erase(id)
 	var enemies := get_tree().get_nodes_in_group("killers")
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if actor.hidden_spot < 0:
@@ -289,6 +393,12 @@ func prompt(actor: CampPlayer) -> String:
 	var knock := knock_near(actor)
 	if knock >= 0:
 		return "E · KNOCK OVER %s ACROSS THE TRAIL (LOUD, 6s)" % knocks[knock]["label"]
+	var gate := gate_near(actor)
+	if gate >= 0:
+		var gates: Array[Dictionary] = level.plan.woods.gates
+		return "E · OPEN SHORTCUT GATE" if (actor.global_position - gates[gate]["position"]).dot(gates[gate]["toward_zone"]) > 0.0 else "RANGER GATE · LATCHED FROM THE FAR SIDE"
+	if fence_near(actor) >= 0:
+		return "E · VAULT FENCE (LOUD IF SPRINTING)"
 	return ""
 
 
@@ -305,6 +415,12 @@ func interact(actor: CampPlayer) -> bool:
 	var knock := knock_near(actor)
 	if knock >= 0:
 		return knock_over(actor, knock)
+	var gate := gate_near(actor)
+	if gate >= 0:
+		return open_gate(actor, gate)
+	var fence := fence_near(actor)
+	if fence >= 0:
+		return vault(actor, fence)
 	return false
 
 
@@ -409,6 +525,28 @@ func _nearest_hunter(from: Vector2, radius: float) -> CampKiller:
 	return best
 
 
+func _draw_rails(rect: Rect2, wood: Color, latched: bool) -> void:
+	var long := rect.size.x > rect.size.y
+	var span := rect.size.x if long else rect.size.y
+	var along := Vector2.RIGHT if long else Vector2.DOWN
+	var across := Vector2.DOWN if long else Vector2.RIGHT
+	var start := rect.position + across * (rect.size.y if long else rect.size.x) * 0.5
+	draw_line(start + across * 3 + Vector2(1, 2), start + across * 3 + along * span + Vector2(1, 2), Color(0, 0, 0, 0.35), 3)
+	for offset in [-4.0, 2.0]:
+		draw_line(start + across * offset, start + across * offset + along * span, wood.lightened(0.15), 3)
+		draw_line(start + across * (offset - 1), start + across * (offset - 1) + along * span, wood.lightened(0.45), 1)
+	for step in range(0, int(span) + 1, 16):
+		var post := start + along * step
+		draw_rect(Rect2(post - across * 7 - (along * 2), across * 12 + along * 4), Color("3d2f20"))
+		draw_rect(Rect2(post - across * 7 - (along * 2), along * 4 + across * 2), Color("7d6446"))
+	if latched:
+		# Gates: a diagonal brace and a latch box mark them as openable.
+		draw_line(start - across * 4, start + across * 2 + along * span, wood.lightened(0.3), 2)
+		var middle := start + along * span * 0.5
+		draw_rect(Rect2(middle - Vector2(5, 5), Vector2(10, 10)), Color("4a4a42"))
+		draw_rect(Rect2(middle - Vector2(3, 3), Vector2(6, 6)), Color("d9c98f"))
+
+
 func snapshot() -> Dictionary:
 	var door_rows := []
 	for door in doors:
@@ -416,7 +554,10 @@ func snapshot() -> Dictionary:
 	var knock_rows := []
 	for knock in knocks:
 		knock_rows.append([knock["state"], knock["remaining"], knock["rect"]])
-	return {"doors": door_rows, "knocks": knock_rows}
+	var gate_rows := []
+	for gate in level.plan.woods.gates:
+		gate_rows.append(gate["open"])
+	return {"doors": door_rows, "knocks": knock_rows, "gates": gate_rows}
 
 
 func restore(state: Dictionary) -> void:
@@ -439,11 +580,21 @@ func restore(state: Dictionary) -> void:
 			_shape(knock["body"], row[2], row[0] == 1)
 		knock["state"] = row[0]
 		knock["remaining"] = row[1]
+	var gates: Array[Dictionary] = level.plan.woods.gates
+	for index in range(mini(gates.size(), state.get("gates", []).size())):
+		if gates[index]["open"] != state["gates"][index]:
+			gates[index]["open"] = state["gates"][index]
+			_apply_gate(index)
 	if changed:
 		queue_redraw()
 
 
 func _draw() -> void:
+	for fence: Dictionary in level.plan.woods.fences:
+		_draw_rails(fence["rect"], Color("9a7b52"), false)
+	for gate: Dictionary in level.plan.woods.gates:
+		if not gate["open"]:
+			_draw_rails(gate["rect"], Color("b39c6a"), true)
 	for spot in spots:
 		var at: Vector2 = spot["position"]
 		if spot["woods"]:

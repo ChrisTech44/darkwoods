@@ -91,6 +91,7 @@ func _phase_checks() -> void:
 	_check(level.hud.title.text.contains("WITCHING HOUR 40:0") and (level.hud.title.text.contains("DAWN IN 20:00") or level.hud.title.text.contains("DAWN IN 19:59")), "hud_counts_down_to_dawn")
 	_check(is_equal_approx(level.killer.config.hearing_radius, hearing * 1.21) and is_equal_approx(level.killer.config.killer_chase_speed, speed * 1.08), "stalker_grows_bolder")
 	_check(level.soundscape.played_counts.get("phase_stinger", 0) >= 1, "phase_change_stinger")
+	_check(level.soundscape.played_counts.get("radio_talk", 0) >= 1 and level.soundscape.played_counts.get("radio_static", 0) >= 1, "phase_change_ranger_radio_broadcast")
 
 
 func _event_checks() -> void:

@@ -379,6 +379,16 @@ where teammates can recover them with E.
   Closed doors block movement, sight and light. A creature pressing on one breaks
   through in about **2.5 s** with a loud crash, and a smashed door can't be closed
   again for 20 s.
+- **Fences:** low wooden fences cross some woods trails (about 40 per night),
+  always where going around is a long way (9+ clearings). Press **E** beside one to
+  **vault** it in half a second: quiet at a walk, loud if you were sprinting.
+  Creatures can't vault, so a fence between you and a pursuer forces it the
+  long way round. Fences don't block sight or light.
+- **Shortcut gates:** short new trails link some optional regions (usually the
+  Observatory, Rail Yard and Chapel) straight to the nearest road, closed by a
+  ranger gate with a latch box. The latch is on the region side: reach the
+  region the long way, press **E** at the gate, and the shortcut stays open for
+  the whole team, and for anything hunting you.
 - **Knock-overs:** woodpiles on the straight trail stretches just outside camp,
   and deadfall logs on straight stretches deeper in the woods. Press **E** to
   topple one: it falls **across the whole trail, wall to wall**, closing it for
@@ -427,8 +437,9 @@ woods caches remain in the village/bog/graveyard; the six new zones are optional
 Every guardian can still attack on contact. Steam, thorns and inspection patches
 expire, affect each survivor once per patch and never block an exit or change
 collision. Each patch hit applies a 1.2s hex (movement at 60% speed) and drains
-1.5 stamina; walking avoids the Seamstress's thorns. New monsters currently reuse an existing nearby revenant call; their
-appearance and visible cues identify them more reliably than their sound.
+1.5 stamina; walking avoids the Seamstress's thorns. Each newer monster now has
+its own call (five screeches, shared in pitch-shifted pairs); appearance and
+visible tells still identify them best.
 
 Enemies lead visible moving targets briefly and sweep
 reachable points around their last sensed location after losing sight.
@@ -438,8 +449,10 @@ in when the stalker or a cryptid sees you, then fades away after pursuit.
 ## Sound and volume
 
 The supplied MP3s now provide forest/bog ambience, a positional campfire,
-restrained music, surface-specific walking/running sounds, six creature voices,
-and pursuit heartbeat. Creature calls start only nearby (within 160 pixels), fade with distance and
+restrained music, surface-specific walking/running sounds, a call for every
+creature species, pursuit heartbeat, a ranger-radio broadcast (static, then
+chatter) at each night phase, door slams and break-ins, gate and vault thuds,
+and crashing woodpiles. Creature calls start only nearby (within 160 pixels), fade with distance and
 follow the moving source; enemy footsteps use a shorter 110-pixel range. Calls have cooldowns; visual cues remain usable
 with sound muted. **Esc** opens Master, Effects, Ambience and Music sliders;
 the same controls are behind **Settings** on the main menu, with music and subdued forest
@@ -595,13 +608,14 @@ recover units. Vehicle components and cutters remain separate from this limit.
 
 The current implementation includes solo and 1–4 player ENet co-op in both
 modes, six survivor roles, the supply belt, nine major regions and 16 cryptid
-species. Full baseline verification passed **91 steps** with no errors/warnings,
+species. Full baseline verification passed **93 steps** with no errors/warnings,
 including the [navigation](docs/evidence/navigation/README.md),
 [night phase](docs/evidence/night_phases/README.md) and
 [chase toolkit](docs/evidence/chase_toolkit/README.md) and
 [hiding/doors](docs/evidence/chase_props/README.md) and
 [road network](docs/evidence/road_network/README.md) and
-[rotation/clue](docs/evidence/rotation_clues/README.md) suites;
+[rotation/clue](docs/evidence/rotation_clues/README.md) and
+[gates/fences/audio](docs/evidence/barriers_audio/README.md) suites;
 final content checks passed **350 assertions**. Current graphical ENet tests passed **654
 assertions across 14 process runs**, including two/four peers and graphical
 host/client windows in both modes. See the

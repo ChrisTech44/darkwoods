@@ -47,7 +47,8 @@ and shares them with everyone. The host also owns the 60-minute night clock, par
 Flash-stuns (Space) and help calls are host-validated intents.
 Hiding, doors and knock-overs use the normal E intent; the host owns breath,
 door breaking and blocking. The road network changes the generated woods, so
-both copies must run rules version `lnac-net-9`. Clue knowledge (ranger notes,
+both copies must run rules version `lnac-net-10`. Vaults and gate openings are
+host-validated E actions. Clue knowledge (ranger notes,
 regions visited) is shared by the whole team.
 Nearby teammates show their names; each survivor keeps their own flashlight,
 limited sight, stamina, inventory and role advantage.

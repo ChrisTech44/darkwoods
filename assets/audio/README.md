@@ -32,6 +32,23 @@ are unchanged. Godot duplicates stream resources before setting loop flags.
 | `witch_cackle.mp3` | Witch alert/casting/nearby call |
 | `revenant_screech.mp3` | Briar revenant alert/nearby call |
 | `vampire_snarl_brief.mp3` | Vampire alert/nearby call |
+| `screech_1.mp3` | Shutter Wraith call; Lens Eater at pitch 0.78. Starts at 1.0s (silent lead-in) |
+| `screech_2.mp3` | Bramble Seamstress call; Candle Grazer at pitch 0.82 |
+| `screech_3.mp3` | Boiler Saint call; Last-Car Conductor at pitch 0.80. Starts at 2.4s (silent lead-in) |
+| `screech_4.mp3` | Switchback Hound call; Relay Jackal at pitch 0.80 |
+| `screech_5.mp3` | Stoneback Ram call; Ration Moth at pitch 1.25 |
+| `thud.mp3` | Door slam; deeper door break-in (with `wood_falling`); gate opening; fence-vault landing. Starts at 0.25s |
+| `wood_falling.mp3` | Woodpile/deadfall knock-overs; splintering on door break-ins |
+| `radio_static.mp3` | ~1s static burst opening each night-phase ranger radio broadcast (non-positional) |
+| `police_radio_talk.mp3` | ~7s faded chatter excerpt after the static at each phase change; a different excerpt per phase |
+
+The nine later files (added 16 October 2026, user-supplied, same provenance
+status) were levelled from a full-file decode (`afconvert` → PCM). Creature
+calls were matched to the werewolf call's effective RMS (about −29 dB after
+gain), props sit lower, and silent lead-ins are skipped via the manifest's
+`start_seconds`. Prop sounds are inferred from replicated door, knock-over, gate
+and vault state, so the host and each client play them once, locally. The
+radio replaced the earlier borrowed werewolf-howl phase stinger.
 
 Monster calls have a shared per-source 8–14s cooldown, including witch casting,
 so state changes do not stack loud voices. At most 12 positional one-shots play

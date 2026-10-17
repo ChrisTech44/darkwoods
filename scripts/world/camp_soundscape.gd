@@ -5,7 +5,13 @@ extends Node
 const MAX_VOICES := 12
 const MONSTER_RANGE := 160.0
 const ENEMY_STEP_RANGE := 110.0
-const CREATURE_CUES := {"werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl"}
+const CREATURE_CUES := {"werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl",
+	"switchback_hound": "screech_4", "relay_jackal": "screech_4", "shutter_wraith": "screech_1", "lens_eater": "screech_1",
+	"bramble_seamstress": "screech_2", "candle_grazer": "screech_2", "boiler_saint": "screech_3", "last_car_conductor": "screech_3",
+	"stoneback_ram": "screech_5", "ration_moth": "screech_5"}
+## The second species sharing a screech is pitched lower so the two stay distinct.
+const CREATURE_PITCH := {"relay_jackal": 0.8, "lens_eater": 0.78, "candle_grazer": 0.82, "last_car_conductor": 0.8, "ration_moth": 1.25}
+const RADIO_TALK_SECONDS := 7.0
 var level: Node2D
 var mixer: Node
 var loops: Dictionary = {}
@@ -21,6 +27,7 @@ var played_counts: Dictionary = {}
 var last_step_cue := ""
 var survivor_steps := {}
 var heard_phase := 0
+var prop_state := {}
 
 
 func _ready() -> void:
@@ -120,7 +127,8 @@ func _physics_process(delta: float) -> void:
 	loops["music"].pitch_scale = lerpf(1.0, 0.9, dread / 100.0)
 	if level.night_clock.phase != heard_phase:
 		heard_phase = level.night_clock.phase
-		stinger("werewolf_howl", -4.0, 0.78)
+		radio_broadcast(heard_phase)
+	_prop_sounds()
 	_mix_loop("running_grass", 1.0 if moving and actor.sprinting and not indoor else 0.0, delta, 10.0)
 	_mix_loop("walking_indoor", 1.0 if moving and indoor else 0.0, delta, 10.0)
 	loops["walking_indoor"].pitch_scale = 1.35 if actor.sprinting else 1.0
@@ -182,7 +190,7 @@ func _creature_call(enemy: CampCryptid) -> void:
 	var id := enemy.get_instance_id()
 	if call_timers.get(id, 0.0) > 0:
 		return
-	if play_cue(CREATURE_CUES.get(enemy.species, "revenant_screech"), enemy.global_position, 0, 1, enemy):
+	if play_cue(CREATURE_CUES.get(enemy.species, "revenant_screech"), enemy.global_position, 0, CREATURE_PITCH.get(enemy.species, 1.0), enemy):
 		call_timers[id] = rng.randf_range(8.0, 14.0)
 
 
@@ -215,8 +223,81 @@ func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float =
 	voice.finished.connect(func() -> void:
 		voices.erase(voice)
 		voice.queue_free())
-	voice.play()
+	# Some supplied calls open with silence; start at the sound so warnings are immediate.
+	voice.play(float(mixer.cues[cue].get("start_seconds", 0.0)))
 	return true
+
+
+## Ranger radio at each phase change (the part reveals): a burst of static, then a
+## short faded excerpt of chatter. Non-positional, like a walkie on your belt.
+func radio_broadcast(phase: int) -> bool:
+	if level.finished or not mixer.cues.has("radio_talk") or mixer.stream_for("radio_talk") == null:
+		return false
+	played_counts["phase_stinger"] = played_counts.get("phase_stinger", 0) + 1
+	played_counts["radio_talk"] = played_counts.get("radio_talk", 0) + 1
+	played_counts["radio_static"] = played_counts.get("radio_static", 0) + 1
+	if not mixer.output_enabled:
+		return true
+	var static_burst := _radio_voice("radio_static", 0.0)
+	get_tree().create_timer(1.1).timeout.connect(func() -> void:
+		if is_instance_valid(static_burst): static_burst.queue_free())
+	var talk_length: float = mixer.stream_for("radio_talk").get_length()
+	var offset := fmod((phase - 1) * 9.0, maxf(1.0, talk_length - RADIO_TALK_SECONDS))
+	get_tree().create_timer(0.6).timeout.connect(func() -> void:
+		if level.finished: return
+		var talk := _radio_voice("radio_talk", offset)
+		var fade := talk.create_tween()
+		fade.tween_interval(RADIO_TALK_SECONDS - 1.0)
+		fade.tween_property(talk, "volume_db", -60.0, 1.0)
+		fade.tween_callback(talk.queue_free))
+	return true
+
+
+func _radio_voice(cue: String, offset: float) -> AudioStreamPlayer:
+	var voice := AudioStreamPlayer.new()
+	voice.stream = mixer.stream_for(cue)
+	voice.bus = mixer.cues[cue]["bus"]
+	voice.volume_db = float(mixer.cues[cue]["gain_db"])
+	add_child(voice)
+	voice.play(offset)
+	return voice
+
+
+## Door slams/breaks, gate openings, knock-overs and vault landings, inferred from
+## (replicated) prop state so host and clients each hear them once, locally.
+func _prop_sounds() -> void:
+	var props: ChaseProps = level.props
+	if props == null:
+		return
+	for index in range(props.doors.size()):
+		var door: Dictionary = props.doors[index]
+		var key := "door%d" % index
+		var now := [door["open"], door["broken"] > 0.0]
+		if prop_state.has(key):
+			var before: Array = prop_state[key]
+			if before[0] and not now[0]:
+				play_cue("thud", door["rect"].get_center(), 0.0, 1.0)
+			elif not before[1] and now[1]:
+				play_cue("thud", door["rect"].get_center(), 6.0, 0.7)
+				play_cue("wood_falling", door["rect"].get_center(), 0.0, 1.2)
+		prop_state[key] = now
+	for index in range(props.knocks.size()):
+		var key := "knock%d" % index
+		var state: int = props.knocks[index]["state"]
+		if prop_state.get(key, state) == 0 and state == 1:
+			play_cue("wood_falling", props.knocks[index]["position"], 2.0, 1.0)
+		prop_state[key] = state
+	var gates: Array[Dictionary] = level.plan.woods.gates
+	for index in range(gates.size()):
+		var key := "gate%d" % index
+		if prop_state.has(key) and not prop_state[key] and gates[index]["open"]:
+			play_cue("thud", gates[index]["position"], -2.0, 1.25)
+		prop_state[key] = gates[index]["open"]
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		var key := "vault%d" % actor.get_instance_id()
+		if prop_state.get(key, 0.0) > 0.0 and actor.vault_time <= 0.0:
+			play_cue("thud", actor.global_position, -8.0, 1.35)
+		prop_state[key] = actor.vault_time
 
 
 ## Non-positional phase stinger: a distant call that marks the night getting worse.

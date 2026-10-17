@@ -53,6 +53,8 @@ var help_cooldown: float = 0.0
 var blood: Array[Vector2] = []
 var blood_distance: float = 0.0
 var hidden_spot: int = -1
+var vault_time: float = 0.0
+const BARRIER_LAYER := 8
 var breath: float = 1.0
 
 
@@ -62,6 +64,7 @@ func _ready() -> void:
 	stamina = config.stamina_max
 	flashlight_charge = config.flashlight_capacity
 	add_to_group("survivors")
+	collision_mask |= BARRIER_LAYER
 
 
 func _physics_process(delta: float) -> void:
@@ -89,6 +92,9 @@ func _physics_process(delta: float) -> void:
 
 func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 	velocity = Vector2.ZERO
+	if vault_time > 0.0:
+		sprinting = false
+		return
 	if hidden_spot >= 0:
 		sprinting = false
 		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery)

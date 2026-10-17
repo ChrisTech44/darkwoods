@@ -29,6 +29,17 @@ var roads: Array[Rect2] = []
 var road_cells: Dictionary = {}
 var road_tiles: Dictionary = {}
 var lamps: Array[Vector2] = []
+## F4b-2 barriers (physics layer 8: blocks bodies, never sight or light).
+## Gates close new shortcut trails from optional regions to the roads and open
+## only from the region side; fences cross maze links that have a real detour.
+const SHORTCUT_ZONES: Array[int] = [3, 4, 5, 6, 8]
+const FENCE_LIMIT := 40
+const FENCE_DETOUR := 8
+var gates: Array[Dictionary] = []
+var fences: Array[Dictionary] = []
+## Links closed by barriers. Every new barrier must keep its two sides connected
+## with all earlier ones closed, so the woods as a whole always stays connected.
+var blocked: Dictionary = {}
 const SIGN_SPACING := 640.0
 const SIGN_OFFSET := Vector2(-44, -40)
 const SIGN_NAMES := {"village":"VILLAGE", "bog":"BOG", "graveyard":"GRAVES", "mill":"MILL", "orchard":"ORCHARD", "observatory":"DOME", "rail":"RAILS", "quarry":"QUARRY", "chapel":"CHAPEL"}
@@ -44,6 +55,9 @@ func generate(seed_value: int) -> void:
 	open_tiles.clear()
 	signposts.clear()
 	roads.clear()
+	gates.clear()
+	fences.clear()
+	blocked.clear()
 	road_cells.clear()
 	road_tiles.clear()
 	lamps.clear()
@@ -72,6 +86,7 @@ func generate(seed_value: int) -> void:
 			_link(cell, neighbor)
 	_make_zones(rng)
 	_make_roads()
+	_make_shortcuts()
 	# Traversable approach routes keep objectives reachable without flattening the outer maze.
 	_connect_grid(ENTRIES[0], zones[0]["cell"] + Vector2i(2,2))
 	_connect_grid(ENTRIES[1], zones[1]["cell"] + Vector2i(1,1))
@@ -107,6 +122,8 @@ func generate(seed_value: int) -> void:
 			break
 	landmark_distances.clear()
 	_make_signposts()
+	_measure_gates()
+	_make_fences(seed_value)
 
 ## Deterministic (no RNG) so roads never shift other seeded content.
 func _make_roads() -> void:
@@ -163,6 +180,141 @@ func _road(cells: Array[Vector2i], lit: bool) -> void:
 			var post := center(cell) + side * (ROAD_HALF - 12)
 			if not lamps.has(post):
 				lamps.append(post)
+
+
+## Straight trail from an optional region's edge to the nearest road (at most 5
+## cells). The gate sits on the last link, next to the road.
+func _make_shortcuts() -> void:
+	for zone_index in SHORTCUT_ZONES:
+		var zone: Dictionary = zones[zone_index]
+		var area := Rect2i(zone["cell"], Vector2i(zone["bounds"].size / CELL))
+		var best: Array = []
+		for y in range(area.position.y, area.end.y):
+			for x in range(area.position.x, area.end.x):
+				for direction in DIRECTIONS:
+					var start := Vector2i(x, y)
+					if area.has_point(start + direction):
+						continue
+					for step in range(1, 6):
+						var next := start + direction * step
+						if not valid(next) or not zone_at(center(next)).is_empty():
+							break
+						if road_cells.has(next):
+							if best.is_empty() or step < best[2]:
+								best = [start, direction, step]
+							break
+		if best.is_empty():
+			continue
+		var cells: Array[Vector2i] = []
+		for step in range(best[2] + 1):
+			cells.append(best[0] + best[1] * step)
+		for index in range(1, cells.size()):
+			_link(cells[index - 1], cells[index])
+		gates.append({"zone": zone_index, "inner": cells[-2], "road": cells[-1], "toward_zone": -Vector2(best[1]), "open": false})
+
+
+## Gate rectangles need the carved trail, so they are measured after walls.
+func _measure_gates() -> void:
+	var kept: Array[Dictionary] = []
+	for gate in gates:
+		var at := (center(gate["inner"]) + center(gate["road"])) * 0.5
+		var across := Vector2(gate["toward_zone"]).orthogonal().abs()
+		var rect := barrier_rect(at, across)
+		# Gates may never cut a cell off: the inner cell must stay reachable without them.
+		if rect.has_area() and _connected_without(gate["inner"], gate["road"]):
+			gate["position"] = at
+			gate["rect"] = rect
+			kept.append(gate)
+			_block(gate["inner"], gate["road"])
+	gates = kept
+
+
+## Fences on maze links (not roads, regions or gates) where going around costs
+## at least FENCE_DETOUR cells, so vaulting is a real escape.
+func _make_fences(seed_value: int) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_value + 9393
+	var pairs: Array = []
+	for cell: Vector2i in links:
+		for next: Vector2i in links[cell]:
+			if next.y * SIZE.x + next.x > cell.y * SIZE.x + cell.x and not road_cells.has(cell) and not road_cells.has(next):
+				if zone_at(center(cell)).is_empty() and zone_at(center(next)).is_empty():
+					pairs.append([cell, next])
+	for index in range(pairs.size() - 1, 0, -1):
+		var swap := rng.randi_range(0, index)
+		var held: Array = pairs[index]
+		pairs[index] = pairs[swap]
+		pairs[swap] = held
+	var placed: Array[Vector2] = []
+	for pair: Array in pairs:
+		if fences.size() >= FENCE_LIMIT:
+			break
+		var at := (center(pair[0]) + center(pair[1])) * 0.5
+		if placed.any(func(other: Vector2) -> bool: return other.distance_to(at) < 900) or at.distance_to(CAMP_BOUNDS.get_center()) < 900:
+			continue
+		if gates.any(func(gate: Dictionary) -> bool: return gate["position"].distance_to(at) < 300) or not signpost_near(at, 140).is_empty():
+			continue
+		var detour := _detour(pair[0], pair[1])
+		if detour < FENCE_DETOUR:
+			continue
+		var rect := barrier_rect(at, Vector2(pair[1] - pair[0]).orthogonal().abs())
+		if not rect.has_area():
+			continue
+		fences.append({"cells": pair, "position": at, "rect": rect, "travel": Vector2(pair[1] - pair[0]), "detour": detour})
+		placed.append(at)
+		_block(pair[0], pair[1])
+
+
+## Wall-to-wall bar across the open trail at `at`, or an empty rect if too wide.
+func barrier_rect(at: Vector2, across: Vector2) -> Rect2:
+	var reach: Array[float] = [0.0, 0.0]
+	for side in range(2):
+		var direction := across * (1.0 if side == 0 else -1.0)
+		while reach[side] < 100.0 and walkable(at + direction * (reach[side] + 4.0)):
+			reach[side] += 4.0
+	if reach[0] + reach[1] > 180.0 or reach[0] < 24.0 or reach[1] < 24.0:
+		return Rect2()
+	var start: Vector2 = at - across * (reach[1] + 8.0)
+	var finish: Vector2 = at + across * (reach[0] + 8.0)
+	var thickness := Vector2.ONE * 8.0 - across * 8.0
+	return Rect2(start.min(finish) - thickness * 0.5, (finish - start).abs() + thickness)
+
+
+func barriers() -> Array[Rect2]:
+	var result: Array[Rect2] = []
+	for gate in gates:
+		result.append(gate["rect"])
+	for fence in fences:
+		result.append(fence["rect"])
+	return result
+
+
+func _block(a: Vector2i, b: Vector2i) -> void:
+	blocked[[a, b]] = true
+	blocked[[b, a]] = true
+
+
+## Graph steps from a to b without the direct a-b link or any barrier-closed link
+## (-1 if that would cut them apart).
+func _detour(a: Vector2i, b: Vector2i) -> int:
+	var seen := {a: 0}
+	var queue: Array[Vector2i] = [a]
+	var cursor := 0
+	while cursor < queue.size():
+		var cell := queue[cursor]
+		cursor += 1
+		for next: Vector2i in links[cell]:
+			if (cell == a and next == b) or (cell == b and next == a) or seen.has(next) or blocked.has([cell, next]):
+				continue
+			seen[next] = seen[cell] + 1
+			if next == b:
+				return seen[next]
+			queue.append(next)
+	return -1
+
+
+func _connected_without(a: Vector2i, b: Vector2i) -> bool:
+	return _detour(a, b) > 0
 
 
 ## True on the dirt road surface (outside region clearings, which keep their own ground).

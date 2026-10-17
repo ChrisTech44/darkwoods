@@ -30,6 +30,8 @@ var stun_immunity: float = 0.0
 
 func _ready() -> void:
 	add_to_group("killers")
+	# Fences and closed gates (layer 8) stop creatures too; they never vault.
+	collision_mask |= CampPlayer.BARRIER_LAYER
 
 
 func _physics_process(delta: float) -> void:

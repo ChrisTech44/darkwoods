@@ -13,7 +13,7 @@ func _initialize() -> void:
 func _run() -> void:
 	mixer = root.get_node("AudioManager")
 	capture = "--capture" in OS.get_cmdline_user_args()
-	_check(mixer.cues.size() == 14, "all_fourteen_supplied_files_registered")
+	_check(mixer.cues.size() == 23, "all_twenty_three_supplied_files_registered")
 	for bus in mixer.BUSES:
 		_check(AudioServer.get_bus_index(bus) >= 0, "bus_" + bus)
 	for cue in mixer.cues:
@@ -77,6 +77,10 @@ func _run() -> void:
 	await _frames(240)
 	_check(sound.threat_gain == 0 and sound.gains["heartbeat"] < 0.01, "lost_target_fades_out_heartbeat")
 	for species in CampSoundscape.CREATURE_CUES:
+		# Long calls hold their voices; free the bounded pool so each species is tested alone.
+		for voice in sound.voices:
+			voice.queue_free()
+		sound.voices.clear()
 		var enemy := CampCryptid.new()
 		enemy.species = species
 		enemy.position = level.player.position + Vector2(30, 0)
@@ -146,7 +150,7 @@ func _decode_mix() -> void:
 		source.volume_db = mixer.cues[cue]["gain_db"]
 		root.add_child(source)
 		tap.clear_buffer()
-		source.play()
+		source.play(float(mixer.cues[cue].get("start_seconds", 0.0)))
 		var end := Time.get_ticks_msec() + 750
 		var frames := 0
 		var peak := 0.0

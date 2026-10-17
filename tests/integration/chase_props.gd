@@ -130,6 +130,7 @@ func _door_checks() -> void:
 	await physics_frame
 	await physics_frame
 	_check(not level.clear_path(outside, building.door - Vector2(0, 30)), "closed_door_blocks_movement_and_sight")
+	_check(level.soundscape.played_counts.get("thud", 0) >= 1, "door_slam_plays_thud")
 	if capture:
 		await _snapshot("props_door")
 	var hunter: CampKiller = level.killer
@@ -227,6 +228,7 @@ func _knock_checks() -> void:
 				lanes += 1
 				closed = closed and not level.clear_path(from, to)
 		_check(lanes >= 8 and closed, "%s_closes_full_trail_width_%d_lanes" % [label, lanes])
+		_check(level.soundscape.played_counts.get("wood_falling", 0) >= 1, "%s_plays_wood_falling" % label)
 		if capture and label == "deadfall":
 			# Inspection capture: raised ambient and no sight mask so the whole fall line shows.
 			var ambient: Color = player.config.night_ambient

@@ -17,6 +17,19 @@ const NAV_SEAM := Vector2i(808, 504)
 const NAV_CHUNK := 1536
 
 
+## Nudge a point out of the 14px off-mesh strip along a nav seam, so nav queries
+## to placed props (hiding spots, piles) end on the mesh.
+static func off_seam(point: Vector2) -> Vector2:
+	var result := point
+	for axis in range(2):
+		var offset := posmod(int(round(point[axis])) - NAV_SEAM[axis], NAV_CHUNK)
+		if offset < 12:
+			result[axis] += 12 - offset
+		elif offset > NAV_CHUNK - 12:
+			result[axis] -= offset - (NAV_CHUNK - 12)
+	return result
+
+
 static func nav_seam_start(axis: int) -> int:
 	var origin := int(WORLD_BOUNDS.position[axis])
 	return NAV_SEAM[axis] - NAV_CHUNK * ceili(float(NAV_SEAM[axis] - origin) / NAV_CHUNK)
@@ -296,7 +309,7 @@ func _build_navigation() -> void:
 			polygon.agent_radius = 7.0
 			var source := NavigationMeshSourceGeometryData2D.new()
 			source.add_traversable_outline(_outline(bounds))
-			for obstacle in obstacles:
+			for obstacle in obstacles + woods.barriers():
 				if bounds.grow(8).intersects(obstacle):
 					source.add_obstruction_outline(_outline(obstacle))
 			if bounds.intersects(Rect2(81,278,30,40)):

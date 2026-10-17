@@ -140,6 +140,12 @@ func _host() -> void:
 	hider.position=level.props.spots[spot_index]["position"]+Vector2(0,6)
 	var slammed: Dictionary=level.props.doors[0]
 	level.props.toggle_door(level.player,0)
+	# A shortcut gate opened on the host replicates (state and client collision).
+	var shortcut: Dictionary=level.plan.woods.gates[0]
+	var host_spot: Vector2=level.player.position
+	level.player.position=shortcut["position"]+shortcut["toward_zone"]*22.0
+	level.props.open_gate(level.player,0)
+	level.player.position=host_spot
 	harness.advance.rpc("hide_door",{"guest":guest,"door":slammed["rect"]})
 	if not await _reports(peers-1): return
 	_check(hider.hidden_spot==spot_index and not slammed["open"],"guest_hides_and_host_door_closed")
@@ -363,7 +369,8 @@ func _client() -> void:
 				for frame in range(3): await physics_frame
 				var door_rect: Rect2=harness.data["door"]
 				var blocked: bool=not net.world.clear_path(door_rect.get_center()+Vector2(0,20),door_rect.get_center()-Vector2(0,30))
-				harness.report.rpc_id(1,handled,{"hidden":net.actors[harness.data["guest"]].hidden_spot>=0,"door":not net.world.props.doors[0]["open"] and blocked})
+				var gate_ok: bool=net.world.plan.woods.gates[0]["open"] and net.world.props.gate_links[0].enabled
+				harness.report.rpc_id(1,handled,{"hidden":net.actors[harness.data["guest"]].hidden_spot>=0,"door":not net.world.props.doors[0]["open"] and blocked and gate_ok})
 			"flash":
 				if mine==harness.data["guest"]: net.action("flash")
 				var stunned := func() -> bool:

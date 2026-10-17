@@ -1,5 +1,62 @@
 # Development log
 
+## 2026-10-16 — Overhaul F4b-2: shortcut gates, vaultable fences; nine new sounds
+
+**Barriers** (physics layer 8: survivors and creatures collide, sight and light
+raycasts on layer 1 don't):
+- **Shortcut gates.** For each optional region in [mill, orchard, observatory,
+  rail, chapel], the shortest straight run of 5 cells or fewer to a road is
+  linked and carved as a trail. A gate sits on its last link, kept only if it
+  measures as a clean wall-to-wall bar and leaves the inner cell connected.
+  Night 42 has observatory, rail yard and chapel gates. Gates are nav
+  obstructions with a disabled NavigationLink2D; opening from the region side
+  (E) disables the bar and enables the link for everyone. Measured at the
+  Observatory: 1,436 px closed, 44 px open.
+- **Fences.** Up to 40 on maze links (not roads, regions or gates; 900 px
+  apart) where the detour is at least 8 cells. E vaults in 0.45 s with layer 8
+  dropped mid-hop (220 px noise if sprinting, else 90 px). Creatures can't
+  vault and path around.
+- **Bug caught:** fences first checked connectivity one at a time, and two
+  together sealed off map corners on seeds 99 and 76543 (navigation errors).
+  Every barrier is now accepted only if its two sides stay connected with all
+  earlier barriers closed. A whole-woods BFS test enforces this.
+- Brush spots and piles are nudged out of the 14 px nav-seam strip
+  (`CampMap.off_seam`) after one spot landed exactly on y=5112.
+
+**Sounds.** The user added nine MP3s. They were already committed (my F4b-1
+commit used `git add -A` and swept them in unintegrated); this entry integrates
+and documents them:
+- `screech_1`–`5`: calls for the ten newer creatures, which previously borrowed
+  the revenant call; second species per file pitch-shifted;
+- `radio_static` + `police_radio_talk`: a non-positional ranger-radio broadcast
+  at each phase change (1 s static, then a 7 s faded chatter excerpt, a
+  different one per phase), replacing the borrowed werewolf-howl stinger;
+- `thud`: door slam, deeper door break-in, gate opening, vault landing;
+- `wood_falling`: knock-overs and splintering door break-ins.
+
+Prop sounds are inferred from replicated state, so the host and clients each
+play them once.
+
+Gains were set from a full-file decode (`afconvert` → PCM): RMS, peak and onset
+per file. Creature calls are matched to the werewolf call's effective RMS
+(about −29 dB). `screech_1`/`screech_3` begin at 1.0/2.4 s and `thud` at
+0.25 s via a new manifest `start_seconds`. `wood_falling` and `thud` peaked at
+full scale before trimming. The audio test now frees the 12-voice pool between
+species: with real output, the long screeches correctly exhausted it.
+
+Other test fixes: barrier positions within the 22 px reach; two physics frames
+for the sound watcher to see a vault (`physics_frame` fires before nodes
+update). One intermittent gate-open failure appeared once in a capture run and
+not in 5 reruns. A diagnostic print remains in the test for any recurrence.
+
+**Verification:** `python3 tools/verify.py` 93/93 steps, no errors or warnings
+(new `barriers`: 32 headless / 34 graphical). Graphical `audio_polish` with real
+output: 96 checks, all passing. `verify_network.py --mode all`: 2 peers 269 and
+4 peers 455 assertions, all passing (gate replication included in the existing
+hide/door assertion). Evidence: [barriers and audio](evidence/barriers_audio/README.md). Not
+verified: human listening (levels were set from measurements, not ears),
+human route feel, other platforms.
+
 ## 2026-10-16 — Overhaul F4b-1: rotating cache regions and the clue chain
 
 - `RoundPlan._rotate_caches()` (separate RNG, `seed + 4242`) picks three of four

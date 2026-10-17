@@ -148,8 +148,22 @@ direction for three of N/E/S/W (separate RNG), with a team-wide clue chain:
 - skyline markers show known parts.
 
 Nav chunk seams now run at x=808/y=504 (inside the camp's main roads, off the
-32px grid), so no woods wall edge lies on a seam. Rules `lnac-net-9`. F4b-2
-(shortcuts, fences/vaults) follows.
+32px grid), so no woods wall edge lies on a seam. Rules `lnac-net-9`.
+F4b-2 is implemented, completing F4. Shortcut trails link optional regions to
+the nearest road behind ranger gates that latch from the region side. Gates
+are nav obstacles with a NavigationLink2D enabled on opening. About 40 fences
+per night sit on maze links with a 9+ cell detour; survivors vault them (0.45s,
+loud when sprinting) and creatures cannot. Barriers use physics layer 8, so they
+never block sight or light, and each new barrier must keep its sides connected
+with all earlier ones closed. The nine later user-supplied sounds are
+integrated:
+- screech calls for the ten newer creatures;
+- ranger-radio static and chatter at phase changes;
+- thuds for doors, gates and vaults;
+- wood_falling for knock-overs.
+
+Gains are levelled from full-file decodes, with silent lead-ins skipped.
+Rules `lnac-net-10`.
 
 > Goal: build an original, playable, 1–4 player co-op slasher game. This is a specification, not proof of implementation.
 

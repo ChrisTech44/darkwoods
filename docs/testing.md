@@ -443,3 +443,23 @@ Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tes
 (it fails with 75–83 such edges on the old seam layout) and that gameplay
 targets sit outside the seam strips. The network night stage now checks that a
 host-read note replicates to clients.
+
+## Shortcut gates, fences and the new sounds (overhaul F4b-2)
+
+Run `godot --headless --path . --fixed-fps 60 --disable-vsync --script res://tests/integration/barriers.gd`
+(add `-- --capture` without `--headless` for the fence and gate captures). It covers:
+
+- five seeds: at least 2 gates and 30 fences, every fence with a detour of at
+  least 8 cells, and every clearing reachable from camp with all barriers
+  closed;
+- fences block walking and creatures but not sight; vaults are quiet at a walk
+  and loud at a sprint, land on the far side, restore collision and play a thud;
+- a gate is latched from the road side, opens from the region side for the
+  team, and its nav route shrinks from about 1,436 to 44 px once open;
+- open gates let survivors through, and gate state is in the snapshot.
+
+`chase_props`, `night_phases` and `audio_polish` assert the new sounds (door
+thud, wood_falling, the radio broadcast, a call per species, decoded gain
+staging for all 23 cues). `network_peer.gd` checks that a host-opened gate and
+its nav link replicate.
+

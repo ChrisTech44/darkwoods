@@ -1,7 +1,7 @@
 class_name WorldSync
 extends RefCounted
 ## Host snapshots contain plain data only. Clients render, never simulate outcomes.
-const PLAYER_FIELDS := ["notice","notice_time","velocity","status","stamina","exhausted","sprinting","flashlight_on","flashlight_charge","bleedout","invulnerability","hex_remaining","ward_remaining","selected_slot","facing","stride","wounded","flash_time","flash_cooldown","self_recovery_used","help_cooldown","hidden_spot","breath"]
+const PLAYER_FIELDS := ["notice","notice_time","velocity","status","stamina","exhausted","sprinting","flashlight_on","flashlight_charge","bleedout","invulnerability","hex_remaining","ward_remaining","selected_slot","facing","stride","wounded","flash_time","flash_cooldown","self_recovery_used","help_cooldown","hidden_spot","breath","vault_time"]
 const ENEMY_FIELDS := ["enabled","velocity","facing","stride","state","stun_remaining"]
 const CRYPTID_FIELDS := ["power_tell","power_aim","dash_remaining","casting","cast_remaining","cast_aim","hunt_clock"]
 

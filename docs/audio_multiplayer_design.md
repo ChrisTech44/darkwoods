@@ -1,6 +1,6 @@
 # Audio and online proximity voice design
 
-Status: **local and replicated-source audio implemented; host sound-event/listening acceptance and proximity voice pending**. This user-approved amendment replaces the
+Status: **local and replicated-source audio implemented; opt-in proximity voice implemented with TwoVoIP (see [multiplayer guide](multiplayer_guide.md#proximity-voice)); real-microphone, listening and encryption acceptance pending**. This user-approved amendment replaces the
 original voice-chat exclusion in [AGENT_BRIEF.md](../AGENT_BRIEF.md). The build now includes locally verified ENet co-op; voice is still planned. The 16 October amendment prioritizes visual/map fixes,
 seeded camp variation and user-supplied sound files before networking/voice.
 Local playback does not establish two-client audio or microphone acceptance. Use [milestones](milestones.md) for delivery gates.

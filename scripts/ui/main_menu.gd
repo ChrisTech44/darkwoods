@@ -34,7 +34,7 @@ func _ready() -> void:
 	knobs.name = "AudioControls"
 	var panel := PanelContainer.new()
 	panel.name = "SettingsPanel"
-	panel.position = Vector2(54, 26)
+	panel.position = Vector2(54, 10)
 	panel.size = Vector2(276, 164)
 	add_child(panel)
 	var content := VBoxContainer.new()

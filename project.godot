@@ -6,11 +6,14 @@ config/name="Last Night at Camp"
 run/main_scene="res://scenes/ui/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/description="An original cooperative woodland survival horror prototype."
+; Voice writes audio/driver/enable_input here so only voice users open the microphone.
+config/project_settings_override="user://engine_overrides.cfg"
 
 [autoload]
 Session="*res://scripts/core/session.gd"
 AudioManager="*res://scripts/core/audio_manager.gd"
 Net="*res://scripts/network/network_session.gd"
+Voice="*res://scripts/network/voice_chat.gd"
 
 [display]
 window/size/viewport_width=384

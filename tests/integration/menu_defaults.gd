@@ -18,7 +18,7 @@ func _run() -> void:
 	_check(not menu.get_node("SettingsPanel").visible, "knobs_hidden_behind_settings")
 	menu.get_node("Menu/Settings").pressed.emit()
 	_check(menu.get_node("SettingsPanel").visible, "settings_opens")
-	_check(menu.get_node("SettingsPanel/Content/AudioControls").get_child_count() == 4, "four_pre_game_mix_controls_visible")
+	_check(menu.get_node("SettingsPanel/Content/AudioControls").get_child_count() == 8, "five_mix_sliders_voice_controls_and_status_visible")
 	var music: AudioStreamPlayer = menu.get_node("MenuAudio/music")
 	_check(music.stream != null and music.bus == "Music" and (not mixer.output_enabled or music.playing), "menu_music_plays_on_music_bus")
 	var audio_ref: WeakRef = weakref(menu.get_node("MenuAudio"))

@@ -1,5 +1,39 @@
 # Development log
 
+## 2026-10-17 — Opt-in proximity voice chat (TwoVoIP)
+
+The user cloned TwoVoIP into the project and asked for proximity chat, tested if
+possible. The clone's own `.gdextension` (no binaries) broke project import, so
+the clone was moved beside the project (`../two-voip-godot-4`, as allowed) and
+only the official v6.6 release's desktop libraries plus the MIT licence were
+vendored into `addons/twovoip/` (about 50 MB; macOS universal, Windows/Linux x86_64).
+
+- New `Voice` autoload (`scripts/network/voice_chat.gd`): off by default; push to
+  talk (hold **B**) or open mic; mono 48 kHz Opus at 24 kbit/s in 20 ms frames
+  with RNNoise and Speex AGC; unreliable-ordered RPCs on ENet channel 3 through
+  the host relay; 400-byte and 75-packet/s per-peer limits; three-packet jitter
+  start; single-loss FEC.
+- Routing: lobby everyone; in a round, alive/downed/boarded survivors hear each
+  other positionally up to 420 px (low-pass when a wall blocks sight), escaped,
+  dead and left-behind players share a ghost channel the living never hear.
+  Monster AI never hears voice. HUD shows who is talking and your mic state.
+- Settings/Esc/lobby mixer: Voice volume, MIC mode, MIC GAIN and a status line.
+- **macOS finding:** with `audio/driver/enable_input=true` in the project, Godot's
+  CoreAudio start-up blocked (timed out) waiting on the microphone permission
+  prompt, even with voice unused. The project now keeps input off; choosing a
+  voice mode writes the setting to `user://engine_overrides.cfg` (via
+  `application/config/project_settings_override`), so only players who opt in
+  start the microphone, after one restart. Verified CoreAudio start-up no longer hangs.
+
+**Verification:** `python3 tools/verify_voice.py`: `voice_chat` 24 checks (real
+Opus encode/decode, FEC, routing, limits, settings); two-process ENet test: 73
+packets each way, about 70,000 decoded frames per side, then a live Quick Camp
+round with positional, out-of-range and ghost routing (client 7, host 12 checks).
+`python3 tools/verify.py` 119/119; `verify_network.py --players 2` 361
+assertions, 0 failures. **Not verified:** a real microphone and human listening.
+The unattended probe could not answer macOS's permission dialog. Internet
+latency and encryption (ENet voice is unencrypted) are also unverified.
+
 ## 2026-10-17 — Night paced by progress, not the clock
 
 The user asked to "remove the fixed time requirements… make the whole process

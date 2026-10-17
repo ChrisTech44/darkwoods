@@ -145,16 +145,40 @@ synchronized-audio listening acceptance remain **unverified**. Direct-IP/VPN
 routing is implemented through ENet, but these local tests do not prove a
 particular router/firewall/network arrangement works.
 
-## Voice chat next
+## Proximity voice
 
-Peer IDs, locked round IDs, host-owned positions and alive/downed/dead/escaped
-states provide the identity and spectator boundaries needed for proximity voice.
-Gameplay controls and compressed world snapshots use separate ENet channels.
-Local mixer/ambience, monster cues and nearby teammate footsteps remain available;
-voice must use an isolated bounded media path so it cannot delay gameplay.
+Implemented 17 October 2026 with [TwoVoIP](https://github.com/goatchurchprime/two-voip-godot-4)
+6.6 (MIT, Opus codec, RNNoise denoiser, Speex automatic gain). Only the desktop
+libraries (macOS universal, Windows and Linux x86_64, debug and release) are
+vendored in `addons/twovoip/` with its licence; the source clone lives outside
+the project.
 
-The next voice increment still needs codec/transport/license/encryption selection,
-opt-in microphone/device permissions, push-to-talk, distance/occlusion, per-peer
-mute/volume and spectator isolation. No microphone data is recorded, sent, logged
-or captured by the current build. Denied/no-device behavior must be tested when
-capture is implemented. See [audio/voice design](audio_multiplayer_design.md).
+- **Opt-in.** Off by default. Settings/Esc menu **MIC**: Off, Push to talk (hold
+  **B**), Open mic (gain-scaled level gate with 0.6 s hang). Choosing voice writes
+  `audio/driver/enable_input` to `user://engine_overrides.cfg`, read by the engine
+  at the next launch. The microphone, and macOS's permission prompt, start only
+  for players who turned voice on (on macOS CoreAudio waits on that prompt at
+  start-up, so the project keeps input off by default). Restart once after enabling.
+- **Routing.** Lobby: everyone. Round: alive, downed and boarded survivors hear
+  each other positionally (`AudioStreamPlayer2D` at the speaker, silent beyond
+  420 px, low-pass "VoiceMuffled" bus when a wall blocks line of sight).
+  Escaped, dead and left-behind players share a ghost channel; the living never
+  hear it, and ghosts can still listen to the living by position. Monster AI
+  never hears voice.
+- **Transport.** 20 ms mono Opus frames at 24 kbit/s (about 60–70 bytes each)
+  are sent as unreliable-ordered RPCs on ENet channel 3, relayed by the host,
+  separate from snapshots (1) and input (2). Receivers drop empty packets,
+  packets over 400 bytes, late packets, and more than 75 packets/s per peer.
+  A three-packet jitter buffer starts each utterance; a single lost packet is
+  rebuilt with Opus forward error correction.
+- **Privacy.** No voice is recorded, saved or logged. Like gameplay traffic, ENet
+  voice is **not encrypted**; use a trusted LAN/VPN for private conversations.
+
+**Verified (headless):** `python3 tools/verify_voice.py` runs `voice_chat.gd`
+(24 checks: real Opus encode/decode, FEC, routing table, limits, settings) and
+`voice_peer.gd` in two processes over ENet (lobby exchange: 73 packets each way,
+about 70,000 decoded frames per side; then a real Quick Camp round: positional
+voice from the teammate's survivor, silence beyond range, ghosts isolated from
+the living; 7 client + 12 host checks). **Not verified:** a real microphone and a
+human listening test. The unattended probe could not answer macOS's microphone
+permission dialog, and cross-machine Internet latency was not measured.

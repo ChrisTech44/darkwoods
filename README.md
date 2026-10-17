@@ -10,9 +10,9 @@ van while a stalker and roaming cryptids hunt by sight, sound, and light.
 Quick Camp and Woods Expedition. Host on LAN/Wi-Fi or a reachable Internet /
 virtual-LAN address. Independent local-process and graphical network tests pass;
 real cross-machine/Internet and other-platform acceptance remains pending.
-**Next up is the [gameplay overhaul](docs/fun_overhaul.md)** (clues, night phases,
-hiding and chases), then voice chat; none of it is implemented yet. Run from
-source; standalone packages are a later milestone.
+The [gameplay overhaul](docs/fun_overhaul.md) is under way (F1–F5 implemented),
+and opt-in **proximity voice chat** is in. Run from source; standalone packages
+are a later milestone.
 
 See the [item reference](#items) for every item, its location and how to use it.
 
@@ -159,7 +159,15 @@ Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
 **[Connection setup, co-op rules and screenshots](docs/multiplayer_guide.md)**
 explains routing, joining, revives, shared escape and replay. New joins are
 lobby-only. **Esc opens a local menu without pausing the shared world.**
-Voice/microphone capture is not enabled.
+
+**Proximity voice** (optional, off by default): in **Settings** or the Esc menu,
+set **MIC** to *Push to talk (B)* or *Open mic*, then **restart the game once**.
+The microphone (and macOS's one-time permission prompt) is only started for
+players who turn voice on. In the lobby everyone hears everyone. In a round you
+hear teammates near you (up to about 420 px), from their direction, muffled
+behind walls and silent beyond range. Escaped, dead and left-behind players
+talk on a ghost channel the living cannot hear. Monsters never hear voice. The
+HUD shows who is talking. **VOICE** and **MIC GAIN** sliders set loudness.
 
 ![Connected co-op lobby](docs/screenshots/lobby.png)
 
@@ -340,6 +348,7 @@ round. Quick Camp keeps its original van-only rules.
 | **R** | Use a spare flashlight battery |
 | **C** | Eat rations to restore stamina |
 | **M** | Drop a team map pin where you stand (newest three kept) |
+| **B** (hold) | Push to talk, when voice is set to push-to-talk in co-op |
 | **Tab** | Toggle pack, objective clues, and field map |
 | **Esc** | Solo: pause/resume. Co-op: local menu; the shared world continues. |
 
@@ -558,8 +567,8 @@ the same controls are behind **Settings** on the main menu, with music and subdu
 ambience playing. Settings persist and zero mutes. Pause suspends round sound, results stop it, and
 replaying creates fresh emitters. Muting does not change monster hearing.
 
-No microphone capture, microphone permission prompt or voice chat exists in
-the current build. Local sound follows replicated world movement; synchronized
+Voice chat is optional (see [Play with friends](#play-with-friends)); voice
+audio is never recorded or saved. Local sound follows replicated world movement; synchronized
 audio event/listening acceptance remains pending. See the [cue manifest and provenance notes](assets/audio/README.md).
 Final listening/balance and Windows/Linux/exported audio remain unverified.
 
@@ -770,8 +779,8 @@ ENet co-op is now implemented in both modes. Two/four-peer local execution and
 scripted graphical two-window checks are recorded in the
 [multiplayer guide](docs/multiplayer_guide.md). Human balance, real cross-machine
 Internet, synchronized-audio listening, jitter/other-platform acceptance and
-exports remain pending. The [gameplay overhaul](docs/fun_overhaul.md) slices F1–F3
-come next, followed by proximity voice.
+exports remain pending. Proximity voice uses TwoVoIP (Opus); see the
+[multiplayer guide](docs/multiplayer_guide.md#proximity-voice).
 
 The larger backlog includes 48 monster concepts and 18 biome designs. Ten
 new monster types and six new regions now have first offline versions; deeper

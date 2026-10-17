@@ -17,6 +17,8 @@ var root: Control
 var belt_labels: Array[Label] = []
 var belt_icons: Array[TextureRect] = []
 var supplies_label: Label
+## Proximity voice: who is talking nearby, and your own mic state.
+var voice_label: Label
 
 
 func _ready() -> void:
@@ -57,6 +59,9 @@ func _ready() -> void:
 	threat_label = _label(Vector2(190, 25), Vector2(185, 14), 9)
 	threat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	threat_label.add_theme_color_override("font_color", Color("e7aa83"))
+	voice_label = _label(Vector2(190, 37), Vector2(185, 10), 7)
+	voice_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	voice_label.add_theme_color_override("font_color", Color("a9c8d6"))
 	stamina.show_percentage = false
 	var bar_background := StyleBoxFlat.new()
 	bar_background.bg_color = Color("13252a")
@@ -83,6 +88,19 @@ func _ready() -> void:
 	result_panel.hide()
 
 
+func _process(_delta: float) -> void:
+	var voice: Node = get_node_or_null("/root/Voice")
+	if voice == null or voice_label == null:
+		return
+	var parts: Array[String] = []
+	var heard: Array[String] = voice.speaking_names()
+	if not heard.is_empty():
+		parts.append("VOICE: " + ", ".join(heard).to_upper())
+	if voice.capturing:
+		parts.append("● TALKING" if voice.talking else ("B: TALK" if voice.mode == "push" else "MIC OPEN"))
+	voice_label.text = "  ".join(parts)
+
+
 func _label(at: Vector2, dimensions: Vector2, font_size: int) -> Label:
 	var label := Label.new()
 	label.add_theme_font_size_override("font_size", font_size)
@@ -94,7 +112,7 @@ func _label(at: Vector2, dimensions: Vector2, font_size: int) -> Label:
 
 func _panel(heading: String, detail: String, replay: bool) -> PanelContainer:
 	var panel := PanelContainer.new()
-	panel.position = Vector2(54, 26)
+	panel.position = Vector2(54, 10)
 	panel.size = Vector2(276, 164)
 	root.add_child(panel)
 	var column := VBoxContainer.new()

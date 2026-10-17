@@ -130,7 +130,7 @@ func _settings() -> void:
 		return
 	var panel := PanelContainer.new()
 	panel.name="AudioSettings"
-	panel.position=Vector2(54,26)
+	panel.position=Vector2(54,10)
 	panel.size=Vector2(276,164)
 	add_child(panel)
 	var column := VBoxContainer.new()

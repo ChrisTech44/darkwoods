@@ -529,3 +529,22 @@ in `spritecook-assets.json`. One 16-piece batch cost 12 credits, with no paid
 cleanup/animation. Capture fixtures generate a current fourteen-region atlas.
 Human pacing and cross-machine acceptance remain pending; see
 [F5b execution evidence](evidence/boat_gate/README.md).
+
+## Proximity voice
+
+```sh
+python3 tools/verify_voice.py
+```
+
+Runs headless with the Dummy audio driver and never opens a microphone.
+`voice_chat.gd` checks that the TwoVoIP extension loads, B is bound to push-to-
+talk, a real Opus encoder's packets (20 ms, 48 kHz mono) decode through
+`VoiceChat.accept_packet`, late packets drop and a single loss is rebuilt with
+FEC, the routing table (nearby/out of range/downed/boarded/ghosts), packet size
+and per-peer rate limits, and that voice settings and the next-launch microphone
+override persist and release. `voice_peer.gd` then starts a host and a client
+process: both stream a synthetic tone in the lobby and must decode each other,
+then ready up into a Quick Camp round where the host checks positional playback
+from the teammate's survivor, silence beyond 420 px, and ghost isolation.
+Logs and `summary.json` go to `artifacts/voice/`. A real microphone needs a
+person to approve the macOS permission dialog once, so it is not automated.

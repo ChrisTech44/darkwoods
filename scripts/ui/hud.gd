@@ -15,6 +15,7 @@ var location_label: Label
 var chart: Control
 var root: Control
 var belt_labels: Array[Label] = []
+var belt_icons: Array[TextureRect] = []
 var supplies_label: Label
 
 
@@ -40,6 +41,13 @@ func _ready() -> void:
 		var slot := _label(Vector2(9 + index * 61, 150), Vector2(59, 17), 7)
 		slot.add_theme_stylebox_override("normal", CampStyle.box("101e22ee", "63705b", 2))
 		belt_labels.append(slot)
+		var icon := TextureRect.new()
+		icon.position = Vector2(44, 2)
+		icon.size = Vector2(13, 13)
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		slot.add_child(icon)
+		belt_icons.append(icon)
 	prompt = _label(Vector2(9, 184), Vector2(366, 28), 9)
 	prompt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	stamina = ProgressBar.new()
@@ -165,3 +173,5 @@ func update_belt(actor: CampPlayer) -> void:
 		var kind := actor.belt[index]
 		belt_labels[index].text = "%s%d %s" % [">" if actor.selected_slot == index else "", index+1, short.get(kind, "--")]
 		belt_labels[index].modulate = Color("ffe3a3") if actor.selected_slot == index else Color("a0b69e")
+		belt_icons[index].texture = PixelArt.fit(kind, Vector2(13, 13)) if not kind.is_empty() else null
+		belt_icons[index].self_modulate = Color.WHITE / belt_labels[index].modulate if not kind.is_empty() else Color.WHITE

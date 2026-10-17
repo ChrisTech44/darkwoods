@@ -144,6 +144,21 @@ func night_dark() -> bool:
 	return not camp_lamps.is_empty() and not camp_lamps[0].enabled
 
 
+const CAMP_DECOR: Array = [["notice_board", Vector2(222, 344), 30.0], ["picnic_table", Vector2(236, 400), 40.0], ["outhouse", Vector2(1484, 420), 26.0], ["toolbox", Vector2(1300, 410), 18.0]]
+
+
+## Decor has no collision, so only draw it where it won't sit on a tree or wall.
+func _decor_clear(base: Vector2, width: float) -> bool:
+	var footprint := Rect2(base - Vector2(width * 0.5, width * 0.6), Vector2(width, width * 0.6))
+	for obstacle in obstacles:
+		if obstacle.intersects(footprint):
+			return false
+	for road in roads:
+		if road.intersects(footprint):
+			return false
+	return true
+
+
 func add_wall(rect: Rect2, shadow: bool = true) -> void:
 	obstacles.append(rect)
 	var body := StaticBody2D.new()
@@ -279,6 +294,22 @@ func _ground() -> void:
 		for x in range(8):
 			source.create_tile(Vector2i(x, y))
 	tile_set.add_source(source, 0)
+	# SpriteCook seamless materials as world-aligned 16px sub-tiles (sources 1-3).
+	var materials := {1: "grass", 2: "road", 3: "water"}
+	var spans := {}
+	for id: int in materials:
+		var tex := PixelArt.texture(materials[id])
+		if tex == null:
+			continue
+		var material_source := TileSetAtlasSource.new()
+		material_source.texture = tex
+		material_source.texture_region_size = Vector2i(16, 16)
+		var span := Vector2i(tex.get_size()) / 16
+		for ty in range(span.y):
+			for tx in range(span.x):
+				material_source.create_tile(Vector2i(tx, ty))
+		tile_set.add_source(material_source, id)
+		spans[id] = span
 	var layer := TileMapLayer.new()
 	layer.name = "GroundTiles"
 	layer.tile_set = tile_set
@@ -288,12 +319,18 @@ func _ground() -> void:
 		for x in range(96):
 			var center := Vector2(x * 16 + 8, y * 16 + 8)
 			var tile := Vector2i((x * 7 + y * 11) % 4, 0)
+			var material := 1
 			for road in roads:
 				if road.has_point(center):
 					tile = Vector2i(4 + (x + y) % 3, 0)
+					material = 2
 			if lake.has_point(center):
 				tile = Vector2i((x + y) % 2, 2)
-			layer.set_cell(Vector2i(x, y), 0, tile)
+				material = 3
+			if spans.has(material):
+				layer.set_cell(Vector2i(x, y), material, Vector2i(posmod(x, spans[material].x), posmod(y, spans[material].y)))
+			else:
+				layer.set_cell(Vector2i(x, y), 0, tile)
 
 
 func _build_navigation() -> void:
@@ -336,6 +373,15 @@ func _draw() -> void:
 	for y in [792, 848, 904]:
 		draw_rect(Rect2(1292, y, 5, 9), Color("4f4936"))
 		draw_rect(Rect2(1343, y, 5, 9), Color("4f4936"))
+	# SpriteCook campsite: tent, campfire, a barrel by the fire, and (where clear
+	# of trees) the camp notice board and a picnic table.
+	if PixelArt.draw_standing(self, "tent", Vector2(158, 394), 54):
+		PixelArt.draw_standing(self, "campfire", Vector2(168, 346), 30)
+		PixelArt.draw_standing(self, "barrel", Vector2(57, 366), 14)
+		for decor: Array in CAMP_DECOR:
+			if _decor_clear(decor[1], decor[2]):
+				PixelArt.draw_standing(self, decor[0], decor[1], decor[2])
+		return
 	# Tent canvas, seams, guy ropes and pegs.
 	draw_colored_polygon(PackedVector2Array([Vector2(132, 386), Vector2(153, 348), Vector2(184, 386)]), Color("bf9461"))
 	draw_colored_polygon(PackedVector2Array([Vector2(151, 384), Vector2(162, 357), Vector2(178, 384)]), Color("584a37"))

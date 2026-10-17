@@ -590,6 +590,8 @@ func restore(state: Dictionary) -> void:
 
 
 func _draw() -> void:
+	# The Maintenance generator the blackout event asks you to restart.
+	PixelArt.draw_standing(self, "generator", level.night_clock.generator_point() + Vector2(-26, 6), 22)
 	for fence: Dictionary in level.plan.woods.fences:
 		_draw_rails(fence["rect"], Color("9a7b52"), false)
 	for gate: Dictionary in level.plan.woods.gates:
@@ -620,6 +622,8 @@ func _draw() -> void:
 		var at: Vector2 = knock["position"]
 		match int(knock["state"]):
 			0:
+				if PixelArt.draw_standing(self, "woodpile", at + Vector2(0, 6), 30):
+					continue
 				for row in range(3):
 					for column in range(3 - row):
 						draw_circle(at + Vector2(-8 + column * 8 + row * 4, -row * 6), 4, Color("7a5a3a"))

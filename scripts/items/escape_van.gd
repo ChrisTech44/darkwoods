@@ -102,29 +102,15 @@ func advance_start(actor: CampPlayer, holding: bool, delta: float) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(-15, -24, 30, 44), Color("142628"))
-	draw_rect(Rect2(-12, -23, 24, 39), Color("7e8c78"))
-	draw_rect(Rect2(-11, -23, 22, 4), Color("c4b88a"))
-	draw_line(Vector2(-10, -8), Vector2(-10, 13), Color("bbc4a0"))
-	draw_line(Vector2(10, -8), Vector2(10, 13), Color("3d574e"))
-	draw_rect(Rect2(-9, -17, 18, 8), Color("273f45"))
-	draw_line(Vector2(-8, -16), Vector2(3, -16), Color("85a4a0"))
-	draw_line(Vector2(-6, -11), Vector2(5, -11), Color("506f71"))
-	draw_rect(Rect2(-9, 5, 18, 7), Color("273f45"))
-	draw_rect(Rect2(-15, -15, 3, 9), Color("0d1d22"))
-	draw_rect(Rect2(12, -15, 3, 9), Color("0d1d22"))
-	draw_rect(Rect2(-15, 5, 3, 9), Color("0d1d22"))
-	draw_rect(Rect2(12, 5, 3, 9), Color("0d1d22"))
-	draw_rect(Rect2(-7, -6, 14, 10), Color("455b4e"))
-	draw_rect(Rect2(-6, -5, 6, 8), Color("aa8d5e"))
-	draw_rect(Rect2(1, -5, 5, 8), Color("64796b"))
-	draw_line(Vector2(-9, -7), Vector2(9, -7), Color("c7bf97"))
-	draw_line(Vector2(-9, 4), Vector2(9, 4), Color("c7bf97"))
-	draw_rect(Rect2(-11, 13, 5, 2), Color("a66e4e"))
-	draw_rect(Rect2(5, 13, 6, 2), Color("a66e4e"))
-	draw_rect(Rect2(-5, 16, 10, 2), Color("c6c3a4"))
-	for index in range(3):
-		draw_rect(Rect2(-7 + index * 6, -5, 3, 3), Color("d4c27c") if index < installed.size() else Color("34493f"))
+	draw_circle(Vector2(0, 8), 22, Color(0, 0, 0, 0.25))
+	# SpriteCook camp van; the procedural body remains only as a fallback.
+	if not PixelArt.draw_in(self, "van", Rect2(-27, -32, 54, 52)):
+		draw_rect(Rect2(-15, -24, 30, 44), Color("142628"))
+		draw_rect(Rect2(-12, -23, 24, 39), Color("7e8c78"))
+	# Installed-part lamps on a dashboard plate under the van.
+	draw_rect(Rect2(-3.5 * required_parts.size() - 2, 21, required_parts.size() * 7 + 3, 6), Color("1d2723"))
+	for index in range(required_parts.size()):
+		draw_rect(Rect2(-3.5 * required_parts.size() + index * 7, 22, 4, 4), Color("e6cf7c") if index < installed.size() else Color("3b4a42"))
 	if running:
 		draw_rect(Rect2(-10, -27, 4, 4), Color("ffe8a4"))
 		draw_rect(Rect2(6, -27, 4, 4), Color("ffe8a4"))

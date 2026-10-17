@@ -1,5 +1,45 @@
 # Development log
 
+## 2026-10-17 — SpriteCook: items, camp, interiors, landmarks, textures, title
+
+The user added 800 credits and asked to make everything look better while
+keeping most in reserve. This pass spent **84 credits (7 images); 716 remain.**
+Grids were used throughout, so each 12-credit image covered 9–16 assets.
+
+- **Four 4×4 object grids:**
+  - items: 16 pickups, also used as HUD belt icons;
+  - camp objects: van, tent, campfire, locked-cache crate, generator, lamp post,
+    notice board, picnic table, outhouse, canoe, woodpile, barrel, signpost,
+    fence, gate, toolbox;
+  - furniture: bunk, desk, locker, crates, workbench, mess table, stove,
+    shower, basin, cot, bench, bookshelf, canoe rack and more;
+  - landmarks: bell frame, well, cauldron, crypt, gravestones, altar,
+    waterwheel, observatory, rail signal, column, shrine, hunter's blind, cave,
+    watchtower, scrap pile.
+
+  `tools/slice_spritecook_grid.gd` stores trimmed native sprites.
+  `PixelArt.fit/draw_in/draw_standing` size them at runtime (palette-snapped,
+  cached, never upscaled), so furniture keeps its collision boxes and objects
+  stand on their footprints.
+- **Seamless textures:** a 2×2 texture-mode test (grass, forest floor, trail,
+  road) was checked by tiling each quadrant. Two needed a leftover divider line
+  trimmed; otherwise they wrap. A 3×3 followed: floorboards, bath tiles, brown
+  and green shingles, water, cobbles, bog mud, dead grass, flagstones.
+  Per-building roof images (the original plan, about 108 credits) were not
+  needed. The camp TileMap uses the materials as world-aligned 16 px sub-tile
+  sources; the woods terrain, building floors and roofs sample them through
+  `PixelArt.draw_material`.
+- **Title:** one 384×216 illustration under the menu's fog and fireflies. The
+  menu panel is now translucent so the lurking stalker shows through.
+- Old procedural drawings remain as fallbacks if any file is missing.
+- Decor without collision (notice board, picnic table, outhouse, toolbox) is
+  only drawn where its footprint is clear of obstacles and roads.
+
+**Verification:** `python3 tools/verify.py` 100/100 steps, no errors or warnings.
+`verify_network.py --mode all --players 2`: 269 assertions, 0 failures. **Not verified:** a human look at normal night lighting (inspection
+shots raise the ambient light), seam visibility at every zoom level, other
+platforms.
+
 ## 2026-10-16 — SpriteCook creatures (all 16 species)
 
 The user added credits (44). Spent as three Nano Banana 2.1 images (12 each) and

@@ -75,9 +75,11 @@ func _draw() -> void:
 	var tile := Vector2(4, 1)
 	if kind in ["bath", "infirmary"]:
 		tile = Vector2(6, 1)
+	var floor_material := "bath_tiles" if kind in ["bath", "infirmary"] else "floorboards"
 	for y in range(int(bounds.position.y), int(bounds.end.y), 16):
 		for x in range(int(bounds.position.x), int(bounds.end.x), 16):
-			draw_texture_rect_region(ATLAS, Rect2(x, y, 16, 16), Rect2(tile * 16, Vector2(16, 16)))
+			if not PixelArt.draw_material(self, floor_material, Rect2(x, y, 16, 16)):
+				draw_texture_rect_region(ATLAS, Rect2(x, y, 16, 16), Rect2(tile * 16, Vector2(16, 16)))
 	for wall in walls:
 		draw_rect(wall, Color("3c3d32"))
 		for y in range(int(wall.position.y), int(wall.end.y), 4):
@@ -97,8 +99,23 @@ func _draw() -> void:
 	draw_string(ThemeDB.fallback_font, bounds.position + Vector2(28, 20), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("dec99c"))
 
 
+const FURNITURE_ART := {"bed": "bunk", "medical": "cot", "desk": "desk", "crate": "crates", "bench": "workbench",
+	"table": "mess_table", "stove": "stove", "shower": "shower", "sink": "basin", "canoe": "canoe_rack"}
+
+
 func _draw_furniture(rect: Rect2, type: String) -> void:
 	draw_rect(Rect2(rect.position + Vector2(2, 3), rect.size), Color(0, 0, 0, 0.3))
+	# SpriteCook furniture fills the collision box, rising above thin footprints (3/4 view).
+	var art: String = FURNITURE_ART.get(type, "")
+	if type == "shelf":
+		art = "bookshelf" if kind == "ranger" else "locker"
+	if not art.is_empty():
+		var fitted := PixelArt.fit(art, Vector2(rect.size.x, maxf(rect.size.y, rect.size.x * 1.4)))
+		if fitted != null:
+			var size := fitted.get_size()
+			var top := rect.end.y - size.y if size.y > rect.size.y else rect.position.y + (rect.size.y - size.y) * 0.5
+			draw_texture(fitted, Vector2(rect.position.x + (rect.size.x - size.x) * 0.5, top).round())
+			return
 	draw_rect(rect, Color("3d4037"))
 	var inset := rect.grow(-2)
 	if type in ["bed", "medical"]:

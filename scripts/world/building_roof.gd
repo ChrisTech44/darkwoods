@@ -25,9 +25,14 @@ func _draw() -> void:
 		tint = Color(0.7, 1.0, 0.8)
 	elif building.kind in ["mess", "infirmary"]:
 		tint = Color(1.1, 0.75, 0.7)
+	# SpriteCook shingles: green-grey for the work/wash buildings, brown elsewhere.
+	var shingles := "shingles_green" if building.kind in ["workshop", "boat", "bath", "infirmary"] else "shingles_brown"
+	var soft_tint := Color.WHITE.lerp(tint, 0.25)
 	for y in range(int(rect.position.y), int(rect.end.y), 16):
 		for x in range(int(rect.position.x), int(rect.end.x), 16):
-			draw_texture_rect_region(ATLAS, Rect2(x, y, mini(16, int(rect.end.x) - x), mini(16, int(rect.end.y) - y)), Rect2(column * 16, 32, 16, 16), tint)
+			var piece := Rect2(x, y, mini(16, int(rect.end.x) - x), mini(16, int(rect.end.y) - y))
+			if not PixelArt.draw_material(self, shingles, piece, soft_tint):
+				draw_texture_rect_region(ATLAS, piece, Rect2(column * 16, 32, 16, 16), tint)
 	draw_line(Vector2(rect.position.x, rect.get_center().y), Vector2(rect.end.x, rect.get_center().y), Color("b9a37a"), 3)
 	draw_line(rect.position, Vector2(rect.end.x, rect.position.y), Color("aa9570"), 2)
 	draw_line(Vector2(rect.position.x, rect.end.y), rect.end, Color("4c493b"), 3)

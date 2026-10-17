@@ -1,5 +1,5 @@
 {
-  "note": "SpriteCook asset IDs for the art revamp (account-owned). Sources in art_sources/spritecook; game sprites rebuilt by tools/slice_spritecook_props.gd, tools/import_spritecook_survivors.gd, tools/import_spritecook_stalker.gd, tools/import_spritecook_creatures.gd.",
+  "note": "SpriteCook asset IDs for the art revamp (account-owned). Sources in art_sources/spritecook; game sprites rebuilt by tools/slice_spritecook_props.gd, tools/import_spritecook_survivors.gd, tools/import_spritecook_stalker.gd, tools/import_spritecook_creatures.gd, tools/slice_spritecook_grid.gd, tools/import_spritecook_textures.gd.",
   "assets": [
     {
       "asset_id": "841427ac-28ae-4c9c-b3e4-5e1558688588",
@@ -66,6 +66,48 @@
       "label": "creatures D 4x4 pose grid (bramble seamstress, last-car conductor, stoneback ram, candle grazer; NB 2 Lite, edit of reference)",
       "file": "art_sources/spritecook/creatures_D_sheet.png",
       "sha12": "075ce57df99d"
+    },
+    {
+      "asset_id": "306f2649-204c-458b-b600-2445aaae1cc4",
+      "label": "items 4x4 (16 pickups)",
+      "file": "art_sources/spritecook/items_sheet.png",
+      "sha12": "8aa0cfed227d"
+    },
+    {
+      "asset_id": "f528d4f6-e588-4a0c-b7ee-ef3f9c4add9a",
+      "label": "camp objects 4x4 (van, tent, campfire, cache, ...)",
+      "file": "art_sources/spritecook/camp_objects_sheet.png",
+      "sha12": "67d13e423195"
+    },
+    {
+      "asset_id": "2730b2f4-e90b-4e15-b5c1-b783b3ed399b",
+      "label": "furniture 4x4",
+      "file": "art_sources/spritecook/furniture_sheet.png",
+      "sha12": "463bb5bf30d6"
+    },
+    {
+      "asset_id": "22a3c1a9-5165-4f4e-8a3f-45b3a643a6be",
+      "label": "landmarks 4x4 (bell, well, cauldron, crypt, ...)",
+      "file": "art_sources/spritecook/landmarks_sheet.png",
+      "sha12": "a110bb89b3d1"
+    },
+    {
+      "asset_id": "f371c6e0-c5e1-4254-b455-6586d3ea96c7",
+      "label": "seamless ground textures 2x2 (grass, forest floor, trail, road)",
+      "file": "art_sources/spritecook/ground_textures_sheet.png",
+      "sha12": "99a798e4f3e0"
+    },
+    {
+      "asset_id": "55de92d7-52c3-45ab-980f-e7500d98f12f",
+      "label": "seamless material textures 3x3 (floors, shingles, water, cobbles, mud, dead grass, flagstones)",
+      "file": "art_sources/spritecook/material_textures_sheet.png",
+      "sha12": "e1be4de4d796"
+    },
+    {
+      "asset_id": "21aff075-0f4d-4d82-8977-3379367b4072",
+      "label": "title screen illustration 384x216",
+      "file": "art_sources/spritecook/title_art.png",
+      "sha12": "dad8144f0099"
     }
   ]
 }

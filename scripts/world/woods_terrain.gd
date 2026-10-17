@@ -39,14 +39,20 @@ func _draw() -> void:
 				if CampMap.CAMP_BOUNDS.has_point(at + Vector2.ONE * detail/2):
 					continue
 				var tile := Vector2i(posmod(x+y,2),1)
+				var material := "forest_floor"
 				if camp_map.woods.walkable(at + Vector2.ONE * detail/2):
 					tile.x = 2 + posmod(x+y,2)
+					material = "trail"
 				if camp_map.woods.on_road(at + Vector2.ONE * detail/2):
 					tile = Vector2i(4 + posmod(x + y, 3), 0)
+					material = "road"
 				var zone := camp_map.woods.zone_at(at + Vector2.ONE*detail/2)
 				if not zone.is_empty():
 					tile = Vector2i(2+posmod(x+y,2),3) if zone["kind"] == "village" else Vector2i(0 if zone["kind"] == "bog" else 7,1)
-				draw_texture_rect_region(ATLAS,Rect2(at,Vector2.ONE*detail),Rect2(Vector2(tile)*16,Vector2(16,16)))
+					material = {"village": "cobbles", "bog": "bog_mud", "graveyard": "dead_grass"}.get(zone["kind"], "flagstones")
+				# SpriteCook seamless materials, world-aligned; atlas tiles as fallback.
+				if not PixelArt.draw_material(self, material, Rect2(at, Vector2.ONE * detail)):
+					draw_texture_rect_region(ATLAS,Rect2(at,Vector2.ONE*detail),Rect2(Vector2(tile)*16,Vector2(16,16)))
 	else:
 		for y in range(int(floor(view.position.y/32)),int(ceil(view.end.y/32))):
 			for x in range(int(floor(view.position.x/32)),int(ceil(view.end.x/32))):

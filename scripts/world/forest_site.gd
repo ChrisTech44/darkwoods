@@ -90,17 +90,10 @@ func _draw() -> void:
 				if (x / 16 + y / 16) % 3 == 0:
 					draw_rect(Rect2(x + 2, y + 2, 11, 10), Color("687263"))
 		# Timber bell frame and a stone well, both used from the open square.
-		for x in [-12, 11]:
-			draw_rect(Rect2(center + Vector2(x, -63), Vector2(4, 38)), Color("887149"))
-		draw_rect(Rect2(center + Vector2(-14, -64), Vector2(30, 5)), Color("b19563"))
-		draw_circle(center + Vector2(0, -48), 7, Color("b49b60"))
-		draw_line(center + Vector2(0, -40), center + Vector2(0, -24), Color("b9b18c"))
-		draw_circle(center + Vector2(0, 35), 19, Color("8c9583"))
-		draw_circle(center + Vector2(0, 32), 13, Color("1a3030"))
-		for index in range(8):
-			var stone := center + Vector2(0, 35) + Vector2.from_angle(index * TAU / 8) * 16
-			draw_rect(Rect2(stone, Vector2(5, 4)), Color("b0ac8b"))
-		draw_rect(Rect2(center + Vector2(-28, 65), Vector2(19, 12)), Color("866a45"))
+		if PixelArt.draw_standing(self, "bell_frame", center + Vector2(0, -22), 34) and PixelArt.draw_standing(self, "well", center + Vector2(0, 56), 36):
+			pass
+		else:
+			_draw_village_fallback(center)
 	elif definition["kind"] == "bog":
 		for index in range(65):
 			var at := bounds.position + Vector2(24 + (index * 71) % int(bounds.size.x-48), 24 + (index * 43) % int(bounds.size.y-48))
@@ -110,27 +103,20 @@ func _draw() -> void:
 		# Planks keep the central ritual space readable.
 		for y in range(-int(bounds.size.y/2)+48, int(bounds.size.y/2)-48, 9):
 			draw_rect(Rect2(center + Vector2(-40, y), Vector2(80, 7)), Color("766443"))
-		draw_circle(center + Vector2(0, -12), 19, Color("152c2c"))
-		draw_arc(center + Vector2(0, -12), 18, PI, TAU, 18, Color("879a7a"), 3)
-		draw_circle(center + Vector2(0, -15), 13, Color("6b9861"))
-		for index in range(5):
-			draw_circle(center + Vector2(-8 + index * 4, -17 + index % 2 * 4), 2, Color("a5c178"))
-		draw_line(center + Vector2(-25, -34), center + Vector2(22, 22), Color("a18c58"), 3)
+		if not PixelArt.draw_standing(self, "cauldron", center + Vector2(0, 8), 36):
+			draw_circle(center + Vector2(0, -12), 19, Color("152c2c"))
+			draw_circle(center + Vector2(0, -15), 13, Color("6b9861"))
 	elif definition["kind"] == "graveyard":
 		# Crooked headstones, broken iron fences and a searchable stone crypt.
 		for index in range(24):
 			var row := index / 6
 			var at := bounds.position + Vector2(64 + index % 6 * (bounds.size.x-128)/5, 64 + row * (bounds.size.y-128)/3)
-			draw_rect(Rect2(at, Vector2(15, 23)), Color("6f8178"))
-			draw_arc(at + Vector2(7, 1), 7, PI, TAU, 12, Color("a0a68a"), 2)
-			draw_line(at + Vector2(3, 9), at + Vector2(12, 9), Color("c2baa0"))
-			draw_rect(Rect2(at + Vector2(5, 15), Vector2(4, 3)), Color("394e43"))
+			if not PixelArt.draw_standing(self, "gravestone" if index % 3 else "grave_cross", at + Vector2(7, 23), 17):
+				draw_rect(Rect2(at, Vector2(15, 23)), Color("6f8178"))
 		for x in range(int(bounds.position.x) + 12, int(bounds.end.x) - 12, 12):
 			draw_line(Vector2(x, bounds.position.y + 8), Vector2(x, bounds.position.y + 26 + x % 3 * 3), Color("536b68"), 2)
-		draw_rect(Rect2(center + Vector2(-57, -26), Vector2(51, 44)), Color("65766e"))
-		draw_rect(Rect2(center + Vector2(-59, -30), Vector2(55, 8)), Color("9b9e85"))
-		draw_rect(Rect2(center + Vector2(-43, -20), Vector2(22, 36)), Color("182b2a"))
-		draw_line(center + Vector2(-60, 19), center + Vector2(-4, 19), Color("b2aa88"), 3)
+		if not PixelArt.draw_in(self, "crypt", Rect2(center + Vector2(-60, -30), Vector2(56, 52))):
+			draw_rect(Rect2(center + Vector2(-57, -26), Vector2(51, 44)), Color("65766e"))
 	else:
 		_draw_landmark(bounds, center)
 	for action in actions:
@@ -191,11 +177,12 @@ func _draw_landmark(bounds: Rect2, center: Vector2) -> void:
 				for x in [-16,14]:
 					draw_rect(Rect2(at+Vector2(x,-21),Vector2(3,14)),Color("c2bd9e"))
 					draw_circle(at+Vector2(x+1,-23),2,Color("efbf7a"))
-	_draw_centerpiece(kind, center + Vector2(0,-95))
+	if not _draw_centerpiece_sprite(kind, center + Vector2(0,-95)):
+		_draw_centerpiece(kind, center + Vector2(0,-95))
 	# Central reward altar is visually distinct from surrounding dressing.
-	draw_rect(Rect2(center-Vector2(16,12),Vector2(32,24)), Color("242f32"))
-	draw_rect(Rect2(center-Vector2(14,10),Vector2(28,4)), Color("c5b88d"))
-	draw_circle(center,4,Color("e2d4a2"))
+	if not PixelArt.draw_standing(self, "altar", center + Vector2(0, 12), 26):
+		draw_rect(Rect2(center-Vector2(16,12),Vector2(32,24)), Color("242f32"))
+		draw_circle(center,4,Color("e2d4a2"))
 	draw_string(ThemeDB.fallback_font, center+Vector2(-40,28), "E / RARE TOOL", HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("d9c799"))
 
 
@@ -244,6 +231,31 @@ func _draw_biome_floor(kind: String, bounds: Rect2, center: Vector2) -> void:
 		for index in range(12):
 			var ray := Vector2.from_angle(index*TAU/12)
 			draw_line(center+ray*85,center+ray*127,Color("969780"))
+
+## SpriteCook landmark pieces; false keeps the procedural centrepiece.
+func _draw_centerpiece_sprite(kind: String, at: Vector2) -> bool:
+	match kind:
+		"mill":
+			return PixelArt.draw_standing(self, "waterwheel", at + Vector2(0, 40), 84)
+		"observatory":
+			return PixelArt.draw_standing(self, "observatory", at + Vector2(0, 40), 64)
+		"rail":
+			var left := PixelArt.draw_standing(self, "rail_signal", at + Vector2(-40, 36), 22)
+			return PixelArt.draw_standing(self, "rail_signal", at + Vector2(40, 36), 22) and left
+		"chapel":
+			PixelArt.draw_standing(self, "column", at + Vector2(-44, 36), 24)
+			PixelArt.draw_standing(self, "column", at + Vector2(44, 36), 24)
+			return PixelArt.draw_standing(self, "shrine", at + Vector2(0, 40), 40)
+	return false
+
+
+func _draw_village_fallback(center: Vector2) -> void:
+	for x in [-12, 11]:
+		draw_rect(Rect2(center + Vector2(x, -63), Vector2(4, 38)), Color("887149"))
+	draw_rect(Rect2(center + Vector2(-14, -64), Vector2(30, 5)), Color("b19563"))
+	draw_circle(center + Vector2(0, 35), 19, Color("8c9583"))
+	draw_circle(center + Vector2(0, 32), 13, Color("1a3030"))
+
 
 func _draw_centerpiece(kind: String, at: Vector2) -> void:
 	match kind:

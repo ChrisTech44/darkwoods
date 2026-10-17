@@ -15,7 +15,14 @@ in [spritecook-assets.json](../spritecook-assets.json) and the raw sheets in
 | All 16 creature sheets | Four 4×4 pose grids (columns = species, rows = directions), each an edit of the old poses; the last (guardians) used Nano Banana 2 Lite | `tools/import_spritecook_creatures.gd`: per-species shared scale (0.85–1.0, never upscaled) into 64×64 frames; wrong-facing side views mirrored or swapped; hover bob for the moths and Wraith |
 
 The terrain atlas, buildings and props drawn in code still use the original
-procedural art below. All three Python builders (`build_pixel_art.py`, `build_cryptids.py`,
+procedural art below. | 16 item icons, 16 camp objects, 16 furniture pieces, 16 landmark props | Four 4×4 grids | `tools/slice_spritecook_grid.gd` → trimmed native sprites in `assets/sprites/sc/`; `scripts/core/pixel_art.gd` (`PixelArt.fit`) scales them at runtime (palette-snapped, cached, never upscaled) |
+| 13 seamless materials (`assets/tiles/tex_*`) | Two texture-mode grids (2×2 ground, 3×3 materials) | `tools/import_spritecook_textures.gd`: cut clear of dividers, resampled to 96/64 px; sampled world-aligned by the camp TileMap, woods terrain, floors and roofs |
+| Title screen | One 384×216 illustration | Drawn by `menu_backdrop.gd` under the existing fog and fireflies |
+
+`camp_tiles.png` and the code-drawn shapes remain as fallbacks wherever a
+SpriteCook file is missing.
+
+All three Python builders (`build_pixel_art.py`, `build_cryptids.py`,
 `build_content_art.py`) skip the SpriteCook-owned files unless run with
 `--procedural`.
 

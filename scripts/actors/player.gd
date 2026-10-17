@@ -227,16 +227,15 @@ func _draw() -> void:
 		var spread := facing.orthogonal() * 34
 		var reach := facing * 90 + Vector2(0, -12)
 		draw_colored_polygon(PackedVector2Array([Vector2(0, -12), reach + spread, reach - spread]), Color(1, 0.98, 0.85, flash_time / 0.18 * 0.55))
-	if not held_item().is_empty():
-		var hand := Vector2(9 if facing.x >= 0 else -10, -9)
+	if not held_item().is_empty() and facing.y >= -0.5:
+		# A small held supply at the SpriteCook figures' hand; hidden in the back view.
+		var hand := Vector2(6 if facing.x >= 0 else -9, -11)
 		var colors := {"flare":"d58460", "battery_pack":"9bb5ad", "rations":"d1ae72", "medkit":"e5dfc2", "noise_tin":"a5b9bd", "salt_ward":"ded9bb", "glow_moss":"a6d99a"}
-		draw_rect(Rect2(hand, Vector2(4, 6)), Color(colors.get(held_item(), "e1c47c")))
-		draw_line(hand, hand + Vector2(3, 0), Color("fff0ba"))
-		if held_item() == "glow_moss":
-			draw_line(hand+Vector2(2,3),hand+Vector2(0,-4),Color("a9df92"))
-		elif held_item() == "medkit":
-			draw_line(hand+Vector2(2,1),hand+Vector2(2,4),Color("b56051"))
-			draw_line(hand+Vector2(1,2),hand+Vector2(3,2),Color("b56051"))
+		draw_rect(Rect2(hand - Vector2(0.5, 0.5), Vector2(4, 5)), Color(0.08, 0.08, 0.07))
+		draw_rect(Rect2(hand, Vector2(3, 4)), Color(colors.get(held_item(), "e1c47c")))
+		draw_line(hand, hand + Vector2(2, 0), Color("fff0ba"))
+		if held_item() == "medkit":
+			draw_rect(Rect2(hand + Vector2(1, 1), Vector2(1, 2)), Color("b56051"))
 	if ward_remaining > 0:
 		draw_arc(Vector2.ZERO, 12, 0, TAU, 20, Color("ded9b2"), 1)
 

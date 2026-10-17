@@ -519,6 +519,15 @@ The six optional biomes show their resident guardians, alongside the village,
 bog and graveyard required-cache regions. North is up. This is an inspection
 atlas; the in-game field map still reveals only explored trails.
 
+## Art
+
+Trees, bushes, boulders, all six survivors and the stalker were redrawn with
+SpriteCook in October 2026 (see [art evidence](docs/evidence/spritecook/README.md)).
+The stalker is now noticeably bigger than the campers. Creatures, ground
+tiles and buildings still use the original procedural art.
+
+![New survivors and stalker](docs/evidence/spritecook/cast_closeup.png)
+
 ## Screenshots
 
 Actual Godot viewport captures. The original camp/forest screenshots below are

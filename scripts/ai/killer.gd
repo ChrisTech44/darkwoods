@@ -231,18 +231,15 @@ func state_label() -> String:
 
 func _draw() -> void:
 	draw_circle(Vector2(0, 2), 9, Color(0, 0, 0, 0.4))
-	draw_stun(-36)
+	draw_stun(-50)
 	var row := 0
 	if absf(facing.x) > absf(facing.y):
 		row = 2 if facing.x > 0 else 3
 	elif facing.y < 0:
 		row = 1
 	var frame := 0 if velocity.length() < 1.0 else 1 + int(stride / 9.0) % 2
-	draw_texture_rect_region(preload("res://assets/sprites/stalker.png"), Rect2(-16, -36, 32, 40), Rect2(frame * 32, row * 40, 32, 40))
-	draw_rect(Rect2(-8,-15,16,2),Color("897a59"))
-	draw_rect(Rect2(-2,-15,4,3),Color("c3b893"))
-	for index in range(4):
-		draw_line(Vector2(-6+index*4,-24),Vector2(-5+index*4,-20),Color("778072"))
+	# SpriteCook stalker: 40x48 frames, feet at the body origin like the old 32x40 art.
+	draw_texture_rect_region(preload("res://assets/sprites/stalker.png"), Rect2(-20, -44, 40, 48), Rect2(frame * 40, row * 48, 40, 48))
 	var cue := "."
 	var color := Color("a7b194")
 	if state == State.CHASE:
@@ -251,4 +248,4 @@ func _draw() -> void:
 	elif state in [State.INVESTIGATE, State.SEARCH]:
 		cue = "?"
 		color = Color("dfc18e")
-	draw_string(ThemeDB.fallback_font, Vector2(-3, -40), cue, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)
+	draw_string(ThemeDB.fallback_font, Vector2(-3, -48), cue, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)

@@ -2,10 +2,13 @@
 
 from pathlib import Path
 import random
+import sys
 import struct
 import zlib
 
 ROOT = Path(__file__).resolve().parent.parent / "assets"
+SPRITECOOK_OWNED = {"pine_0", "pine_1", "pine_2", "birch", "shrub", "boulder", "stalker", "camper",
+    "survivor_jock", "survivor_mechanic", "survivor_scout", "survivor_medic", "survivor_quiet", "survivor_quartermaster"}
 
 
 def rgba(color):
@@ -40,6 +43,11 @@ class Pixels:
                     self.dot(x + (other.w - col - 1 if mirror else col), y + row, color)
 
     def save(self, path):
+        # These sprites are now SpriteCook art (see assets/README.md); keep them
+        # unless --procedural is passed, so a rebuild never breaks the 40x48 stalker.
+        if Path(path).stem in SPRITECOOK_OWNED and "--procedural" not in sys.argv:
+            print("keeping SpriteCook art:", Path(path).name)
+            return
         def chunk(kind, data):
             return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data))
         scan = b"".join(b"\0" + bytes(c for pixel in self.data[y*self.w:(y+1)*self.w] for c in pixel) for y in range(self.h))

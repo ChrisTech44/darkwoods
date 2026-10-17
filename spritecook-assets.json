@@ -1,0 +1,31 @@
+{
+  "note": "SpriteCook asset IDs for the art revamp (account-owned). Sources in art_sources/spritecook; game sprites rebuilt by tools/slice_spritecook_props.gd, tools/import_spritecook_survivors.gd, tools/import_spritecook_stalker.gd.",
+  "assets": [
+    {
+      "asset_id": "841427ac-28ae-4c9c-b3e4-5e1558688588",
+      "label": "forest props 3x3 (pines, birch, dead tree, spruce, shrub, boulder, stump)",
+      "file": "art_sources/spritecook/forest_props_sheet.png",
+      "sha12": "23ba199b39d7"
+    },
+    {
+      "asset_id": "a9e245d3-f917-476a-affd-0b0f660a9c35",
+      "label": "upload: old survivor poses reference (6x4)"
+    },
+    {
+      "asset_id": "68dff824-8143-44d4-a989-f1c95a5b2c93",
+      "label": "survivors 6x4 pose grid (edit of reference)",
+      "file": "art_sources/spritecook/survivors_sheet.png",
+      "sha12": "8b44e3af89b9"
+    },
+    {
+      "asset_id": "99f35eb9-6ac2-4132-a0bc-15b49ba69673",
+      "label": "upload: old stalker poses reference (2x2)"
+    },
+    {
+      "asset_id": "3ae44181-0b06-40b5-826f-958ea0330cd7",
+      "label": "stalker 2x2 pose grid (edit of reference)",
+      "file": "art_sources/spritecook/stalker_sheet.png",
+      "sha12": "a36c5f85b567"
+    }
+  ]
+}

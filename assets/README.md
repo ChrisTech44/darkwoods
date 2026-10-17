@@ -1,5 +1,23 @@
 # Original game art
 
+## SpriteCook revamp (16 October 2026)
+
+Part of the art was regenerated with SpriteCook (Nano Banana 2.1, pixel mode) on
+the user's SpriteCook account, at the user's request; asset IDs and hashes are
+in [spritecook-assets.json](../spritecook-assets.json) and the raw sheets in
+`art_sources/spritecook/`. Licensing follows the user's SpriteCook terms.
+
+| Game files | Source | Processing |
+| --- | --- | --- |
+| `pine_0/1/2`, `birch`, new `spruce`, `dead_tree`, `shrub`, `boulder`, new `stump` | One generated 3×3 props sheet | `tools/slice_spritecook_props.gd`: native pixels, trees bottom-anchored on 64×80 |
+| `survivor_<role>` ×6 (+ `camper.png` = scout) | A 6×4 pose grid, generated as an edit of the old poses so each role keeps its colours | `tools/import_spritecook_survivors.gd`: area downscale of the ~28×55 figures to 31 px, snapped to each figure's palette; frames 1–2 add a 1 px step-bob with alternating legs |
+| `stalker` | A 2×2 pose grid, generated as an edit of the old poses | `tools/import_spritecook_stalker.gd`: one shared 0.52 scale into new **40×48** frames (was 32×40), same step-bob |
+
+The 16 creatures, terrain atlas, buildings and props drawn in code still use the
+original procedural art below; the credit budget ran out after three images.
+Re-running `build_pixel_art.py` would overwrite the SpriteCook trees, survivors
+and stalker, so re-run the three import tools afterwards.
+
 The camper and stalker sheets, terrain atlas, trees and ground props are original
 pixel art authored in `tools/build_pixel_art.py` for this project. No downloaded
 assets, franchise sprites, or third-party asset licenses are involved. Rebuild:

@@ -6,7 +6,9 @@ var view := Rect2()
 var detail := 16
 var focus_cell := Vector2i(0x7fffffff,0x7fffffff)
 const ATLAS := preload("res://assets/tiles/camp_tiles.png")
-var textures: Array[Texture2D] = [preload("res://assets/sprites/pine_0.png"),preload("res://assets/sprites/pine_1.png"),preload("res://assets/sprites/pine_2.png"),preload("res://assets/sprites/birch.png")]
+## SpriteCook forest set: pines dominate, spruce adds dark mass, birch and a rare
+## dead snag break up the silhouette.
+var textures: Array[Texture2D] = [preload("res://assets/sprites/pine_0.png"),preload("res://assets/sprites/pine_1.png"),preload("res://assets/sprites/pine_2.png"),preload("res://assets/sprites/birch.png"),preload("res://assets/sprites/spruce.png"),preload("res://assets/sprites/pine_0.png"),preload("res://assets/sprites/spruce.png"),preload("res://assets/sprites/dead_tree.png")]
 
 func _process(_delta: float) -> void:
 	if DisplayServer.get_name() == "headless":
@@ -51,7 +53,7 @@ func _draw() -> void:
 				var at := Vector2(x*32+16,y*32+16)
 				if CampMap.CAMP_BOUNDS.has_point(at) or camp_map.woods.walkable(at) or posmod(x+y,2) != 0:
 					continue
-				var texture := textures[posmod(x*3+y*7,4)]
+				var texture := textures[posmod(x*3+y*7,textures.size())]
 				var color := Color.WHITE
 				if is_instance_valid(camp_map.focus):
 					var offset := at-camp_map.focus.global_position

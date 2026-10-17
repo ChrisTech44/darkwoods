@@ -1,5 +1,41 @@
 # Development log
 
+## 2026-10-16 — SpriteCook art pass (forest, survivors, stalker)
+
+The user asked for an art upgrade with SpriteCook, most important images first,
+within a limited image budget. The account had 40 credits; Nano Banana 2.1
+costs 12 per 1K image, so three generations were affordable (4 credits left).
+Priority by screen coverage: forest props, then the player's own survivors,
+then the stalker.
+
+1. **Forest props:** one 3×3 grid (`841427ac…`). Sliced by
+   `tools/slice_spritecook_props.gd` into `pine_0/1/2`, `birch`, `shrub`,
+   `boulder` and new `spruce`, `dead_tree`, `stump`. Native pixels, trees
+   bottom-anchored on the existing 64×80 canvas. The woods renderer now cycles
+   eight tree textures (pines dominate, a rare dead snag).
+2. **Survivors:** a 6×4 pose grid of the old standing frames (one per role and
+   direction) was uploaded and edited (`68dff824…`), keeping layout and colours.
+   The figures came back about 28×55 against 24×32 frames.
+   `tools/import_spritecook_survivors.gd` area-downscales them to 31 px,
+   snaps each to its own palette with a crisp alpha cut, and builds 3-frame walk
+   rows (a 1 px step-bob with alternating legs). A downscale trial was compared
+   by eye before acceptance. The held-item marker was shrunk and moved to the
+   new hands (hidden in back view).
+3. **Stalker:** the same edit approach on a 2×2 pose grid (`3ae44181…`).
+   Frames grow from 32×40 to **40×48** so it stands about 1.5× a survivor
+   (shared 0.52 scale). `killer.gd` draws the new frames, drops the old
+   belt/scratch overlays tailored to the old art, and lifts the stun stars and
+   state marker above the taller head.
+
+`spritecook-assets.json` records asset IDs and sha12 hashes only (no URLs or
+tokens). Raw sheets are kept in `art_sources/spritecook/`.
+`tools/build_pixel_art.py` now skips the SpriteCook-owned files unless run with
+`--procedural`; a rebuild left every sprite byte-identical.
+
+**Not changed:** the 16 creatures, terrain atlas, buildings and code-drawn props
+(out of credits). **Not verified:** how the downscaled art reads to a human at
+normal play speed in the dark, and other platforms.
+
 ## 2026-10-16 — Overhaul F4b-2: shortcut gates, vaultable fences; nine new sounds
 
 **Barriers** (physics layer 8: survivors and creatures collide, sight and light

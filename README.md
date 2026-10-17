@@ -120,14 +120,21 @@ every launch.
   import before every launch (about 2 seconds once up to date) and fill in
   anything missing. Or open it in the Godot editor and wait for the import to finish.
   From a terminal: `godot --headless --path <game folder> --import`, then run.
+- **The import crashes (`Program crashed with signal 8`, `FATAL: Index p_index
+  = 1 is out of bounds`) and hundreds of assets stay missing:** fixed on
+  17 October 2026. The voice library crashed Godot's editor (which runs the import)
+  on Linux and Windows. `git pull`, then use the launcher: it removes the
+  crashing entry from `.godot/extension_list.cfg`, which an older copy may still
+  list. If you open the editor yourself after updating, delete that file first.
 - **Still broken after updating with git pull?** Run the launcher with
   `--reimport` (or delete the `.godot` folder) to rebuild Godot's cache.
 - **Voice chat silent:** see [Play with friends](#play-with-friends); turn MIC on,
   restart once, allow the microphone, and wear headphones.
 
 Prefer the terminal? `python3 tools/run_game.py` launches the game directly
-(it finds Godot on your PATH or in Applications; set `GODOT_BIN` to point at it
-otherwise; `--editor` opens the editor). Python is optional. More detail:
+(it finds Godot on your PATH, including the Ubuntu Snap `godot-4`, or in
+Applications; set `GODOT_BIN` to point at it otherwise; `--editor` opens the
+editor). Python is optional. More detail:
 [setup and testing](docs/testing.md).
 
 ## Your first night, step by step

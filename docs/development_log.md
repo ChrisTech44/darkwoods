@@ -1,5 +1,43 @@
 # Development log
 
+## 2026-10-17 — Import crash on Linux and Windows: voice library kept out of the editor
+
+The friends' machines still failed after the launcher fixes. Their logs showed
+the import itself crashing (`Program crashed with signal 8`, `FATAL: Index
+p_index = 1 is out of bounds (size() = 0)`), leaving 314 of 325 assets
+unimported. That was the real cause of the earlier missing-`.ctex` reports, not an
+editor closed mid-import. Reproduced on the user's Ubuntu 26.04 machine
+(genesect) with the Snap Godot 4.7.2 .NET build and with the standard
+official 4.7.2 Linux build. Isolated by removing parts of a copy: an empty project and the project
+without `addons/twovoip` import cleanly. The standard build's backtrace ends inside
+`libtwovoip.linux.template_debug.x86_64.so` (the release library crashes
+too). The editor crashes on every start while the extension is listed, but the
+game loads it and voice works. TwoVoIP 6.6 is already the latest release.
+- `addons/twovoip/.gdignore` hides the addon from the editor; the Voice
+  autoload loads it at runtime with `GDExtensionManager.load_extension`.
+- Both launchers drop the twovoip line from `.godot/extension_list.cfg`
+  (older caches list it, and the editor loads that list before scanning).
+- `godot_cli.py` also finds the Ubuntu Snap command `godot-4`.
+- README troubleshooting quotes the crash; the multiplayer guide explains why the
+  addon is hidden from the editor and notes that exports must ship it explicitly.
+
+**Verification (genesect, Ubuntu 26.04 x86_64, Snap Godot 4.7.2 .NET):**
+- fresh copy with a stale extension list: `python3 tools/run_game.py` found
+  `godot-4`, imported all 650 files with no crash and started the game;
+- `Voice.available` is true and the extension appears as loaded at runtime;
+- `voice_chat.gd`: 24/24 checks.
+
+**Verification (macOS):**
+- `verify.py` passed every step;
+- the launcher emptied the stale list, imported and reached `menu_ready` with
+  0 errors;
+- `verify_voice.py`, using the runtime-loaded extension, passed its two-process
+  round (24 + 8 + 13 checks);
+- `git diff --check` is clean.
+
+**Not verified:** Windows. Its library is the same TwoVoIP build, and the friend's
+symptoms match, but the fix has not run there.
+
 ## 2026-10-17 — Launchers always import (partial-import report)
 
 After the first fix the Windows friend still saw missing `.ctex`/`.mp3str` files

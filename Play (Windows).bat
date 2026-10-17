@@ -15,5 +15,10 @@ if "%GODOT%"=="" (
 rem Always import first: only new or changed files are processed (about 2 s
 rem when up to date, about a minute the first time), so a partial import heals.
 echo Checking imported assets...
+rem The voice addon crashes the editor; the game loads it itself.
+if exist ".godot\extension_list.cfg" (
+  findstr /v /i "twovoip" ".godot\extension_list.cfg" > ".godot\extension_list.tmp"
+  move /y ".godot\extension_list.tmp" ".godot\extension_list.cfg" >nul
+)
 "%GODOT%" --headless --path "%~dp0." --import
 "%GODOT%" --path "%~dp0." %*

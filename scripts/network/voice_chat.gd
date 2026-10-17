@@ -15,6 +15,10 @@ const SETTINGS_PATH := "user://voice_settings.cfg"
 ## The microphone is only initialised for players who turned voice on, because
 ## macOS asks for (and waits on) microphone permission when input starts.
 const ENGINE_OVERRIDES := "user://engine_overrides.cfg"
+## Loaded here at runtime, never by the editor: TwoVoIP's Linux and Windows
+## libraries crash the Godot editor (and so the headless import) on load, so
+## addons/twovoip carries a .gdignore and stays out of extension_list.cfg.
+const EXTENSION := "res://addons/twovoip/twovoip.gdextension"
 const MODES: Array[String] = ["off", "push", "open"]
 const OPUS_RATE := 48000
 const FRAME := 960
@@ -53,7 +57,9 @@ var _budget: Dictionary = {}
 
 
 func _ready() -> void:
-	available = ClassDB.class_exists("TwovoipOpusEncoder") and ClassDB.class_exists("AudioStreamOpus")
+	if not ClassDB.class_exists("TwovoipOpusEncoder") and FileAccess.file_exists(EXTENSION):
+		GDExtensionManager.load_extension(EXTENSION)
+	available =ClassDB.class_exists("TwovoipOpusEncoder") and ClassDB.class_exists("AudioStreamOpus")
 	mic_ready = bool(ProjectSettings.get_setting("audio/driver/enable_input", false))
 	if not InputMap.has_action("push_to_talk"):
 		InputMap.add_action("push_to_talk")

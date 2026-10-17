@@ -11,7 +11,8 @@ def godot_binary():
     override = os.environ.get("GODOT_BIN")
     if override:
         return override
-    for name in ("godot", "godot4"):
+    # "godot-4" is the Ubuntu Snap package.
+    for name in ("godot", "godot4", "godot-4"):
         executable = shutil.which(name)
         if executable:
             return executable

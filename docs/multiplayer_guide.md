@@ -153,6 +153,14 @@ libraries (macOS universal, Windows and Linux x86_64, debug and release) are
 vendored in `addons/twovoip/` with its licence; the source clone lives outside
 the project.
 
+TwoVoIP's Linux and Windows libraries crash the Godot **editor** when it loads
+them (a divide-by-zero inside the library while the editor starts, which also kills
+`--headless --import`; reproduced on Ubuntu 26.04 with both the standard and the
+.NET/Snap Godot 4.7.2). The game itself runs them fine. So `addons/twovoip/` has a
+`.gdignore`: the editor never sees or loads it, and the Voice autoload loads it
+at runtime with `GDExtensionManager.load_extension`. Exported builds would have
+to ship the addon folder and its libraries explicitly (no exports yet).
+
 - **Opt-in.** Off by default. Settings/Esc menu **MIC**: Off, Push to talk (hold
   **B**), Open mic (gain-scaled level gate with 0.6 s hang). Choosing voice writes
   `audio/driver/enable_input` to `user://engine_overrides.cfg`, read by the engine

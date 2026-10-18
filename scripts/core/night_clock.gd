@@ -44,6 +44,11 @@ var sabotage_done := false
 var sabotage_clock := 0.0
 var power_cut_done := false
 var stolen := ""
+## The moon (werewolves transform while it is out): from Nightfall it breaks
+## through the clouds for MOON_SECONDS every few minutes.
+const MOON_SECONDS := 35.0
+var moon := false
+var moon_clock := 150.0
 
 
 func _ready() -> void:
@@ -82,6 +87,7 @@ func advance(delta: float) -> void:
 		_start_event(events[next_event]["kind"])
 		next_event += 1
 	_weather(delta)
+	_moon(delta)
 	heat = maxf(0.0, heat - delta * 0.5)
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		var id := actor.get_instance_id()
@@ -344,8 +350,27 @@ func sabotage_state() -> Dictionary:
 	return {"done": sabotage_done, "stolen": stolen, "power_cut": power_cut_done}
 
 
+func _moon(delta: float) -> void:
+	if phase < 1 and not moon:
+		return
+	moon_clock -= delta
+	if moon_clock > 0.0:
+		return
+	set_moon(not moon)
+
+
+func set_moon(out: bool) -> void:
+	moon = out
+	# Blood Moon: the clouds part far more often.
+	var gap := Vector2(70.0, 110.0) if level.plan.has_modifier("blood_moon") else Vector2(150.0, 220.0)
+	moon_clock = MOON_SECONDS if out else rng.randf_range(gap.x, gap.y)
+	if out:
+		level.announce("THE MOON BREAKS THROUGH THE CLOUDS. Something out there is changing.")
+	print(JSON.stringify({"event": "night_moon", "out": out, "time": int(elapsed)}))
+
+
 func snapshot() -> Dictionary:
-	return {"elapsed": elapsed, "phase": phase, "phase_elapsed": phase_elapsed, "dread": dread, "storm": storm_remaining, "blackout": blackout, "lightning": lightning}
+	return {"elapsed": elapsed, "phase": phase, "phase_elapsed": phase_elapsed, "dread": dread, "storm": storm_remaining, "blackout": blackout, "lightning": lightning, "moon": moon}
 
 
 func restore(state: Dictionary) -> void:
@@ -356,3 +381,4 @@ func restore(state: Dictionary) -> void:
 	storm_remaining = state["storm"]
 	blackout = state["blackout"]
 	lightning = state["lightning"]
+	moon = state.get("moon", false)

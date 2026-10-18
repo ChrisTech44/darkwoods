@@ -176,7 +176,8 @@ editor). Python is optional. More detail:
 8. **When something finds you:** sprint (**Shift**), throw a **flare (Q)**,
    **flash (Space)** it with your light, slam a cabin door, or hide (**E** at a
    locker, bed or bush) and hold still. Each hit takes **health** (the red bar
-   under the title); at zero you're downed. A **medkit (V)** heals 50. Until Deep
+   under the title); at zero you're downed. If the stalker catches you
+   **wounded**, he carries you off to his hook: mash **E**! A **medkit (V)** heals 50. Until Deep
    Night the camp is a refuge: nothing follows you past the lanterns at the
    trail mouths.
 9. **Fix your escape.** Bring each part back and press **E** at the rear of the
@@ -202,7 +203,8 @@ editor). Python is optional. More detail:
 | **Shift** | Sprint while stamina lasts; sprinting makes noise |
 | **E** | Take items, open caches with cutters or a crowbar, install parts, enter a running van, hide/leave a hiding spot, slam/open doors, knock over woodpiles and deadfall |
 | **Hold E** | Climb/transmit at the relay (6s), start the repaired van, revive a nearby downed teammate, or (solo, downed) get back up once |
-| **Space** | Flash-stun creatures close in your beam (costs light, 8 s cooldown) |
+| **Mash E** | Wriggle free when something holds you; beside a held teammate, pull them loose |
+| **Space** | Flash-stun creatures close in your beam (costs light, 8 s cooldown); swats a moth off your face |
 | **F** | Toggle the flashlight |
 | **1–6 / keypad 1–6** | Select a belt slot |
 | **V / G** | Use held supply / drop its stack |
@@ -279,7 +281,7 @@ hear. Monsters never hear voice. The HUD shows who is talking. **VOICE** and
 | Mode | Repair objective | Threats and exploration |
 | --- | --- | --- |
 | **Quick Camp** | Battery in the Fern bunk cabin, fuel in Maintenance, key in the Ranger Lodge. | The camp stalker and a shorter three-part objective with randomized camp buildings. Flashlight charge does not drain. |
-| **Woods Expedition** (a long night at your own pace) | Battery and key in camp location pools; fuel and two extra parts in themed-area caches, revealed by ranger radio as the night deepens. | A night that deepens as you make progress: the stalker plus 26 cryptids spread through the woods (camp is safe until Deep Night), a seeded trail maze, survival supplies, weather, storms, blackouts and a draining flashlight. |
+| **Woods Expedition** (a long night at your own pace) | Battery and key in camp location pools; fuel and two extra parts in themed-area caches, revealed by ranger radio as the night deepens. | A night that deepens as you make progress: the stalker plus 27 creatures of 21 kinds, each with its own trick (camp is safe until Deep Night), a seeded trail maze, survival supplies, weather, storms, blackouts and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
 The pack lists the current requirements and location clues. The woods contains nine major regions.
@@ -370,22 +372,35 @@ appear on the results screen. Progress is saved locally on each player's machine
 Each Woods Expedition night has a **headline killer** and **0–2 modifiers**, both
 chosen by the seed and announced in the Dusk message and the Tab pack heading.
 
-- **The Stalker** escalates with the night. At Dusk he keeps to camp and the inner
-  ring (he gives up chases beyond it). From Nightfall he hunts anywhere. In Deep
-  Night his search memory lasts 50% longer, and **once** he may sabotage the van:
-  if nobody stands within 300 px of it, he walks over, rips out the last installed
-  part and leaves it in that part's region, **pinned on your map** (VAN ALARM).
-  In the Witching Hour he runs faster, breaks doors 50% quicker and **once** cuts
-  the generator if nobody is guarding it.
-- **The Groundskeeper** escalates the same way, and also sets **snares** on trails
-  you have already walked (up to four armed). A snare glints in your flashlight
-  within 90 px. Step on one and you are held for 4 seconds while it rattles loudly
-  and calls him. A teammate frees you instantly with **E**, and anyone can
-  **disarm** an armed snare quietly with **E**.
+- **The Stalker** is the reason this game exists: the camp's old counselor in a
+  canvas mask, and nothing else in the woods behaves like him.
+  - **The camp song.** He whistles *Row, Row, Row Your Boat*. The direction and
+    volume tell you where he is; it comes faster when he's hunting.
+  - **Shadowing.** From Nightfall he picks a **favourite** survivor and follows
+    them just outside their light. Catch him in your beam and he melts into the
+    dark, only to turn up behind you later. Sooner or later, he lunges.
+  - **The grab and the hook.** He doesn't hit a wounded survivor (50 health or
+    less): he **throws them over his shoulder** and walks them to **his hook**,
+    a post in his lair in the woods. Mash **E** to wriggle free; a teammate's
+    flash, a flare or the **air horn** makes him drop you. Reach the hook and
+    you're downed there, **pinned on everyone's map**: a rescue run.
+  - **He remembers.** Use a hiding spot twice and he checks it, and drags you out.
+  - **Bear traps** on the trails you walk most: a loud snap, 15 damage and 4 s
+    stuck. They glint in your light; **E** disarms one; a teammate frees you.
+  - **Calling cards.** Your name, "I SEE YOU", "RUN" scrawled on the ground
+    behind you.
+  - **Rage.** Every escape from him (a broken grab, a stun, a hiding spot in
+    mid-chase) builds rage; at three he **frenzies** for 20 s: faster, glowing
+    red, bursting doors instantly, screaming instead of whistling.
+  - **Escalation.** In Deep Night his search memory lasts 50% longer and
+    **once** he may sabotage the van (VAN ALARM, the part pinned on your map); in
+    the Witching Hour he runs faster and **once** cuts the generator.
+- **The Groundskeeper** shares the grab, the hook, the memory and the rage, and
+  sets **rake snares** instead of bear traps (they hold you 4 s and rattle).
 
 | Modifier | Effect |
 | --- | --- |
-| **Blood Moon** | More hounds and jackals roam; the killer runs 8% faster. |
+| **Blood Moon** | Pranksters become werewolves and the moon comes out twice as often; the killer runs 8% faster. |
 | **Dead Batteries** | Spare batteries restore 40 charge instead of 70. |
 | **Fog Bank** | The night is foggy: shorter sight for everyone. |
 | **Silent Night** | No music; creatures hear 15% farther. |
@@ -710,79 +725,82 @@ anyone is standing or aboard.
 
 ### Know what is following you
 
-| Threat | Behavior | Useful response |
-| --- | --- | --- |
-| **Camp stalker** | Prowls the woods beyond camp for the first half of the night, then tours camp from Deep Night. Investigates noise and chases standing survivors on clear sight. Leaves downed bodies to search or pursue others. | Break sight around buildings; use sprint carefully and flares when cornered. |
-| **Werewolf** | Alternates a fast charge with a slower recovery. | Save stamina for the burst and use the recovery window to reposition. |
-| **Sasquatch / Bigfoot** | A long-armed forest ape that hears farther than the stalker, with a slower chase. | Walk quietly and avoid broadcasting your route with repeated sprinting. |
-| **Lantern moth** | Tracks lit survivors and visible flares; ignores dark survivors beyond close range. | Switch off your light to reduce detection, and remember that flares attract it. |
-| **Vampire** | Fast outside the flashlight beam; slows and tries to flank a lit approach. | Face it with your light and use flares to pass a tight trail. |
-| **Witch** | Keeps casting distance, shows a wind-up, then fires a fixed-trajectory hex bolt. | Sidestep the bolt or put a wall between you. A hit briefly slows movement and drains stamina. |
-| **Briar revenant** | Senses movement, with close-range detection even if you stand still. | Freeze at a distance or break sight; do not wait for it to get close. |
+Every creature does **one thing nothing else does**, warns you before it does
+it, and can be beaten, often with an item or a teammate. Not all of them want
+to kill you: some steal, some carry you off, some make you squeak. The full
+design is in [docs/monster_revamp.md](docs/monster_revamp.md).
 
-Each expedition spawns **26 cryptids across 16 species, plus the stalker**: a
-vampire and a witch in their regions, six landmark guardians that stay within
-their home zones, and **18 roamers spread across the whole forest** (each placed
-as far as possible from the others, none within 1,100 px of camp). Roamers follow
-trail circuits and investigate sensed activity. There's a three-flare stash in
-Maintenance for when they come.
+| Creature | What it does | Tell | How to beat it |
+| --- | --- | --- | --- |
+| **The Vampire** | **Hypnotises**: if it can see you (and your beam isn't on it) you're drawn toward it. Up close it **latches on** and drains health. | Red eyes; the screen edges pulse red. | **Garlic** keeps it away; hold your beam on it (it slows and the pull breaks); sprint away; mash **E** if bitten. |
+| **The Werewolf** | A harmless **lost hiker** until the **moon** comes out (moon icon, about every three minutes from Nightfall). Then it rampages: pounces **knock you flying** (35) and doors burst. | A howl. | Hide until the clouds return, throw **wolfsbane**, or use a flare. |
+| **Bigfoot** | **Shy.** Never hunts. Sneak up on it in the dark and it **throws you** across the clearing (10, and you may drop what you hold). | Grunting. | Light it up from a distance: it bolts and drops **Bigfoot fur** (+300 score). |
+| **The Witch** | Her hex bolt **curses**: **Frog** (12 s: can't carry parts or use items), **Backwards** controls (10 s), **Swap** places with a teammate, or **Float** like a balloon (8 s). | Cackle and a casting ring. | Sidestep the bolt's line; a **salt ward** bounces it back and turns *her* into a frog. |
+| **The Lantern Moth** | Flies to your light and **lands on your face**: a moth fills your screen and drinks your battery. | Fluttering. | **Space** swats it (or a teammate's flash); **bug spray**; light off. |
+| **The Puffball** | Swells and bursts: spores give you a **helium voice** (60 s, on voice chat too) and loud **sneezes** (30 s). | A pale cloud growing. | Walk around it, or **stand still** as it bursts to hold your breath. |
+| **The Scarecrow** | **Only moves when nobody is looking.** Unwatched it's very fast and its touch hurts (60). A flash can't stop it. | Rustling straw. | Keep a light on it and back away; take turns as a team. |
+| **Buster, the stalker's hound** | Tracks blood, and when it sees you it **barks**, bringing the stalker straight to you. Drags the downed toward the hook. | Sniffing, then "WOOF!". | Throw him **rations**: he's your friend for 60 s and growls at nearby creatures. |
+| **The Peeper** | **Staring contest**: put your beam on it or face it up close and you're **locked** in place, slowly hurt. | An unblinking eye in the trees. | Don't look; a teammate stepping between you breaks it; it blinks after 7 s. |
+| **The Conductor** | **"Tickets, please"**: no ticket and you're whisked away to the **Rail Yard**. | Lantern bell. | Carry a **train ticket** and he gives you a free ride to camp instead. |
+| **The Mimic** | **Pretends to be a teammate**: their look, their name, and with voice chat on, **their voice**, replayed from where it stands. Up close it shows its teeth (25). | No flashlight, and it isn't on the map. | Check the map and voice: real teammates carry lights. |
+| **The Night Owl** | **Carries off** anyone who wanders alone: you're snatched and dropped about 700 px away (10). | A hoot, then its shadow growing under you. | Stay within 150 px of a teammate; a flare makes it let go. |
+| **The Bog Hands** | Hide in **mud puddles** on trails. Step in and they hold you; after 6 s you're **dragged under** (downed). | A bubbling puddle. | Walk around puddles; mash **E** or have a teammate pull you; a flare scares them off. |
+| **The Toadstool Imps** | Tie your laces: you **trip** and drop what you hold, then they **steal it and hide it** nearby (and tell you which way). | Giggling. | A flash poofs them; **bug spray** keeps them off. |
+| **Bear Hug** | A giant camp teddy that **never stops following** you once it has seen you, slowly. If it catches you it **hugs**: held and squeezed. | Squeaky footsteps. | Keep moving; mash **E**, or a teammate flashes it. |
+
+**Region guardians** stay in their regions:
+
+| Region | Guardian | What it does | How to beat it |
+| --- | --- | --- | --- |
+| Flooded Mill | **The Lullaby Saint** | Its hymn makes you **drowsy**; stand still for 2 s and you **fall asleep** (and snore loudly). | Keep moving; **coffee** (90 s awake). |
+| Bramble Orchard | **The Seamstress** | **Stitches** you to the nearest teammate (or the ground) for 25 s: you can't get more than 80 px apart. | **Scissors** cut the thread. |
+| Starless Observatory | **The Paparazzo** | **Camera flash**: blinds anyone facing it for 3 s and **sends your photo to the stalker**. | Turn away; break line of sight. |
+| Rail Yard | **Trash Jackals** (a pair) | **Steal** from your belt (sometimes a part) and run it to their **den** (pinned on the map). | Flash one to make it drop the loot; rations distract them. |
+| White Stone Quarry | **The Ram** | A telegraphed **CHARGE** that bowls over everyone in its path (30) and bursts doors. | Step out of the line. |
+| Drowned Chapel | **The Snuffer** | Walks in a bubble of **darkness**: flashlights cut out and flares die near it. | **Glow moss** can't be snuffed; walk away. |
+
+**Held?** When something holds you (bite, hug, mud, stare, talons, the stalker's
+shoulder) the screen says **HELD BY … · MASH E** with a bar: every press of **E**
+wriggles you closer to free. A teammate pressing **E** beside you pulls twice as
+hard, and a teammate's **flash** makes the creature let go.
+
+**Creature items** (V to use, from your belt):
+
+| Item | Where | Use |
+| --- | --- | --- |
+| **Garlic** | Woods; a braid in the Vampire's region | 60 s: the Vampire won't come near or hypnotise you. |
+| **Wolfsbane** | Woods | Throw at a transformed werewolf (aim at it): it turns back and flees for 90 s. |
+| **Bug spray** | Woods; Cedar Bunkhouse porch | 45 s: moths and imps keep off. |
+| **Scissors** | First Aid and Fern Bunk Cabin porches | Cut a Seamstress thread (yours or a teammate's beside you). |
+| **Train ticket** | Woods | Carry it: the Conductor gives you a free ride to camp. |
+| **Air horn** | Maintenance porch | Stuns the stalker for 5 s and makes him drop anyone he carries. Everything hears it. |
+| **Coffee** | Ranger Lodge and Mess Hall porches | 90 s awake (no lullaby) and full stamina. |
+| **Bigfoot fur** | Dropped by a fleeing Bigfoot | +300 score. |
+
+Rations double as **bait** (Buster, jackals), the **salt ward** reflects witch
+curses, and **glow moss** also makes you glow for 60 s (nothing can snuff it).
+
+Each expedition has **27 creatures, plus the headline killer**: the Vampire and
+the Witch in their regions, the six guardians (the jackals are a pair), and **18
+roamers spread across the whole forest**, none within 1,100 px of camp. Roamers
+follow trail circuits and investigate sensed activity. There's a three-flare
+stash in Maintenance for when they come.
 
 **Camp is a refuge until Deep Night.** For the first half of the night no
 creature (the stalker included) enters camp, sees into it or hears noise from
 it; the lanterns at the four trail mouths burn while that holds. They go out when
 **Deep Night** begins (or when the van's engine roars): from then on the camp is
-open to everything. The director that steers creatures toward survivors also
-waits until Nightfall and acts less often than before.
+open to everything. The director that steers creatures toward survivors waits
+until Nightfall.
 
-**How hard things hit.** Creatures that are easy to evade (slow, or with a long
-warning) hit hard but must recover for a long time; quick ones hit lightly and
-more often, but each has a simple counter.
-
-| Creature | Damage | Cooldown | Creature | Damage | Cooldown |
-| --- | --- | --- | --- | --- | --- |
-| Stalker | 50 | 4 s | Groundskeeper | 40 | 3.5 s |
-| Bigfoot | 60 | 5 s | Stoneback Ram | 55 (charge 55) | 5 s |
-| Werewolf | 40 | 4 s | Boiler Saint | 45 | 4 s |
-| Witch | 35 | 4 s | Last Car Conductor | 35 | 3.5 s |
-| Switchback Hound | 30 (charge 40) | 2.5 s | Bramble Seamstress | 30 | 3 s |
-| Vampire | 25 | 2.5 s | Lens Eater | 20 | 2 s |
-| Briar Revenant | 20 | 1.5 s | Candle Grazer | 20 | 1.5 s |
-| Lantern Moth | 15 | 1 s | Shutter Wraith | 15 | 1 s |
-| Relay Jackal | 15 | 1.2 s | Ration Moth | 15 | 1 s |
-
-After a hit the creature pauses for half its cooldown (at most 2 s). The lake
+**How hard things hit.** Most creatures above don't simply hit you. The ones
+that do: the stalker 50 (4 s cooldown), the Groundskeeper 40 (3.5 s), the
+Scarecrow 60, the werewolf's pounce 35, the Ram's charge 30, the Mimic 25,
+Bigfoot's throw and the Night Owl's drop 10. Holds drain over time: the Vampire
+6/s, Bear Hug 5/s, the Peeper 4/s. After a hit the creature pauses for half its
+cooldown (at most 2 s), and you get 1.5 s in which nothing can hit you. The lake
 thing's telegraphed strike at the boat dock hits for 50.
 
-The new threats below are playable first versions of the larger design catalog.
-
-| New threat | Where and how it hunts | Tell and useful response |
-| --- | --- | --- |
-| **Switchback Hound** | Roams forest trails; hears up to 320px before rain/Quiet Kid modifiers and searches last sensed areas for 12s. | A **CHARGE** cue, line and target ring warn for 1.2s before a 0.55s straight dash. Sidestep after it commits, break sight and walk away. |
-| **Boiler Saint** | Territorial guardian of the **Flooded Mill**. Places a steam patch at your observed position. | A **DANGER** ring warns for 1.2s. Leave the 23px disk; the patch lasts 2.2s and briefly hexes/slows rather than dealing direct damage. |
-| **Bramble Seamstress** | Territorial guardian of the **Bramble Orchard**. Marks a temporary thorn patch after seeing you. | Step out of the warning ring or **walk** through the active thorns. Sprinting through applies a brief hex/slow; the patch expires after 2.2s. |
-| **Shutter Wraith** | Territorial guardian of the **Starless Observatory**. Moves faster when not held in your visible flashlight beam. | Aim directly at it within 145px to stop its chase movement, then back away. It can still hit at contact range; do not approach while holding the beam. |
-| **Last-Car Conductor** | Territorial guardian of the **Rail Yard**. Marks an inspection patch at your observed position. | Leave its **DANGER** ring during the 1.2s warning. The temporary patch slows/hexes; use the other track lane or retreat out of the yard. |
-| **Stoneback Ram** | Territorial guardian of the **White Stone Quarry**. Commits to a straight charge toward the warned position. | Sidestep the **CHARGE** line during its 1.2s tell. The 0.55s dash collides with walls; reposition during the cooldown. |
-| **Candle Grazer** | Territorial guardian of the **Drowned Chapel**. Sees lit survivors, detects dark survivors at close range, and follows visible flares. | Switch off your beam at a distance or leave a flare and move away. It **consumes flares on contact** and is not repelled by them. |
-| **Relay Jackal** | Roams ordinary forest trails and angles toward a flank only while it can see you; searches last sensed areas for 12s. | Break sight, change direction and avoid sprinting back through its investigation route. Flares repel it. |
-| **Ration Moth** | Roams the woods with short 70px sight; ration use attracts it to that sound location from up to 600px away. | Eat before moving, then leave quietly. It investigates the meal location rather than tracking hidden inventory. Flares repel it. |
-| **Lake Thing** | A bounded **Boat launch encounter**, separate from the 26 cryptids. Marks fixed dock positions, then strikes after 2 seconds. | Leave each glowing ripple circle or throw a nearby flare with clear sight to cancel that strike. It does not chase through the forest or target unseen survivor positions. |
-| **Lens Eater** | A roaming lens-faced creature that warns before draining up to 8 light charge if you keep aiming directly at it nearby. | Turn your beam away or put a tree/wall between you during its 1.2s **DANGER** warning. The cast has a 6.5s cooldown; it cannot consume spare batteries. |
-
-**Hunters versus zones:** Hounds can follow sensed activity along ordinary trails;
-landmark guardians reject survivor targets and noises outside their home bounds.
-Leave the landmark, break sight and stop sprinting to reduce pursuit. Required
-woods caches rotate across eight regions. Guardian regions remain optional for a
-van run unless tonight's clue sends you there.
-Every guardian can still attack on contact. Steam, thorns and inspection patches
-expire, affect each survivor once per patch and never block an exit or change
-collision. Each patch hit applies a 1.2s hex (movement at 60% speed) and drains
-1.5 stamina; walking avoids the Seamstress's thorns. Each newer monster now has
-its own call (five screeches, shared in pitch-shifted pairs); appearance and
-visible tells still identify them best.
-
-Enemies lead visible moving targets briefly and sweep
-reachable points around their last sensed location after losing sight.
 **Listen, don't read.** Nothing on screen names a nearby monster or says whether it
 is hunting you. Instead your **heartbeat** tells you: a slow, quiet beat means
 something is close (within about 300 px, even behind the trees), quickening as it
@@ -803,7 +821,7 @@ ten furnished camp buildings. Four exits lead north, east, south and west.
 Trails are **128 pixels wide**, and the village, bog and graveyard have larger
 clearings and clear approach aprons. Roofs cut away inside buildings.
 
-In Woods Expedition, **26 cryptids across 16 species, plus the stalker** are
+In Woods Expedition, **27 creatures of 21 kinds, plus the stalker** are
 spread through the forest, and none comes into camp before Deep Night. A true sight mask hides occluded terrain and
 creatures; nearby footsteps and calls provide audible warnings without revealing
 the whole maze. The local field map follows you, records explored trails and
@@ -1003,29 +1021,38 @@ a complete automated expedition with all enemies active.
 | --- | --- | --- |
 | ![Cobbled village square with the bell frame and well](docs/screenshots/landmark_village.png) | ![Bubbling cauldron on the bog boardwalk](docs/screenshots/landmark_bog.png) | ![Crypt and gravestones in dead graveyard grass](docs/screenshots/landmark_graveyard.png) |
 
-### New monster close-ups
+### Every creature
 
-These are dedicated engine captures of the seven new species, with AI disabled
-and brightened lighting for inspection. They show the implemented sprites rather
-than concept art; the monster table above explains their current powers.
+In-engine portraits of all 21 woods creatures (AI paused, brightened lighting;
+the werewolf, Mimic and Bog Hands shown in their true forms).
 
-| Switchback Hound | Boiler Saint | Bramble Seamstress |
+| The Vampire | The Werewolf | Bigfoot |
 | --- | --- | --- |
-| ![Switchback Hound with exposed teeth and long clawed legs](docs/screenshots/monster_switchback_hound.png) | ![Boiler Saint with brass body gauge and pipe equipment](docs/screenshots/monster_boiler_saint.png) | ![Bramble Seamstress with twig crown and long needle](docs/screenshots/monster_bramble_seamstress.png) |
+| ![The Vampire](docs/screenshots/monster_vampire.png) | ![The Werewolf](docs/screenshots/monster_werewolf.png) | ![Bigfoot](docs/screenshots/monster_bigfoot.png) |
 
-| Shutter Wraith | Last-Car Conductor | Stoneback Ram |
+| The Witch | The Lantern Moth | The Puffball |
 | --- | --- | --- |
-| ![Shutter Wraith with lens face and layered shroud](docs/screenshots/monster_shutter_wraith.png) | ![Last-Car Conductor with uniform cap and hand lamp](docs/screenshots/monster_last_car_conductor.png) | ![Stoneback Ram with stone plates and curved horns](docs/screenshots/monster_stoneback_ram.png) |
+| ![The Witch](docs/screenshots/monster_witch.png) | ![The Lantern Moth](docs/screenshots/monster_lantern_moth.png) | ![The Puffball](docs/screenshots/monster_ration_moth.png) |
 
-![Candle Grazer with burning candles along its back](docs/screenshots/monster_candle_grazer.png)
-
-### More roaming encounters
-
-| Relay Jackal | Ration Moth | Lens Eater |
+| The Scarecrow | Buster | The Peeper |
 | --- | --- | --- |
-| ![Relay Jackal with tall ears and curved tail](docs/screenshots/monster_relay_jackal.png) | ![Ration Moth with layered paper-like wings](docs/screenshots/monster_ration_moth.png) | ![Lens Eater with a large vertical iris](docs/screenshots/monster_lens_eater.png) |
+| ![The Scarecrow](docs/screenshots/monster_briar_revenant.png) | ![Buster](docs/screenshots/monster_switchback_hound.png) | ![The Peeper](docs/screenshots/monster_lens_eater.png) |
 
-These three species roam ordinary trails; they do not require a biome encounter.
+| The Conductor | The Mimic (revealed) | The Night Owl |
+| --- | --- | --- |
+| ![The Conductor](docs/screenshots/monster_last_car_conductor.png) | ![The Mimic (revealed)](docs/screenshots/monster_mimic.png) | ![The Night Owl](docs/screenshots/monster_owl.png) |
+
+| The Bog Hands | The Toadstool Imps | Bear Hug |
+| --- | --- | --- |
+| ![The Bog Hands](docs/screenshots/monster_bog_hands.png) | ![The Toadstool Imps](docs/screenshots/monster_imps.png) | ![Bear Hug](docs/screenshots/monster_teddy.png) |
+
+| The Lullaby Saint | The Seamstress | The Paparazzo |
+| --- | --- | --- |
+| ![The Lullaby Saint](docs/screenshots/monster_boiler_saint.png) | ![The Seamstress](docs/screenshots/monster_bramble_seamstress.png) | ![The Paparazzo](docs/screenshots/monster_shutter_wraith.png) |
+
+| Trash Jackal | The Ram | The Snuffer |
+| --- | --- | --- |
+| ![Trash Jackal](docs/screenshots/monster_relay_jackal.png) | ![The Ram](docs/screenshots/monster_stoneback_ram.png) | ![The Snuffer](docs/screenshots/monster_candle_grazer.png) |
 
 ### New optional biomes
 

@@ -42,13 +42,24 @@ const THREATS := {
 	"boiler_saint": [45.0, 4.0], "bramble_seamstress": [30.0, 3.0], "shutter_wraith": [15.0, 1.0],
 	"last_car_conductor": [35.0, 3.5], "stoneback_ram": [55.0, 5.0], "candle_grazer": [20.0, 1.5],
 	"switchback_hound": [30.0, 2.5], "relay_jackal": [15.0, 1.2], "ration_moth": [15.0, 1.0],
-	"lens_eater": [20.0, 2.0],
+	"lens_eater": [20.0, 2.0], "mimic": [25.0, 3.0], "owl": [10.0, 4.0], "bog_hands": [0.0, 4.0],
+	"imps": [0.0, 4.0], "teddy": [5.0, 3.0],
 }
 ## Expedition nights keep every creature out of camp until Deep Night (the
 ## second half): camp neither shows nor sounds to them, and they never path
 ## in. The level sets this at start and NightClock lifts it.
 static var camp_closed := false
 const CAMP_MARGIN := 40.0
+## Host only: the survivor this creature is holding (carried, hugged, latched…).
+var held: CampPlayer = null
+## Door-breaking speed multiplier (rampaging creatures burst doors instantly).
+var door_force := 1.0
+## The headline killer's own traits (StalkerTraits); null for woods creatures.
+var traits: StalkerTraits
+## Synced for drawing: melted into the dark, frenzy seconds left, carrying a victim.
+var faded := false
+var frenzy := 0.0
+var carrying := false
 var hit_damage := 45.0
 var hit_cooldown := 4.0
 var recover_remaining := 0.0
@@ -59,6 +70,11 @@ const GROUNDSKEEPER_SHEET := preload("res://assets/sprites/groundskeeper.png")
 
 func _ready() -> void:
 	add_to_group("killers")
+	if not is_class_cryptid():
+		traits = StalkerTraits.new(self)
+		var song := CampSong.new()
+		song.name = "CampSong"
+		add_child(song)
 	var threat: Array = THREATS.get(threat_key(), [45.0, 3.0])
 	hit_damage = threat[0]
 	hit_cooldown = threat[1]
@@ -79,6 +95,9 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector2.ZERO
 		queue_redraw()
 		return
+	if traits != null and traits.physics(delta):
+		queue_redraw()
+		return
 	retreat_remaining = maxf(0.0, retreat_remaining - delta)
 	for target_id: int in memory.keys():
 		memory[target_id]["remaining"] -= delta
@@ -96,7 +115,7 @@ func _physics_process(delta: float) -> void:
 		memory[visible_target.get_instance_id()] = {"position": last_seen, "remaining": config.memory_seconds}
 		transition(State.CHASE)
 		if global_position.distance_to(last_seen) <= config.attack_radius and attack_remaining <= 0.0:
-			land_hit(visible_target, hit_damage)
+			strike(visible_target)
 			if visible_target.status != CampPlayer.Status.ALIVE:
 				visible_target = null
 				transition(State.SEARCH)
@@ -145,6 +164,8 @@ func _physics_process(delta: float) -> void:
 		var direction := global_position.direction_to(next)
 		facing = direction
 		velocity = direction * (config.killer_chase_speed if state == State.CHASE else config.killer_patrol_speed)
+		if frenzy > 0.0:
+			velocity *= 1.25
 		if retreat_remaining > 0:
 			velocity = direction * maxf(config.killer_patrol_speed, 82)
 	if camp_closed and velocity != Vector2.ZERO and not in_camp(global_position) and in_camp(global_position + velocity.normalized() * 12.0):
@@ -194,6 +215,41 @@ static func outside_camp(point: Vector2) -> Vector2:
 	return Vector2(point.x, rect.end.y)
 
 
+## The hunter loop reached `actor` (cryptid brains may replace the hit).
+func strike(actor: CampPlayer) -> void:
+	if traits != null and traits.strike(actor):
+		return
+	land_hit(actor, hit_damage)
+
+
+## Brains: walk toward `point` on the navmesh at `speed`. True once arrived.
+func steer(point: Vector2, speed: float, delta: float) -> bool:
+	var map := agent.get_navigation_map()
+	if NavigationServer2D.map_get_iteration_id(map) == 0:
+		velocity = Vector2.ZERO
+		return false
+	if camp_closed:
+		point = outside_camp(point)
+	path_clock -= delta
+	if path_clock <= 0.0 or agent.target_position.distance_to(point) > 24.0:
+		path_clock = 0.25
+		agent.target_position = point
+	if global_position.distance_to(point) < 8.0 or agent.is_navigation_finished():
+		velocity = Vector2.ZERO
+		return true
+	var direction := global_position.direction_to(agent.get_next_path_position())
+	facing = direction
+	velocity = direction * speed
+	if camp_closed and not in_camp(global_position) and in_camp(global_position + direction * 12.0):
+		velocity = Vector2.ZERO
+		return true
+	var previous := position
+	move_and_slide()
+	stride += position.distance_to(previous)
+	queue_redraw()
+	return false
+
+
 ## Strike once; a landed hit starts the cooldown and the recovery pause.
 func land_hit(actor: CampPlayer, damage: float) -> bool:
 	if not actor.receive_hit(damage):
@@ -204,10 +260,40 @@ func land_hit(actor: CampPlayer, damage: float) -> bool:
 	return true
 
 
+## Grab `actor`: they can't move until released or they wriggle free (E).
+func hold(actor: CampPlayer, label: String, per_press: float) -> void:
+	if is_instance_valid(held) and held != actor:
+		release_held()
+	held = actor
+	actor.grab(self, label, per_press)
+
+
+func release_held() -> void:
+	var victim := held
+	held = null
+	if is_instance_valid(victim) and victim.holder == self:
+		victim.release()
+
+
+## Called by the survivor when they break free or the hold ends.
+func on_released(actor: CampPlayer) -> void:
+	if held == actor:
+		held = null
+		carrying = false
+		if traits != null:
+			traits.humiliated()
+		# A struggle that worked leaves the creature reeling for a moment.
+		recover_remaining = maxf(recover_remaining, 1.2)
+
+
 ## A flash-stunned creature freezes briefly, then cannot be re-stunned for a while.
 func stun(seconds: float) -> bool:
 	if stun_immunity > 0.0 or stun_remaining > 0.0:
 		return false
+	var was_holding := is_instance_valid(held)
+	release_held()
+	if traits != null and not was_holding:
+		traits.humiliated()
 	stun_remaining = seconds
 	stun_immunity = seconds + 6.0
 	velocity = Vector2.ZERO
@@ -334,5 +420,14 @@ func _draw() -> void:
 	var frame := 0 if velocity.length() < 1.0 else 1 + int(stride / 9.0) % 2
 	# SpriteCook stalker: 40x48 frames, feet at the body origin like the old 32x40 art.
 	var sheet: Texture2D = GROUNDSKEEPER_SHEET if headline == "groundskeeper" else STALKER_SHEET
-	draw_texture_rect_region(sheet, Rect2(-20, -44, 40, 48), Rect2(frame * 40, row * 48, 40, 48))
+	var tint := Color.WHITE
+	if frenzy > 0.0 and not faded:
+		# A pulsing red aura while he's in a frenzy.
+		var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() * 0.015)
+		draw_circle(Vector2(0, -18), 22.0 + pulse * 4.0, Color(0.9, 0.1, 0.05, 0.18 + pulse * 0.12))
+	if faded:
+		tint = Color(1, 1, 1, 0.12)
+	elif frenzy > 0.0:
+		tint = Color(1.0, 0.55 + 0.25 * sin(Time.get_ticks_msec() * 0.02), 0.5)
+	draw_texture_rect_region(sheet, Rect2(-20, -44, 40, 48), Rect2(frame * 40, row * 48, 40, 48), tint)
 	# No "!"/"?" markers: whether it is hunting you is told by your heartbeat.

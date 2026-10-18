@@ -1,9 +1,10 @@
 class_name Snares
 extends Node2D
-## F7 headline killer H01, the Groundskeeper: on patrol he sets snares on trail
-## cells survivors have already walked (max 4 armed). A snare holds a survivor
-## for 4 s and rattles; a teammate frees them at once (E), anyone can disarm an
-## armed snare quietly (E). Snares glint in a flashlight within 90 px.
+## Headline traps on trail cells survivors have already walked (max 4 armed).
+## The Groundskeeper sets rake snares; the stalker sets bear traps, which also
+## bite (15 damage) with a loud snap. Either holds a survivor for 4 s; a
+## teammate frees them at once (E), and anyone can disarm an armed trap quietly
+## (E). Traps glint in a flashlight within 90 px.
 
 const MAX_ARMED := 4
 const PLACE_SECONDS := 18.0
@@ -12,6 +13,9 @@ const HOLD_SECONDS := 4.0
 const RATTLE_RADIUS := 320.0
 const DISARM_RADIUS := 22.0
 const SPACING := 150.0
+## The stalker is pickier than the Groundskeeper about where he lays steel.
+const BEAR_TRAP_SECONDS := 30.0
+const BEAR_TRAP_BITE := 15.0
 var level: Node2D
 ## {position, armed}
 var snares: Array[Dictionary] = []
@@ -30,7 +34,12 @@ func _physics_process(delta: float) -> void:
 
 
 func active() -> bool:
-	return level.plan.expedition and level.killer.headline == "groundskeeper"
+	return level.plan.expedition
+
+
+## "snare" (Groundskeeper) or "bear_trap" (the stalker).
+func kind() -> String:
+	return "snare" if level.killer.headline == "groundskeeper" else "bear_trap"
 
 
 func advance(delta: float) -> void:
@@ -41,7 +50,7 @@ func advance(delta: float) -> void:
 	place_clock -= delta
 	var keeper: CampKiller = level.killer
 	if place_clock <= 0.0 and keeper.enabled and keeper.state == CampKiller.State.PATROL:
-		place_clock = PLACE_SECONDS
+		place_clock = PLACE_SECONDS if kind() == "snare" else BEAR_TRAP_SECONDS
 		try_place(keeper.global_position)
 	for snare: Dictionary in snares:
 		if not snare["armed"]:
@@ -52,7 +61,13 @@ func advance(delta: float) -> void:
 				actor.snared = HOLD_SECONDS
 				actor.velocity = Vector2.ZERO
 				level.loud_noise(snare["position"], RATTLE_RADIUS)
-				level.announce("SNARED! The trap rattles. A teammate can free you (E); otherwise it gives in 4s.", actor)
+				if kind() == "bear_trap":
+					actor.invulnerability = 0.0
+					actor.receive_hit(BEAR_TRAP_BITE)
+					level.soundscape.play_cue("metal_clang", snare["position"], 6.0, 0.8)
+					level.announce("SNAP! A BEAR TRAP bites your leg. A teammate can pry it open (E).", actor)
+				else:
+					level.announce("SNARED! The trap rattles. A teammate can free you (E); otherwise it gives in 4s.", actor)
 				break
 	queue_redraw()
 
@@ -141,7 +156,8 @@ func _draw() -> void:
 		var alpha := 1.0 if close else 0.45
 		if not snare["armed"]:
 			alpha *= 0.6
-		if PixelArt.draw_in(self, "snare" if snare["armed"] else "snare_sprung", Rect2(at - Vector2(9, 9), Vector2(18, 13)), Color(1, 1, 1, alpha)):
+		var art := kind()
+		if PixelArt.draw_in(self, art if snare["armed"] else art + "_sprung", Rect2(at - Vector2(9, 9), Vector2(18, 13)), Color(1, 1, 1, alpha)):
 			pass
 		else:
 			# Fallback: steel jaws drawn as two arcs and a chain.

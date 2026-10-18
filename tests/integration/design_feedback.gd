@@ -46,9 +46,9 @@ func _encounter_checks() -> void:
 	for value in [42, 7, 2026, 6789]:
 		var plan := RoundPlan.new()
 		plan.generate(value, "woods")
-		# Two region dwellers and six guardians come first; the rest roam.
+		# Region dwellers and guardians come first; the rest roam.
 		var roamers: Array[Vector2] = []
-		for encounter in plan.encounters.slice(8):
+		for encounter in plan.encounters.slice(RoundPlan.CRYPTID_COUNT - RoundPlan.ROAMERS):
 			roamers.append(encounter["position"])
 		var center := CampMap.CAMP_BOUNDS.get_center()
 		var closest := INF

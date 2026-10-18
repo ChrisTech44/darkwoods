@@ -62,6 +62,12 @@ var _pending := PackedVector2Array()
 var _hang := 0.0
 var _speakers: Dictionary = {}
 var _budget: Dictionary = {}
+## The last few seconds of each peer's voice packets, in memory only, so the
+## Mimic can replay a teammate's words from where it stands. Never saved.
+const RECENT_SECONDS := 4.0
+var _recent: Dictionary = {}
+## Creature voice effects: Puffball helium (up) and the witch's frog (down).
+const PITCH_BUSES := {"VoiceHelium": 1.7, "VoiceFrog": 0.68}
 
 
 func _ready() -> void:
@@ -82,6 +88,15 @@ func _ready() -> void:
 		var lowpass := AudioEffectLowPassFilter.new()
 		lowpass.cutoff_hz = MUFFLE_CUTOFF
 		AudioServer.add_bus_effect(index, lowpass)
+	for bus_name: String in PITCH_BUSES:
+		if AudioServer.get_bus_index(bus_name) < 0:
+			AudioServer.add_bus()
+			var pitch_index := AudioServer.bus_count - 1
+			AudioServer.set_bus_name(pitch_index, bus_name)
+			AudioServer.set_bus_send(pitch_index, "Voice")
+			var shift := AudioEffectPitchShift.new()
+			shift.pitch_scale = PITCH_BUSES[bus_name]
+			AudioServer.add_bus_effect(pitch_index, shift)
 	# Level every voice: quiet microphones are lifted and loud ones held back,
 	# so a soft-spoken teammate is as easy to hear as a loud one.
 	var voice_bus := AudioServer.get_bus_index("Voice")
@@ -236,6 +251,7 @@ func _capture(delta: float) -> void:
 		if talking:
 			var packet: PackedByteArray = _encoder.encode_chunk()
 			if not packet.is_empty() and packet.size() <= MAX_PACKET:
+				_remember(multiplayer.get_unique_id(), stream_id, packet)
 				_voice_packet.rpc(stream_id, sequence, packet)
 				sequence += 1
 				sent_packets += 1
@@ -274,6 +290,7 @@ func accept_packet(peer: int, stream: int, seq: int, packet: PackedByteArray) ->
 		speaker["primed"] = false
 		speaker["released"] = false
 	speaker["last"] = now
+	_remember(peer, stream, packet)
 	if seq < speaker["next"]:
 		return false
 	var playback: Object = speaker["playback"]
@@ -391,6 +408,10 @@ func _update_speakers() -> void:
 		player.volume_db = -80.0 if route == "none" else 0.0
 		player.global_position = actor.global_position if route == "proximity" and actor != null and is_instance_valid(actor) else here
 		player.bus = "VoiceMuffled" if route == "proximity" and listener != null and actor != null and _occluded(listener, actor) else "Voice"
+		if actor != null and actor.has_effect("helium"):
+			player.bus = "VoiceHelium"
+		elif actor != null and actor.has_effect("frog"):
+			player.bus = "VoiceFrog"
 
 
 ## Smoothly dip music, ambience and (slightly) effects while anyone is heard.
@@ -404,6 +425,43 @@ func _duck(delta: float) -> void:
 	var mixer: Node = get_node_or_null("/root/AudioManager")
 	if mixer != null and mixer.has_method("set_duck"):
 		mixer.set_duck({"Music": DUCK_MUSIC_DB * ducked, "Ambience": DUCK_AMBIENCE_DB * ducked, "Effects": DUCK_EFFECTS_DB * ducked})
+
+
+func _remember(peer: int, stream: int, packet: PackedByteArray) -> void:
+	var now := Time.get_ticks_msec() / 1000.0
+	var rows: Array = _recent.get(peer, [])
+	rows.append([now, stream, packet])
+	while not rows.is_empty() and now - rows[0][0] > RECENT_SECONDS:
+		rows.pop_front()
+	_recent[peer] = rows
+
+
+## The Mimic speaks: replay `peer`'s most recent utterance from `at`.
+func replay(peer: int, at: Vector2) -> bool:
+	if not available or not _recent.has(peer) or _recent[peer].is_empty():
+		return false
+	var rows: Array = _recent[peer]
+	var stream: int = rows.back()[1]
+	var player := AudioStreamPlayer2D.new()
+	var opus: AudioStream = ClassDB.instantiate("AudioStreamOpus")
+	opus.set("opus_sample_rate", float(OPUS_RATE))
+	opus.set("opus_channels", 1)
+	opus.set("buffer_length", RECENT_SECONDS + 1.0)
+	player.stream = opus
+	player.bus = "Voice"
+	player.max_distance = HEAR_RANGE
+	player.attenuation = VOICE_ATTENUATION
+	player.pitch_scale = 0.94
+	player.global_position = at
+	add_child(player)
+	player.play()
+	var playback: Object = player.get_stream_playback()
+	for row: Array in rows:
+		if row[1] == stream:
+			playback.push_opus_packet(row[2], 0, 0)
+	playback.mark_end_opus_stream(true)
+	get_tree().create_timer(RECENT_SECONDS + 1.5).timeout.connect(player.queue_free)
+	return true
 
 
 func _occluded(listener: CampPlayer, speaker: CampPlayer) -> bool:

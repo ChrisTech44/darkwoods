@@ -1,5 +1,5 @@
 extends SceneTree
-## Build the 16 creature walk sheets (3 frames x 4 rows of 64x64: down, up,
+## Build the creature walk sheets (3 frames x 4 rows of 64x64: down, up,
 ## right, left) from four SpriteCook 4x4 pose grids (columns = species).
 ## Side views that came back facing the wrong way are fixed per species.
 ## Run: godot --headless --path . --script res://tools/import_spritecook_creatures.gd
@@ -12,9 +12,10 @@ const SHEETS := {
 		"sides": {"ration_moth": "mirror", "shutter_wraith": "mirror"}},
 	"creatures_D_sheet": {"species": ["bramble_seamstress", "last_car_conductor", "stoneback_ram", "candle_grazer"],
 		"sides": {"last_car_conductor": "mirror", "stoneback_ram": "swap"}},
+	"creatures_E_sheet": {"species": ["owl", "bog_hands", "imps", "teddy"], "sides": {}},
 }
 ## Flying or floating creatures bob instead of stepping.
-const HOVER: Array[String] = ["lantern_moth", "ration_moth", "shutter_wraith"]
+const HOVER: Array[String] = ["lantern_moth", "ration_moth", "shutter_wraith", "owl", "bog_hands"]
 
 
 func _initialize() -> void:

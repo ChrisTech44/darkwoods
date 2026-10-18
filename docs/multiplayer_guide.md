@@ -191,6 +191,13 @@ to ship the addon folder and its libraries explicitly (no exports yet).
   packets over 400 bytes, late packets, and more than 75 packets/s per peer.
   A three-packet jitter buffer starts each utterance; a single lost packet is
   rebuilt with Opus forward error correction.
+- **Creature voice effects.** A survivor under the Puffball's spores is heard
+  through a pitch-up bus (helium, ×1.7) and a frog through a pitch-down bus
+  (×0.68), on every listener's machine.
+- **The Mimic.** Each client keeps the last 4 s of every voice it hears (and its
+  own) **in memory only** so the Mimic can replay a teammate's latest words from
+  its position; the host signals each replay through the Mimic's synced state.
+  Nothing is written to disk or sent anywhere new.
 - **Privacy.** No voice is recorded, saved or logged. Like gameplay traffic, ENet
   voice is **not encrypted**; use a trusted LAN/VPN for private conversations.
 

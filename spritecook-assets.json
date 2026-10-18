@@ -312,6 +312,18 @@
       "label": "vertical gateway 2x2 (top-down fence run, padlocked edge-on gate, unused open pose, post), 12 credits, NB 2.1, style from gateway sheet; slices fence_run_v, gateway_v_closed, fence_post and derived gateway_v_open",
       "file": "art_sources/spritecook/gateway_vertical_sheet.png",
       "sha12": "7c56d3874dae"
+    },
+    {
+      "asset_id": "99e8743e-aa77-44da-842c-0c1cc279a2ab",
+      "label": "creatures E 4x4 pose grid (owl, bog hands, toadstool imps, teddy bear; NB 2.1, style from creatures A and D), 12 credits; tools/import_spritecook_creatures.gd",
+      "file": "art_sources/spritecook/creatures_E_sheet.png",
+      "sha12": "b217387bf56f"
+    },
+    {
+      "asset_id": "611eff00-fc0d-4598-9d06-296808714bf3",
+      "label": "monster items 4x4 (garlic, wolfsbane, bug spray, scissors, train ticket, air horn, coffee, bigfoot fur, bear trap open/sprung, hook post, mud puddle, jackal den, moon icon, frog, heart patch), 12 credits; tools/slice_spritecook_grid.gd",
+      "file": "art_sources/spritecook/monster_items_sheet.png",
+      "sha12": "347ca1c7dece"
     }
   ]
 }

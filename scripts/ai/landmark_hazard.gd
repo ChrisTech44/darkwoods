@@ -1,7 +1,9 @@
 class_name LandmarkHazard
 extends Node2D
 ## Brief, non-solid visible hazard. Never edits navigation or blocks an exit.
-var source: CampCryptid
+## The creature that placed it (typed loosely: a CampCryptid reference here
+## pulls the whole creature class cycle into parse-only checks).
+var source: Node2D
 var remaining := 2.2
 var thorns := false
 var affected := {}

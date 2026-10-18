@@ -2,12 +2,24 @@ class_name RoundPlan
 extends RefCounted
 ## Seeded authority-side run recipe. No gameplay relies on global RNG state.
 
-## Two region dwellers, six landmark guardians and ROAMERS spread through the woods.
+## Two region dwellers, six landmark guardians (the Rail Yard's jackals come
+## as a pair) and ROAMERS spread through the woods.
 const ROAMERS := 18
-const CRYPTID_COUNT := 8 + ROAMERS
+const CRYPTID_COUNT := 9 + ROAMERS
 ## No roaming creature starts this close to camp (the first stretch is for exploring).
 const SAFE_RADIUS := 1100.0
-const ROAMER_SPECIES: Array[String] = ["werewolf", "switchback_hound", "bigfoot", "relay_jackal", "lantern_moth", "ration_moth", "vampire", "lens_eater", "witch", "switchback_hound", "briar_revenant", "relay_jackal", "ration_moth", "lens_eater"]
+## One night's roaming mix (docs/monster_revamp.md): every creature once, plus a
+## few extra pranksters; the order rotates with the seed. Buster is unique.
+const ROAMER_SPECIES: Array[String] = ["werewolf", "bigfoot", "lantern_moth", "ration_moth", "briar_revenant", "switchback_hound", "lens_eater",
+	"last_car_conductor", "mimic", "owl", "bog_hands", "imps", "teddy", "bog_hands", "imps", "lantern_moth", "ration_moth", "witch"]
+## Region guardians in zones 3..8: Mill, Orchard, Observatory, Rail Yard, Quarry, Chapel.
+const GUARDIANS: Array[String] = ["boiler_saint", "bramble_seamstress", "shutter_wraith", "relay_jackal", "stoneback_ram", "candle_grazer"]
+## Monster-revamp items in the woods (count each) and at camp spots.
+const CREATURE_LOOT := {"garlic": 4, "wolfsbane": 3, "bug_spray": 3, "train_ticket": 3, "coffee": 2}
+## Camp items wait on the porch beside a building's door (the level resolves the
+## spot from tonight's layout, so it is always open ground): [kind, building].
+const CAMP_CREATURE_LOOT: Array = [["air_horn", "MAINTENANCE"], ["coffee", "RANGER LODGE"], ["coffee", "MESS HALL"],
+	["scissors", "FIRST AID"], ["scissors", "FERN BUNK CABIN"], ["bug_spray", "CEDAR BUNKHOUSE"]]
 var seed_value: int
 var expedition: bool
 var weather: String = "clear"
@@ -36,7 +48,7 @@ var escape_options: Array[String] = ["van"]
 const HEADLINES: Array[String] = ["stalker", "groundskeeper"]
 const MODIFIERS: Array[String] = ["blood_moon", "dead_batteries", "fog_bank", "silent_night", "generous_woods", "lone_wolf"]
 const MODIFIER_NAMES := {"blood_moon": "BLOOD MOON", "dead_batteries": "DEAD BATTERIES", "fog_bank": "FOG BANK", "silent_night": "SILENT NIGHT", "generous_woods": "GENEROUS WOODS", "lone_wolf": "LONE WOLF"}
-const MODIFIER_RULES := {"blood_moon": "more hounds and jackals; the killer runs faster", "dead_batteries": "spare batteries hold 40 charge", "fog_bank": "thick fog: shorter sight for everyone", "silent_night": "no music; creatures hear farther", "generous_woods": "half again as many supplies", "lone_wolf": "everyone starts in a different cabin"}
+const MODIFIER_RULES := {"blood_moon": "werewolves everywhere, the moon comes out more often; the killer runs faster", "dead_batteries": "spare batteries hold 40 charge", "fog_bank": "thick fog: shorter sight for everyone", "silent_night": "no music; creatures hear farther", "generous_woods": "half again as many supplies", "lone_wolf": "everyone starts in a different cabin"}
 ## Fixtures: null = seeded; otherwise the exact list to use (launch flag --no-modifiers sets []).
 static var force_modifiers: Variant = null
 static var force_headline := ""
@@ -107,6 +119,7 @@ func generate(value: int, mode: String) -> void:
 	for index in range(3):
 		_add("flare", Vector2(1304, 312), "MAINTENANCE FLARE STASH", false)
 	_add("battery_pack", Vector2(168, 356), "CAMPSITE", false)
+	_add_creature_items(value)
 	_add_spare_tools(value, battery_pool)
 	_add_notes()
 	_choose_escapes(value)
@@ -136,20 +149,40 @@ func generate(value: int, mode: String) -> void:
 		item["position"] = camp.remap(item["position"])
 	_encounter("vampire", woods.zones[2]["cell"] + Vector2i(1,1))
 	_encounter("witch", woods.zones[1]["cell"] + Vector2i(1,1))
-	var guardians := ["boiler_saint", "bramble_seamstress", "shutter_wraith", "last_car_conductor", "stoneback_ram", "candle_grazer"]
 	for index in range(6):
 		var zone: Dictionary = woods.zones[index + 3]
 		var cell: Vector2i = zone["cell"] + Vector2i(1,1)
-		_encounter(guardians[index], cell)
+		_encounter(GUARDIANS[index], cell)
 		encounters.back()["home"] = zone["bounds"].grow(48)
+		if GUARDIANS[index] == "relay_jackal":
+			# Trash Jackals come as a pair.
+			_encounter("relay_jackal", cell + Vector2i(1, 0))
+			encounters.back()["home"] = zone["bounds"].grow(48)
 	_spread_roamers(value)
 	if has_modifier("blood_moon"):
-		# Blood Moon: more hounds and jackals, same total count.
+		# Blood Moon: pranksters turn into werewolves, same total count.
 		var converted := 0
 		for encounter in encounters:
-			if encounter["species"] in ["ration_moth", "lens_eater"] and not encounter.has("home") and converted < 6:
-				encounter["species"] = "switchback_hound" if converted % 2 == 0 else "relay_jackal"
+			if encounter["species"] in ["ration_moth", "lantern_moth", "imps"] and not encounter.has("home") and converted < 5:
+				encounter["species"] = "werewolf"
 				converted += 1
+
+
+## Garlic, wolfsbane, bug spray, tickets and coffee in the woods, and the air
+## horn, coffee, scissors and spray at camp (own RNG: other loot is unchanged).
+func _add_creature_items(value: int) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = value + 6363
+	for kind: String in CREATURE_LOOT:
+		for unit in range(CREATURE_LOOT[kind]):
+			var cell := Vector2i(rng.randi_range(0, WoodsLayout.SIZE.x - 1), rng.randi_range(0, WoodsLayout.SIZE.y - 1))
+			while not woods.valid(cell) or not woods.links.has(cell) or not woods.zone_at(woods.center(cell)).is_empty():
+				cell = Vector2i(rng.randi_range(0, WoodsLayout.SIZE.x - 1), rng.randi_range(0, WoodsLayout.SIZE.y - 1))
+			_add(kind, woods.center(cell) + Vector2(-18, 14), "WOODS SUPPLIES", false)
+	# Garlic hangs in the Vampire's own region (it can't abide it).
+	_add("garlic", woods.zones[2]["position"] + Vector2(60, 70), "GARLIC BRAID", false)
+	for row: Array in CAMP_CREATURE_LOOT:
+		loot.append({"kind": row[0], "position": Vector2.ZERO, "hint": row[1], "locked": false, "anchor": row[1]})
 
 
 ## Roaming creatures spread across the whole forest (seeded best-candidate

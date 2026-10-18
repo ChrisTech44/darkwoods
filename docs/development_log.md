@@ -1,5 +1,111 @@
 # Development log
 
+## 2026-10-17 — Monster revamp: one verb per creature, and the stalker at the centre
+
+User request: revamp the monsters and add fun ones, not all lethal (stealing,
+carrying players away, raising voice pitch); every monster drastically different,
+tied to items (garlic for vampires…); R.E.P.O.-style novelty, punishment and fun;
+and the stalker at the centre with his own characteristics. Design:
+[monster_revamp.md](monster_revamp.md).
+
+**Framework:**
+- `CreatureBrain` (`scripts/ai/brains/<species>.gd`) gives each species its
+  own verb; `cryptid.gd` is now a thin shared body. Brains run on the host;
+  `brain_state` syncs drawing state to clients.
+- Player effects (`CampPlayer.effects`/`effect_data`, synced):
+  - frog, backwards, float, helium, sneezy, drowsy, asleep, hypnotized,
+    whiteout, face moth;
+  - tethered, marked, tripped, garlic, bug spray, coffee, glowing.
+- Holds: `grab`, `wriggle` (mash E; a teammate's E counts double) and
+  `release`; any stun makes the holder let go. Knockback (`shove`) stops at walls.
+- `EffectsOverlay` draws what effects feel like: white-out, the moth over your
+  face, drowsy and sleep, hypnosis, "HELD BY … · MASH E" with a bar, badges and
+  the moon icon.
+- Voice: helium and frog pitch buses. The Mimic's replay uses a 4 s in-memory
+  ring of received (and own) packets, never saved.
+
+**21 creatures**, each with a tell and a counter; ids keep their art:
+- Hunters:
+  - The Vampire: hypnotic pull, a draining latch; garlic.
+  - The Werewolf: a hiker until the moon (NightClock moon cycle), then pounces
+    and doors burst; wolfsbane.
+  - The Scarecrow: moves only when unwatched; flash-proof.
+  - The Ram: a charge that bowls everyone in its path.
+  - Bear Hug: a relentless squeezing hug.
+  - The Bog Hands: mud puddles that drag you under.
+  - The Mimic: wears a teammate's look, name and voice.
+- Pranksters:
+  - Bigfoot: shy; throws you, or flees and drops scoring fur.
+  - The Witch: frog, backwards, swap and float curses; the salt ward reflects them.
+  - The Lantern Moth: lands on your face.
+  - The Puffball: helium voice and sneezes.
+  - Buster: barks for the stalker and drags the downed; rations befriend him.
+  - Trash Jackals: steal for their den (a Rail Yard pair).
+  - The Peeper: a staring lock.
+  - The Paparazzo: a flash that sends your photo to the stalker.
+  - The Conductor: no ticket means the Rail Yard; a ticket means a ride home.
+  - The Snuffer: a darkness bubble.
+  - The Seamstress: stitches survivors together.
+  - The Lullaby Saint: sleep.
+  - The Night Owl: carries lone survivors off.
+  - The Toadstool Imps: trip you and hide your stuff.
+- **The stalker** (`StalkerTraits`):
+  - the whistled camp song (`CampSong`);
+  - shadowing a favourite, and melting away in a beam;
+  - the grab-and-carry to his hook (pinned), broken by mashing E, a flash, a
+    flare or the air horn;
+  - spot memory, bear traps (`Snares` generalised), calling cards, and rage to
+    a 20 s frenzy.
+- **Items:** garlic, wolfsbane, bug spray, scissors, train ticket, air horn,
+  coffee and Bigfoot fur. Rations double as bait, the salt ward reflects
+  curses, and glow moss also makes you glow.
+- **Roster:** 27 creatures, a curated 18-roamer mix plus guardians, Buster
+  unique. Blood Moon turns pranksters into werewolves and brings the moon out
+  more often.
+- **Art:** SpriteCook creatures E (owl, bog hands, imps, teddy) and a
+  monster-items sheet (24 credits, 476 left). The importers regenerate every
+  earlier sheet byte for byte.
+
+**Fixed while testing:**
+- The expedition bot was trapped by the vampire's pull (stronger than a walk,
+  and unbroken by a flare). The pull is now weaker than a sprint, a gaze lasts
+  at most 4 s with a 6 s rest, and a flare breaks it.
+- `n` presses of `1/n` summed to 0.9999 and never broke a hold; the threshold
+  is now 0.999.
+- The post-hit pause now applies to brains that take the frame.
+- Camp items placed 16 px from existing pickups stole the E press (the air
+  horn from the cutters, scissors from the crowbar), and three landed inside
+  walls. Camp creature items now sit on the porch beside a named building's
+  door (the first spot clear of obstacles), and a check confirms every item
+  is reachable and at least 30 px from other pickups.
+- New woods items now skip region interiors (one landed out of reach).
+- The Mimic and Bog Hands only enter the journal once revealed.
+- A typed `CampCryptid` reference in `landmark_hazard.gd` pulled the new
+  creature class cycle into its parse-only check, which then leaked two static
+  scripts at exit; it is typed `Node2D` now.
+- `network_peer`'s roster count was still 49 after the 26-creature change
+  (the network suite hadn't been run then). It now reads `RoundPlan`.
+
+**Verification (macOS):**
+- `monster_revamp.gd` 135/135, including reachability for every creature item.
+- `woods_playthrough` 227/0: the bot escapes with every creature live, and no
+  script errors.
+- forest_hunt 87, content_expansion 473 (with portraits), woods_replay 485,
+  killers_modifiers 32, design_feedback 52, field_escapes 58, surround_world 102,
+  night_events 31, night_phases 43, chase_toolkit 29, chase_props 46,
+  offline_slice 65, audio_polish 100, roles_abilities 33, signal_fire 31; all 0
+  failures.
+- `verify_network.py` camp and woods, two players: all peers pass.
+- `verify_voice.py` 24 + 8 + 13.
+- Every creature, effect and overlay was checked in captured frames, and all
+  21 portraits were retaken for the README.
+- `verify.py`: the final full run passed its first 162 steps and stopped at
+  `meta_progress`, whose journal check still quoted the old werewolf tip (it
+  now reads the tip table). That suite and every remaining step were then run
+  individually on the same code (meta_progress 27, night_events 31,
+  roles_abilities 33, radio_rescue 34, field_escapes 58, design_feedback 52,
+  monster_revamp 135): all 0 failures.
+
 ## 2026-10-17 — Playtest feedback: health, fewer creatures, a camp refuge, water, gates, voice
 
 The game was played with friends; their findings and the changes made:

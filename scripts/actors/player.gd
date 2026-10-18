@@ -87,6 +87,23 @@ var ability_active: float = 0.0
 var snared: float = 0.0
 ## Seconds of flashlight flicker (a build-up tell before the director's peaks).
 var flicker: float = 0.0
+## Monster revamp: timed effects by name -> seconds left (synced). See EFFECTS.
+## "held" lasts until the holder lets go; the others count down.
+var effects: Dictionary = {}
+## Effect parameters: "pull_to" (hypnosis), "drift" (float), "held_by" (who
+## holds you, for the HUD), "tether_to" (instance position of the other end).
+var effect_data: Dictionary = {}
+## 0..1 progress of mashing E while held (synced for the HUD).
+var struggle: float = 0.0
+## Fraction of a full break-free each E press earns (set by the holder).
+var struggle_step: float = 0.1
+## Host only: the creature holding this survivor (CampKiller), or null.
+var holder: Node = null
+## Decaying shove from throws, pounces and charges (px/s).
+var knock: Vector2 = Vector2.ZERO
+const EFFECT_NAMES := {"held": "HELD", "frog": "FROG", "backwards": "BACKWARDS", "float": "FLOATING", "helium": "HELIUM VOICE",
+	"sneezy": "SNEEZY", "drowsy": "DROWSY", "asleep": "ASLEEP", "hypnotized": "DRAWN", "whiteout": "BLINDED", "face_moth": "MOTH ON YOUR FACE",
+	"tethered": "STITCHED", "garlic": "GARLIC", "bug_spray": "BUG SPRAY", "coffee": "CAFFEINATED", "marked": "PHOTOGRAPHED", "tripped": "TRIPPED"}
 
 
 func _ready() -> void:
@@ -108,6 +125,7 @@ func _physics_process(delta: float) -> void:
 	help_cooldown = maxf(0.0, help_cooldown - delta)
 	hurt_time = maxf(0.0, hurt_time - delta)
 	flicker = maxf(0.0, flicker - delta)
+	_tick_effects(delta)
 	if expedition and CampMap.is_woods(global_position) and flashlight_on and status == Status.ALIVE:
 		flashlight_charge = maxf(0.0, flashlight_charge - delta * light_drain)
 		if flashlight_charge <= 0:
@@ -126,6 +144,22 @@ func _physics_process(delta: float) -> void:
 
 func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 	velocity = Vector2.ZERO
+	if knock.length() > 30.0 and status == Status.ALIVE:
+		# Thrown, pounced or launched: the shove wins until it fades.
+		sprinting = false
+		velocity = knock
+		knock = knock.move_toward(Vector2.ZERO, 700.0 * delta)
+		move_and_slide()
+		if get_slide_collision_count() > 0:
+			knock *= 0.4
+		return
+	knock = Vector2.ZERO
+	if status == Status.ALIVE and (has_effect("held") or has_effect("asleep") or has_effect("tripped")):
+		sprinting = false
+		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery * 0.5)
+		return
+	if status == Status.ALIVE and has_effect("backwards"):
+		direction = -direction
 	if vault_time > 0.0:
 		sprinting = false
 		return
@@ -156,7 +190,8 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 	if exhausted and stamina >= config.stamina_restart:
 		exhausted = false
 	var heavy := "outboard_motor" in inventory
-	sprinting = wants_sprint and not heavy and not assisting_motor and movement != Vector2.ZERO and not exhausted and stamina > 0.0
+	var frog := has_effect("frog")
+	sprinting = wants_sprint and not heavy and not frog and not assisting_motor and movement != Vector2.ZERO and not exhausted and stamina > 0.0
 	if sprinting:
 		stamina = maxf(0.0, stamina - delta)
 		if stamina == 0.0:
@@ -171,6 +206,17 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 		velocity *= 0.75
 	if hex_remaining > 0:
 		velocity *= 0.6
+	if frog:
+		# A frog hops: short bursts of speed.
+		velocity *= 0.55 + 0.6 * maxf(0.0, sin(stride * 0.35))
+	if has_effect("drowsy") and not has_effect("coffee"):
+		velocity *= 0.6
+	if has_effect("hypnotized"):
+		var pull: Vector2 = effect_data.get("pull_to", global_position)
+		# Fighting the pull: a sprint still gets you away, a walk barely holds ground.
+		velocity = velocity * 0.5 + global_position.direction_to(pull) * 34.0
+	if has_effect("float"):
+		velocity = velocity * 0.4 + Vector2(effect_data.get("drift", Vector2.RIGHT)) * 46.0
 	var previous := position
 	move_and_slide()
 	var distance := position.distance_to(previous)
@@ -225,6 +271,78 @@ func heal(amount: float) -> void:
 	queue_redraw()
 
 
+func has_effect(name: String) -> bool:
+	return effects.get(name, 0.0) > 0.0
+
+
+func add_effect(name: String, seconds: float) -> void:
+	effects[name] = maxf(effects.get(name, 0.0), seconds)
+	queue_redraw()
+
+
+func clear_effect(name: String) -> void:
+	effects.erase(name)
+	if name == "held":
+		struggle = 0.0
+		effect_data.erase("held_by")
+
+
+func _tick_effects(delta: float) -> void:
+	for name: String in effects.keys():
+		if name == "held":
+			continue
+		effects[name] -= delta
+		if effects[name] <= 0.0:
+			effects.erase(name)
+			if name == "tethered":
+				effect_data.erase("tether_to")
+
+
+## The survivor is grabbed by `by` (a creature) until it lets go or they wriggle
+## free: every E press adds `per_press` of a full escape.
+func grab(by: Node, label: String, per_press: float) -> void:
+	holder = by
+	struggle = 0.0
+	struggle_step = per_press
+	effect_data["held_by"] = label
+	effects["held"] = 1.0
+	knock = Vector2.ZERO
+	velocity = Vector2.ZERO
+	hidden_spot = -1
+	queue_redraw()
+
+
+## Let go (the holder calls this, or the survivor broke free / went down).
+func release() -> void:
+	var was: Node = holder
+	holder = null
+	clear_effect("held")
+	if is_instance_valid(was) and was.has_method("on_released"):
+		was.on_released(self)
+
+
+## One press of E while held. True when it breaks the hold.
+func wriggle() -> bool:
+	if not has_effect("held"):
+		return false
+	struggle = minf(1.0, struggle + struggle_step)
+	# 0.999: n presses of 1/n must free you despite float rounding.
+	if struggle >= 0.999:
+		release()
+		return true
+	return false
+
+
+## A shove (throws, pounces, charges); collisions stop it at walls.
+func shove(impulse: Vector2) -> void:
+	if status != Status.ALIVE:
+		return
+	if has_effect("held"):
+		release()
+	knock = impulse
+	hidden_spot = -1
+
+
 func apply_hex(seconds: float) -> void:
 	if status != Status.ALIVE:
 		return
@@ -241,6 +359,9 @@ func set_status(next: Status) -> void:
 	velocity = Vector2.ZERO
 	if status != Status.ALIVE:
 		hidden_spot = -1
+		if holder != null:
+			release()
+		knock = Vector2.ZERO
 	if status == Status.DOWNED:
 		bleedout = 0
 		get_tree().call_group("round_world", "on_survivor_downed", self)
@@ -263,6 +384,24 @@ func _draw() -> void:
 		return
 	if not peer_name.is_empty():
 		draw_string(ThemeDB.fallback_font,name_origin(),peer_name,HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("b9d4b2"))
+	if has_effect("tethered") and effect_data.has("tether_to"):
+		# The Seamstress's thread to whoever (or whatever) you're stitched to.
+		var other: Vector2 = to_local(effect_data["tether_to"])
+		draw_line(Vector2(0, -10), other + Vector2(0, -10), Color("e8dcc0"), 1.0)
+	if status == Status.ALIVE and has_effect("frog"):
+		draw_circle(Vector2(0, 1), 5, Color(0, 0, 0, 0.35))
+		var hop := absf(sin(stride * 0.35)) * 4.0
+		if not PixelArt.draw_in(self, "frog", Rect2(-8, -15 - hop, 16, 16)):
+			draw_circle(Vector2(0, -6 - hop), 6, Color("5f8f43"))
+		return
+	if status == Status.ALIVE and has_effect("asleep"):
+		var t := Time.get_ticks_msec() * 0.001
+		for index in range(3):
+			draw_string(ThemeDB.fallback_font, Vector2(6 + index * 4, -30 - index * 5 - fmod(t * 6.0, 4.0)), "z", HORIZONTAL_ALIGNMENT_LEFT, -1, 6 + index, Color(0.85, 0.9, 1.0, 0.8))
+	if status == Status.ALIVE and has_effect("held"):
+		draw_set_transform(Vector2(sin(Time.get_ticks_msec() * 0.05) * 1.5, 0))
+	if status == Status.ALIVE and has_effect("float"):
+		draw_set_transform(Vector2(0, -6 + sin(Time.get_ticks_msec() * 0.006) * 2.0))
 	draw_circle(Vector2(0, 1), 7, Color(0, 0, 0, 0.35))
 	if hex_remaining > 0 and status == Status.ALIVE:
 		draw_arc(Vector2(0,-2), 11, 0, TAU, 16, Color("b4a3d3"), 1)
@@ -318,7 +457,7 @@ func apply_role() -> void:
 		"quartermaster":
 			for kind in ["flare", "battery_pack", "rations"]:
 				supplies[kind] += 1
-	for kind in ["noise_tin", "salt_ward", "glow_moss"]:
+	for kind in ["noise_tin", "salt_ward", "glow_moss", "garlic", "wolfsbane", "bug_spray", "scissors", "train_ticket", "air_horn", "coffee"]:
 		supplies[kind] = 0
 
 func can_pack(kind: String) -> bool:

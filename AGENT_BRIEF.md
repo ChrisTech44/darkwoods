@@ -55,7 +55,11 @@ opt-in system. The offline encounter update uses 16 species, including Relay Jac
 Moth and Lens Eater away from landmark biomes. Amendment (17 October 2026,
 playtest feedback): 26 cryptids, with 18 roamers spread across the whole
 forest; survivors have health with per-creature damage and attack cooldowns;
-creatures stay out of camp until Deep Night.
+creatures stay out of camp until Deep Night. Amendment (17 October 2026,
+monster revamp): every creature has its own verb, tell and counter (several
+non-lethal: stealing, carrying off, cursing, voice pitch), with counter items,
+and the stalker is the centrepiece (camp song, shadowing, grab-and-hook,
+memory, bear traps, rage). Target design: docs/monster_revamp.md.
 Required online cross-machine acceptance still needs execution evidence.
 
 Network implementation amendment: the current build has a 1–4 peer listen-host

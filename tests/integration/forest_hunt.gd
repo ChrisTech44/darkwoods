@@ -85,10 +85,10 @@ func _ai_checks() -> void:
 	await _frames(2)
 	vampire.enabled = true
 	await _frames(2)
-	_check(vampire.config.killer_chase_speed == 52 and vampire.pursuit_goal(player).distance_to(player.position) > 40, "vampire_slows_and_flanks_flashlight")
+	_check(vampire.config.killer_chase_speed == 40, "vampire_slows_in_a_steady_beam")
 	player.flashlight_on = false
 	await _frames(2)
-	_check(vampire.config.killer_chase_speed == 90, "vampire_accelerates_outside_beam")
+	_check(vampire.config.killer_chase_speed == 72, "vampire_glides_in_outside_beam")
 	vampire.enabled = false
 	var saved := center
 	vampire.last_seen = saved
@@ -106,10 +106,8 @@ func _ai_checks() -> void:
 	level.world_objects.add_child(revenant)
 	player.position = center + Vector2(80,0)
 	await _frames(2)
-	_check(revenant.sense_visible_target() == null, "revenant_ignores_still_distant_survivor")
-	player.velocity = Vector2(70,0)
-	_check(revenant.sense_visible_target() == player, "revenant_detects_movement_in_clear_sight")
-	player.velocity = Vector2.ZERO
+	# The Scarecrow (briar_revenant) sees everyone; it moves only when unwatched.
+	_check(revenant.sense_visible_target() == player, "scarecrow_sees_survivors_in_clear_sight")
 	player.position = Vector2(96,384)
 	revenant.patrol.assign(level.plan.woods.roaming_route(level.plan.woods.cell_at(center)))
 	revenant.position = revenant.patrol[0]
@@ -130,8 +128,8 @@ func _spell_checks() -> void:
 	var witch: CampCryptid = load("res://scenes/actors/cryptid.tscn").instantiate()
 	witch.species = "witch"
 	witch.position = center - Vector2(0,110)
-	witch.cast_cooldown = 0
 	level.world_objects.add_child(witch)
+	witch.brain.cast_cooldown = 0
 	await _frames(20)
 	_check(witch.casting and get_nodes_in_group("hazards").is_empty(), "witch_winds_up_before_firing")
 	if capture:
@@ -146,17 +144,21 @@ func _spell_checks() -> void:
 	await _key(KEY_ESCAPE)
 	var at := bolt.position
 	var life := bolt.remaining
-	var casting_time := witch.cast_cooldown
+	var casting_time: float = witch.brain.cast_cooldown
 	await _frames(45)
-	_check(level.paused and bolt.position == at and bolt.remaining == life and witch.cast_cooldown == casting_time, "pause_freezes_projectiles_and_cast_cooldowns")
+	_check(level.paused and bolt.position == at and bolt.remaining == life and witch.brain.cast_cooldown == casting_time, "pause_freezes_projectiles_and_cast_cooldowns")
 	await _key(KEY_ESCAPE)
 	for enemy: CampKiller in get_nodes_in_group("killers"):
 		if enemy != witch:
 			enemy.enabled = false
+	var spot := player.position
 	await _frames(75)
-	_check(player.hex_remaining > 0 and player.status == CampPlayer.Status.ALIVE, "projectile_applies_temporary_hex_without_instant_down")
+	var cursed: bool = player.has_effect("frog") or player.has_effect("backwards") or player.has_effect("float") or player.position.distance_to(spot) > 50.0
+	_check(cursed and player.status == CampPlayer.Status.ALIVE, "witch_bolt_curses_without_instant_down")
 	witch.enabled = false
 	player.hex_remaining = 0
+	player.effects.clear()
+	player.position = center
 	# A native wall between a new bolt and the player must absorb it.
 	var wall := StaticBody2D.new()
 	wall.collision_layer = 1
@@ -175,7 +177,7 @@ func _spell_checks() -> void:
 	_check(not is_instance_valid(bolt) and player.hex_remaining == 0, "wall_absorbs_swept_projectile")
 	wall.position = center - Vector2(0,55)
 	rectangle.size = Vector2(80,8)
-	witch.cast_cooldown = 0
+	witch.brain.cast_cooldown = 0
 	witch.enabled = true
 	await _frames(60)
 	_check(get_nodes_in_group("hazards").is_empty() and not witch.casting, "witch_cannot_cast_through_occluding_wall")

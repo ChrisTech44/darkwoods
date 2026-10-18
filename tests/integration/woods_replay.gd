@@ -86,7 +86,7 @@ func _seed_checks() -> void:
 		for encounter in a.encounters:
 			found_species[encounter["species"]] = true
 		found_weather[a.weather] = true
-	_check(found_species.size() == 16 and found_weather.size() == 3, "seeds_vary_all_creatures_and_weather")
+	_check(found_species.size() == CampProfile.TIPS.size() - 2 and found_weather.size() == 3, "seeds_vary_all_creatures_and_weather")
 
 
 func _wait_world() -> void:
@@ -109,8 +109,9 @@ func _navigation_checks() -> void:
 		var sight: float = 150
 		var hearing: float = 220
 		if enemy is CampCryptid:
-			sight = {"werewolf": 125.0, "bigfoot": 95.0, "lantern_moth": 220.0, "vampire":165.0, "witch":190.0, "briar_revenant":155.0,"ration_moth":70.0}.get(enemy.species,190.0)
-			hearing = {"werewolf": 210.0, "bigfoot": 300.0, "lantern_moth": 80.0, "vampire":190.0, "witch":210.0, "briar_revenant":160.0}.get(enemy.species,320.0 if enemy.species=="switchback_hound" else 220.0)
+			# Each creature's own senses (set by its brain), before weather.
+			sight = enemy.base_senses.x
+			hearing = enemy.base_senses.y
 		if level.plan.weather == "fog":
 			sight *= 0.72
 		elif level.plan.weather == "rain":
@@ -223,28 +224,31 @@ func _creature_rules(flare: Node2D) -> void:
 		enemy.enabled = false
 		level.world_objects.add_child(enemy)
 		await _frames(2)
-		player.flashlight_on = false
-		_check(enemy.sense_visible_target() == (null if species == "lantern_moth" else player), species + "_darkness_sensing_rule")
 		player.flashlight_on = true
-		_check(enemy.sense_visible_target() == player, species + "_sees_lit_survivor_with_clear_sight")
 		flare.position = Vector2(1608, 520)
-		_check((enemy.nearby_flare() != Vector2.INF) == (species != "lantern_moth"), species + "_flare_response")
-		if species == "bigfoot":
-			_check(enemy.config.hearing_radius > level.config.hearing_radius, "bigfoot_has_extended_hearing")
-		elif species == "lantern_moth":
-			player.flashlight_on = false
-			flare.position = Vector2(1760, 520)
-			enemy.enabled = true
-			enemy._physics_process(0.01)
-			_check(enemy.state == CampKiller.State.INVESTIGATE and enemy.last_seen == flare.position, "moth_investigates_visible_flare_beyond_hearing_range")
+		if species == "werewolf":
+			level.night_clock.moon = false
+			_check(not enemy.can_sense(player), "werewolf_hiker_ignores_you_without_the_moon")
+			level.night_clock.moon = true
+			enemy.brain.physics(0.01)
+			_check(enemy.brain.wolf and enemy.sense_visible_target() == player, "werewolf_hunts_under_the_moon")
+			_check(enemy.nearby_flare() != Vector2.INF, "werewolf_fears_flares")
+			level.night_clock.moon = false
+		elif species == "bigfoot":
+			_check(enemy.sense_visible_target() == null, "bigfoot_never_hunts")
 		else:
+			player.flashlight_on = false
+			_check(enemy.sense_visible_target() == null, "moth_cannot_see_dark_survivors")
+			player.flashlight_on = true
+			_check(enemy.sense_visible_target() == player, "moth_sees_lit_survivors")
+			_check(enemy.nearby_flare() == Vector2.INF, "moth_is_not_afraid_of_flares")
+			player.flashlight_on = false
+			flare.position = Vector2(1700, 520)
+			var before := enemy.global_position
 			enemy.enabled = true
-			enemy.hunt_clock = 0.7
-			enemy._physics_process(0.01)
-			var burst: float = enemy.config.killer_chase_speed
-			enemy.hunt_clock = 1.6
-			enemy._physics_process(0.01)
-			_check(burst > level.config.sprint_speed and enemy.config.killer_chase_speed < level.config.walk_speed, "wolf_charge_has_slow_recovery_window")
+			for tick in range(20):
+				enemy._physics_process(1.0 / 60.0)
+			_check(enemy.global_position.distance_to(flare.position) < before.distance_to(flare.position), "moth_flies_to_a_visible_flare")
 		enemy.queue_free()
 		await _frames(1)
 	flare.queue_free()

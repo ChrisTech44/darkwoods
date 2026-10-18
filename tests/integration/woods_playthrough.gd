@@ -160,7 +160,7 @@ func _leg(points: Array) -> bool:
 			Input.action_release(action)
 		await _frames(1)
 		if not reached:
-			print(JSON.stringify({"event": "expedition_blocked", "destination": destination, "position": player.position, "status": player.status, "stamina": player.stamina, "supplies":player.supplies, "hidden": player.hidden_spot, "velocity": player.velocity, "controls": player.controls_enabled, "paused": level.paused}))
+			print(JSON.stringify({"event": "expedition_blocked", "destination": destination, "position": player.position, "status": player.status, "stamina": player.stamina, "supplies":player.supplies, "hidden": player.hidden_spot, "velocity": player.velocity, "controls": player.controls_enabled, "paused": level.paused, "effects": player.effects, "knock": player.knock, "health": player.health}))
 			for enemy: CampKiller in get_nodes_in_group("killers"):
 				print(JSON.stringify({"event": "enemy_at_failure", "position": enemy.position, "state": enemy.state, "flare": enemy.nearby_flare()}))
 		_check(reached, "woods_walk_to_%d_%d" % [destination.x, destination.y])

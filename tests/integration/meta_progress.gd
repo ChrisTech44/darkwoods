@@ -48,7 +48,7 @@ func _profile_checks(profile: CampProfile) -> void:
 	_check("route_master" in profile.record_night(8, {"score": 1100}, true, "BOAT", "stalker", [], false, false), "three_routes_earn_route_master")
 	_check(profile.record_sighting("werewolf") and not profile.record_sighting("werewolf") and profile.seen("werewolf"), "sighting_recorded_once")
 	var text := profile.journal_text()
-	_check(text.contains("WEREWOLF: Fast in the open") and text.contains("??? (not yet sighted)") and text.contains("★ PYROMANIAC"), "journal_shows_tips_and_badges")
+	_check(text.contains("%s: %s" % [CampProfile.display_name("werewolf"), CampProfile.TIPS["werewolf"]]) and text.contains("??? (not yet sighted)") and text.contains("★ PYROMANIAC"), "journal_shows_tips_and_badges")
 	var reloaded := CampProfile.new()
 	_check(reloaded.best(42) == 1900 and reloaded.seen("werewolf"), "profile_persists")
 

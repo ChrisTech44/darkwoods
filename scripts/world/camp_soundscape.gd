@@ -13,13 +13,15 @@ const CHORUS_DISTANCE := 480.0
 ## Headline killers vocalise on the hunt: [cue, pitch].
 const KILLER_CUES := {"stalker": ["screech_3", 0.7], "groundskeeper": ["screech_2", 0.62]}
 ## Heavier creatures step lower and louder.
-const STEP_PITCH := {"bigfoot": 0.55, "stoneback_ram": 0.6, "boiler_saint": 0.62, "werewolf": 0.7, "switchback_hound": 0.9, "relay_jackal": 1.0, "lantern_moth": 1.3, "ration_moth": 1.35}
+const STEP_PITCH := {"bigfoot": 0.55, "stoneback_ram": 0.6, "boiler_saint": 0.62, "werewolf": 0.7, "switchback_hound": 0.9, "relay_jackal": 1.0, "lantern_moth": 1.3, "ration_moth": 1.35, "teddy": 1.8, "imps": 1.6, "mimic": 1.0}
 const CREATURE_CUES := {"werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl",
 	"switchback_hound": "monster_10", "relay_jackal": "monster_6", "shutter_wraith": "monster_9", "lens_eater": "screech_1",
 	"bramble_seamstress": "monster_7", "candle_grazer": "screech_2", "boiler_saint": "screech_3", "last_car_conductor": "screech_3",
-	"stoneback_ram": "monster_8", "ration_moth": "screech_5"}
+	"stoneback_ram": "monster_8", "ration_moth": "screech_5",
+	"mimic": "screech_4", "owl": "owl", "bog_hands": "swamp", "imps": "witch_cackle", "teddy": "monster_7"}
 ## The second species sharing a screech is pitched lower so the two stay distinct.
-const CREATURE_PITCH := {"relay_jackal": 0.8, "lens_eater": 0.78, "candle_grazer": 0.82, "last_car_conductor": 0.8, "ration_moth": 1.25}
+const CREATURE_PITCH := {"relay_jackal": 0.8, "lens_eater": 0.78, "candle_grazer": 0.82, "last_car_conductor": 0.8, "ration_moth": 1.25,
+	"mimic": 0.85, "owl": 0.7, "imps": 2.0, "teddy": 0.55}
 const RADIO_TALK_SECONDS := 7.0
 var level: Node2D
 var mixer: Node

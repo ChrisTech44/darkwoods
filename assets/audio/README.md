@@ -104,3 +104,26 @@ to loop cleanly; everything else is unchanged and gain-balanced at runtime.
 
 Every event sound is triggered from replicated world state, so all co-op peers
 hear it, not only the host.
+
+## Wish list (monster revamp)
+
+These sounds would replace stand-ins used by the revamped creatures
+([docs/monster_revamp.md](../../docs/monster_revamp.md)). Short, mono, royalty-free
+or self-recorded MP3s; drop them in this folder and they can be wired into
+`manifest.json`.
+
+| Wanted | Used for | Stand-in now |
+| --- | --- | --- |
+| A man whistling *Row, Row, Row Your Boat* slowly (and a faster take) | The stalker's camp song | Synthesised whistle (`scripts/ai/camp_song.gd`) |
+| A big dog barking, and a friendly whine | Buster's alarm bark; Buster as a friend | `monster_10` pitched up |
+| A sneeze ("achoo!") | Puffball spores | none (noise only) |
+| High-pitched giggling | Toadstool Imps | `witch_cackle` pitched up |
+| A camera shutter and flash whine | The Paparazzo | `screech_4` and `metal_clang` pitched |
+| A train bell and a short steam whistle | The Conductor | `bells` and `car_start` pitched |
+| A squeaky toy footstep | Bear Hug | `footstep` pitched up |
+| Mud gurgle / sucking | Bog Hands | `swamp` |
+| A soft hymn or choir hum | The Lullaby Saint | `bells` pitched down |
+| A frog croak | Frog curse | none |
+| Thread whip / snap | The Seamstress | `monster_7` pitched |
+| Bear trap snap | Stalker's bear traps | `metal_clang` |
+| Air horn blast | The air horn item | none (noise only) |

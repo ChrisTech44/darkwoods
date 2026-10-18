@@ -645,3 +645,48 @@ story events in sorted phases; `woods_visibility.gd` checks the new call range.
 The Groundskeeper's side rows were checked by eye in a magnified side-by-side
 render (moving right now faces right), alongside every other character sheet.
 The gate, entrance, water and lobby art were checked in captured frames.
+
+## Monster revamp
+
+`tests/integration/monster_revamp.gd` (in `verify.py`, 135 checks) gives every
+creature a controlled scene on a straight woods trail with everything else off.
+- **Roster:** every creature spawns with a brain, Buster is unique, the jackals
+  come as a pair, and every name is unique.
+- **Each creature's verb, tell and counter:**
+  - Vampire: hypnosis, the beam breaking the pull, the latch drain, eight
+    presses to break free, garlic.
+  - Werewolf: harmless hiker, the moon change, pounce and knock, wolfsbane.
+  - Bigfoot: the startle-yeet; lit from afar it flees and drops fur, which scores.
+  - Witch: frog (parts dropped, items blocked), backwards, swap, float, and the
+    salt ward reflecting her curse.
+  - Lantern Moth: the face moth drinks light; a flash swats it; bug spray.
+  - Puffball: helium and sneezes; holding your breath; sneezes fire.
+  - Scarecrow: frozen while watched, moving when unwatched, immune to flashes.
+  - Buster: the bark calls the stalker; rations make a friend.
+  - Trash Jackals: the theft, the den pin, the flash drop, the den stash.
+  - Peeper: the lock, no movement, the drain, the blink.
+  - Paparazzo: whiteout, the mark, the stalker investigating.
+  - Conductor: the Rail Yard trip, and the ticket's ride to camp.
+  - Ram: the charge bowls you over.
+  - Snuffer: your light is cut; glow moss resists it.
+  - Seamstress: the stitch, the pull back, scissors.
+  - Lullaby Saint: falling asleep; coffee.
+  - Mimic: the disguise; the reveal and strike.
+  - Night Owl: snatch, carry and drop far away.
+  - Bog Hands: the grab, mashing free, being dragged under.
+  - Imps: the trip and theft, hiding the item, the flash poof.
+  - Bear Hug: love at first sight, the hug, the squeeze, 15 wriggles.
+- **The stalker:** traits and song; the wounded carried to the hook and pinned;
+  wriggling free; the air horn stun; rage to frenzy; melting in a beam; spot
+  memory; calling cards; the bear trap bite.
+- **Items:** every new item is placed each night, reachable, and at least
+  30 px from any other pickup; coffee, garlic and bug spray work.
+
+Existing suites were updated where they pinned old behaviour: `forest_hunt`
+(vampire speeds, scarecrow senses, witch curses), `woods_replay` (werewolf,
+Bigfoot and moth rules, 21 species, weather against each creature's own base
+senses), `content_expansion` (the Ram's locked charge replaces the old patch
+powers; portraits for all 21 creatures), `killers_modifiers` (Blood Moon
+werewolves) and `network_peer` (roster count from `RoundPlan`, a roaming probe
+after the camp opens). `woods_playthrough` (the automated expedition) still
+escapes with every creature live.

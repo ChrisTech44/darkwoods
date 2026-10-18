@@ -81,7 +81,7 @@ func _host() -> void:
 	for enemy: CampKiller in get_nodes_in_group("killers"): enemy.enabled=false
 	_check(net.actors.size()==peers and get_nodes_in_group("survivors").size()==peers,"one_actor_per_peer")
 	_check(level.plan.seed_value==42 and level.plan.expedition==(selected_mode=="woods"),"shared_seed_mode")
-	_check(get_nodes_in_group("killers").size()==(49 if selected_mode=="woods" else 1),"current_monster_roster")
+	_check(get_nodes_in_group("killers").size()==(RoundPlan.CRYPTID_COUNT+1 if selected_mode=="woods" else 1),"current_monster_roster")
 	var ids: Array=net.actors.keys()
 	ids.sort()
 	var guest: int=ids[1]
@@ -635,9 +635,13 @@ func _active_ai_round(level: Node2D, ids: Array, guest: int) -> void:
 	var enemies := get_nodes_in_group("killers")
 	var probes: Array[CampKiller]=[level.killer]
 	for enemy: CampKiller in enemies:
-		if enemy is CampCryptid and enemy.species=="relay_jackal":
+		# A roaming creature with ordinary senses that keeps walking (the Mimic
+		# ambles toward people; guardians stay in their regions).
+		if enemy is CampCryptid and enemy.species == "mimic" and not enemy.home.has_area():
 			probes.append(enemy)
 			break
+	# Camp sensing is a second-half matter (creatures stay out until Deep Night).
+	level.open_camp()
 	var indices := []
 	for enemy in probes: indices.append(enemies.find(enemy))
 	# Real senses must choose a living teammate over a closer downed body.

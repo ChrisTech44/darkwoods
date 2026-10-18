@@ -11,6 +11,8 @@ var stamina: ProgressBar
 var health: ProgressBar
 var health_fill: StyleBoxFlat
 var hurt_flash: ColorRect
+## Creature effects on your own screen (see EffectsOverlay).
+var effects_overlay: EffectsOverlay
 var pause_panel: PanelContainer
 var result_panel: PanelContainer
 var inventory_label: Label
@@ -64,6 +66,11 @@ func _ready() -> void:
 	hurt_flash.color = Color(0.6, 0.05, 0.04, 0.0)
 	root.add_child(hurt_flash)
 	root.move_child(hurt_flash, 0)
+	effects_overlay = EffectsOverlay.new()
+	effects_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	effects_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(effects_overlay)
+	root.move_child(effects_overlay, 1)
 	health = ProgressBar.new()
 	health.position = Vector2(9, 22)
 	health.show_percentage = false

@@ -133,7 +133,8 @@ func _run() -> void:
 			if zone!=other:
 				_check(not bounds.grow(32).intersects(other["bounds"].grow(32)),"nonoverlap_%s_%s"%[zone["kind"],other["kind"]])
 	for enemy: CampCryptid in get_nodes_in_group("cryptids"):
-		_check(enemy.sheet!=null,"sprite_"+enemy.species)
+		# The Mimic wears survivor sprites instead of a sheet of its own.
+		_check(enemy.sheet!=null or enemy.species=="mimic","sprite_"+enemy.species)
 		if enemy.home.has_area():
 			enemy.enabled=true
 			enemy.hear_stimulus(enemy.home.position-Vector2(50,50),10000)
@@ -157,32 +158,20 @@ func _run() -> void:
 	listener.enabled=false
 	player.sprinting=false
 	player.sprint_hearing=1.0
-	# Locked powers retain the last observed point, expire, and never edit geometry.
+	# The Ram's telegraphed charge locks its aim at the observed position.
 	var test_enemy: CampCryptid = load("res://scenes/actors/cryptid.tscn").instantiate()
-	test_enemy.species="boiler_saint"
+	test_enemy.species="stoneback_ram"
 	test_enemy.enabled=false
 	test_enemy.position=Vector2(100,440)
 	level.world_objects.add_child(test_enemy)
 	player.position=Vector2(100,400)
 	test_enemy.visible_target=player
-	test_enemy._advance_power(0.1)
-	_check(test_enemy.power_tell>1 and test_enemy.power_aim==player.position,"power_warns_at_observed_position")
+	test_enemy.brain.physics(0.1)
+	_check(test_enemy.power_tell>1 and test_enemy.power_aim==player.position,"charge_warns_at_observed_position")
 	var locked := test_enemy.power_aim
 	player.position+=Vector2(40,0)
-	test_enemy._advance_power(0.5)
-	_check(test_enemy.power_aim==locked,"power_aim_does_not_home")
-	test_enemy._advance_power(0.8)
-	var patch: LandmarkHazard
-	for hazard in get_nodes_in_group("hazards"):
-		if hazard is LandmarkHazard: patch=hazard
-	_check(is_instance_valid(patch) and patch.position==locked,"power_creates_bounded_patch")
-	player.position=locked
-	player.hex_remaining=0
-	patch._physics_process(0.1)
-	_check(player.hex_remaining>0 and player.status==CampPlayer.Status.ALIVE,"patch_slows_without_damage")
-	patch._physics_process(3)
-	await _frames(2)
-	_check(not is_instance_valid(patch),"patch_expires")
+	test_enemy.brain.physics(0.5)
+	_check(test_enemy.power_aim==locked,"charge_aim_does_not_home")
 	test_enemy.queue_free()
 	level.van.installed.clear()
 	level.message_time=0
@@ -228,12 +217,18 @@ func _tour() -> void:
 	camera.offset=Vector2(0,-32)
 	level.player.position=level.plan.woods.center(Vector2i(4,4))+Vector2(0,28)
 	level.player.facing=Vector2.UP
-	for species in ["switchback_hound","boiler_saint","bramble_seamstress","shutter_wraith","last_car_conductor","stoneback_ram","candle_grazer","relay_jackal","ration_moth","lens_eater"]:
+	for species: String in CampProfile.TIPS:
+		if species in ["stalker","groundskeeper"]: continue
 		var portrait: CampCryptid=load("res://scenes/actors/cryptid.tscn").instantiate()
 		portrait.species=species
 		portrait.enabled=false
 		portrait.position=level.player.position+Vector2(0,-42)
 		level.world_objects.add_child(portrait)
+		# Pose the shape-shifters in their true form for the guide.
+		if species=="werewolf": portrait.brain.wolf=true
+		elif species=="mimic": portrait.brain.revealed=1.0
+		elif species=="bog_hands": portrait.brain.sinking=2.0
+		portrait.queue_redraw()
 		camera.reset_smoothing()
 		await _frames(5)
 		await _snapshot("monster_"+species)

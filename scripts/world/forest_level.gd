@@ -25,6 +25,12 @@ var blood_clock: float = 0.0
 const KITLESS_REVIVE_FACTOR := 2.0
 const SELF_RECOVERY_SECONDS := 8.0
 const SOLO_LAST_CHANCE := 20.0
+## The Seamstress's thread: stitched survivors stay within this distance.
+const TETHER_LENGTH := 80.0
+## New items from the monster revamp (belt supplies).
+const CREATURE_ITEMS: Array[String] = ["garlic", "wolfsbane", "bug_spray", "scissors", "train_ticket", "air_horn", "coffee"]
+const ITEM_HINTS := {"garlic": "Vampires can't stand it.", "wolfsbane": "Throw it at a werewolf.", "bug_spray": "Moths and imps hate it.",
+	"scissors": "Cuts a Seamstress thread.", "train_ticket": "The Conductor honours it.", "air_horn": "Stuns the stalker. Very loud.", "coffee": "Keeps you awake."}
 const HELP_PING_SECONDS := 8.0
 var world_objects: Node2D
 var plan := RoundPlan.new()
@@ -45,6 +51,11 @@ var awards_text := ""
 ## F8: tonight's score card (host computes; clients receive it) and local journal.
 var score_card: Dictionary = {}
 var notes_read := 0
+## Bigfoot fur tufts recovered tonight (+300 score each).
+var furs := 0
+## The stalker's calling cards: {position, text}, newest last (synced).
+var cards: Array[Dictionary] = []
+const MAX_CARDS := 8
 var tonight_seen: Dictionary = {}
 var profile_recorded := false
 ## Team-wide clue chain per locked-cache part: 0 direction, 1 region named, 2 cache found.
@@ -143,11 +154,16 @@ func _ready() -> void:
 		var pickup: CampPickup = preload("res://scenes/items/pickup.tscn").instantiate()
 		pickup.kind = item["kind"]
 		pickup.position = item["position"]
+		if item.has("anchor"):
+			pickup.position = porch(item["anchor"])
 		pickup.locked = item["locked"]
 		if item.has("part"):
 			pickup.set_meta("part", item["part"])
 		pickups.append(pickup)
 		add_child(pickup)
+	var scrawls := CallingCards.new()
+	scrawls.level = self
+	add_child(scrawls)
 	var trail := preload("res://scripts/world/blood_trail.gd").new()
 	trail.z_index = -1
 	add_child(trail)
@@ -190,6 +206,7 @@ func _ready() -> void:
 	hud.chart.van = van
 	hud.chart.plan = plan
 	hud.chart.level = self
+	hud.effects_overlay.player = player
 	var skyline := Skyline.new()
 	skyline.level = self
 	skyline.size = Vector2(384, 216)
@@ -280,6 +297,12 @@ func _process(_delta: float) -> void:
 	for enemy: CampKiller in get_tree().get_nodes_in_group("cryptids"):
 		# No on-screen monster readout: listen for calls and your heartbeat.
 		if player.global_position.distance_to(enemy.global_position) < 180 and sight.can_see(enemy.global_position):
+			# Disguised or buried creatures only count once they show themselves.
+			var cryptid: CampCryptid = enemy
+			if cryptid.species == "mimic" and cryptid.brain != null and cryptid.brain.revealed <= 0.0:
+				continue
+			if cryptid.species == "bog_hands" and cryptid.brain != null and cryptid.brain.sinking <= 0.0:
+				continue
 			note_sighting(enemy.species)
 	if player.hex_remaining > 0:
 		hud.threat_label.text = "HEXED %.1fs / SLOWED!" % player.hex_remaining
@@ -319,6 +342,7 @@ func _physics_process(delta: float) -> void:
 	if finished:
 		return
 	_advance_chase_toolkit(delta)
+	_advance_effects(delta)
 	_advance_clues()
 	var living := false
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
@@ -347,6 +371,23 @@ func _physics_process(delta: float) -> void:
 
 func try_interact(actor: CampPlayer) -> bool:
 	if paused or finished or actor.status != CampPlayer.Status.ALIVE or not actor.is_in_group("survivors"):
+		return false
+	# Held by a creature: every press wriggles toward breaking free.
+	if actor.has_effect("held"):
+		if actor.wriggle():
+			announce("You wriggle free!", actor)
+		return true
+	if actor.has_effect("asleep") or actor.has_effect("tripped"):
+		return false
+	# Pull a held teammate loose (counts double).
+	for other: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if other != actor and other.has_effect("held") and actor.global_position.distance_to(other.global_position) <= config.interact_radius * 1.6:
+			other.wriggle()
+			if other.wriggle():
+				announce("%s pulled you free!" % (actor.peer_name if not actor.peer_name.is_empty() else "A teammate"), other)
+			return true
+	if actor.has_effect("frog"):
+		announce("Ribbit. Frogs can't do that.", actor)
 		return false
 	if actor.hidden_spot >= 0:
 		return props.interact(actor)
@@ -381,6 +422,11 @@ func try_interact(actor: CampPlayer) -> bool:
 				pickup.consume()
 				read_note(pickup.get_meta("part", ""))
 				return true
+			if pickup.kind == "bigfoot_fur":
+				pickup.consume()
+				furs += 1
+				announce("Bigfoot fur! Proof for the camp journal (+300 score).", actor)
+				return true
 			pickup.consume()
 			if pried:
 				loud_noise(pickup.global_position, 500)
@@ -400,6 +446,8 @@ func try_interact(actor: CampPlayer) -> bool:
 				announce("Boltcutters found. Woods caches can now be opened with E.",actor)
 			elif pickup.kind == "crowbar":
 				announce("Crowbar found. It pries caches open, but loudly.",actor)
+			elif pickup.kind in CREATURE_ITEMS:
+				announce("Packed %s. Select it (1-6) and V to use. %s" % [pickup.kind.replace("_", " "), ITEM_HINTS.get(pickup.kind, "")], actor)
 			else:
 				announce("Packed " + pickup.kind.replace("_", " ") + ". Q flare / R battery / C food.",actor)
 			return true
@@ -499,6 +547,13 @@ func use_flash(actor: CampPlayer) -> int:
 	if plan.expedition:
 		actor.flashlight_charge -= CampPlayer.FLASH_COST
 	actor.flashlight_on = true
+	# A flash swats a moth off your own face, or off a teammate's in front of you.
+	for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
+		if enemy.brain != null and enemy.brain.has_method("swat") and is_instance_valid(enemy.brain.riding):
+			var wearer: CampPlayer = enemy.brain.riding
+			if wearer == actor or (wearer.global_position.distance_to(actor.global_position) < 70.0 and actor.facing.dot(actor.global_position.direction_to(wearer.global_position)) > 0.5):
+				enemy.brain.swat()
+				announce("SWAT! The moth tumbles away.", wearer)
 	actor.flash_time = 0.18
 	actor.flash_cooldown = CampPlayer.FLASH_COOLDOWN
 	var stunned := 0
@@ -528,6 +583,35 @@ func _advance_chase_toolkit(delta: float) -> void:
 			for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 				if enemy.state == CampKiller.State.PATROL:
 					enemy.hear_stimulus(actor.blood.back(), 110.0)
+
+
+## Creature effects the level owns: stitched pairs stay within reach of each
+## other, and sneezy survivors sneeze loudly now and then.
+func _advance_effects(delta: float) -> void:
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if actor.status != CampPlayer.Status.ALIVE:
+			continue
+		if actor.has_effect("tethered"):
+			var partner: Variant = actor.get_meta("tether_partner") if actor.has_meta("tether_partner") else null
+			var anchor: Vector2 = actor.effect_data.get("tether_to", actor.global_position)
+			if is_instance_valid(partner) and partner.has_effect("tethered"):
+				anchor = partner.global_position
+			elif partner != null:
+				actor.clear_effect("tethered")
+				actor.remove_meta("tether_partner")
+				continue
+			actor.effect_data["tether_to"] = anchor
+			var gap := actor.global_position.distance_to(anchor)
+			if gap > TETHER_LENGTH:
+				# The thread drags you back toward the other end.
+				actor.move_and_collide(actor.global_position.direction_to(anchor) * minf(gap - TETHER_LENGTH, 220.0 * delta))
+		if actor.has_effect("sneezy"):
+			var clock: float = actor.get_meta("sneeze_clock", randf_range(3.0, 7.0)) - delta
+			if clock <= 0.0:
+				clock = randf_range(5.0, 9.0)
+				actor.add_effect("achoo", 0.9)
+				loud_noise(actor.global_position, 260)
+			actor.set_meta("sneeze_clock", clock)
 
 
 func read_note(kind: String) -> void:
@@ -728,6 +812,10 @@ func compute_score(success: bool) -> Dictionary:
 		card["score"] = int(card["score"]) + 250
 		card["grade"] = CampProfile.grade(card["score"])
 		card["lines"].append("LOST CAMPER +250")
+	if furs > 0:
+		card["score"] = int(card["score"]) + 300 * furs
+		card["grade"] = CampProfile.grade(card["score"])
+		card["lines"].append("BIGFOOT FUR ×%d +%d" % [furs, 300 * furs])
 	return card
 
 
@@ -755,7 +843,7 @@ func note_sighting(species: String) -> void:
 		return
 	tonight_seen[species] = true
 	if plan.expedition and get_node("/root/Session").profile.record_sighting(species):
-		announce("New journal entry: %s." % species.replace("_", " ").to_upper(), player)
+		announce("New journal entry: %s." % CampProfile.display_name(species), player)
 
 
 func _van_started() -> void:
@@ -919,6 +1007,11 @@ func retry_round() -> void:
 func use_supply(actor: CampPlayer, kind: String) -> bool:
 	if paused or finished or actor.status != CampPlayer.Status.ALIVE or not actor.is_in_group("survivors") or actor.supplies.get(kind, 0) <= 0:
 		return false
+	if actor.has_effect("held") or actor.has_effect("asleep") or actor.has_effect("tripped"):
+		return false
+	if actor.has_effect("frog"):
+		announce("Ribbit. Frogs can't use items.", actor)
+		return false
 	if kind == "flare":
 		abilities.stat(actor)["flares"] += 1
 		var flare := preload("res://scripts/items/flare.gd").new()
@@ -938,8 +1031,10 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 		actor.stamina = actor.config.stamina_max
 		actor.exhausted = false
 		actor.heal(CampPlayer.RATION_HEAL)
+		# Food is also bait: a hound or a jackal within reach takes it instead.
 		for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
-			if enemy.species == "ration_moth": enemy.hear_stimulus(actor.global_position,600)
+			if enemy.brain != null and enemy.brain.has_method("bait") and enemy.brain.bait(actor):
+				break
 	elif kind == "noise_tin":
 		var lure := NoiseLure.new()
 		var target := actor.global_position + actor.facing * 52
@@ -959,7 +1054,53 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 	elif kind == "glow_moss":
 		actor.flashlight_charge = minf(actor.config.flashlight_capacity, actor.flashlight_charge + 35)
 		actor.hex_remaining = 0
-		announce("Glow moss clears hexes and restores 35 light charge.",actor)
+		actor.add_effect("glowing", 60.0)
+		announce("Glow moss: hexes cleared, +35 light, and you glow for 60 s (nothing can snuff it).",actor)
+	elif kind == "garlic":
+		actor.add_effect("garlic", 60.0)
+		announce("You reek of garlic. Vampires keep their distance for 60 s.", actor)
+	elif kind == "bug_spray":
+		actor.add_effect("bug_spray", 45.0)
+		announce("Pssssht. Moths and imps keep off for 45 s.", actor)
+	elif kind == "coffee":
+		actor.add_effect("coffee", 90.0)
+		actor.clear_effect("drowsy")
+		actor.stamina = actor.config.stamina_max
+		actor.exhausted = false
+		announce("Camp coffee: wide awake for 90 s, and full stamina.", actor)
+	elif kind == "scissors":
+		var cut := false
+		for other: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+			if other.has_effect("tethered") and (other == actor or other.global_position.distance_to(actor.global_position) <= config.interact_radius * 1.6):
+				for end: CampPlayer in [other, other.get_meta("tether_partner") if other.has_meta("tether_partner") else null]:
+					if is_instance_valid(end):
+						end.clear_effect("tethered")
+						if end.has_meta("tether_partner"):
+							end.remove_meta("tether_partner")
+				cut = true
+		if not cut:
+			announce("Nothing to cut. Scissors snip a Seamstress thread.", actor)
+			return false
+		announce("Snip! The thread falls away.")
+	elif kind == "wolfsbane":
+		var struck := false
+		for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
+			var offset := enemy.global_position - actor.global_position
+			if enemy.brain != null and enemy.brain.has_method("repel") and offset.length() < 150.0 and actor.facing.dot(offset.normalized()) > 0.5:
+				enemy.brain.repel(90.0)
+				struck = true
+		announce("Wolfsbane! The beast whimpers and turns back." if struck else "The wolfsbane lands in the dirt. Throw it at a werewolf.", actor)
+	elif kind == "air_horn":
+		var stunned := false
+		if killer.enabled and killer.global_position.distance_to(actor.global_position) < 280.0:
+			killer.release_held()
+			killer.stun_immunity = 0.0
+			stunned = killer.stun(5.0)
+		loud_noise(actor.global_position, 1500)
+		announce("HOOOONK! The %s staggers, stunned!" % plan.headline.to_upper() if stunned else "HOOOONK! Everything in the woods heard that.", actor)
+	elif kind == "train_ticket":
+		announce("Keep it handy: the Conductor gives ticket holders a free ride to camp.", actor)
+		return false
 	else:
 		return false
 	actor.supplies[kind] -= 1
@@ -989,6 +1130,47 @@ func woods_den() -> Vector2i:
 	return options[posmod(plan.seed_value * 7919, options.size())]
 
 
+## Open ground just beside a camp building's door (camp creature items).
+func porch(label: String) -> Vector2:
+	for building: CampBuilding in camp_map.buildings:
+		if building.label != label:
+			continue
+		# The first spot beside the door that's clear of walls, trees and props.
+		for offset: Vector2 in [Vector2(30, 44), Vector2(-30, 44), Vector2(0, 56), Vector2(48, 52), Vector2(-48, 52)]:
+			var spot: Vector2 = building.door + offset
+			if not camp_map.obstacles.any(func(rect: Rect2) -> bool: return rect.grow(8).has_point(spot)):
+				return spot
+		return building.door + Vector2(0, 40)
+	return Vector2(150, 420)
+
+
+## The stalker's hook: a post in his woods lair (expeditions only).
+func hook_point() -> Vector2:
+	if not plan.expedition:
+		return Vector2.INF
+	return plan.woods.center(woods_den()) + Vector2(0, 24)
+
+
+func pin_hook() -> void:
+	_pin_once(-5, 4, hook_point(), "HOOK")
+
+
+func pin_den(at: Vector2) -> void:
+	_pin_once(-4, 3, at, "DEN")
+
+
+func _pin_once(owner: int, slot: int, at: Vector2, label: String) -> void:
+	if pins.any(func(pin: Dictionary) -> bool: return pin["owner"] == owner and pin["position"].distance_to(at) < 4.0):
+		return
+	pins.append({"owner": owner, "slot": slot, "position": at.round(), "name": label, "place": pin_place(at)})
+
+
+func add_card(at: Vector2, text: String) -> void:
+	cards.append({"position": at.round(), "text": text})
+	while cards.size() > MAX_CARDS:
+		cards.pop_front()
+
+
 ## Deep Night: creatures may now enter camp, and the stalker tours it.
 func open_camp() -> void:
 	if not CampKiller.camp_closed:
@@ -1009,6 +1191,11 @@ func _spawn_cryptids() -> void:
 		var start: Vector2i = encounter["cell"]
 		enemy.patrol.assign(plan.woods.roaming_route(start))
 		world_objects.add_child(enemy)
+		# One junk pile per Trash Jackal den.
+		if enemy.brain != null and "den" in enemy.brain and not world_objects.get_children().any(func(node: Node) -> bool: return node is JackalDen and node.position.distance_to(enemy.brain.den) < 4.0):
+			var pile := JackalDen.new()
+			pile.position = enemy.brain.den
+			world_objects.add_child(pile)
 
 
 func _apply_weather() -> void:

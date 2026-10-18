@@ -24,6 +24,8 @@ const GRIDS := {
 		"fx_mark", "fx_ripple", "fx_ember", "fx_footprints", "fx_stun", "fx_alert", "fx_suspicion", "fx_skull"],
 	"ui_sheet": ["ui_panel", "ui_slot", "ui_slot_selected", "ui_button", "ui_button_hover", "ui_map", "ui_compass", "ui_battery",
 		"sky_campfire", "sky_bell", "sky_dome", "sky_bog", "sky_mast", "sky_signal", "ui_badge", "ui_plaque"],
+	"monster_items_sheet": ["garlic", "wolfsbane", "bug_spray", "scissors", "train_ticket", "air_horn", "coffee", "bigfoot_fur",
+		"bear_trap", "bear_trap_sprung", "hook_post", "mud_puddle", "jackal_den", "moon_icon", "frog", "heart_patch"],
 	"gateway_sheet": ["gateway_closed", "gateway_open", "trail_lantern", "rail_fence"],
 	"gateway_vertical_sheet": ["fence_run_v", "gateway_v_closed", "", "fence_post"],
 }

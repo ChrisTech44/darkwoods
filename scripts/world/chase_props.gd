@@ -298,6 +298,11 @@ func advance(delta: float) -> void:
 			level.loud_noise(at, 220)
 			level.announce("You gasp for air! Everything nearby heard it.", actor)
 			continue
+		var stalker: CampKiller = level.killer
+		if stalker.enabled and stalker.traits != null and stalker.traits.used_spots.get(actor.hidden_spot, 0) > 1 and stalker.global_position.distance_to(at) < 16:
+			leave(actor)
+			level.announce("He remembers this spot. He's dragging you out!", actor)
+			continue
 		for watcher: Dictionary in witnesses.get(actor.hidden_spot, []):
 			var enemy: CampKiller = watcher["enemy"].get_ref()
 			if is_instance_valid(enemy) and enemy.enabled and enemy.global_position.distance_to(at) < 16:
@@ -326,6 +331,9 @@ func advance(delta: float) -> void:
 		var pushing: bool = not pushers.is_empty() and door["barricade"] <= 0.0
 		# Witching Hour (tier 4): the headline killer breaks doors faster.
 		var force := 1.5 if pushers.any(func(enemy: CampKiller) -> bool: return enemy.tier >= 4 and not enemy.is_class_cryptid()) else 1.0
+		# Rampaging creatures (werewolf, Ram, a frenzied stalker) burst doors at once.
+		for enemy in pushers:
+			force = maxf(force, enemy.door_force)
 		door["progress"] = door["progress"] + delta * force if pushing else maxf(0.0, door["progress"] - delta * 0.5)
 		if door["progress"] >= DOOR_BREAK_SECONDS:
 			door["open"] = true
@@ -447,6 +455,13 @@ func hide_actor(actor: CampPlayer, index: int) -> bool:
 			enemy.last_seen = at
 			enemy.transition(CampKiller.State.INVESTIGATE)
 	witnesses[index] = watchers
+	# The headline killer remembers every spot anyone has used; giving him the
+	# slip mid-chase wounds his pride.
+	var stalker: CampKiller = level.killer
+	if stalker.traits != null:
+		stalker.traits.remember_spot(index)
+		if stalker.state == CampKiller.State.CHASE and stalker.visible_target == actor and stalker.global_position.distance_to(actor.global_position) > 60.0:
+			stalker.traits.humiliated()
 	actor.position = at
 	actor.velocity = Vector2.ZERO
 	actor.hidden_spot = index

@@ -92,6 +92,8 @@ def main():
     commands.append(("field_escapes", ["--headless", *field_escapes]))
     feedback = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/design_feedback.gd"]
     commands.append(("design_feedback", ["--headless", *feedback]))
+    monsters = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/monster_revamp.gd"]
+    commands.append(("monster_revamp", ["--headless", "--audio-driver", "Dummy", *monsters]))
     if args.graphical:
         commands.append(("graphical_field_escapes", ["--audio-driver", "Dummy", *field_escapes, "--", "--capture"]))
         commands.append(("graphical_rescue", ["--audio-driver", "Dummy", *rescue, "--", "--capture"]))

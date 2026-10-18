@@ -6,6 +6,8 @@ var direction := Vector2.RIGHT
 var speed: float = 104
 var remaining: float = 2.5
 var travel: float = 0.0
+## Host only: the witch who cast it (her brain decides the curse).
+var source: Node = null
 
 
 func _ready() -> void:
@@ -26,7 +28,10 @@ func _physics_process(delta: float) -> void:
 		return
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and Geometry2D.get_closest_point_to_segment(actor.global_position, from, to).distance_to(actor.global_position) <= 9:
-			actor.apply_hex(1.6)
+			if is_instance_valid(source) and source.brain != null and source.brain.has_method("curse"):
+				source.brain.curse(actor)
+			else:
+				actor.apply_hex(1.6)
 			queue_free()
 			return
 	global_position = to

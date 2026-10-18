@@ -21,27 +21,42 @@ const BADGES := {
 	"top_marks": ["TOP MARKS", "Earn an S grade."],
 	"team_player": ["TEAM PLAYER", "Revive or patch a teammate and escape."],
 }
-## One practical tip per creature, revealed in the journal after a sighting.
+## One practical tip per creature, revealed in the journal after a sighting
+## (docs/monster_revamp.md). Keys are species ids; NAMES are what players see.
 const TIPS := {
-	"stalker": "Flares and doors buy seconds. He hunts noise; at Dusk he stays near camp.",
-	"groundskeeper": "Sets snares on trails you walked. Watch for the glint; disarm with E.",
-	"werewolf": "Fast in the open. Break line of sight in thick trees; flares scare it.",
-	"bigfoot": "Long reach, slow turns. Circle obstacles and keep moving.",
-	"lantern_moth": "Drawn to your light. Switch the flashlight off when it's near.",
-	"vampire": "Holds back from a steady beam. Keep your light on it while you back away.",
-	"witch": "Hexes slow you. Glow moss clears a hex; dodge the bolt's line.",
-	"briar_revenant": "Thorns linger where it walks. Go around the patches.",
-	"switchback_hound": "Doubles back on your trail. Change direction twice.",
-	"boiler_saint": "Guards the Flooded Mill. Loud and slow; flank it.",
-	"bramble_seamstress": "Guards the Orchard rows. Cut across rows, not along them.",
-	"shutter_wraith": "Guards the Observatory. It sees your light; go dark to slip by.",
-	"last_car_conductor": "Guards the Rail Yard. Stay off the tracks it patrols.",
-	"stoneback_ram": "Guards the Quarry. Charges in straight lines; step aside.",
-	"candle_grazer": "Guards the Chapel. Its candles light you up; keep your distance.",
-	"relay_jackal": "Calls others to you. Silence it by breaking sight quickly.",
-	"ration_moth": "Smells your rations. Eat away from it, or not at all.",
-	"lens_eater": "Feeds on flashlight beams. Turn the light off as it closes.",
+	"stalker": "He whistles the camp song. Wounded, he carries you to his hook; an air horn or a teammate's flash makes him drop you.",
+	"groundskeeper": "Sets snares on trails you walked. Watch for the glint; disarm with E. He carries the wounded to his hook too.",
+	"vampire": "Its gaze draws you in and its bite drains you. Garlic keeps it away; hold your beam on it; mash E if it bites.",
+	"werewolf": "A harmless hiker until the moon comes out. Then hide, or throw wolfsbane; its pounce knocks you flying.",
+	"bigfoot": "Shy. Light it up from far away and it runs (and drops fur). Sneak up on it and it throws you.",
+	"witch": "Her bolt curses: frog, backwards, swap or float. Sidestep its line, or wear a salt ward to bounce it back.",
+	"lantern_moth": "Drawn to your light; it lands on your face and drinks the battery. Swat it with a flash, or switch off.",
+	"ration_moth": "Its spores give you a squeaky helium voice and loud sneezes. Walk around it, or stand still to hold your breath.",
+	"briar_revenant": "It only moves when no one is watching. Keep a light on it and back away; take turns as a team.",
+	"switchback_hound": "It barks to call the stalker and drags the downed to his hook. Throw it rations and it's your friend for a minute.",
+	"relay_jackal": "They steal from your belt (sometimes a part) and run to their den. Flash one to make it drop the loot.",
+	"lens_eater": "Don't put your light on it or face it up close, or it locks you in a stare. A teammate stepping between you breaks it.",
+	"shutter_wraith": "Its flash blinds anyone facing it and sends your picture to the stalker. Turn away and break line of sight.",
+	"last_car_conductor": "No ticket? He sends you to the Rail Yard. Carry a train ticket and he gives you a free ride to camp.",
+	"stoneback_ram": "A CHARGE ring warns you. Step out of its line: anyone in the path is launched like a bowling pin.",
+	"candle_grazer": "It snuffs flashlights and flares around it. Glow moss keeps you lit; otherwise walk away from it.",
+	"bramble_seamstress": "Her thread stitches you to a teammate (or the ground) for 25 s. Scissors cut it.",
+	"boiler_saint": "Its hymn makes you drowsy; stand still and you fall asleep (snoring). Keep moving, or drink coffee.",
+	"mimic": "It looks and sounds like a teammate. Real teammates carry a flashlight and show on the map; it doesn't.",
+	"owl": "It snatches survivors who wander alone and drops them far away. Stay together; a flare makes it let go.",
+	"bog_hands": "They hide in mud puddles on the trail. Walk around puddles; if they grab you, mash E or get a teammate to pull.",
+	"imps": "They trip you and hide what you drop. A flash poofs them; bug spray keeps them off.",
+	"teddy": "Once it sees you it follows forever, slowly. If it hugs you, mash E or get a teammate to flash it.",
 }
+const NAMES := {"stalker": "THE STALKER", "groundskeeper": "THE GROUNDSKEEPER", "vampire": "THE VAMPIRE", "werewolf": "THE WEREWOLF", "bigfoot": "BIGFOOT",
+	"witch": "THE WITCH", "lantern_moth": "THE LANTERN MOTH", "ration_moth": "THE PUFFBALL", "briar_revenant": "THE SCARECROW",
+	"switchback_hound": "BUSTER, THE STALKER'S HOUND", "relay_jackal": "TRASH JACKALS", "lens_eater": "THE PEEPER", "shutter_wraith": "THE PAPARAZZO",
+	"last_car_conductor": "THE CONDUCTOR", "stoneback_ram": "THE RAM", "candle_grazer": "THE SNUFFER", "bramble_seamstress": "THE SEAMSTRESS",
+	"boiler_saint": "THE LULLABY SAINT", "mimic": "THE MIMIC", "owl": "THE NIGHT OWL", "bog_hands": "THE BOG HANDS", "imps": "THE TOADSTOOL IMPS", "teddy": "BEAR HUG"}
+
+
+static func display_name(species: String) -> String:
+	return NAMES.get(species, species.replace("_", " ").to_upper())
 
 var path := PATH
 var data := ConfigFile.new()
@@ -164,7 +179,7 @@ func record_night(seed_value: int, card: Dictionary, won: bool, route: String, h
 func journal_text() -> String:
 	var lines: Array[String] = ["NIGHTS %d · ESCAPES %d · CREATURES SEEN %d/%d" % [get_count("nights"), get_count("escapes"), seen_count(), TIPS.size()], ""]
 	for species: String in TIPS:
-		var name := species.replace("_", " ").to_upper()
+		var name := display_name(species)
 		lines.append(("%s: %s" % [name, TIPS[species]]) if seen(species) else "??? (not yet sighted)")
 	lines.append("")
 	var badge_names: Array[String] = []

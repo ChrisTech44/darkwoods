@@ -1,14 +1,25 @@
 # Project working rules
 
-Read `AGENT_BRIEF.md` as the authoritative project specification. Apply subsequent
-user instructions as amendments, work in verified increments, keep the game
-runnable, and maintain `docs/development_log.md`.
+Read `AGENT_BRIEF.md` as the maintained project specification (refreshed 18 October
+2026). Subsequent user instructions take precedence. Use source and execution
+evidence to distinguish implemented behavior from design; document mismatches.
+Work in verified increments, keep the game runnable, and maintain
+`docs/development_log.md`.
+
+Current graphics/interface priority: read `docs/graphics_readability_plan.md`.
+It records confirmed defects and a staged map/Tab-help/hint overhaul, not a shipped
+redesign. Capture and inspect actual graphical output for visual changes; label
+forced all-escape fixtures, frozen enemies and altered lighting. Preserve clue
+discovery and host authority. Do not silently change gameplay during UI work.
 
 Read `docs/audio_multiplayer_design.md` before future audio/online voice work.
 Maintain the brief and design documents in Markdown only; the Word brief was
-removed at the user's request. Audio assets,
-networking and proximity voice are planned features until their acceptance gates
-have execution evidence; document platform and microphone-permission limits.
+removed at the user's request. Audio assets, ENet gameplay and opt-in proximity
+voice have implementations; their individual acceptance gates still require
+execution evidence. Document platform, real-microphone, listening and Internet
+limits, and keep microphone capture disabled during graphics audits. Older
+design documents may contain superseded status paragraphs; verify before claiming
+a feature is absent or accepted.
 
 ## Keep GitHub current
 

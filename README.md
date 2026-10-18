@@ -1179,6 +1179,7 @@ new monster types and six new regions now have first offline versions; deeper
 powers, interiors and the remaining catalog are still planned.
 
 - [Authoritative project brief](AGENT_BRIEF.md) — requirements and acceptance gates.
+- [Graphics audit and map/help plan](docs/graphics_readability_plan.md) — current defects, captured evidence and the proposed interface overhaul (not yet implemented).
 - [Milestones](docs/milestones.md) — implementation plan and remaining work.
 - [Gameplay overhaul](docs/fun_overhaul.md) — planned night phases, chases, hiding, map redesign, new escapes and replayability.
 - [Survivor selection and co-op](docs/survivor_multiplayer_plan.md) — six archetypes, selection screens and the transition into voice.

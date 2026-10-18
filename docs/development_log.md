@@ -1,5 +1,54 @@
 # Development log
 
+## 2026-10-18 — Graphics audit, notebook plan and maintained agent baseline
+
+User requested graphics bug review, a readable map/Tab-help/hint overhaul plan,
+and updates to the previously outdated agent documents. This increment audits
+and plans; it changes no gameplay/UI runtime source.
+
+- Added [graphics/readability audit and delivery plan](graphics_readability_plan.md):
+  eight confirmed defects/discrepancies with source causes, separate code-backed
+  concerns, proposed Map/Escape Plan/Field Guide views, objective state model,
+  next-action/event presentation and four implementation slices with acceptance.
+- Reproduced map-over-objective text, notes/frame intrusion into belt space,
+  persistent original battery map marker after pickup consume/van delivery,
+  secondary-plan map hiding, tiny/dense help and obsolete “Solo build”/fixed-cache
+  guide. Code also confirms missing teammate map markers and distorted woods
+  map scale. No claim that these have been fixed.
+- Added reusable `tools/capture_readability_audit.gd`; preserved ten actual
+  normal-lighting graphical captures in [evidence](evidence/readability_audit/README.md).
+  All routes are forced for inspection, enemies frozen, phase clock stopped;
+  staged notice text is labeled. This is not a normal input playthrough.
+- Replaced accumulated obsolete brief amendments with version 2.0: current
+  routes/rotation, progress/time phases, shared killer behavior, implemented
+  audio/network/voice versus remaining acceptance. Updated `AGENTS.md` to direct
+  future interface work to the plan and verify claims against code/evidence.
+  Older rules/history remain in this log and existing design documents.
+- Added README link to the audit/plan; existing player-facing rules remain pending
+  correction with the implementation slices. Real teammate map guidance is a
+  documented current discrepancy.
+
+Verification on macOS Apple M2 / Godot 4.7.2:
+
+| Check | Result |
+| --- | --- |
+| Required headless import | Exit 0, no engine errors/warnings in final run. |
+| Required headless five-frame startup | Exit 0, `menu_ready`, no engine errors/warnings. |
+| New capture script `--check-only` | Exit 0, no errors/warnings. |
+| Final graphical capture | Exit 0, all ten PNG writes `OK`; images visually inspected. |
+| Local Markdown links | No missing targets in brief, agent rules, plan or evidence index; new README/log links checked. |
+| `git diff --check` | Passed. |
+
+Initial sandboxed import/startup printed macOS service/editor-settings/user-log
+errors despite exit 0 and were not counted as passes. The first graphical run
+captured nine screens; a second sandboxed launch stalled with window-service
+errors and was terminated. Final import/startup and the completed ten-screen
+capture ran outside the sandbox. Evidence retains final import/startup logs.
+No full regression suite, exports, live four-peer screenshot session, real
+microphone, or human comprehension/playtest acceptance was run. Normal-lighting
+UI screenshots do not clear every terrain/sprite/animation case; those checks
+are explicit future work in the plan.
+
 ## 2026-10-17 — README clips show the new monsters
 
 All clips were re-recorded in real time (the old ones ran at half speed: two

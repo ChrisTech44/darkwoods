@@ -1,5 +1,6 @@
 extends CreatureBrain
-## The Lullaby Saint: sings you to sleep. Within its hymn you grow DROWSY:
+## The Lullaby Saint: sings you to sleep (its song is a positional loop in
+## CampSoundscape). Within its hymn you grow DROWSY:
 ## slower, the screen dims. Stand still for two seconds and you fall ASLEEP for
 ## 6 s, snoring loudly enough for the woods to hear. Coffee keeps you awake;
 ## otherwise keep moving and get out of earshot.
@@ -7,7 +8,6 @@ extends CreatureBrain
 const SONG := 170.0
 const NOD_OFF := 2.0
 var still: Dictionary = {}
-var hymn := 0.0
 var snore := 0.0
 
 
@@ -22,16 +22,13 @@ func senses(_actor: CampPlayer) -> int:
 
 
 func physics(delta: float) -> bool:
-	hymn -= delta
 	snore -= delta
-	var listening := false
 	var world: Node = level()
 	for actor in survivors():
 		var id := actor.get_instance_id()
 		if body.global_position.distance_to(actor.global_position) > SONG or actor.has_effect("coffee"):
 			still.erase(id)
 			continue
-		listening = true
 		actor.add_effect("drowsy", 0.4)
 		if actor.has_effect("asleep"):
 			continue
@@ -47,9 +44,6 @@ func physics(delta: float) -> bool:
 		if actor.has_effect("asleep") and snore <= 0.0 and world != null:
 			snore = 1.5
 			world.loud_noise(actor.global_position, 200)
-	if listening and hymn <= 0.0:
-		hymn = 6.0
-		cue("bells", -6.0, 0.6)
 	wander(20.0, delta)
 	return true
 

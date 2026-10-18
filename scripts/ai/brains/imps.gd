@@ -43,7 +43,7 @@ func physics(delta: float) -> bool:
 		return true
 	if body.state == CampKiller.State.CHASE and giggle <= 0.0:
 		giggle = 3.0
-		cue("witch_cackle", -2.0, 2.1)
+		cue("giggle", -2.0, 1.05)
 	if cooldown > 0.0:
 		wander(46.0, delta)
 		return true
@@ -55,7 +55,7 @@ func contact(actor: CampPlayer) -> bool:
 		return true
 	cooldown = 12.0
 	actor.add_effect("tripped", 1.2)
-	cue("witch_cackle", 4.0, 2.2)
+	cue("giggle", 3.0, 1.2)
 	var kind := actor.held_item()
 	if kind.is_empty() or actor.supplies.get(kind, 0) <= 0:
 		announce("The imps tie your laces together. You go sprawling!", actor)

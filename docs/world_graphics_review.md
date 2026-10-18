@@ -4,6 +4,13 @@
 [map/help audit](graphics_readability_plan.md). Status: findings and proposed
 changes; no gameplay rendering or audio implementation changed in this increment.
 
+**Implementation update (later on 18 October):** fixed #1 (each region title is
+drawn once, with an outline), #6 (the motor sign and "E / RARE TOOL" now follow
+state), the fading killer's dark shadow, and partly #5 (pickup piles label once;
+two adjacent piles can both label). Dramatic phase titles shipped with the ranger
+radio transcript. Still open: #2 building names, #3 region-entry titles, #4
+skyline collision pass, landmark identity. [Evidence](evidence/notebook/README.md).
+
 ## Assessment
 
 The forest has a strong miniature-horror identity: warm camp materials, dark

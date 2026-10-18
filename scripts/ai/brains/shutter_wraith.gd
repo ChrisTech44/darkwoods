@@ -33,7 +33,7 @@ func physics(delta: float) -> bool:
 	if subject != null and cooldown <= 0.0:
 		whine = WHINE
 		body.facing = body.global_position.direction_to(subject.global_position)
-		cue("screech_4", 0.0, 1.8)
+		cue("camera_charge", 0.0, 1.0, WHINE + 0.1)
 		return true
 	if flashed > 0.0:
 		# After a shot it slinks off to frame the next one.
@@ -61,7 +61,7 @@ func _snap() -> void:
 		if world != null:
 			world.killer.hear_stimulus(actor.global_position, INF)
 		announce("SNAP! Your photo is on its way to the stalker.", actor)
-	cue("metal_clang", 2.0, 2.0)
+	cue("camera_shutter", 2.0)
 
 
 func draw_over() -> void:

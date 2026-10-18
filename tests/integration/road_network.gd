@@ -162,12 +162,10 @@ func _captures() -> void:
 	await _frames(6)
 	_check(level.hud.location_label.text == "THE WOODS / LIT ROAD", "location_reads_lit_road")
 	await _snapshot("roads_lit_ring")
-	level.hud.inventory_label.visible = true
-	level.hud.chart.visible = true
+	level.hud.notebook.open_view("map")
 	await _frames(4)
 	await _snapshot("roads_field_map")
-	level.hud.inventory_label.visible = false
-	level.hud.chart.visible = false
+	level.hud.notebook.close()
 
 
 func _frames(count: int) -> void:

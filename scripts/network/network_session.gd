@@ -391,10 +391,6 @@ func handle_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if menu_open or event.is_echo(): return
-	if event.is_action_pressed("inventory"):
-		world.hud.inventory_label.visible=not world.hud.inventory_label.visible
-		world.hud.chart.visible=world.hud.inventory_label.visible and world.objective_page==0
-		return
 	if event is InputEventKey and event.pressed:
 		var row := [KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_6]
 		var pad := [KEY_KP_1,KEY_KP_2,KEY_KP_3,KEY_KP_4,KEY_KP_5,KEY_KP_6]

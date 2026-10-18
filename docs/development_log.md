@@ -1,5 +1,89 @@
 # Development log
 
+## 2026-10-18 — Sound pack, notebook/map overhaul, moon dial, radio transcript
+
+User supplied 17 MP3s and asked to fix the marked defects, integrate the audio
+(with trimming and loudness attention), deliver the planned help menu/map, add a
+moon phase indicator (red under Blood Moon) and show what the ranger radio says.
+
+**Audio.** Each file was cut (silent heads/tails, over-long takes: whine 11.6→3.5 s,
+gurgle 7.8→3.0 s, camera charge 4.7→1.1 s to fit the 1 s wind-up, sneeze tail
+0.8 s, grunt lead 0.57 s, lullaby gap 1.3 s), taken as **left channel mono**
+(summing cancelled some stereo files; the grunt measured −90 dB mean after a
+mono sum), and levelled to about −20 dB mean with peaks ≤ −1.4 dBFS via ffmpeg
+`volumedetect` then `volume`, MP3 128 kbps. `giggle_use_first_half_only.mp3` became
+`giggle.mp3` (first half). Runtime `gain_db` sets the mix by role. Originals were
+kept out of the repository. 67 cues now; table and edits in the
+[audio README](../assets/audio/README.md#18-october-2026-sound-pack).
+
+- Fixed: air horn plays (was silent); bear trap plays **one** snap (removed the
+  direct `metal_clang` in `Snares.advance`; the replicated snare edge owns it).
+- Creatures: Buster bark/happy whine, Paparazzo charge→shutter, Conductor train,
+  Bear Hug squeaks, Bog Hands gurgle, Imps giggle, Lullaby Saint song as a
+  positional loop within 300 px (drowsiness radius 170 px; old bells cue removed),
+  frog-curse croak loop. Survivor grunt on hit, gasp when held/downed, sneeze per
+  Puffball `achoo`, scissors snip, helicopter rotor over the landing zone during the
+  radio-rescue hold-out.
+- New `CampSoundscape.broadcast`: host-only events (all `CreatureBrain.cue`, item
+  sounds, stalker grab/frenzy, lock rattle) are played on the host and logged
+  with ids in the snapshot; clients replay each id once. Survivor voice/loop
+  sounds are inferred from replicated state on each peer.
+
+**Interface.** Tab notebook (`scripts/ui/notebook.gd`) replaces the overlapping
+pack/chart: MAP, ESCAPE PLAN, FIELD GUIDE, LOG views in one bounded panel
+(y 44–148) clear of belt, location and prompt. Tab pages forward and closes after
+LOG, Shift+Tab back, Esc closes before pausing, Z zooms/turns topic, T opens the
+plan or cycles routes, mouse clicks tabs/routes/topics. Online the header says the
+world keeps moving; offline Tab still does not pause (unchanged policy).
+
+- Map rewritten (`camp_chart.gd`): one uniform scale with letterboxing (G06),
+  local woods view or whole woods, objective markers from **live** pickups for the
+  selected route (installed/carried parts disappear, dropped parts show where they
+  lie, G03), teammates and downed teammates (G04), escape destination diamond,
+  pins, help pings, edge arrows for off-map markers, region names last and only
+  when they fit. Map works on every route (G05). Same discovery rules as before.
+- Field guide content (`scripts/ui/field_guide.gd`) shared by the title screen
+  and notebook; keys read from the InputMap; obsolete rules removed (G07).
+- Moon dial (`moon_dial.gd`): new until Nightfall, waxes as the cloud gap runs
+  down, full and glowing with a run-down ring while out, red under Blood Moon.
+  `moon_clock`/`moon_span` now replicate. Replaces the old moon icon.
+- Phase titles and ranger radio transcript (`night_broadcast.gd`): ~2.75 s title
+  per phase (Dusk once), and a CH 9 strip where the radio's words crawl across
+  the screen after the static; kept in the notebook log. `NightClock.radio_text`
+  replicates. Titles shrink while held/downed.
+- World fixes: duplicate Logging/Boathouse/Ranger titles removed (one owner,
+  with outline); "MOTOR / HEAVY CARRY" only when the boat route is on and the
+  motor still lies there; "E / RARE TOOL" removed once searched; faded killer's
+  shadow fades; pickup piles label once ("FLARE ×3", "SUPPLIES ×N").
+- README header image (deleted werewolf screenshot) replaced by a stalker
+  calling-card frame from the existing clip.
+
+Not done from the reviews: building-name/roof readability, shared skyline
+label compositor, region-entry titles, landmark silhouettes, the second sound
+batch (snore, tin rattle, UI clicks, flare ignition, thread snap) and a separate
+UI-resolution canvas. Structured objective model (plan slice 2) is partial: the
+map derives state from live pickups/inventories; plan text is still the
+existing per-route text.
+
+Verification: import and five-frame startup exit 0 with no engine errors or
+warnings. `python3 tools/verify.py` (headless, 179 steps incl. every parse
+check and all integration suites, plus new `sound_feedback`) all passed; the
+only warning was `woods_playthrough`: 2 leaked ObjectDB instances at exit, which
+`--verbose` identifies as the synthesized camp-song `AudioStreamWAV` and its
+playback. The same warning reproduces on the previous commit (24480a8, clean
+worktree), and appears intermittently in `offline_playthrough` (1 of 3 runs), so
+it is pre-existing and timing-dependent, not fixed here. After a later Shift+Tab
+fix (caught by the new test: it read global key state instead of the event's
+modifier), `notebook` (21 checks), `offline_playthrough` (132) and `menu_smoke`
+(37) passed. Other suites were not rerun after that one-line input change.
+`sound_feedback`: 27 checks. `audio_polish`: 117. `monster_revamp`: 140.
+Graphical captures (`tools/capture_notebook.gd` with `--all-escapes` and
+`--blood-moon`, `tools/capture_world_review.gd`) exited 0; images were opened and
+inspected; staging is labelled in [notebook evidence](evidence/notebook/README.md).
+`python3 tools/verify.py --graphical` was not run. No co-op session, window-size
+matrix, listening/mix check or human comprehension test was run. `git diff
+--check` passed.
+
 ## 2026-10-18 — World graphics critique, phase titles and sound recording gaps
 
 User requested a broader graphics/label review, discussion of dramatic phase

@@ -108,8 +108,7 @@ func _clue_checks() -> void:
 	await _frames(2)
 	_check(level.hud.inventory_label.text.contains("(CACHE MAPPED)"), "pack_marks_mapped_cache")
 	if capture:
-		level.hud.inventory_label.visible = true
-		level.hud.chart.visible = true
+		level.hud.notebook.open_view("map")
 		await _snapshot("clue_pack")
 
 

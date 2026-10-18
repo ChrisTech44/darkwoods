@@ -171,8 +171,7 @@ func _captures() -> void:
 	player.position = NavigationServer2D.map_get_closest_point(level.get_world_2d().navigation_map, player.position)
 	await _frames(6)
 	await _snapshot("nav_skyline")
-	level.hud.inventory_label.visible = true
-	level.hud.chart.visible = true
+	level.hud.notebook.open_view("map")
 	await _frames(4)
 	await _snapshot("nav_field_map")
 

@@ -1,0 +1,2 @@
+{"accepted_cues":{"air_horn":1,"broadcast":1},"check":"air_horn","used":true}
+{"accepted_cues":{"bear_trap":1,"chain_rattle":1,"grunt":1,"snare":1},"check":"bear_trap","placed":true,"snared":4.0}

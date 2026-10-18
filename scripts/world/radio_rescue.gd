@@ -204,7 +204,7 @@ func show_in_pack(_actor: CampPlayer) -> bool:
 
 
 func pack_text() -> String:
-	return "RADIO RESCUE · T NEXT PLAN\n%s FUSE / FLOODED MILL → NORTH SUBSTATION\n%s RELAY EAST / HOLD E 6s TO TRANSMIT\nCHAPEL SOUTH / 3 FLARES: %d/3 LIT\nE AT CIRCLE: START 40s HOLD / DOWNED TEAM RESCUED" % ["✓" if powered else "·", "✓" if transmitted else "·", signals.count(true)]
+	return "RADIO RESCUE\n%s FUSE / FLOODED MILL → NORTH SUBSTATION\n%s RELAY EAST / HOLD E 6s TO TRANSMIT\nCHAPEL SOUTH / 3 FLARES: %d/3 LIT\nE AT CIRCLE: START 40s HOLD / DOWNED TEAM RESCUED" % ["✓" if powered else "·", "✓" if transmitted else "·", signals.count(true)]
 
 
 func snapshot() -> Dictionary:

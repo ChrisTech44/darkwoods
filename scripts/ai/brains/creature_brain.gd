@@ -57,10 +57,11 @@ func announce(text: String, recipient: CampPlayer = null) -> void:
 		world.announce(text, recipient)
 
 
-func cue(name: String, volume: float = 0.0, pitch: float = 1.0) -> void:
+## Host-side: every peer hears it once (see CampSoundscape.broadcast).
+func cue(name: String, volume: float = 0.0, pitch: float = 1.0, length: float = 0.0) -> void:
 	var world: Node = level()
 	if world != null and world.soundscape != null:
-		world.soundscape.play_cue(name, body.global_position, volume, pitch)
+		world.soundscape.broadcast(name, body.global_position, volume, pitch, length)
 
 
 ## Walk the creature's patrol circuit at `speed`.

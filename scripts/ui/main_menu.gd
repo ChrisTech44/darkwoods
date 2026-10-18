@@ -65,6 +65,7 @@ func _ready() -> void:
 	$Menu/RandomNight.toggled.connect(_random_toggled)
 	_random_toggled(true)
 	controls_button.pressed.connect(_show_controls)
+	_build_guide()
 	$Menu/Play.pressed.connect(_play)
 	back_button.pressed.connect(_hide_controls)
 	$Menu/Quit.pressed.connect(_quit)
@@ -151,6 +152,33 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("pause") and $SettingsPanel.visible:
 		_hide_settings()
 		get_viewport().set_input_as_handled()
+
+
+## The field guide shares FieldGuide with the in-game notebook: topic buttons
+## (keyboard focusable) above one text block.
+func _build_guide() -> void:
+	var content: VBoxContainer = $ControlsPanel/Margin/Content
+	var topics := HBoxContainer.new()
+	topics.name = "Topics"
+	topics.add_theme_constant_override("separation", 2)
+	content.add_child(topics)
+	content.move_child(topics, 1)
+	var page := $ControlsPanel/Margin/Content/Bindings as Label
+	page.add_theme_font_size_override("font_size", 8)
+	page.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	page.custom_minimum_size = Vector2(290, 96)
+	page.add_theme_constant_override("line_spacing", -2)
+	$ControlsPanel/Margin/Content/Note.hide()
+	for topic: String in FieldGuide.TOPICS:
+		if topic == "CREATURES":
+			continue
+		var button := Button.new()
+		button.text = topic
+		button.add_theme_font_size_override("font_size", 7)
+		button.focus_entered.connect(func() -> void: page.text = FieldGuide.text(topic))
+		button.pressed.connect(func() -> void: page.text = FieldGuide.text(topic))
+		topics.add_child(button)
+	page.text = FieldGuide.text("CONTROLS")
 
 
 func _show_controls() -> void:

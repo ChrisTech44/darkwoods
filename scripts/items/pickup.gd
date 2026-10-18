@@ -3,7 +3,15 @@ extends Node2D
 
 var kind: String = "battery"
 var locked: bool = false
-var available: bool = true
+var available: bool = true:
+	set(value):
+		if value == available:
+			return
+		available = value
+		# Neighbours re-title their pile ("FLARE ×3") when one appears or goes.
+		if is_inside_tree():
+			for other: CampPickup in get_parent().get_children().filter(func(node: Node) -> bool: return node is CampPickup and node != self and node.position.distance_to(position) < 40.0):
+				other.queue_redraw()
 
 
 func consume() -> void:
@@ -23,7 +31,7 @@ func _draw() -> void:
 		draw_texture(icon, (-icon.get_size() * 0.5).round())
 		if _labelled():
 			var title := "EMERGENCY FUSE" if kind == "rescue_fuse" else kind.trim_suffix("_1").trim_suffix("_2").replace("_", " ").to_upper()
-			draw_string(ThemeDB.fallback_font, Vector2(-16, -12), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("d8d0a8"))
+			draw_string(ThemeDB.fallback_font, Vector2(-16, -12), _pile_title(title), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("d8d0a8"))
 		return
 	if locked:
 		draw_rect(Rect2(-10, -9, 20, 16), Color("947b51"))
@@ -92,12 +100,29 @@ func _draw() -> void:
 		draw_circle(Vector2(-3, 0), 3, color)
 		draw_line(Vector2(-1, 0), Vector2(6, 0), color, 2)
 		draw_line(Vector2(5, 0), Vector2(5, 3), color, 2)
-	draw_string(ThemeDB.fallback_font, Vector2(-16, -12), kind.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, color)
+	if _labelled():
+		draw_string(ThemeDB.fallback_font, Vector2(-16, -12), _pile_title(kind.to_upper()), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, color)
 
 
-## One label per cluster: a stash of the same supply shows its name once.
+## Unlocked items lying within 40 px of this one (any kind).
+func _pile() -> Array:
+	return get_parent().get_children().filter(func(other: Node) -> bool:
+		return other != self and other is CampPickup and other.available and not other.locked and other.position.distance_to(position) < 40.0)
+
+
+## One label per pile, owned by its top-left item (ties broken by instance id),
+## so stacked or mixed supplies never print a word for every unit.
 func _labelled() -> bool:
-	for other in get_parent().get_children():
-		if other != self and other is CampPickup and other.available and other.kind == kind and other.position.x < position.x and other.position.distance_to(position) < 40.0:
+	for other: CampPickup in _pile():
+		if other.position.x < position.x or (other.position.x == position.x and (other.position.y < position.y or (other.position.y == position.y and other.get_instance_id() < get_instance_id()))):
 			return false
 	return true
+
+
+## "FLARE", "FLARE ×3" or, for a mixed pile, "SUPPLIES ×5".
+func _pile_title(title: String) -> String:
+	var pile := _pile()
+	if pile.is_empty():
+		return title
+	var same := pile.all(func(other: CampPickup) -> bool: return other.kind == kind)
+	return "%s ×%d" % [title if same else "SUPPLIES", pile.size() + 1]

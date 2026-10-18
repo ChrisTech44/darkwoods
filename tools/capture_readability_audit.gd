@@ -21,8 +21,7 @@ func _run() -> void:
 	level.night_clock.active = false
 	for enemy in get_nodes_in_group("killers"):
 		enemy.enabled = false
-	level.hud.inventory_label.show()
-	level.hud.chart.show()
+	level.hud.notebook.open_view("map")
 	await _shot("camp_van")
 	# Reproduce a stale map marker after an actual pickup consume + delivery.
 	for pickup in level.pickups:
@@ -38,10 +37,9 @@ func _run() -> void:
 	for index in range(1, level.plan.escape_options.size()):
 		level.objective_page = index
 		level.rescue.pack_selected = level.current_page() == "radio"
-		level.hud.chart.hide()
+		level.hud.notebook.open_view("plan")
 		await _shot("page_" + level.current_page())
-	level.hud.inventory_label.hide()
-	level.hud.chart.hide()
+	level.hud.notebook.close()
 	level.player.notice = "VAN ALARM! The STALKER tore out the SPARK PLUG and left it at the ABANDONED VILLAGE. It's pinned on your map."
 	level.player.notice_time = 30.0
 	await _shot("long_notice")

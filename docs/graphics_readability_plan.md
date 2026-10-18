@@ -1,7 +1,18 @@
 # Graphics audit and map/help overhaul
 
 18 October 2026. Status: audited baseline and proposed implementation plan.
-No gameplay graphics or menu redesign ships in this documentation increment.
+
+**Implementation update (later on 18 October):** slice 1 and most of slice 3
+shipped: a Tab notebook with Map / Escape Plan / Field Guide / Log views,
+bounded clear of the belt and prompt (G01, G02), live objective markers (G03),
+teammate and downed markers (G04), the map on every route (G05), one uniform map
+scale with local/whole-woods zoom (G06) and a shared, current field guide (G07).
+G08 is partly addressed: announcements persist in the Log and phase radio text
+has its own transcript strip; the bottom prompt still mixes news and help.
+Slice 2's full objective state model, marker selection/"track this objective",
+and the slice 4 matrix (peers, windows, human check) remain open. Evidence:
+[notebook captures](evidence/notebook/README.md). The rest of this document is
+the original audit; its "current" statements describe the baseline.
 
 Follow-up: [world graphics and presentation review](world_graphics_review.md)
 extends this audit to all major region types and camp buildings, confirms duplicate

@@ -22,8 +22,8 @@ func fears_flare() -> bool:
 func physics(delta: float) -> bool:
 	bell -= delta
 	if body.state == CampKiller.State.CHASE and bell <= 0.0:
-		bell = 3.0
-		cue("bells", -4.0, 1.4)
+		bell = 4.0
+		cue("train", -4.0)
 	return false
 
 
@@ -42,7 +42,7 @@ func contact(actor: CampPlayer) -> bool:
 		actor.global_position = reachable(yard + Vector2(randf_range(-60, 60), randf_range(-40, 40)))
 		world.announce("NO TICKET! The Conductor sends you packing to the Rail Yard.", actor)
 	actor.add_effect("whiteout", 0.6)
-	world.soundscape.play_cue("car_start", whoosh, 0.0, 1.5)
+	world.soundscape.broadcast("train", whoosh, 2.0, 1.1)
 	# He rides on and alights at the far end of his line.
 	body.global_position = body.patrol[(body.patrol_index + body.patrol.size() / 2) % maxi(1, body.patrol.size())] if not body.patrol.is_empty() else body.global_position
 	body.visible_target = null

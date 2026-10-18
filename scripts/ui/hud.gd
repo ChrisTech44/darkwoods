@@ -27,6 +27,11 @@ var supplies_label: Label
 var voice_label: Label
 ## F6 active ability state, e.g. "X MARK READY · H GIVE".
 var ability_label: Label
+## Tab notebook (map, plan, guide, log); owns `chart` and `inventory_label`.
+var notebook: CampNotebook
+var moon_dial: MoonDial
+## Phase titles and the ranger radio transcript.
+var broadcast: NightBroadcast
 
 
 func _ready() -> void:
@@ -46,7 +51,8 @@ func _ready() -> void:
 	ui_theme.set_stylebox("panel", "PanelContainer", style)
 	root.theme = ui_theme
 	add_child(root)
-	title = _label(Vector2(9, 6), Vector2(366, 15), 10)
+	title = _label(Vector2(9, 6), Vector2(346, 15), 10)
+	title.clip_text = true
 	for index in range(6):
 		var slot := _label(Vector2(9 + index * 61, 150), Vector2(59, 17), 7)
 		slot.add_theme_stylebox_override("normal", CampStyle.art("ui_slot", 6, 3, CampStyle.box("101e22ee", "63705b", 2)))
@@ -110,11 +116,20 @@ func _ready() -> void:
 	inventory_label.add_theme_stylebox_override("normal", CampStyle.art("ui_panel", 9, 10, pack_style))
 	location_label = _label(Vector2(9, 169), Vector2(366, 12), 8)
 	location_label.add_theme_color_override("font_color", Color("c3c6a1"))
-	inventory_label.hide()
 	chart = preload("res://scripts/ui/camp_chart.gd").new()
-	chart.position = Vector2(216, 46)
-	chart.size = Vector2(154, 112)
 	root.add_child(chart)
+	broadcast = NightBroadcast.new()
+	broadcast.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.add_child(broadcast)
+	notebook = CampNotebook.new()
+	notebook.position = Vector2(4, 44)
+	notebook.size = Vector2(376, 104)
+	root.add_child(notebook)
+	notebook.adopt(chart, inventory_label)
+	moon_dial = MoonDial.new()
+	moon_dial.position = Vector2(361, 3)
+	moon_dial.size = Vector2(18, 18)
+	root.add_child(moon_dial)
 	pause_panel = _panel("PAUSED", "Esc to resume", false)
 	pause_panel.hide()
 	result_panel = _panel("ROUND OVER", "", true)

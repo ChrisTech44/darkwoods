@@ -49,6 +49,10 @@ var stolen := ""
 const MOON_SECONDS := 35.0
 var moon := false
 var moon_clock := 150.0
+## Length of the current moon interval (cloud gap or time out), for the HUD dial.
+var moon_span := 150.0
+## What the ranger radio said at the latest phase change (shown as a transcript).
+var radio_text := ""
 
 
 func _ready() -> void:
@@ -278,6 +282,7 @@ func _enter_phase(next: int) -> void:
 		var where: String = level.plan.region_name(kind) if known >= 1 else "the %s woods (find a ranger note)" % level.plan.cache_direction.get(kind, "")
 		clue += " %s stashed at %s." % [kind.replace("_", " ").to_upper(), where if not where.is_empty() else "camp"]
 	var warning := " The creatures no longer fear the camp: it is not safe now." if next == 2 else ""
+	radio_text = "%s Supply drop at Maintenance.%s" % [clue.strip_edges() if not clue.is_empty() else "Stay together.", warning]
 	level.announce("%s. Ranger radio:%s Supply drop at Maintenance.%s" % [PHASES[next], clue if not clue.is_empty() else " stay together.", warning])
 	print(JSON.stringify({"event": "night_phase", "phase": PHASES[next], "time": int(elapsed), "revealed": revealed}))
 
@@ -364,13 +369,14 @@ func set_moon(out: bool) -> void:
 	# Blood Moon: the clouds part far more often.
 	var gap := Vector2(70.0, 110.0) if level.plan.has_modifier("blood_moon") else Vector2(150.0, 220.0)
 	moon_clock = MOON_SECONDS if out else rng.randf_range(gap.x, gap.y)
+	moon_span = moon_clock
 	if out:
 		level.announce("THE MOON BREAKS THROUGH THE CLOUDS. Something out there is changing.")
 	print(JSON.stringify({"event": "night_moon", "out": out, "time": int(elapsed)}))
 
 
 func snapshot() -> Dictionary:
-	return {"elapsed": elapsed, "phase": phase, "phase_elapsed": phase_elapsed, "dread": dread, "storm": storm_remaining, "blackout": blackout, "lightning": lightning, "moon": moon}
+	return {"elapsed": elapsed, "phase": phase, "phase_elapsed": phase_elapsed, "dread": dread, "storm": storm_remaining, "blackout": blackout, "lightning": lightning, "moon": moon, "moon_clock": moon_clock, "moon_span": moon_span, "radio": radio_text}
 
 
 func restore(state: Dictionary) -> void:
@@ -382,3 +388,6 @@ func restore(state: Dictionary) -> void:
 	blackout = state["blackout"]
 	lightning = state["lightning"]
 	moon = state.get("moon", false)
+	moon_clock = state.get("moon_clock", moon_clock)
+	moon_span = state.get("moon_span", moon_span)
+	radio_text = state.get("radio", radio_text)

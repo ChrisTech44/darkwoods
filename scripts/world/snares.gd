@@ -64,7 +64,6 @@ func advance(delta: float) -> void:
 				if kind() == "bear_trap":
 					actor.invulnerability = 0.0
 					actor.receive_hit(BEAR_TRAP_BITE)
-					level.soundscape.play_cue("metal_clang", snare["position"], 6.0, 0.8)
 					level.announce("SNAP! A BEAR TRAP bites your leg. A teammate can pry it open (E).", actor)
 				else:
 					level.announce("SNARED! The trap rattles. A teammate can free you (E); otherwise it gives in 4s.", actor)

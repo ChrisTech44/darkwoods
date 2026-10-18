@@ -4,6 +4,16 @@
 headless cue-count diagnostics. No listening, mixing, real-microphone or network
 audio acceptance is claimed. No new sound files or playback changes ship here.
 
+**Implementation update (later on 18 October):** the user supplied 17 files. The
+air horn, bear-trap duplicate, sneeze, dog bark/whine, camera charge/shutter,
+train, squeaky toy, mud gurgle, lullaby, frog croak, giggle, survivor
+hurt/grab/down, scissors and rescue helicopter are now wired (trimmed and
+levelled; see the [audio README](../assets/audio/README.md#18-october-2026-sound-pack)).
+Host creature/item cues now reach clients once through a snapshot sound log.
+Still missing: whistle recording, thread snap, snore, noise-tin rattle,
+flashlight/pickup/install/flare UI-feedback sounds, phase stingers, revive.
+Mix balance remains unjudged by ear; two-machine playback was not tested.
+
 ## Reviewer's assessment
 
 The atmosphere already has substantial coverage: woods/bog beds, campfire, rain,

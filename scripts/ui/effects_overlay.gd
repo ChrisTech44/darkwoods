@@ -26,11 +26,7 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if player == null or not is_instance_valid(player):
 		return
-	# The moon is out: werewolves are changing (top right, under the title row).
-	var world: Node = player.get_tree().get_first_node_in_group("round_world")
-	if world != null and world.night_clock != null and world.night_clock.moon:
-		var glow := 0.75 + 0.25 * sin(Time.get_ticks_msec() * 0.004)
-		PixelArt.draw_in(self, "moon_icon", Rect2(size.x - 24, 22, 14, 14), Color(1, 1, 1, glow))
+	# The moon is shown by the HUD MoonDial (top right).
 	if player.status != CampPlayer.Status.ALIVE:
 		return
 	var screen := Rect2(Vector2.ZERO, size)

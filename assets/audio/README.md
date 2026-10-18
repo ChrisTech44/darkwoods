@@ -108,10 +108,44 @@ to loop cleanly; everything else is unchanged and gain-balanced at runtime.
 | `monster_scream_10.mp3` | `monster_10` | Switchback Hound |
 
 The listed van/gift/pyre/snare/prop state edges are inferred locally from
-replicated state. Some creature-specific sounds still originate directly in host
-AI; do not infer complete exactly-once remote event coverage from this table.
-One host bear-trap activation currently requests `metal_clang` twice; see the
-[diagnostic and integration work](../../docs/sound_gap_review.md#playback-defects-and-integration-work).
+replicated state. Host-only events (creature attacks, item use) now go through
+`CampSoundscape.broadcast`: played on the host and logged with an id in the
+snapshot (`sounds`, kept 2 s), and each client replays each id once. This is
+verified by a local replay test, not by a two-machine listening session.
+
+## 18 October 2026 sound pack
+
+Seventeen user-supplied files (provenance pending documentation, as above).
+**All were edited**: the left channel was taken as mono (summing to mono
+cancelled some of the stereo files: the grunt went almost silent), silent
+heads/tails and over-long takes were cut, and each file was levelled to about
+−20 dB mean with peaks at or below −1.4 dBFS (MP3 128 kbps). Runtime `gain_db`
+then sets the mix by role (alarms loudest, creature tells about −28 to −31 dB
+effective like the existing calls, frequent sounds quieter). Originals were not
+committed. Commands are in the [development log](../../docs/development_log.md).
+
+| File | Cue | Edit | Playback |
+| --- | --- | --- | --- |
+| `air_horn.mp3` | `air_horn` | 1.62 s (tail cut) | Air horn use, heard to 1,500 px; was silent before |
+| `bear_trap.mp3` | `bear_trap` | 0.47 s (tail cut) | Stalker bear trap: one snap per trap from the replicated snare edge (the direct second `metal_clang` was removed). Groundskeeper rake snares keep a lighter `metal_clang` |
+| `bubbling_gurgle.mp3` | `bog_gurgle` | 3.0 s of 7.8 s | Bog Hands grab and drag-under; also their creature call |
+| `camera_shutter.mp3` | `camera_shutter` | lead cut | The Paparazzo's flash |
+| `charging_noise_camera.mp3` | `camera_charge` | 1.08 s of 4.7 s, rising fade-in | The Paparazzo's 1 s wind-up, cut at the shot |
+| `dog_barking.mp3` | `dog_bark` | 0.80 s | Buster's alarm bark and creature call |
+| `dog_whining.mp3` | `dog_whine` | first 3.5 s of 11.6 s | Buster befriended with rations |
+| `frog_croak_loop.mp3` | `frog_croak` | loop re-cut 0.10–8.0 s | Positional loop on any frog-cursed survivor |
+| `giggle.mp3` (from `giggle_use_first_half_only.mp3`) | `giggle` | first half, 0.95 s | Toadstool Imps (replaces pitched `witch_cackle`) |
+| `helicoptor_rotor_loop.mp3` | `helicopter` | none | Rotor loop over the landing zone during the radio-rescue hold-out |
+| `scissor_snip_single.mp3` | `scissors` | lead cut | Scissors cutting a Seamstress thread |
+| `single_gasp.mp3` | `gasp` | 0.57 s | A survivor grabbed/held, or downed (lower) |
+| `single_grunt.mp3` | `grunt` | 0.58 s (0.57 s lead silence cut) | A survivor taking a hit |
+| `sneeze.mp3` | `sneeze` | 0.73 s (0.8 s tail cut) | Each Puffball sneeze, pitched up (helium) |
+| `squeaky_toy_single.mp3` | `squeak` | none | Bear Hug's footsteps, its hug and its call |
+| `strange_lullaby.mp3` | `lullaby` | 0.30–38.36 s | Positional loop while a Lullaby Saint is within 300 px (its drowsy radius is 170 px) |
+| `train_sound.mp3` | `train` | none | The Conductor's call and his whisk-away |
+
+Survivor grunts/gasps/sneezes and the frog and lullaby loops are inferred from
+replicated state on every peer. Listening balance has not been judged by ear.
 
 ## Wish list (monster revamp)
 
@@ -122,16 +156,11 @@ or self-recorded MP3s; drop them in this folder and they can be wired into
 
 | Wanted | Used for | Stand-in now |
 | --- | --- | --- |
-| A man whistling *Row, Row, Row Your Boat* slowly (and a faster take) | The stalker's camp song | Synthesised whistle (`scripts/ai/camp_song.gd`) |
-| A big dog barking, and a friendly whine | Buster's alarm bark; Buster as a friend | `monster_10` pitched up |
-| A sneeze ("achoo!") | Puffball spores | none (noise only) |
-| High-pitched giggling | Toadstool Imps | `witch_cackle` pitched up |
-| A camera shutter and flash whine | The Paparazzo | `screech_4` and `metal_clang` pitched |
-| A train bell and a short steam whistle | The Conductor | `bells` and `car_start` pitched |
-| A squeaky toy footstep | Bear Hug | `footstep` pitched up |
-| Mud gurgle / sucking | Bog Hands | `swamp` |
-| A soft hymn or choir hum | The Lullaby Saint | `bells` pitched down |
-| A frog croak | Frog curse | none |
-| Thread whip / snap | The Seamstress | `monster_7` pitched |
-| Bear trap snap | Stalker's bear traps | `metal_clang` |
-| Air horn blast | The air horn item | none (noise only) |
+| A man whistling *Row, Row, Row Your Boat* slowly (and a faster take) | The stalker's camp song | Still the synthesised whistle (`scripts/ai/camp_song.gd`) |
+| Thread whip / snap | The Seamstress | Still `monster_7` pitched |
+| A snore | Lullaby Saint sleepers | None (AI noise only) |
+| Noise-tin rattle, flashlight click, pickup / part-installed, flare ignition | Items and light | None yet ([review](../../docs/sound_gap_review.md)) |
+
+Delivered on 18 October (see the table above): dog bark/whine, sneeze, giggle,
+camera shutter/charge, train, squeaky toy, mud gurgle, lullaby, frog croak,
+bear trap, air horn, plus a gasp, a grunt, scissors and a helicopter.

@@ -14,7 +14,7 @@ and get your friends out together.
 
 | Something in the woods | The Signal Fire finale |
 | --- | --- |
-| ![A werewolf looming over a survivor in the flashlight beam](docs/screenshots/woods_werewolf.png) | ![A survivor holding out beside a blazing signal pyre](docs/screenshots/signal_fire.png) |
+| ![A survivor turns their flashlight back and finds "I SEE YOU" scrawled on the trail behind them](docs/screenshots/stalker_calling_card.png) | ![A survivor holding out beside a blazing signal pyre](docs/screenshots/signal_fire.png) |
 
 ## Contents
 
@@ -81,7 +81,7 @@ you can follow the action; real nights are darker.
 | The moon comes out | A moth on your face |
 | --- | --- |
 | ![A friendly hiker turns into a werewolf when the moon appears; a flare drives it back](docs/clips/werewolf_moon.gif) | ![A lantern moth lands on the survivor's face, covering the screen, and a flashlight burst swats it off](docs/clips/moth_face.gif) |
-| The lost hiker is harmless... until the moon breaks through (watch the moon icon). Then hide, throw wolfsbane, or a flare. | It flies to your light and settles over your eyes, drinking your battery. **Space** swats it off. |
+| The lost hiker is harmless... until the moon breaks through (watch the moon dial, top right). Then hide, throw wolfsbane, or a flare. | It flies to your light and settles over your eyes, drinking your battery. **Space** swats it off. |
 
 | A storm rolls in | Slam the door... until it breaks |
 | --- | --- |
@@ -171,11 +171,13 @@ editor). Python is optional. More detail:
 
    ![The camp](docs/screenshots/mess_hall.png)
 
-5. **Open your pack (Tab).** It lists every part you still need and where it
-   is, plus a field map that fills in as you explore. **T** flips between
-   tonight's escape plans.
+5. **Open your notebook (Tab).** The **map** shows where you are, your next
+   step, teammates and every part you know about, where it actually lies now;
+   **Z** switches between the area around you and the whole woods. Press Tab
+   again for the **escape plan** (**T** flips between tonight's routes), the
+   **field guide** and a **log** of everything announced so far. **Esc** closes it.
 
-   ![Pack, clues and field map](docs/screenshots/woods_field_notes.png)
+   ![The notebook map: local woods, next step and legend](docs/screenshots/notebook_map.png)
 
 6. **Head into the woods.** Leave camp by one of its four exits. Your
    **flashlight (F)** drains in the woods; **R** swaps in a spare battery.
@@ -230,10 +232,29 @@ editor). Python is optional. More detail:
 | **B** (hold) | Push to talk, when voice is set to push-to-talk in co-op |
 | **X** | Use your survivor's ability |
 | **H** | Hand the held supply to an adjacent teammate |
-| **Tab** | Toggle pack, objective clues, and field map |
+| **Tab** | Notebook: Map → Escape Plan → Field Guide → Log → close (**Shift+Tab** goes back, **Esc** closes, the mouse can click tabs) |
+| **Z** | In the notebook: map around you / whole woods; next field-guide topic |
 | **Esc** | Solo: pause/resume. Co-op: local menu; the shared world continues. |
 
-**T** cycles tonight's escape plans (the van and the rumoured escape) in the Tab pack.
+**T** opens the escape plan, and with the notebook open cycles tonight's escape
+plans (the van and the rumoured escape). The map then marks that route's goal.
+The world keeps running while the notebook is open (offline too; use Esc to pause).
+
+### Moon dial and ranger radio
+
+The **moon dial** (top right) is dark until Nightfall, then waxes toward full
+as the clouds thin: a fuller moon means the moon is about to break through. When
+it is out the dial glows, with a ring that runs down until the clouds return;
+werewolves change while it is out. On a **Blood Moon** night the dial is red.
+
+![A red Blood Moon dial waxing toward full](docs/screenshots/blood_moon_dial.png)
+
+At each new phase a short title (NIGHTFALL, DEEP NIGHT...) appears, and the
+**ranger radio**'s message crawls across a strip under the top bar while the
+static and chatter play, so you can read what was said. It is also kept in
+the notebook's Log.
+
+![The ranger radio transcript crawling across the screen](docs/screenshots/radio_transcript.png)
 
 ## How to win (and lose)
 
@@ -489,8 +510,8 @@ remains available; the first extraction to finish ends the round.
    outside the circle, hidden survivors and van passengers are left behind by
    radio rescue. If nobody standing reaches the circle, the round is lost.
 
-Press **T** to cycle **Van → Radio → Boat → Ranger Gate** plans; **Tab** closes
-field notes. Quick Camp keeps its van-only escape.
+Press **T** to cycle tonight's plans (the van and that night's rumoured
+escape) in the notebook; **Esc** closes it. Quick Camp keeps its van-only escape.
 
 | North Power Substation | East Radio Relay Station |
 | --- | --- |
@@ -921,6 +942,17 @@ generator all have their own sounds, and owls, wind and stranger things call out
 in the woods now and then. Ten creatures that used to share screeches now have
 their own voices.
 
+**New in the 18 October sound pack:** the **air horn** finally honks; the
+stalker's **bear traps snap** (once, not twice); survivors **grunt** when hit and
+**gasp** when grabbed or downed; Puffball spores make you **sneeze**; Buster
+**barks** (and **whines** happily when fed); the Paparazzo's camera **charges**
+then **clicks**; the Conductor's **train** whistles; Bear Hug **squeaks** as it
+follows you; the Bog Hands **gurgle**; the imps **giggle**; the Lullaby Saint
+**sings** (you hear its lullaby before you're close enough to nod off); a
+frog-cursed survivor **croaks**; scissors **snip** a Seamstress thread; and a
+**helicopter** hovers over the landing zone during a radio rescue. In co-op
+these play once for every player, not just the host.
+
 The supplied MP3s now provide forest/bog ambience, a positional campfire,
 restrained music, surface-specific walking/running sounds, a call for every
 creature species, pursuit heartbeat, a ranger-radio broadcast (static, then
@@ -1031,7 +1063,7 @@ a complete automated expedition with all enemies active.
 
 | Dark woods and flashlight | Field notes and explored trails |
 | --- | --- |
-| ![A narrow flashlight beam reveals trees in otherwise dark woods](docs/screenshots/woods_light_on.png) | ![Five-part objective clues beside the partially explored woods map](docs/screenshots/woods_field_notes.png) |
+| ![A narrow flashlight beam reveals trees in otherwise dark woods](docs/screenshots/woods_light_on.png) | ![The notebook escape plan: route list and the radio rescue steps](docs/screenshots/notebook_plan.png) |
 
 
 | Abandoned village | Witch's bog | Old graveyard |

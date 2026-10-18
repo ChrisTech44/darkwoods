@@ -122,7 +122,7 @@ func strike(actor: CampPlayer) -> bool:
 	shake_clock = SHAKE_EVERY
 	body.carrying = true
 	body.attack_remaining = body.hit_cooldown
-	world.soundscape.play_cue("chain_rattle", body.global_position, 4.0)
+	world.soundscape.broadcast("chain_rattle", body.global_position, 4.0)
 	world.announce("THE %s THROWS YOU OVER HIS SHOULDER! Mash E; teammates: flash him, flare, or the air horn." % body.headline.to_upper(), actor)
 	return true
 
@@ -171,7 +171,7 @@ func humiliated() -> void:
 	body.frenzy = FRENZY_SECONDS
 	var world: Node = level()
 	if world != null:
-		world.soundscape.play_cue("screech_3", body.global_position, 10.0, 0.6)
+		world.soundscape.broadcast("screech_3", body.global_position, 10.0, 0.6)
 		world.announce("THE %s SCREAMS. HE'S IN A FRENZY!" % body.headline.to_upper())
 
 

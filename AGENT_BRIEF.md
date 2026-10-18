@@ -20,9 +20,11 @@ That document is an implementation backlog, not a claim that the overhaul shippe
 Follow-up priorities are recorded in the [world graphics review](docs/world_graphics_review.md)
 and [sound gap/recording review](docs/sound_gap_review.md): world label ownership,
 lighting/overlap, phase-title presentation, missing audible feedback and duplicate
-trap playback. These remain reviewed proposals/defects, not completed fixes.
-This increment captures the existing build and documents findings; it does not
-change gameplay or implement the proposed interface.
+trap playback. The later 18 October increment implemented the Tab notebook
+(map/plan/guide/log), live map markers, shared field guide, moon dial, phase
+titles with a ranger-radio transcript, the duplicate-label/painted-state fixes
+and a trimmed, levelled 17-file sound pack (air horn and single bear-trap snap
+fixed). Open items are listed at the top of each review and in the log.
 
 ## Product requirements
 

@@ -40,7 +40,7 @@ func physics(delta: float) -> bool:
 			victim.health = 0.0
 			victim.set_status(CampPlayer.Status.DOWNED)
 			announce("The bog hands DRAG YOU UNDER!", victim)
-			cue("swamp", 6.0, 0.7)
+			cue("bog_gurgle", 4.0, 0.75)
 		return true
 	sinking = 0.0
 	if rest > 0.0 or _flare_near():
@@ -48,7 +48,7 @@ func physics(delta: float) -> bool:
 	for actor in survivors():
 		if actor.global_position.distance_to(body.global_position) <= GRAB_RADIUS and not actor.has_effect("held") and actor.knock.length() < 30.0:
 			body.hold(actor, display_name, 1.0 / 12.0)
-			cue("swamp", 4.0, 1.2)
+			cue("bog_gurgle", 2.0, 1.1)
 			announce("HANDS GRAB YOUR ANKLES! Mash E, or a teammate holds E to pull you out.", actor)
 			break
 	return true

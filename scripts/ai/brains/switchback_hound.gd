@@ -67,7 +67,7 @@ func physics(delta: float) -> bool:
 func _bark(at: CampPlayer) -> void:
 	bark_cooldown = 7.0
 	barking = 1.2
-	cue("monster_10", 6.0, 1.5)
+	cue("dog_bark", 4.0)
 	var world: Node = level()
 	if world != null:
 		world.killer.hear_stimulus(at.global_position, INF)
@@ -113,6 +113,7 @@ func bait(actor: CampPlayer) -> bool:
 	dragging = null
 	body.visible_target = null
 	body.transition(CampKiller.State.PATROL)
+	cue("dog_whine", 0.0, 1.0, 3.5)
 	announce("Buster gobbles the food and wags his tail. Good boy! (60 s)", actor)
 	return true
 

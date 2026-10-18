@@ -28,4 +28,5 @@ func _draw() -> void:
 			if actor.flashlight_on and actor.status in [CampPlayer.Status.ALIVE,CampPlayer.Status.DOWNED] and actor.position.distance_to(anchor)<230 and actor.position.direction_to(anchor).dot(actor.facing)>0.4 and level.clear_path(actor.position,anchor):
 				brightness = maxf(brightness,0.9)
 		self_modulate = Color(brightness,brightness,brightness)
-		FieldEscapeArt.draw_structure(self,zone,escapes.gate_powered,escapes.gate_open,escapes.pulse)
+		var motor_waiting: bool = index == 11 and escapes.boat_enabled and level.pickups.any(func(pickup: CampPickup) -> bool: return pickup.available and pickup.kind == "outboard_motor" and zone["bounds"].has_point(pickup.global_position))
+		FieldEscapeArt.draw_structure(self,zone,escapes.gate_powered,escapes.gate_open,escapes.pulse,motor_waiting)

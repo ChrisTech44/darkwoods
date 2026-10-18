@@ -96,9 +96,9 @@ func _boat_checks() -> void:
 		await _snapshot("boathouse",level.plan.woods.zones[12]["position"]+Vector2(0,100),Vector2(90,-24),0.75)
 		await _snapshot("logging",level.plan.woods.zones[11]["position"],Vector2(0,-35),0.8)
 		level.objective_page=2
-		level.hud.inventory_label.show()
+		level.hud.notebook.open_view("plan")
 		await _snapshot("boat_plan",goal,Vector2.ZERO,1)
-		level.hud.inventory_label.hide()
+		level.hud.notebook.close()
 	field.advance(5.01)
 	_check(field.lake_tell>1.9 and not player.wounded,"lake_attack_has_two_second_visible_tell")
 	if capture:
@@ -183,9 +183,9 @@ func _gate_checks() -> void:
 	if capture:
 		await _snapshot("ranger_gate",field.gate_point,Vector2(0,-32),0.8)
 		level.objective_page=3
-		level.hud.inventory_label.show()
+		level.hud.notebook.open_view("plan")
 		await _snapshot("gate_plan",field.gate_point,Vector2.ZERO,1)
-		level.hud.inventory_label.hide()
+		level.hud.notebook.close()
 		await _snapshot("bridge",field.bridge,Vector2(0,-16),0.9)
 		await _atlas()
 	player.position=field.bridge

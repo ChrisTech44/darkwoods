@@ -418,7 +418,8 @@ func state_label() -> String:
 
 
 func _draw() -> void:
-	draw_circle(Vector2(0, 2), 9, Color(0, 0, 0, 0.4))
+	# The ground shadow fades with the body (it used to stay dark during a fade).
+	draw_circle(Vector2(0, 2), 9, Color(0, 0, 0, 0.05 if faded else 0.4))
 	draw_stun(-50)
 	var row := 0
 	if absf(facing.x) > absf(facing.y):

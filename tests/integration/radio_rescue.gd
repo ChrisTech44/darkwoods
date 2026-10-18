@@ -105,9 +105,9 @@ func _run() -> void:
 	if capture:
 		await _snapshot("landing", rescue.landing, Vector2(0,-8), 0.9)
 		rescue.pack_selected = true
-		level.hud.inventory_label.show()
+		level.hud.notebook.open_view("plan")
 		await _snapshot("plan", rescue.landing, Vector2.ZERO, 1.0)
-		level.hud.inventory_label.hide()
+		level.hud.notebook.close()
 	var snapshot: Dictionary = rescue.snapshot()
 	rescue.powered = false
 	rescue.restore(snapshot)

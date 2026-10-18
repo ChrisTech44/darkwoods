@@ -160,6 +160,8 @@ func _draw() -> void:
 	for action in actions:
 		if action["used"]:
 			draw_string(ThemeDB.fallback_font, action["position"] + Vector2(-12, 10), "EMPTY", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("8b9b80"))
+	# One owner for the region title, with a dark outline so it reads on any floor.
+	draw_string_outline(ThemeDB.fallback_font, bounds.position + Vector2(8, bounds.size.y - 10), definition["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 9, 3, Color(0.02, 0.03, 0.03, 0.85))
 	draw_string(ThemeDB.fallback_font, bounds.position + Vector2(8, bounds.size.y - 10), definition["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("cbbc8e"))
 
 
@@ -200,7 +202,9 @@ func _draw_landmark(bounds: Rect2, center: Vector2) -> void:
 	if not PixelArt.draw_standing(self, "altar", center + Vector2(0, 12), 26):
 		draw_rect(Rect2(center-Vector2(16,12),Vector2(32,24)), Color("242f32"))
 		draw_circle(center,4,Color("e2d4a2"))
-	draw_string(ThemeDB.fallback_font, center+Vector2(-40,28), "E / RARE TOOL", HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("d9c799"))
+	# The painted hint goes once the landmark has been searched ("EMPTY" replaces it).
+	if not actions.any(func(action: Dictionary) -> bool: return action["used"]):
+		draw_string(ThemeDB.fallback_font, center+Vector2(-40,28), "E / RARE TOOL", HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("d9c799"))
 
 
 func _draw_biome_floor(kind: String, bounds: Rect2, center: Vector2) -> void:

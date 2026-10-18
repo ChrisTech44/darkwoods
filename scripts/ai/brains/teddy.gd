@@ -45,7 +45,7 @@ func physics(delta: float) -> bool:
 	if is_instance_valid(beloved):
 		if squeak <= 0.0:
 			squeak = 0.7
-			cue("footstep", -4.0, 1.9)
+			cue("squeak", 0.0, randf_range(0.9, 1.1))
 		if beloved.hidden_spot >= 0:
 			# It waits outside your hiding spot, patiently.
 			body.velocity = Vector2.ZERO
@@ -63,7 +63,7 @@ func _hug(actor: CampPlayer) -> void:
 	if actor.has_effect("held") or actor.invulnerability > 0.0:
 		return
 	body.hold(actor, display_name, 1.0 / 15.0)
-	cue("monster_7", 2.0, 0.6)
+	cue("squeak", 6.0, 0.7)
 	announce("BEAR HUG! Mash E to wriggle free (or a teammate flashes it).", actor)
 
 

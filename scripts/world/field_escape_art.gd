@@ -72,16 +72,18 @@ static func draw_site(canvas: Node2D, zone: Dictionary) -> void:
 		for side in [-1,1]:
 			for index in range(7):
 				PixelArt.draw_standing(canvas,"shrub",center+Vector2(side*170,-560+index*170),30)
-	canvas.draw_string(ThemeDB.fallback_font,bounds.position+Vector2(12,bounds.size.y-14),zone["label"],HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("cdbd95"))
+	# The region title is drawn once, by ForestSite (it used to be drawn here too, 4px off).
 
-static func draw_structure(canvas: Node2D, zone: Dictionary, powered: bool, opened: bool, pulse: float) -> void:
+## `motor_waiting`: the boat route is on tonight and its motor still lies at the camp.
+static func draw_structure(canvas: Node2D, zone: Dictionary, powered: bool, opened: bool, pulse: float, motor_waiting: bool = false) -> void:
 	var center: Vector2 = zone["position"]
 	match zone["kind"]:
 		"logging":
 			PixelArt.draw_standing(canvas,"f5_logging",center+Vector2(0,-65),145)
 			PixelArt.draw_standing(canvas,"waterwheel",center+Vector2(130,-80),72)
 			PixelArt.draw_standing(canvas,"scrap_pile",center+Vector2(-115,-70),64)
-			canvas.draw_string(ThemeDB.fallback_font,center+Vector2(-48,78),"MOTOR / HEAVY CARRY",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("e3c993"))
+			if motor_waiting:
+				canvas.draw_string(ThemeDB.fallback_font,center+Vector2(-48,78),"MOTOR / HEAVY CARRY",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("e3c993"))
 		"boathouse":
 			# A weathered raised timber shelter, with matching canoe racks and supply props.
 			PixelArt.draw_standing(canvas,"f5_boathouse",center+Vector2(170,80),130)

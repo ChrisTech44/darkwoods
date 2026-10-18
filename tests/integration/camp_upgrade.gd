@@ -117,12 +117,10 @@ func _tour() -> void:
 	player.facing = Vector2.UP
 	await _frames(20)
 	await _snapshot("upgrade_lakeshore")
-	level.hud.inventory_label.show()
-	level.hud.chart.show()
+	level.hud.notebook.open_view("map")
 	await _frames(2)
 	await _snapshot("upgrade_field_map")
-	level.hud.inventory_label.hide()
-	level.hud.chart.hide()
+	level.hud.notebook.close()
 	player.position = Vector2(360, 300)
 	player.facing = Vector2.RIGHT
 	player.flashlight_on = true

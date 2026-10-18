@@ -12,7 +12,7 @@ var van: CampVan
 var finished: bool = false
 var won: bool = false
 var escape_route: String = ""
-var message: String = "Search camp buildings. Tab shows where to find the supplies."
+var message: String = "Search camp buildings. Tab opens your notebook: map, plan and field guide."
 var message_time: float = 6.0
 var killer: CampKiller
 var revive_actor: CampPlayer
@@ -37,6 +37,8 @@ var plan := RoundPlan.new()
 var soundscape: CampSoundscape
 var sight: WoodsVisibility
 var pins: Array[Dictionary] = []
+## Host sound events for clients ({id, cue, at, gain, pitch, length, time}); see CampSoundscape.broadcast.
+var sound_log: Array[Dictionary] = []
 var night_clock: NightClock
 var objective_page := 0
 var escapes: FieldEscapes
@@ -206,6 +208,10 @@ func _ready() -> void:
 	hud.chart.van = van
 	hud.chart.plan = plan
 	hud.chart.level = self
+	hud.notebook.level = self
+	hud.notebook.online = get_node("/root/Net").active
+	hud.moon_dial.level = self
+	hud.broadcast.level = self
 	hud.effects_overlay.player = player
 	var skyline := Skyline.new()
 	skyline.level = self
@@ -279,13 +285,11 @@ func _process(_delta: float) -> void:
 	hud.inventory_label.text += rescue.pack_text() if plan.expedition and rescue.show_in_pack(player) else plan.pack_description(van.installed, night_clock.phase if plan.expedition else 3, clues)
 	var page := current_page()
 	if page in ["boat", "gate"]:
-		hud.inventory_label.text = "NIGHT %d · T NEXT PLAN / TAB CLOSE\n" % plan.seed_value + escapes.pack_text(page)
+		hud.inventory_label.text = "NIGHT %d\n" % plan.seed_value + escapes.pack_text(page)
 	elif page == "signal":
-		hud.inventory_label.text = "NIGHT %d · T NEXT PLAN / TAB CLOSE\n" % plan.seed_value + signal_fire.pack_text()
+		hud.inventory_label.text = "NIGHT %d\n" % plan.seed_value + signal_fire.pack_text()
 	if plan.expedition and page in ["van", "radio"]:
-		hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINT./%s WOODS BOX" % plan.toolbox_hint) + (" +BAR" if "crowbar" in player.inventory else "") + " · T NEXT / TAB CLOSE"
-	elif not plan.expedition:
-		hud.inventory_label.text += "\nM PIN · TAB CLOSE"
+		hud.inventory_label.text += "\nCUTTERS: " + ("YES" if "boltcutters" in player.inventory else "MAINT./%s WOODS BOX" % plan.toolbox_hint) + (" +BAR" if "crowbar" in player.inventory else "")
 	hud.update_belt(player)
 	hud.location_label.text = camp_map.location_label(player.global_position)
 	if plan.expedition:
@@ -415,7 +419,7 @@ func try_interact(actor: CampPlayer) -> bool:
 			if pickup.locked and "boltcutters" not in actor.inventory:
 				if "crowbar" not in actor.inventory:
 					announce("Locked cache! Boltcutters: Maintenance or the woods toolbox. A crowbar works, loudly.",actor)
-					soundscape.play_cue("lock_rattle", pickup.global_position)
+					soundscape.broadcast("lock_rattle", pickup.global_position)
 					actor.noise_emitted.emit(actor.global_position)
 					return false
 				pried = true
@@ -478,7 +482,7 @@ func try_interact(actor: CampPlayer) -> bool:
 			return true
 		if van.installed.size() == plan.required.size():
 			return true
-	announce("Hold E to revive. A medkit makes it faster." if nearby_downed(actor)!=null else "Nothing to use here. Tab shows supply locations.",actor)
+	announce("Hold E to revive. A medkit makes it faster." if nearby_downed(actor)!=null else "Nothing to use here. Tab opens the map and plan.",actor)
 	actor.noise_emitted.emit(actor.global_position)
 	return false
 
@@ -751,7 +755,7 @@ func context_prompt() -> String:
 		return "E · INSTALL SUPPLIES   |   NEED: " + ", ".join(missing_parts()).to_upper()
 	if "outboard_motor" in player.inventory:
 		return "MOTOR: G drop · teammate holds E nearby to help · T escape plans"
-	return "1-6 select · V use · G drop · E interact · Space flash · T plans · M pin" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab pack · Esc pause"
+	return "1-6 select · V use · G drop · E interact · Space flash · Tab notebook · T plans" if plan.expedition else "Find battery, fuel, key · E use · F light · Tab notebook · Esc pause"
 
 
 ## Shared team pin at the actor's feet. Each owner keeps their newest three.
@@ -868,6 +872,14 @@ func _van_started() -> void:
 		announce("Engine started. Driver boarded automatically. Others: E to enter.")
 
 
+## Select tonight's escape plan `index` (T or a click in the notebook).
+func select_route(index: int) -> void:
+	if not plan.expedition:
+		return
+	objective_page = posmod(index, plan.escape_options.size())
+	rescue.pack_selected = current_page() == "radio"
+
+
 ## Tonight's objective page shown by T ("van", "radio", "boat", "gate" or "signal").
 func current_page() -> String:
 	if not plan.expedition:
@@ -917,10 +929,23 @@ func _unhandled_input(event: InputEvent) -> void:
 	if finished:
 		return
 	if plan.expedition and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_T:
-		objective_page = (objective_page + 1) % plan.escape_options.size()
-		rescue.pack_selected = current_page() == "radio"
-		hud.inventory_label.show()
-		hud.chart.visible = objective_page == 0
+		# T opens the plan; with the notebook already on the plan or map, it picks the next route.
+		if hud.notebook.visible and hud.notebook.view in ["plan", "map"]:
+			select_route((objective_page + 1) % plan.escape_options.size())
+		else:
+			hud.notebook.open_view("plan")
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("inventory") and not event.is_echo() and not paused:
+		hud.notebook.cycle(event is InputEventWithModifiers and event.shift_pressed)
+		get_viewport().set_input_as_handled()
+		return
+	if hud.notebook.visible and event.is_action_pressed("pause"):
+		hud.notebook.close()
+		get_viewport().set_input_as_handled()
+		return
+	if hud.notebook.visible and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_Z:
+		hud.notebook.secondary()
 		get_viewport().set_input_as_handled()
 		return
 	if get_node("/root/Net").active:
@@ -969,10 +994,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif not paused and event.is_action_pressed("interact") and not event.is_echo():
 		try_interact(player)
-		get_viewport().set_input_as_handled()
-	elif not paused and event.is_action_pressed("inventory"):
-		hud.inventory_label.visible = not hud.inventory_label.visible
-		hud.chart.visible = hud.inventory_label.visible and objective_page == 0
 		get_viewport().set_input_as_handled()
 	elif not paused and event.is_action_pressed("map_pin"):
 		place_pin(player, 1, "You")
@@ -1091,6 +1112,7 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 		if not cut:
 			announce("Nothing to cut. Scissors snip a Seamstress thread.", actor)
 			return false
+		soundscape.broadcast("scissors", actor.global_position, 0.0, 1.0)
 		announce("Snip! The thread falls away.")
 	elif kind == "wolfsbane":
 		var struck := false
@@ -1107,6 +1129,7 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 			killer.stun_immunity = 0.0
 			stunned = killer.stun(5.0)
 		loud_noise(actor.global_position, 1500)
+		soundscape.broadcast("air_horn", actor.global_position)
 		announce("HOOOONK! The %s staggers, stunned!" % plan.headline.to_upper() if stunned else "HOOOONK! Everything in the woods heard that.", actor)
 	elif kind == "train_ticket":
 		announce("Keep it handy: the Conductor gives ticket holders a free ride to camp.", actor)

@@ -15,13 +15,13 @@ const KILLER_CUES := {"stalker": ["screech_3", 0.7], "groundskeeper": ["screech_
 ## Heavier creatures step lower and louder.
 const STEP_PITCH := {"bigfoot": 0.55, "stoneback_ram": 0.6, "boiler_saint": 0.62, "werewolf": 0.7, "switchback_hound": 0.9, "relay_jackal": 1.0, "lantern_moth": 1.3, "ration_moth": 1.35, "teddy": 1.8, "imps": 1.6, "mimic": 1.0}
 const CREATURE_CUES := {"werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl",
-	"switchback_hound": "monster_10", "relay_jackal": "monster_6", "shutter_wraith": "monster_9", "lens_eater": "screech_1",
-	"bramble_seamstress": "monster_7", "candle_grazer": "screech_2", "boiler_saint": "screech_3", "last_car_conductor": "screech_3",
+	"switchback_hound": "dog_bark", "relay_jackal": "monster_6", "shutter_wraith": "monster_9", "lens_eater": "screech_1",
+	"bramble_seamstress": "monster_7", "candle_grazer": "screech_2", "boiler_saint": "screech_3", "last_car_conductor": "train",
 	"stoneback_ram": "monster_8", "ration_moth": "screech_5",
-	"mimic": "screech_4", "owl": "owl", "bog_hands": "swamp", "imps": "witch_cackle", "teddy": "monster_7"}
+	"mimic": "screech_4", "owl": "owl", "bog_hands": "bog_gurgle", "imps": "giggle", "teddy": "squeak"}
 ## The second species sharing a screech is pitched lower so the two stay distinct.
-const CREATURE_PITCH := {"relay_jackal": 0.8, "lens_eater": 0.78, "candle_grazer": 0.82, "last_car_conductor": 0.8, "ration_moth": 1.25,
-	"mimic": 0.85, "owl": 0.7, "imps": 2.0, "teddy": 0.55}
+const CREATURE_PITCH := {"relay_jackal": 0.8, "lens_eater": 0.78, "candle_grazer": 0.82, "ration_moth": 1.25,
+	"mimic": 0.85, "owl": 0.7}
 const RADIO_TALK_SECONDS := 7.0
 var level: Node2D
 var mixer: Node
@@ -46,14 +46,25 @@ var ambient_clock := 18.0
 var thunder_delay := -1.0
 var last_lightning := 0.0
 ## Positional loops placed in the world (generator, signal pyre, boat).
-const WORLD_LOOPS := ["generator", "fire_loop", "boat_engine"]
+const WORLD_LOOPS := ["generator", "fire_loop", "boat_engine", "helicopter"]
 ## Alarm-like one-shots carry much farther than ordinary effects.
 ## Heartbeat as the only threat readout: something within NEAR_RANGE (even behind
 ## trees) brings a slow, quiet beat that quickens as it closes; line of sight
 ## (it is hunting you) brings a fast, loud one.
 const NEAR_RANGE := 300.0
 var near_gain := 0.0
-const LOUD_CUES := {"car_alarm": 1400.0, "bells": 1000.0, "car_start": 700.0, "fire_whoosh": 600.0, "thunder": 600.0, "metal_clang": 400.0, "chain_rattle": 400.0}
+const LOUD_CUES := {"car_alarm": 1400.0, "air_horn": 1500.0, "bells": 1000.0, "car_start": 700.0, "dog_bark": 700.0, "train": 650.0, "fire_whoosh": 600.0, "thunder": 600.0,
+	"metal_clang": 400.0, "chain_rattle": 400.0, "bear_trap": 450.0, "camera_charge": 420.0, "camera_shutter": 420.0, "sneeze": 320.0}
+## Survivor voices (hurt/held/down) carry a little past the screen edge.
+const VOICE_RANGE := 300.0
+## Host-only sound events (creature attacks, items) are logged with an id and
+## replayed once by each client from snapshots; entries live this long.
+const SOUND_LOG_SECONDS := 2.0
+var heard_sound_id := 0
+var next_sound_id := 0
+## Positional loops that follow sources: lullaby per Saint, croak per frog.
+var follow_loops: Dictionary = {}
+const LULLABY_RANGE := 300.0
 
 
 func _ready() -> void:
@@ -73,12 +84,13 @@ func _ready() -> void:
 			node.attenuation = 1.5
 		elif cue in WORLD_LOOPS:
 			node = AudioStreamPlayer2D.new()
-			node.max_distance = 420 if cue != "generator" else 220
+			node.max_distance = {"generator": 220, "helicopter": 1100}.get(cue, 420)
 			node.attenuation = 1.4
 			match cue:
 				"generator": node.position = level.night_clock.generator_point() if level.night_clock != null else Vector2(1256, 400)
 				"fire_loop": node.position = level.signal_fire.pyre if level.signal_fire != null else Vector2.ZERO
 				"boat_engine": node.position = level.escapes.boat_point if level.escapes != null else Vector2.ZERO
+				"helicopter": node.position = level.rescue.landing + Vector2(0, -60) if level.rescue != null else Vector2.ZERO
 		else:
 			node = AudioStreamPlayer.new()
 		node.stream = mixer.stream_for(cue)
@@ -105,6 +117,9 @@ func _physics_process(delta: float) -> void:
 	var suspended: bool = level.paused or level.finished
 	for node in loops.values():
 		node.stream_paused = suspended
+	for node in follow_loops.values():
+		if is_instance_valid(node):
+			node.stream_paused = suspended
 	for voice in voices.duplicate():
 		voice.stream_paused = suspended
 		if voice.has_meta("source"):
@@ -338,6 +353,9 @@ func _weather_and_world(actor: CampPlayer, indoor: bool, delta: float) -> void:
 	_mix_loop("generator", 0.0 if clock == null or clock.blackout else 1.0, delta)
 	_mix_loop("fire_loop", 1.0 if level.signal_fire != null and level.signal_fire.started else 0.0, delta)
 	_mix_loop("boat_engine", 1.0 if level.escapes != null and level.escapes.boat_started else 0.0, delta)
+	# Radio rescue: the helicopter is overhead for the whole landing-zone hold-out.
+	_mix_loop("helicopter", 1.0 if level.rescue != null and level.rescue.started else 0.0, delta, 0.35)
+	_follow_loops()
 	if level.plan.expedition and CampMap.is_woods(actor.global_position):
 		ambient_clock -= delta
 		if ambient_clock <= 0.0:
@@ -371,15 +389,20 @@ func _events() -> void:
 		var key := "snare%d" % actor.get_instance_id()
 		var held: bool = actor.snared > 0.0
 		if held and not prop_state.get(key, false):
+			# One snap per trap, from replicated state (the trap code plays nothing itself).
 			played_counts["snare"] = played_counts.get("snare", 0) + 1
-			play_cue("metal_clang", actor.global_position)
+			if level.killer.headline == "groundskeeper":
+				play_cue("metal_clang", actor.global_position, -4.0, 1.3)
+			else:
+				play_cue("bear_trap", actor.global_position)
 			play_cue("chain_rattle", actor.global_position)
 		prop_state[key] = held
+		_survivor_voice(actor)
 
 
-func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float = 1.0, source: Node2D = null) -> bool:
+func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float = 1.0, source: Node2D = null, length: float = 0.0) -> bool:
 	var monster := cue in CREATURE_CUES.values() or cue.begins_with("screech")
-	var radius: float = LOUD_CUES.get(cue, MONSTER_RANGE if monster else (ENEMY_STEP_RANGE if source is CampKiller else 230.0))
+	var radius: float = LOUD_CUES.get(cue, MONSTER_RANGE if monster else (VOICE_RANGE if cue in ["grunt", "gasp"] else (ENEMY_STEP_RANGE if source is CampKiller else 230.0)))
 	if level.paused or level.finished or not mixer.cues.has(cue) or origin.distance_to(level.player.global_position) >= radius:
 		return false
 	# Instrument accepted local cues even with Dummy/headless output; no device needed.
@@ -409,7 +432,92 @@ func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float =
 		voice.queue_free())
 	# Some supplied calls open with silence; start at the sound so warnings are immediate.
 	voice.play(float(mixer.cues[cue].get("start_seconds", 0.0)))
+	if length > 0.0:
+		# Cut long recordings to the event's length with a short fade.
+		var cut := voice.create_tween()
+		cut.tween_interval(maxf(0.0, length - 0.15))
+		cut.tween_property(voice, "volume_db", -60.0, 0.15)
+		cut.tween_callback(func() -> void:
+			voices.erase(voice)
+			voice.queue_free())
 	return true
+
+
+## A host-side sound event (creature attack, item use) that every peer hears
+## once: played here, and logged for clients, who replay it from snapshots.
+func broadcast(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float = 1.0, length: float = 0.0) -> bool:
+	var net: Node = get_node_or_null("/root/Net")
+	if net != null and net.active and multiplayer.is_server():
+		var now := Time.get_ticks_msec()
+		next_sound_id += 1
+		level.sound_log.append({"id": next_sound_id, "cue": cue, "at": origin, "gain": gain_db, "pitch": pitch, "length": length, "time": now})
+		while not level.sound_log.is_empty() and now - int(level.sound_log[0]["time"]) > SOUND_LOG_SECONDS * 1000.0:
+			level.sound_log.pop_front()
+	played_counts["broadcast"] = played_counts.get("broadcast", 0) + 1
+	return play_cue(cue, origin, gain_db, pitch, null, length)
+
+
+## Client side: play each logged host event exactly once.
+func replay(log: Array) -> void:
+	for row: Dictionary in log:
+		if int(row["id"]) <= heard_sound_id:
+			continue
+		heard_sound_id = int(row["id"])
+		played_counts["replayed"] = played_counts.get("replayed", 0) + 1
+		play_cue(row["cue"], row["at"], row["gain"], row["pitch"], null, row["length"])
+
+
+## Hurt grunts, grabbed/downed gasps and sneezes, inferred from replicated
+## survivor state so every peer hears each one once.
+func _survivor_voice(actor: CampPlayer) -> void:
+	var key := "voice%d" % actor.get_instance_id()
+	var now := {"hurt": actor.hurt_time, "held": actor.has_effect("held"), "down": actor.status == CampPlayer.Status.DOWNED, "achoo": actor.has_effect("achoo")}
+	if prop_state.has(key):
+		var before: Dictionary = prop_state[key]
+		var helium := 1.3 if actor.has_effect("helium") else 1.0
+		if now["down"] and not before["down"]:
+			play_cue("gasp", actor.global_position, 2.0, 0.85 * helium)
+		elif now["held"] and not before["held"]:
+			play_cue("gasp", actor.global_position, 0.0, rng.randf_range(0.97, 1.05) * helium)
+		elif now["hurt"] > before["hurt"] + 0.1:
+			play_cue("grunt", actor.global_position, 0.0, rng.randf_range(0.92, 1.08) * helium)
+		if now["achoo"] and not before["achoo"]:
+			play_cue("sneeze", actor.global_position, 0.0, rng.randf_range(1.15, 1.3) * helium)
+	prop_state[key] = now
+
+
+## Loops that follow their source: a Lullaby Saint's song while it is near, and
+## the croaking of anyone under the witch's frog curse.
+func _follow_loops() -> void:
+	var wanted := {}
+	var listener: Vector2 = level.player.global_position
+	for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
+		if enemy.species == "boiler_saint" and enemy.enabled and enemy.global_position.distance_to(listener) < LULLABY_RANGE + 60.0:
+			wanted[enemy.get_instance_id()] = ["lullaby", enemy]
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if actor.status == CampPlayer.Status.ALIVE and actor.has_effect("frog"):
+			wanted[actor.get_instance_id()] = ["frog_croak", actor]
+	for id in follow_loops.keys():
+		if not wanted.has(id) or not is_instance_valid(follow_loops[id]):
+			if is_instance_valid(follow_loops[id]):
+				follow_loops[id].queue_free()
+			follow_loops.erase(id)
+	for id in wanted:
+		var cue: String = wanted[id][0]
+		var source: Node2D = wanted[id][1]
+		if not follow_loops.has(id):
+			played_counts[cue] = played_counts.get(cue, 0) + 1
+			var node := AudioStreamPlayer2D.new()
+			node.stream = mixer.stream_for(cue)
+			node.bus = mixer.cues[cue]["bus"]
+			node.volume_db = float(mixer.cues[cue]["gain_db"])
+			node.max_distance = LULLABY_RANGE if cue == "lullaby" else 260.0
+			node.attenuation = 1.3
+			add_child(node)
+			follow_loops[id] = node
+			if mixer.output_enabled and node.stream != null:
+				node.play()
+		follow_loops[id].global_position = source.global_position
 
 
 ## Ranger radio at each phase change (the part reveals): a burst of static, then a
@@ -520,6 +628,10 @@ func stop_round() -> void:
 	for voice in voices:
 		voice.queue_free()
 	voices.clear()
+	for node in follow_loops.values():
+		if is_instance_valid(node):
+			node.queue_free()
+	follow_loops.clear()
 	threat_gain = 0.0
 
 

@@ -1,0 +1,86 @@
+[
+	{
+		"bounds": "[P: (-960.0, -960.0), S: (960.0, 576.0)]",
+		"label": "NORTHWEST / ABANDONED VILLAGE",
+		"region": "village",
+		"width_at_9px": 159.0
+	},
+	{
+		"bounds": "[P: (2112.0, -384.0), S: (768.0, 768.0)]",
+		"label": "EAST / WITCH'S BOG",
+		"region": "bog",
+		"width_at_9px": 88.0
+	},
+	{
+		"bounds": "[P: (576.0, 1344.0), S: (768.0, 768.0)]",
+		"label": "SOUTH / OLD GRAVEYARD",
+		"region": "graveyard",
+		"width_at_9px": 113.0
+	},
+	{
+		"bounds": "[P: (-2304.0, -384.0), S: (768.0, 768.0)]",
+		"label": "FLOODED MILL / PIPE LANES",
+		"region": "mill",
+		"width_at_9px": 123.0
+	},
+	{
+		"bounds": "[P: (-1536.0, 1920.0), S: (768.0, 768.0)]",
+		"label": "BRAMBLE ORCHARD / THREAD ROWS",
+		"region": "orchard",
+		"width_at_9px": 160.0
+	},
+	{
+		"bounds": "[P: (2304.0, -2112.0), S: (768.0, 768.0)]",
+		"label": "STARLESS OBSERVATORY",
+		"region": "observatory",
+		"width_at_9px": 108.0
+	},
+	{
+		"bounds": "[P: (3072.0, 1536.0), S: (960.0, 576.0)]",
+		"label": "LAST-CAR RAIL YARD",
+		"region": "rail",
+		"width_at_9px": 89.0
+	},
+	{
+		"bounds": "[P: (-2496.0, -2688.0), S: (768.0, 768.0)]",
+		"label": "WHITE STONE QUARRY",
+		"region": "quarry",
+		"width_at_9px": 99.0
+	},
+	{
+		"bounds": "[P: (1152.0, 3072.0), S: (768.0, 768.0)]",
+		"label": "DROWNED CHAPEL / CANDLE COURT",
+		"region": "chapel",
+		"width_at_9px": 159.0
+	},
+	{
+		"bounds": "[P: (384.0, -2304.0), S: (576.0, 576.0)]",
+		"label": "NORTH / POWER SUBSTATION",
+		"region": "substation",
+		"width_at_9px": 130.0
+	},
+	{
+		"bounds": "[P: (3456.0, -384.0), S: (576.0, 576.0)]",
+		"label": "EAST / RADIO RELAY STATION",
+		"region": "relay",
+		"width_at_9px": 127.0
+	},
+	{
+		"bounds": "[P: (-2304.0, 1152.0), S: (576.0, 576.0)]",
+		"label": "WEST / LOGGING CAMP",
+		"region": "logging",
+		"width_at_9px": 101.0
+	},
+	{
+		"bounds": "[P: (2880.0, 2880.0), S: (768.0, 768.0)]",
+		"label": "SOUTHEAST / LAKESHORE BOATHOUSE",
+		"region": "boathouse",
+		"width_at_9px": 168.0
+	},
+	{
+		"bounds": "[P: (384.0, -3648.0), S: (576.0, 1152.0)]",
+		"label": "NORTH / RANGER ROAD AND BRIDGE",
+		"region": "ranger",
+		"width_at_9px": 161.0
+	}
+]

@@ -3,6 +3,12 @@
 18 October 2026. Status: audited baseline and proposed implementation plan.
 No gameplay graphics or menu redesign ships in this documentation increment.
 
+Follow-up: [world graphics and presentation review](world_graphics_review.md)
+extends this audit to all major region types and camp buildings, confirms duplicate
+region-name draws, and proposes dramatic phase titles. The
+[sound gap review](sound_gap_review.md) reconciles the asset wishlist with current
+playback and prioritizes recordings and missing triggers.
+
 ## What was inspected
 
 Source: HUD, field map, skyline, objective text, input handling, pickup state,

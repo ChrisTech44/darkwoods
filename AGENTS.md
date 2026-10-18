@@ -11,6 +11,9 @@ It records confirmed defects and a staged map/Tab-help/hint overhaul, not a ship
 redesign. Capture and inspect actual graphical output for visual changes; label
 forced all-escape fixtures, frozen enemies and altered lighting. Preserve clue
 discovery and host authority. Do not silently change gameplay during UI work.
+Read `docs/world_graphics_review.md` for building/region labels and phase-title
+presentation, and `docs/sound_gap_review.md` for recording priorities and playback
+gaps. An AI hearing stimulus is not audible playback; verify both paths separately.
 
 Read `docs/audio_multiplayer_design.md` before future audio/online voice work.
 Maintain the brief and design documents in Markdown only; the Word brief was

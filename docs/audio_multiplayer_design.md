@@ -1,12 +1,18 @@
 # Audio and online proximity voice design
 
-Status: **local and replicated-source audio implemented; opt-in proximity voice implemented with TwoVoIP (see [multiplayer guide](multiplayer_guide.md#proximity-voice)); real-microphone, listening and encryption acceptance pending**. This user-approved amendment replaces the
-original voice-chat exclusion in [AGENT_BRIEF.md](../AGENT_BRIEF.md). The build now includes locally verified ENet co-op; voice is still planned. The 16 October amendment prioritizes visual/map fixes,
-seeded camp variation and user-supplied sound files before networking/voice.
-Local playback does not establish two-client audio or microphone acceptance. Use [milestones](milestones.md) for delivery gates.
-The later survivor/content amendment adds [selection and archetypes](survivor_multiplayer_plan.md)
-before M2 and plans [monsters](monster_catalog.md)/[biomes](biome_design.md) as
-staged content. Gameplay networking is now implemented; bespoke new cue files and voice remain separate work.
+Status (refreshed 18 October 2026): **local/replicated-source audio, ENet gameplay
+and opt-in TwoVoIP proximity voice are implemented**. Real-microphone, listening,
+exact event coverage across peers, Internet encryption and packaged-platform
+acceptance remain separate gates. See the [multiplayer guide](multiplayer_guide.md#proximity-voice),
+[maintained brief](../AGENT_BRIEF.md) and [sound gap review](sound_gap_review.md).
+An AI hearing event is not itself audible playback.
+
+The sections below preserve the earlier design/order and acceptance contracts.
+Their old future-tense implementation descriptions, default bindings, population
+counts and ranges are historical, not a current feature inventory. Use the
+maintained brief and source for implemented behavior, and execution evidence for
+acceptance. The 18 October review does not add sounds, change networking or enable
+microphones.
 
 ## Delivery order
 

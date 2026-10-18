@@ -17,6 +17,10 @@ Tab notes/help and hint menus so players understand where they are, what is
 happening and what to do next. See the
 [graphics audit and interface plan](docs/graphics_readability_plan.md).
 That document is an implementation backlog, not a claim that the overhaul shipped.
+Follow-up priorities are recorded in the [world graphics review](docs/world_graphics_review.md)
+and [sound gap/recording review](docs/sound_gap_review.md): world label ownership,
+lighting/overlap, phase-title presentation, missing audible feedback and duplicate
+trap playback. These remain reviewed proposals/defects, not completed fixes.
 This increment captures the existing build and documents findings; it does not
 change gameplay or implement the proposed interface.
 

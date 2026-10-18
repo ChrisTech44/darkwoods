@@ -2,13 +2,16 @@
 
 The user supplied the MP3 files in this folder for integration into the game on
 16 October 2026. File names describe the intended ambience, footsteps, heartbeat,
-music and creature cues. Local playback is the current implementation priority;
-networked sound and proximity voice remain future acceptance gates.
+music and creature cues. Local playback and opt-in proximity voice are implemented; real listening,
+exact event coverage across peers and platform acceptance remain separate gates.
+See the [18 October sound review](../../docs/sound_gap_review.md) for current
+recording priorities and confirmed playback gaps.
 
 Creator/source/license documents were not included with these files. Track them
 as user-supplied assets, with redistribution provenance pending documentation;
 do not label them original recordings or independently license-verified assets.
-No microphone capture is implemented or needed for playback.
+Asset playback does not require microphone capture. Optional voice is separate;
+see the [multiplayer guide](../../docs/multiplayer_guide.md#proximity-voice).
 
 ## Implemented offline cue mapping
 
@@ -32,11 +35,11 @@ are unchanged. Godot duplicates stream resources before setting loop flags.
 | `witch_cackle.mp3` | Witch alert/casting/nearby call |
 | `revenant_screech.mp3` | Briar revenant alert/nearby call |
 | `vampire_snarl_brief.mp3` | Vampire alert/nearby call |
-| `screech_1.mp3` | Shutter Wraith call; Lens Eater at pitch 0.78. Starts at 1.0s (silent lead-in) |
-| `screech_2.mp3` | Bramble Seamstress call; Candle Grazer at pitch 0.82 |
-| `screech_3.mp3` | Boiler Saint call; Last-Car Conductor at pitch 0.80. Starts at 2.4s (silent lead-in) |
-| `screech_4.mp3` | Switchback Hound call; Relay Jackal at pitch 0.80 |
-| `screech_5.mp3` | Stoneback Ram call; Ration Moth at pitch 1.25 |
+| `screech_1.mp3` | Lens Eater call at pitch 0.78; older Shutter Wraith mapping superseded. Starts at 1.0s (silent lead-in) |
+| `screech_2.mp3` | Groundskeeper chase at pitch 0.62; Candle Grazer call at pitch 0.82 |
+| `screech_3.mp3` | Stalker chase, shared headline frenzy, Boiler Saint call; Last-Car Conductor at pitch 0.80. Starts at 2.4s (silent lead-in) |
+| `screech_4.mp3` | Mimic call/reveal; Paparazzo flash wind-up stand-in |
+| `screech_5.mp3` | Stalker investigating at pitch 0.55; Ration Moth call at pitch 1.25 |
 | `thud.mp3` | Door slam; deeper door break-in (with `wood_falling`); gate opening; fence-vault landing. Starts at 0.25s |
 | `wood_falling.mp3` | Woodpile/deadfall knock-overs; splintering on door break-ins |
 | `radio_static.mp3` | ~1s static burst opening each night-phase ranger radio broadcast (non-positional) |
@@ -50,15 +53,17 @@ gain), props sit lower, and silent lead-ins are skipped via the manifest's
 and vault state, so the host and each client play them once, locally. The
 radio replaced the earlier borrowed werewolf-howl phase stinger.
 
-Monster calls have a shared per-source 8–14s cooldown, including witch casting,
-so state changes do not stack loud voices. At most 12 positional one-shots play
-at once. Seven round-owned loop channels fade smoothly; stopping, collision and
-boarding stop movement sounds. Pause suspends playback; results stop it and
-scene replacement frees all emitters. Menu has separate music/subdued woods channels, freed before entering the round.
+Current soundscape limits: ordinary cryptid calls use per-source cooldowns of
+3.5–5s while chasing and 6–12s otherwise. Headline chase/investigate calls use
+separate timing. The positional one-shot pool caps at 20; sixteen loop channels
+cover movement, ambience, music and world machinery. Pause suspends playback;
+results stop it and scene replacement frees round emitters. Menu owns separate
+music/woods channels.
 
-The main menu and Esc pause panel provide saved Master/Effects/Ambience/Music controls; zero mutes. Voice
-bus is reserved and inactive. AI hearing is independent of local playback/mute.
-No microphone capture or microphone permission request exists in this build.
+Main-menu Settings and the Esc panel provide saved mixer controls. The Voice
+bus is used by the separate opt-in voice system. AI hearing is independent of
+speaker playback/mute; emitting a gameplay noise does not automatically play a
+sound. Current gaps are documented in the [review](../../docs/sound_gap_review.md).
 
 Initial gain staging uses measured file peaks/mean levels and a master limiter. The fire sub-bus compresses rare peaks and lifts quiet
 crackles before passing through the Ambience control.
@@ -66,8 +71,8 @@ Loop seams and final comfort/balance require human listening; automated PCM
 decode and loop/lifecycle checks are documented in the development log.
 Windows/Linux, exported audio and two-client synchronized sound remain unverified.
 
-Creature calls now start only within 160 pixels and follow their source, with
-quadratic native distance attenuation. Enemy steps use 110 pixels. These local
+Current creature-call range is 560 pixels and enemy step range is 240 pixels;
+moving sources use positional attenuation. Distant-call behavior is separate. These local
 limits do not change AI hearing. Menu knobs are accessed through Settings.
 
 ## 17 October 2026 sound pack
@@ -102,8 +107,11 @@ to loop cleanly; everything else is unchanged and gain-balanced at runtime.
 | `monster_scream_9.mp3` | `monster_9` | Shutter Wraith |
 | `monster_scream_10.mp3` | `monster_10` | Switchback Hound |
 
-Every event sound is triggered from replicated world state, so all co-op peers
-hear it, not only the host.
+The listed van/gift/pyre/snare/prop state edges are inferred locally from
+replicated state. Some creature-specific sounds still originate directly in host
+AI; do not infer complete exactly-once remote event coverage from this table.
+One host bear-trap activation currently requests `metal_clang` twice; see the
+[diagnostic and integration work](../../docs/sound_gap_review.md#playback-defects-and-integration-work).
 
 ## Wish list (monster revamp)
 

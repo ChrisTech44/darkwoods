@@ -1,0 +1,205 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (2 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started Scanning actions... (58 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | battery_installed.png[39m[0m
+[   1% ] [90m[1m_update_scan_actions[22m | camp_van.png[39m[0m
+[   3% ] [90m[1m_update_scan_actions[22m | field_guide.png[39m[0m
+[   5% ] [90m[1m_update_scan_actions[22m | long_notice.png[39m[0m
+[   6% ] [90m[1m_update_scan_actions[22m | page_boat.png[39m[0m
+[   8% ] [90m[1m_update_scan_actions[22m | page_gate.png[39m[0m
+[  10% ] [90m[1m_update_scan_actions[22m | page_radio.png[39m[0m
+[  11% ] [90m[1m_update_scan_actions[22m | page_signal.png[39m[0m
+[  13% ] [90m[1m_update_scan_actions[22m | pause.png[39m[0m
+[  15% ] [90m[1m_update_scan_actions[22m | woods_van.png[39m[0m
+[  16% ] [90m[1m_update_scan_actions[22m | building_bath_192.png[39m[0m
+[  18% ] [90m[1m_update_scan_actions[22m | building_boat_1200.png[39m[0m
+[  20% ] [90m[1m_update_scan_actions[22m | building_bunkhouse_816.png[39m[0m
+[  22% ] [90m[1m_update_scan_actions[22m | building_cabin_224.png[39m[0m
+[  23% ] [90m[1m_update_scan_actions[22m | building_cabin_456.png[39m[0m
+[  25% ] [90m[1m_update_scan_actions[22m | building_cabin_480.png[39m[0m
+[  27% ] [90m[1m_update_scan_actions[22m | building_infirmary_896.png[39m[0m
+[  28% ] [90m[1m_update_scan_actions[22m | building_mess_832.png[39m[0m
+[  30% ] [90m[1m_update_scan_actions[22m | building_ranger_464.png[39m[0m
+[  32% ] [90m[1m_update_scan_actions[22m | building_workshop_1168.png[39m[0m
+[  33% ] [90m[1m_update_scan_actions[22m | crowded_bearings.png[39m[0m
+[  35% ] [90m[1m_update_scan_actions[22m | deep_night_transition.png[39m[0m
+[  37% ] [90m[1m_update_scan_actions[22m | inspection_faded_killer.png[39m[0m
+[  38% ] [90m[1m_update_scan_actions[22m | inspection_label_boathouse.png[39m[0m
+[  40% ] [90m[1m_update_scan_actions[22m | inspection_label_logging.png[39m[0m
+[  42% ] [90m[1m_update_scan_actions[22m | inspection_label_mill.png[39m[0m
+[  44% ] [90m[1m_update_scan_actions[22m | inspection_label_ranger.png[39m[0m
+[  45% ] [90m[1m_update_scan_actions[22m | inspection_workshop.png[39m[0m
+[  47% ] [90m[1m_update_scan_actions[22m | inspection_workshop_inside.png[39m[0m
+[  49% ] [90m[1m_update_scan_actions[22m | label_boathouse.png[39m[0m
+[  50% ] [90m[1m_update_scan_actions[22m | label_bog.png[39m[0m
+[  52% ] [90m[1m_update_scan_actions[22m | label_chapel.png[39m[0m
+[  54% ] [90m[1m_update_scan_actions[22m | label_graveyard.png[39m[0m
+[  55% ] [90m[1m_update_scan_actions[22m | label_logging.png[39m[0m
+[  57% ] [90m[1m_update_scan_actions[22m | label_mill.png[39m[0m
+[  59% ] [90m[1m_update_scan_actions[22m | label_observatory.png[39m[0m
+[  61% ] [90m[1m_update_scan_actions[22m | label_orchard.png[39m[0m
+[  62% ] [90m[1m_update_scan_actions[22m | label_quarry.png[39m[0m
+[  64% ] [90m[1m_update_scan_actions[22m | label_rail.png[39m[0m
+[  66% ] [90m[1m_update_scan_actions[22m | label_ranger.png[39m[0m
+[  67% ] [90m[1m_update_scan_actions[22m | label_relay.png[39m[0m
+[  69% ] [90m[1m_update_scan_actions[22m | label_substation.png[39m[0m
+[  71% ] [90m[1m_update_scan_actions[22m | label_village.png[39m[0m
+[  72% ] [90m[1m_update_scan_actions[22m | region_boathouse.png[39m[0m
+[  74% ] [90m[1m_update_scan_actions[22m | region_bog.png[39m[0m
+[  76% ] [90m[1m_update_scan_actions[22m | region_chapel.png[39m[0m
+[  77% ] [90m[1m_update_scan_actions[22m | region_graveyard.png[39m[0m
+[  79% ] [90m[1m_update_scan_actions[22m | region_logging.png[39m[0m
+[  81% ] [90m[1m_update_scan_actions[22m | region_mill.png[39m[0m
+[  83% ] [90m[1m_update_scan_actions[22m | region_observatory.png[39m[0m
+[  84% ] [90m[1m_update_scan_actions[22m | region_orchard.png[39m[0m
+[  86% ] [90m[1m_update_scan_actions[22m | region_quarry.png[39m[0m
+[  88% ] [90m[1m_update_scan_actions[22m | region_rail.png[39m[0m
+[  89% ] [90m[1m_update_scan_actions[22m | region_ranger.png[39m[0m
+[  91% ] [90m[1m_update_scan_actions[22m | region_relay.png[39m[0m
+[  93% ] [90m[1m_update_scan_actions[22m | region_substation.png[39m[0m
+[  94% ] [90m[1m_update_scan_actions[22m | region_village.png[39m[0m
+[  96% ] [90m[1m_update_scan_actions[22m | signpost.png[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (57 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   1% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   3% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   5% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   6% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   8% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  10% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  12% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  13% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  15% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  17% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  18% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  20% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  22% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  24% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  25% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  27% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  29% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  31% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  32% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  34% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  36% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  37% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  39% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  41% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  43% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  44% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  46% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  48% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  50% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  51% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  53% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  55% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  56% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  58% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  60% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  62% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  63% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  65% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  67% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  68% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  70% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  72% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  74% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  75% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  77% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  79% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  81% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  82% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  84% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  86% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  87% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  89% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  91% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  93% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  94% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  96% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | label_bog.png[39m[0m
+[   1% ] [90m[1mreimport[22m | label_chapel.png[39m[0m
+[   3% ] [90m[1mreimport[22m | label_graveyard.png[39m[0m
+[   5% ] [90m[1mreimport[22m | label_logging.png[39m[0m
+[   6% ] [90m[1mreimport[22m | label_mill.png[39m[0m
+[   8% ] [90m[1mreimport[22m | label_observatory.png[39m[0m
+[  10% ] [90m[1mreimport[22m | label_orchard.png[39m[0m
+[  12% ] [90m[1mreimport[22m | label_quarry.png[39m[0m
+[  13% ] [90m[1mreimport[22m | label_rail.png[39m[0m
+[  15% ] [90m[1mreimport[22m | label_ranger.png[39m[0m
+[  17% ] [90m[1mreimport[22m | label_relay.png[39m[0m
+[  18% ] [90m[1mreimport[22m | label_substation.png[39m[0m
+[  20% ] [90m[1mreimport[22m | label_village.png[39m[0m
+[  22% ] [90m[1mreimport[22m | region_boathouse.png[39m[0m
+[  24% ] [90m[1mreimport[22m | region_bog.png[39m[0m
+[  25% ] [90m[1mreimport[22m | region_chapel.png[39m[0m
+[  27% ] [90m[1mreimport[22m | region_graveyard.png[39m[0m
+[  29% ] [90m[1mreimport[22m | region_logging.png[39m[0m
+[  31% ] [90m[1mreimport[22m | region_mill.png[39m[0m
+[  32% ] [90m[1mreimport[22m | region_observatory.png[39m[0m
+[  34% ] [90m[1mreimport[22m | region_orchard.png[39m[0m
+[  36% ] [90m[1mreimport[22m | region_quarry.png[39m[0m
+[  37% ] [90m[1mreimport[22m | region_rail.png[39m[0m
+[  39% ] [90m[1mreimport[22m | region_ranger.png[39m[0m
+[  41% ] [90m[1mreimport[22m | region_relay.png[39m[0m
+[  43% ] [90m[1mreimport[22m | region_substation.png[39m[0m
+[  44% ] [90m[1mreimport[22m | region_village.png[39m[0m
+[  46% ] [90m[1mreimport[22m | signpost.png[39m[0m
+[  48% ] [90m[1mreimport[22m | battery_installed.png[39m[0m
+[  50% ] [90m[1mreimport[22m | field_guide.png[39m[0m
+[  51% ] [90m[1mreimport[22m | long_notice.png[39m[0m
+[  53% ] [90m[1mreimport[22m | page_boat.png[39m[0m
+[  55% ] [90m[1mreimport[22m | page_gate.png[39m[0m
+[  56% ] [90m[1mreimport[22m | page_radio.png[39m[0m
+[  58% ] [90m[1mreimport[22m | page_signal.png[39m[0m
+[  60% ] [90m[1mreimport[22m | pause.png[39m[0m
+[  62% ] [90m[1mreimport[22m | woods_van.png[39m[0m
+[  63% ] [90m[1mreimport[22m | building_bath_192.png[39m[0m
+[  65% ] [90m[1mreimport[22m | building_boat_1200.png[39m[0m
+[  67% ] [90m[1mreimport[22m | building_bunkhouse_816.png[39m[0m
+[  68% ] [90m[1mreimport[22m | building_cabin_224.png[39m[0m
+[  70% ] [90m[1mreimport[22m | building_cabin_456.png[39m[0m
+[  72% ] [90m[1mreimport[22m | building_cabin_480.png[39m[0m
+[  74% ] [90m[1mreimport[22m | building_infirmary_896.png[39m[0m
+[  75% ] [90m[1mreimport[22m | building_mess_832.png[39m[0m
+[  77% ] [90m[1mreimport[22m | building_ranger_464.png[39m[0m
+[  79% ] [90m[1mreimport[22m | building_workshop_1168.png[39m[0m
+[  81% ] [90m[1mreimport[22m | crowded_bearings.png[39m[0m
+[  82% ] [90m[1mreimport[22m | deep_night_transition.png[39m[0m
+[  84% ] [90m[1mreimport[22m | inspection_faded_killer.png[39m[0m
+[  86% ] [90m[1mreimport[22m | inspection_label_boathouse.png[39m[0m
+[  87% ] [90m[1mreimport[22m | inspection_label_logging.png[39m[0m
+[  89% ] [90m[1mreimport[22m | inspection_label_mill.png[39m[0m
+[  91% ] [90m[1mreimport[22m | inspection_label_ranger.png[39m[0m
+[  93% ] [90m[1mreimport[22m | inspection_workshop.png[39m[0m
+[  94% ] [90m[1mreimport[22m | inspection_workshop_inside.png[39m[0m
+[  96% ] [90m[1mreimport[22m | label_boathouse.png[39m[0m
+[  98% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (57 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m

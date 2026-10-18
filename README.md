@@ -1180,6 +1180,8 @@ powers, interiors and the remaining catalog are still planned.
 
 - [Authoritative project brief](AGENT_BRIEF.md) — requirements and acceptance gates.
 - [Graphics audit and map/help plan](docs/graphics_readability_plan.md) — current defects, captured evidence and the proposed interface overhaul (not yet implemented).
+- [World graphics critique](docs/world_graphics_review.md) — building/area labels and proposed dramatic phase titles.
+- [Sound gaps and recording list](docs/sound_gap_review.md) — existing wishlist, missing feedback and a prioritized sound pack.
 - [Milestones](docs/milestones.md) — implementation plan and remaining work.
 - [Gameplay overhaul](docs/fun_overhaul.md) — planned night phases, chases, hiding, map redesign, new escapes and replayability.
 - [Survivor selection and co-op](docs/survivor_multiplayer_plan.md) — six archetypes, selection screens and the transition into voice.

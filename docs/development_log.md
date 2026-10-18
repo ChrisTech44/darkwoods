@@ -1,5 +1,54 @@
 # Development log
 
+## 2026-10-18 — World graphics critique, phase titles and sound recording gaps
+
+User requested a broader graphics/label review, discussion of dramatic phase
+text and a repository sound wishlist/missing-feedback analysis as a game critic.
+This increment adds review documents and diagnostic tools, not gameplay fixes.
+
+- [World graphics review](world_graphics_review.md): 48 captured/inspected views
+  across ten camp buildings, fourteen region types, signposts, crowded bearings,
+  phase transition and bright inspection cases. Twenty selected images retained.
+  Confirmed duplicate region titles in Logging/Boathouse/Ranger: the helper and
+  generic renderer draw the same name four pixels apart on both axes. Documented
+  dark/fading roof names, partial flashlight-lit ground names, skyline collisions,
+  crowded pickup labels and painted instructions independent of availability.
+- Critique distinguishes defects from artistic judgments: repeated shrine
+  compositions weaken region identity; substation/relay silhouettes read well.
+  Proposed canonical place names, shared label layout/visibility priorities,
+  region-entry titles and a brief dramatic phase overlay with accurate Deep Night
+  camp-safety warning, responsive controls and peer deduplication requirements.
+- [Sound gap review](sound_gap_review.md): reconciled all 13 existing wishlist
+  entries; prioritized missing condition/action/noisemaker/light/objective cues,
+  creature signatures and later extraction/place/UI feedback. Supplied a first
+  batch of twelve sound sets and source/runtime format guidance. Current loader
+  expects MP3 streams; WAV source requires runtime conversion or loader work.
+- Static registry audit: 50 cues, no missing referenced files or unregistered
+  literal playback calls. Headless diagnostic: successful horn accepted no cues;
+  one bear trap requested `metal_clang` twice and `chain_rattle` once. An AI noise
+  stimulus is not speaker playback. Special host-brain cues still need remote
+  event/listening verification. These are findings, not repaired audio triggers.
+- Updated audio README's obsolete assignments/ranges/voice statements and added
+  a current-status/history distinction to the audio design. Linked reviews from
+  README, prior plan and maintained agent documents.
+
+Verification: required import and five-frame startup exited 0 without engine
+errors/warnings. Both new tools passed Godot `--check-only`. Final graphical
+fixture exited 0 with 48 successful PNG writes and no errors/warnings. A first
+capture waited for a window redraw and was terminated; the tool now explicitly
+forces rendering. An intermediate completed run reported two ObjectDB cleanup
+leaks; final fixture closes metrics output and drains phase radio timers before
+shutdown, with no final warning. No runtime leak/performance claim follows from
+that diagnostic staging issue. Sound diagnostic exited 0; registry audit and
+changed-document local links passed; `git diff --check` passed.
+
+[Evidence, commands, selected images and logs](evidence/world_review/README.md).
+Microphones remained unused. No full gameplay regression suite (no gameplay
+source changes), exports, live four-peer graphics, actual listening/mix evaluation
+or normal-speed motion/human comprehension test ran. The graphics pass remains
+bounded to the documented seed, placements and source inspection; future QA
+matrix and implementation acceptance are in the reviews.
+
 ## 2026-10-18 — Graphics audit, notebook plan and maintained agent baseline
 
 User requested graphics bug review, a readable map/Tab-help/hint overhaul plan,

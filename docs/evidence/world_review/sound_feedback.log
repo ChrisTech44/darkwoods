@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"round_ready","milestone":"M1"}
+{"accepted_cues":{},"check":"air_horn","used":true}
+{"accepted_cues":{"chain_rattle":1,"metal_clang":2,"snare":1},"check":"bear_trap","placed":true,"snared":4.0}

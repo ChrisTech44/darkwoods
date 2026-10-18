@@ -1,5 +1,44 @@
 # Development log
 
+## 2026-10-18 — Let the Stalker close distance before counting stalking time
+
+User requested nearby-only stalking so the killer can close gaps and become more
+noticeable. Changed `StalkerTraits` and the player README; no planning documents
+were edited.
+
+- Stalking/lunge time now advances only within 260px and with clear line of sight
+  to the chosen survivor. Distance or intervening walls pause accumulated time.
+- Otherwise he navigates toward the existing behind-target destination at 88px/s:
+  above ordinary walking (70) and below sprinting (110). Nearby following is now
+  78px/s instead of 64, targeting 130px behind instead of 190. Actual navigation
+  leaves some following lag; the target is not a guaranteed exact separation.
+- Existing Expedition/Nightfall/PATROL eligibility, favorite selection, beam fade,
+  direct detection, chase, carry and hook behavior remain. Calling-card reach is
+  decoupled into a fixed 230px constant, preserving its prior range despite the
+  closer follow goal; card placement/timing/presentation were not redesigned.
+- Added `tests/integration/stalker_distance.gd` and registered it in the broad
+  runner with required summary validation. It checks far/occluded timer pauses,
+  nearby accumulation/lunge, Dusk/chase exclusions, actual approach/following
+  against a moving survivor, beam interruption and preserved calling-card reach.
+
+[Commands, logs and inspected graphical evidence](evidence/stalker_distance/README.md).
+At the final 130px setting: new suite 15/15 headless and 17/17 graphical (two PNG
+writes); existing monster suite 140/140. The straight-road movement fixture closes
+350px to ~218px after ten simulated seconds and ~154px after twenty. Enemies are
+frozen in that fixture; this is not human encounter/pacing evidence. The initial
+150px trial followed at ~174px, mostly outside the forward-looking camera, so the
+final goal was tightened to 130px. Fade captures explicitly redraw the disabled
+fixture actor so its staged state is not an old cached draw.
+
+Required import/startup and Python runner syntax checks passed; changed Markdown
+links and `git diff --check` passed. An initial fixture revision failed GDScript
+inference for a local variable; it was corrected before the passing runs.
+Final-setting chase toolkit (29/29) and input-only Expedition playthrough
+(227/227, all enemies active) also passed; their logs are preserved alongside
+the new suite. No full broad-runner execution, live multiplayer process
+test, real microphones, platform exports or normal-speed human balance acceptance
+is claimed.
+
 ## 2026-10-18 — README clips for the new creatures
 
 User asked for GIFs showing off the new creatures. Nine clips added to

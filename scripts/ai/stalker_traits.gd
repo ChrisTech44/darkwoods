@@ -1,7 +1,7 @@
 class_name StalkerTraits
 extends RefCounted
 ## What makes the headline killer the centre of the game (docs/monster_revamp.md):
-## - A FAVOURITE: each phase he picks one survivor to shadow at the edge of their
+## - A FAVOURITE: he picks a living survivor to shadow at the edge of their
 ##   light. Catch him in your beam and he melts back into the dark, to turn up
 ##   behind you later. After a while of shadowing, he lunges.
 ## - THE GRAB: a wounded survivor (50 health or less) isn't hit; he throws them
@@ -15,14 +15,19 @@ extends RefCounted
 ## The whistled camp song and bear traps live in CampSong and Snares.
 ## Host only; the body's synced fields (faded, frenzy, carrying) drive drawing.
 
-const SHADOW_DISTANCE := 190.0
-const SHADOW_SPEED := 64.0
+const SHADOW_DISTANCE := 130.0
+const SHADOW_SPEED := 78.0
+## Approach without spending the stalking/lunge timer. Faster than walking,
+## slower than sprinting; only nearby, unobstructed encounters count as stalking.
+const SHADOW_RANGE := 260.0
+const APPROACH_SPEED := 88.0
 const LUNGE_AFTER := Vector2(35.0, 55.0)
 const MELT_SECONDS := 5.0
 const CARRY_SPEED := 58.0
 const FRENZY_SECONDS := 20.0
 const RAGE_LIMIT := 3
 const CARD_EVERY := 80.0
+const CARD_RANGE := 230.0
 ## While carrying, he jolts his captive every SHAKE_EVERY s, knocking back
 ## SHAKE_LOSS of their struggle; his grip drains struggle faster than others'.
 const SHAKE_EVERY := 3.0
@@ -78,8 +83,12 @@ func physics(delta: float) -> bool:
 		_pick_favourite()
 	if not is_instance_valid(favourite) or not CampMap.is_woods(favourite.global_position) or (CampKiller.camp_closed and CampKiller.in_camp(favourite.global_position)):
 		return false
+	var distance := body.global_position.distance_to(favourite.global_position)
+	if distance > SHADOW_RANGE or not body.has_line_of_sight(favourite.global_position):
+		body.steer(_behind(favourite, SHADOW_DISTANCE), APPROACH_SPEED, delta)
+		return true
 	# Shadowing: hang back at the edge of their light.
-	if CreatureBrain.in_beam(favourite, body.global_position, 240.0, 0.82) and body.has_line_of_sight(favourite.global_position):
+	if CreatureBrain.in_beam(favourite, body.global_position, 240.0, 0.82):
 		melt = MELT_SECONDS
 		world.announce("Something in your beam... and it's gone.", favourite)
 		return true
@@ -200,7 +209,7 @@ func _cards(world: Node, delta: float) -> void:
 	if card_clock > 0.0 or not is_instance_valid(favourite) or not CampMap.is_woods(favourite.global_position):
 		return
 	# He writes it himself: only when he has crept up close behind them.
-	if body.global_position.distance_to(favourite.global_position) > SHADOW_DISTANCE + 40.0:
+	if body.global_position.distance_to(favourite.global_position) > CARD_RANGE:
 		return
 	card_clock = CARD_EVERY
 	var name := favourite.peer_name.to_upper() if not favourite.peer_name.is_empty() else "YOU"

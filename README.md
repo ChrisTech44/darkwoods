@@ -451,8 +451,13 @@ the seed and announced in the Dusk message and the notebook.
   - **The camp song.** He whistles *Row, Row, Row Your Boat*. The direction and
     volume tell you where he is; it comes faster when he's hunting.
   - **Shadowing.** From Nightfall he picks a **favourite** survivor and follows
-    them just outside their light. Catch him in your beam and he melts into the
-    dark, only to turn up behind you later. Sooner or later, he lunges.
+    them through the woods. He closes distant gaps at 88 px/s, faster than normal
+    walking but slower than sprinting. His lunge timer only advances within
+    **260 px with clear sight**; distance and intervening walls pause it. Nearby,
+    he follows about **130 px behind** at 78 px/s. Catch him in your beam and he
+    melts into the dark, only to turn up behind you later. After initially 45 s
+    of nearby shadowing (35–55 s thereafter), he lunges. Ordinary detection can
+    still start a chase directly; Quick Camp has no shadowing.
   - **The grab and the hook.** He doesn't hit a wounded survivor (50 health or
     less): he **throws them over his shoulder** and walks them to **his hook**,
     a post in his lair in the woods. His grip is hard to break: your struggle

@@ -1,5 +1,26 @@
 # Development log
 
+## 2026-10-18 — README clips for the new creatures
+
+User asked for GIFs showing off the new creatures. Nine clips added to
+`tools/capture_clips.gd` (real game and creature brains, real time, the
+standard slightly brightened night): the Groundskeeper's mower running a
+survivor over, the Cuckoo's rewind, the Banshee's scream, skating on the Slug's
+slime, the Surveyor's LOST map, the Hitchhiker switching the light off, paying the
+Tollkeeper, the Echo bursting in the beam, and a Fortune Teller card. GIFs via
+`tools/build_clips.py` (0.45–3.3 MB, in line with the existing clips), in a new
+"New creatures" block of the README's clips section.
+
+- Clip staging now suppresses the opening Dusk and place titles (added earlier
+  today), which otherwise covered the first seconds of every clip.
+- The Echo draws faint musical notes while it whistles (3 s, synced as `sing`),
+  so its trick reads without sound; it is otherwise unchanged.
+
+Verification: import/startup clean; `new_creatures` 33/33; `capture_clips.gd`
+`--check-only` clean; each clip reviewed as an 8-frame contact sheet before
+building. The Echo stays faint in the beam by design. Older clips were not
+re-recorded.
+
 ## 2026-10-18 — Stalker-only nights, nine new creatures, mower Groundskeeper, region identity
 
 User asked to finish the remaining review items, make the Groundskeeper "very,

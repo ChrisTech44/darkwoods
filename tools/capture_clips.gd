@@ -9,7 +9,8 @@ var player: CampPlayer
 const AMBIENT := Color(0.42, 0.44, 0.5)
 ## Per-clip override: fire and headlight clips read best at real night darkness.
 var ambient := AMBIENT
-const CLIPS := ["storm", "stalker_stalking", "stalker_grab", "mimic", "imps", "owl", "witch_frog", "bigfoot_yeet", "werewolf_moon", "bear_hug", "moth_face", "door", "van"]
+const CLIPS := ["storm", "stalker_stalking", "stalker_grab", "mimic", "imps", "owl", "witch_frog", "bigfoot_yeet", "werewolf_moon", "bear_hug", "moth_face", "door", "van",
+	"groundskeeper_mower", "cuckoo", "banshee", "slug", "surveyor", "hitchhiker", "tollkeeper", "echo", "fortune_teller"]
 
 
 func _initialize() -> void:
@@ -52,6 +53,11 @@ func _load(headline: String = "stalker", dark: bool = false) -> void:
 		enemy.enabled = false
 	for index in range(8):
 		await process_frame
+	# Clips start mid-night: no opening Dusk title or place title over the action.
+	level.hud.broadcast.shown_phase = level.night_clock.phase
+	level.hud.broadcast.title_time = -1.0
+	level.hud.broadcast.place = "SKIP"
+	level.hud.broadcast.place_time = -1.0
 
 
 ## Keep the brightened ambient each frame (the overlay recomputes it).
@@ -374,3 +380,142 @@ func van() -> void:
 			Input.action_press("interact")
 		else:
 			Input.action_release("interact"))
+
+
+## The Groundskeeper's mower comes down the trail in its headlight and runs
+## the survivor over.
+func groundskeeper_mower() -> void:
+	await _load()
+	var at := _trail()
+	_start(at)
+	var keeper := _spawn("groundskeeper", at, Vector2(230, 0))
+	keeper.brain.heading = Vector2.LEFT
+	keeper.patrol.assign([at + Vector2(-300, 0), at + Vector2(230, 0)])
+	keeper.enabled = true
+	await _record("groundskeeper_mower", 75, func(index: int) -> void:
+		if player.knock.length() > 30.0 or player.health < 100.0:
+			Input.action_release("move_right"))
+
+
+## Three CUCKOOs while you're in its sight, and you're back where you were.
+func cuckoo() -> void:
+	await _load()
+	var at := _trail()
+	_start(at + Vector2(-120, 0))
+	var bird := _spawn("cuckoo", at, Vector2(110, 0))
+	bird.brain.cooldown = 1.0
+	bird.enabled = true
+	await _record("cuckoo", 90, func(index: int) -> void:
+		if not player.has_effect("rewound") and index < 70:
+			Input.action_press("move_right")
+		else:
+			Input.action_release("move_right"))
+
+
+## The Banshee draws breath, then screams: deafened.
+func banshee() -> void:
+	await _load()
+	var at := _trail()
+	_start(at)
+	var ghost := _spawn("banshee", at, Vector2(150, 0))
+	ghost.brain.cooldown = 0.0
+	ghost.enabled = true
+	await _record("banshee", 80, func(index: int) -> void:
+		if player.has_effect("deaf") and index > 50:
+			Input.action_press("move_left"))
+
+
+## Step in the slug's trail and skate.
+func slug() -> void:
+	await _load()
+	var at := _trail()
+	_start(at + Vector2(-110, 0))
+	var slug := _spawn("slug", at, Vector2(120, 0))
+	for index in range(14):
+		slug.brain.puddles.append([at + Vector2(-60 + index * 9, randf_range(-3, 3)), 60.0])
+	slug.enabled = true
+	await _record("slug", 80, func(index: int) -> void:
+		if index < 30:
+			Input.action_press("move_right")
+		elif index < 55:
+			Input.action_release("move_right")
+			Input.action_press("move_left")
+		else:
+			Input.action_release("move_left"))
+
+
+## The Surveyor's touch: LOST. The map is scribble.
+func surveyor() -> void:
+	await _load()
+	var at := _trail()
+	_start(at)
+	var man := _spawn("surveyor", at, Vector2(110, 0))
+	player.flashlight_on = false
+	man.enabled = true
+	await _record("surveyor", 90, func(index: int) -> void:
+		if player.has_effect("lost") and not level.hud.notebook.visible and index > 10:
+			man.enabled = false
+			level.hud.notebook.open_view("map"))
+
+
+## The Hitchhiker climbs on and switches your light off.
+func hitchhiker() -> void:
+	await _load()
+	var at := _trail()
+	_start(at)
+	var child := _spawn("hitchhiker", at, Vector2(90, 0))
+	child.enabled = true
+	await _record("hitchhiker", 90, func(index: int) -> void:
+		if player.has_effect("piggyback"):
+			child.brain.prank_clock = minf(child.brain.prank_clock, 2.0)
+			Input.action_press("move_left"))
+
+
+## Walk past the Tollkeeper unpaid: shoved back. Pay, and through you go.
+func tollkeeper() -> void:
+	await _load()
+	var at := _trail()
+	_start(at + Vector2(-60, 0))
+	player.pack("flare")
+	var troll := _spawn("tollkeeper", at, Vector2(0, 0))
+	troll.enabled = true
+	var paid := [false]
+	await _record("tollkeeper", 96, func(index: int) -> void:
+		if index == 40 and not paid[0]:
+			paid[0] = true
+			Input.action_release("move_right")
+			player.global_position = troll.global_position + Vector2(-30, 0)
+			level.try_interact(player)
+		elif index < 36 or index > 48:
+			Input.action_press("move_right")
+		else:
+			Input.action_release("move_right"))
+
+
+## The Echo whistles the camp song (notes rise); step close with the light
+## on it and it bursts into smoke.
+func echo() -> void:
+	await _load()
+	var at := _trail()
+	_start(at + Vector2(-90, 0), Vector2.RIGHT)
+	var shade := _spawn("echo", at, Vector2(60, 0))
+	shade.patrol.assign([at + Vector2(60, 0)])
+	shade.brain.whistle_clock = 0.3
+	shade.enabled = true
+	await _record("echo", 72, func(index: int) -> void:
+		if index > 38 and index < 52:
+			Input.action_press("move_right")
+		else:
+			Input.action_release("move_right"))
+
+
+## The Fortune Teller reaches you and turns a card.
+func fortune_teller() -> void:
+	await _load()
+	var at := _trail()
+	_start(at)
+	var seer := _spawn("fortune_teller", at, Vector2(70, 0))
+	seer.brain.cooldown = 0.0
+	seer.enabled = true
+	await _record("fortune_teller", 86, func(index: int) -> void:
+		pass)

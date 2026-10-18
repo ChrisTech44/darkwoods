@@ -12,6 +12,8 @@ var whistle_clock := 6.0
 var whistles := 0
 var heard := 0
 var popped := 0.0
+## Seconds of visible whistling (notes drift up while the tune plays).
+var sing := 0.0
 var song: AudioStreamPlayer2D
 
 
@@ -31,6 +33,7 @@ func setup() -> void:
 
 func physics(delta: float) -> bool:
 	popped = maxf(0.0, popped - delta)
+	sing = maxf(0.0, sing - delta)
 	whistle_clock -= delta
 	var near := false
 	for actor in survivors():
@@ -43,6 +46,7 @@ func physics(delta: float) -> bool:
 	if near and whistle_clock <= 0.0:
 		whistle_clock = randf_range(WHISTLE_EVERY.x, WHISTLE_EVERY.y)
 		whistles += 1
+		sing = 3.0
 		_play()
 	wander(30.0, delta)
 	return true
@@ -81,15 +85,25 @@ func stunnable() -> bool:
 func draw() -> bool:
 	# A wavering shadow, hard to pin down.
 	body.draw_sheet(Color(1, 1, 1, 0.55 + 0.25 * sin(Time.get_ticks_msec() * 0.006)))
+	if sing > 0.0:
+		# Notes drifting up from its tunnel mouth: the tune you thought was his.
+		var t := Time.get_ticks_msec() * 0.001
+		for index in range(3):
+			var rise := fmod(t * 14.0 + index * 9.0, 26.0)
+			var at := Vector2(6 + sin(t * 2.0 + index) * 6.0, -50.0 - rise)
+			var tint := Color(0.85, 0.9, 1.0, (1.0 - rise / 26.0) * minf(1.0, sing))
+			body.draw_circle(at, 1.6, tint)
+			body.draw_line(at + Vector2(1.5, 0), at + Vector2(1.5, -6), tint, 1.0)
 	return true
 
 
 func snapshot() -> Dictionary:
-	return {"whistles": whistles}
+	return {"whistles": whistles, "sing": sing}
 
 
 func restore(state: Dictionary) -> void:
 	whistles = state.get("whistles", 0)
+	sing = state.get("sing", 0.0)
 	# A client hears each fake whistle once, when the host's count rises.
 	if whistles > heard:
 		if heard > 0:

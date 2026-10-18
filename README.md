@@ -63,6 +63,35 @@ you can follow the action; real nights are darker.
 | ![The stalker follows a survivor at the edge of their light, scrawls I SEE YOU on the trail, and melts away when they turn their flashlight on him](docs/clips/stalker_stalking.gif) | ![The stalker grabs a wounded survivor, carries them over his shoulder, and they tear free, dropping their flare](docs/clips/stalker_grab.gif) |
 | From Nightfall he **shadows** one survivor just outside their light and scrawls on the ground behind them. The writing only shows up when your light finds it; turn around and he melts into the dark. | Wounded, he doesn't hit you: he **throws you over his shoulder** and heads for his hook. Mash **E** (the bar drains if you stop, and he jolts you); tear free and you hit the ground, dropping what you held. |
 
+### New creatures (18 October)
+
+| The Groundskeeper's mower | The Cuckoo |
+| --- | --- |
+| ![The Groundskeeper drives his ride-on mower down the trail in its headlight and runs a survivor over](docs/clips/groundskeeper_mower.gif) | ![A clock-headed creature calls CUCKOO three times and the survivor is snapped back to where they stood](docs/clips/cuckoo.gif) |
+| You always hear the engine, and his headlight is all he sees. On open trail he's faster than your sprint and **runs you over**; he turns wide, so sidestep late or cut through trees. Lose him and he parks to search on foot with a rake. That's your chance to pull the spark plug. | It calls **CUCKOO** three times while you're in its sight. Still there on the third and time lurches back: you're where you were **8 seconds ago**. Break line of sight, or flash it. |
+
+| The Banshee | The Slug |
+| --- | --- |
+| ![A floating banshee draws a long breath, a ring swells around her, and her scream leaves the survivor deafened](docs/clips/banshee.gif) | ![A survivor walks into a giant slug's purple slime trail and skates helplessly](docs/clips/slug.gif) |
+| A ring swells while she draws breath. Still inside when she screams and you're **deafened for 25 s**: the whole game goes muffled, so no whistle and no heartbeat warning. | Its slime trail makes you **skate**: slow to get going, impossible to stop or turn sharply. A salt ward makes it shrivel and dissolves the slime. |
+
+| The Surveyor | The Hitchhiker |
+| --- | --- |
+| ![A faceless surveyor touches a survivor; the notebook map turns to scribble and reads YOU'RE LOST](docs/clips/surveyor.gif) | ![A ghost child climbs onto a survivor's back and flicks their flashlight off](docs/clips/hitchhiker.gif) |
+| One touch and you're **LOST**: the map is scribble, signposts and skyline mean nothing, your location reads "???". Stand beside a teammate for 3 s, or find a ranger note. | It climbs on your back: slower, no sprint, and it keeps **switching your flashlight off**. Walk into a teammate to pass it on (**TAG!**). |
+
+| The Tollkeeper | The Echo |
+| --- | --- |
+| ![A troll shoves a survivor back down the trail, then lets them pass after they pay a flare](docs/clips/tollkeeper.gif) | ![A shadow with smoke ears whistles, notes rising, then bursts into smoke when the survivor's light reaches it](docs/clips/echo.gif) |
+| He blocks the trail. Walk past unpaid and he **shoves you back**; **E** drops one supply in his bucket and he waves you through for a minute. | It whistles **the stalker's camp song** from the wrong place, so you hear "him" where he isn't (notes rise from it while it does). Get your light on it up close and it bursts. |
+
+| The Fortune Teller |
+| --- |
+| ![An old fortune teller reaches a survivor and turns a tarot card: The Fool, and their supplies scatter](docs/clips/fortune_teller.gif) |
+| She reaches you and **turns a tarot card**: The Sun, The Star and Strength help; The Tower, The Moon, The Fool and Death hurt. Here it's **The Fool**: the belt spills. Walk away to decline. |
+
+### The rest of the woods
+
 | The Mimic | The Toadstool Imps |
 | --- | --- |
 | ![A survivor called Sam waves and calls out, walks up, and reveals itself as the Mimic](docs/clips/mimic.gif) | ![Mushroom-capped imps trip a survivor, steal their battery and run off to hide it](docs/clips/imps.gif) |

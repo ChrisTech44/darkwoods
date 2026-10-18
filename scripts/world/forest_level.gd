@@ -555,11 +555,13 @@ func use_flash(actor: CampPlayer) -> int:
 		actor.flashlight_charge -= CampPlayer.FLASH_COST
 	actor.flashlight_on = true
 	# A flash swats a moth off your own face, or off a teammate's in front of you.
+	var swatted := false
 	for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
 		if enemy.brain != null and enemy.brain.has_method("swat") and is_instance_valid(enemy.brain.riding):
 			var wearer: CampPlayer = enemy.brain.riding
 			if wearer == actor or (wearer.global_position.distance_to(actor.global_position) < 70.0 and actor.facing.dot(actor.global_position.direction_to(wearer.global_position)) > 0.5):
 				enemy.brain.swat()
+				swatted = true
 				announce("SWAT! The moth tumbles away.", wearer)
 	actor.flash_time = 0.18
 	actor.flash_cooldown = CampPlayer.FLASH_COOLDOWN
@@ -568,7 +570,8 @@ func use_flash(actor: CampPlayer) -> int:
 		var offset := enemy.global_position - actor.global_position
 		if enemy.enabled and offset.length() <= 90.0 and actor.facing.dot(offset.normalized()) >= 0.75 and clear_path(actor.global_position, enemy.global_position) and enemy.stun(1.5):
 			stunned += 1
-	announce("FLASH! %d stunned. Run!" % stunned if stunned > 0 else "Flash! Nothing caught in the beam.", actor)
+	if not swatted:
+		announce("FLASH! %d stunned. Run!" % stunned if stunned > 0 else "Flash! Nothing caught in the beam.", actor)
 	return stunned
 
 

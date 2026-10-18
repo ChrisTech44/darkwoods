@@ -26,6 +26,9 @@ func setup() -> void:
 	tip = "It snatches survivors who wander alone and drops them far away. Stay together; a flare makes it let go."
 	body.collision_layer = 0
 	body.collision_mask = 0
+	# It flies above the treetops: drawn over the sight mask, like tall
+	# silhouettes, so you can see it circling (and carrying someone).
+	body.z_index = 101
 	home_point = body.global_position
 
 
@@ -120,6 +123,7 @@ func _dive(delta: float) -> void:
 
 
 func _carry(victim: CampPlayer, delta: float) -> void:
+	body.carrying = true
 	if _flare_near(body.global_position):
 		_drop(victim, "A flare! The owl lets go.")
 		return
@@ -138,6 +142,7 @@ func _drop(victim: CampPlayer, line: String) -> void:
 
 
 func _abort() -> void:
+	body.carrying = false
 	dive = 0.0
 	shadow = Vector2.INF
 	target = null
@@ -170,7 +175,8 @@ func draw() -> bool:
 		body.draw_set_transform(at, 0.0, Vector2(1.0, 0.5))
 		body.draw_circle(Vector2.ZERO, 8.0 + grow * 22.0, Color(0, 0, 0, 0.25 + grow * 0.35))
 		body.draw_set_transform(Vector2.ZERO)
-	body.draw_sheet(Color.WHITE, 34.0)
+	# Carrying, its talons grip the survivor's shoulders; otherwise it soars higher.
+	body.draw_sheet(Color.WHITE, 14.0 if body.carrying else 34.0)
 	return true
 
 

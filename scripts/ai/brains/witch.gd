@@ -8,6 +8,8 @@ extends CreatureBrain
 const CURSES: Array[String] = ["frog", "backwards", "swap", "float"]
 var cast_cooldown := 1.5
 var frogged := 0.0
+## Clips and tests can force the next random curse ("" draws one).
+var forced := ""
 
 
 func setup() -> void:
@@ -83,7 +85,7 @@ func curse(actor: CampPlayer, kind: String = "") -> void:
 		cue("witch_cackle", 2.0, 1.6)
 		return
 	if kind.is_empty():
-		kind = CURSES[randi() % CURSES.size()]
+		kind = forced if not forced.is_empty() else CURSES[randi() % CURSES.size()]
 	var world: Node = level()
 	match kind:
 		"frog":

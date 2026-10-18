@@ -73,7 +73,10 @@ func physics(delta: float) -> bool:
 	if body.global_position.distance_to(friend.global_position) <= REVEAL_RANGE:
 		_reveal(friend)
 		return true
-	body.steer(friend.global_position, 40.0, delta)
+	# Navigation can call it "arrived" a step short; close the last few px directly.
+	if body.steer(friend.global_position, 40.0, delta) and body.has_line_of_sight(friend.global_position):
+		body.velocity = body.global_position.direction_to(friend.global_position) * 40.0
+		body.move_and_slide()
 	return true
 
 

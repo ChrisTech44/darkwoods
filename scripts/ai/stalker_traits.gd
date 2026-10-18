@@ -38,6 +38,8 @@ var melt := 0.0
 var rage := 0
 var card_clock := 40.0
 var used_spots: Dictionary = {}
+## Clips can choose his next scrawl ("" picks one at random).
+var next_card := ""
 var checked_spot := -1
 
 
@@ -197,9 +199,13 @@ func _cards(world: Node, delta: float) -> void:
 	card_clock -= delta
 	if card_clock > 0.0 or not is_instance_valid(favourite) or not CampMap.is_woods(favourite.global_position):
 		return
+	# He writes it himself: only when he has crept up close behind them.
+	if body.global_position.distance_to(favourite.global_position) > SHADOW_DISTANCE + 40.0:
+		return
 	card_clock = CARD_EVERY
 	var name := favourite.peer_name.to_upper() if not favourite.peer_name.is_empty() else "YOU"
-	var text: String = CARDS[randi() % CARDS.size()]
+	var text: String = next_card if not next_card.is_empty() else CARDS[randi() % CARDS.size()]
+	next_card = ""
 	if "%s" in text:
 		text = text % name
-	world.add_card(_behind(favourite, 110.0), text)
+	world.add_card(body.global_position.lerp(favourite.global_position, 0.35), text)

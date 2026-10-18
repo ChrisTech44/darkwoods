@@ -54,29 +54,44 @@ and get your friends out together.
 
 ## See it in action
 
-Short clips recorded from the real game (`tools/capture_clips.gd`, built into
-GIFs by `tools/build_clips.py`). The night is brightened a little so you can
-follow the action; real nights are darker.
+Short clips recorded from the real game in real time (`tools/capture_clips.gd`,
+built into GIFs by `tools/build_clips.py`). The night is brightened a little so
+you can follow the action; real nights are darker.
 
-| A storm rolls in | Chased by a werewolf, saved by a flare |
+| He's right behind you | The stalker carries you off |
 | --- | --- |
-| ![Rain and lightning flashes over a woods trail during a storm](docs/clips/storm.gif) | ![A werewolf chases a sprinting survivor until a thrown flare stops it](docs/clips/chase_flare.gif) |
-| Rain lashes down and lightning lights up the trees. Thunder masks your footsteps, so creatures hear you 40% less far. | Sprint (**Shift**), then turn and throw a flare (**Q**): teeth-and-claws creatures won't come near one. |
+| ![The stalker follows a survivor at the edge of their light, scrawls I SEE YOU on the trail, and melts away when they turn their flashlight on him](docs/clips/stalker_stalking.gif) | ![The stalker grabs a wounded survivor, carries them over his shoulder, and they tear free, dropping their flare](docs/clips/stalker_grab.gif) |
+| From Nightfall he **shadows** one survivor just outside their light and scrawls on the ground behind them. The writing only shows up when your light finds it; turn around and he melts into the dark. | Wounded, he doesn't hit you: he **throws you over his shoulder** and heads for his hook. Mash **E** (the bar drains if you stop, and he jolts you); tear free and you hit the ground, dropping what you held. |
 
-| Flash-stun a hound | Hide and hold your breath |
+| The Mimic | The Toadstool Imps |
 | --- | --- |
-| ![A switchback hound charges and is frozen by a flashlight burst](docs/clips/flash_stun.gif) | ![A survivor hides under a desk while the stalker searches the cabin](docs/clips/hide.gif) |
-| Face it and press **Space**: a burst of light stuns it for a moment. Costs battery; 8-second cooldown. | Press **E** at furniture or a thick bush. Your breath runs out if something lingers close by. |
+| ![A survivor called Sam waves and calls out, walks up, and reveals itself as the Mimic](docs/clips/mimic.gif) | ![Mushroom-capped imps trip a survivor, steal their battery and run off to hide it](docs/clips/imps.gif) |
+| "Sam" waves and calls you over. Real teammates carry a flashlight and show on the map. With voice chat on, it even speaks with your teammate's voice. | They tie your laces, you trip, and they run off with whatever you were holding, then tell you (roughly) where they hid it. A flash poofs them. |
 
-| Slam the door... until it breaks | The Groundskeeper's snare |
+| The Night Owl | The Witch's frog curse |
 | --- | --- |
-| ![A survivor sprints into a cabin and slams the door; the stalker smashes through](docs/clips/door.gif) | ![A survivor steps on a hidden snare and the Groundskeeper comes for them](docs/clips/snare.gif) |
-| **E** slams a cabin door behind you. It buys a few seconds, then the stalker breaks through. | Watch for the glint. Stepping on one holds you for 4 seconds and the rattle calls him; a teammate can free you. |
+| ![A giant owl's shadow grows under a lone survivor; it snatches them and carries them over the trees](docs/clips/owl.gif) | ![The witch winds up and fires a hex bolt that turns the survivor into a hopping frog](docs/clips/witch_frog.gif) |
+| Wander alone and its shadow grows under you: it snatches you and drops you far away. Stay within 150 px of a teammate, or throw a flare. | Her bolt curses you: frog (no carrying parts, no items), backwards controls, swapping places with a teammate, or floating. A salt ward bounces it back. |
 
-| Starting the van | The Signal Fire |
+| Sneaking up on Bigfoot | Bear Hug |
 | --- | --- |
-| ![The repaired van starts, headlights blaze and a 20-second countdown begins](docs/clips/van.gif) | ![The quarry signal pyre is lit and roars up into a blaze](docs/clips/signal_fire.gif) |
-| Hold **E** at the rear. The engine roars, the headlights come on, and everyone has 20 seconds to climb aboard. | Bring two kerosene cans and the flare gun, then light the pyre and survive 45 seconds by the fire. |
+| ![A survivor walks up to Bigfoot in the dark and is thrown across the trail](docs/clips/bigfoot_yeet.gif) | ![A giant teddy plods after a survivor, hugs them, and they wriggle free](docs/clips/bear_hug.gif) |
+| Bigfoot is shy. Startle it in the dark and it throws you; light it up from far away and it bolts, dropping fur worth score. | Once it has seen you it never stops following. Caught, you're squeezed until you mash **E** free or a teammate flashes it. |
+
+| The moon comes out | A moth on your face |
+| --- | --- |
+| ![A friendly hiker turns into a werewolf when the moon appears; a flare drives it back](docs/clips/werewolf_moon.gif) | ![A lantern moth lands on the survivor's face, covering the screen, and a flashlight burst swats it off](docs/clips/moth_face.gif) |
+| The lost hiker is harmless... until the moon breaks through (watch the moon icon). Then hide, throw wolfsbane, or a flare. | It flies to your light and settles over your eyes, drinking your battery. **Space** swats it off. |
+
+| A storm rolls in | Slam the door... until it breaks |
+| --- | --- |
+| ![Rain and lightning flashes over a woods trail during a storm](docs/clips/storm.gif) | ![A survivor sprints into a cabin and slams the door; the stalker smashes through](docs/clips/door.gif) |
+| Lightning lights up the trees and thunder masks your footsteps: creatures hear you 40% less far. | **E** slams a cabin door behind you. It buys a few seconds, then he breaks through (from Deep Night on, when camp is open). |
+
+| Starting the van |
+| --- |
+| ![The repaired van starts, headlights blaze and a 20-second countdown begins](docs/clips/van.gif) |
+| Hold **E** at the rear. The engine roars, the headlights come on, and everyone has 20 seconds to climb aboard. |
 
 ## Quick start: install and play
 
@@ -391,8 +406,9 @@ chosen by the seed and announced in the Dusk message and the Tab pack heading.
   - **He remembers.** Use a hiding spot twice and he checks it, and drags you out.
   - **Bear traps** on the trails you walk most: a loud snap, 15 damage and 4 s
     stuck. They glint in your light; **E** disarms one; a teammate frees you.
-  - **Calling cards.** Your name, "I SEE YOU", "RUN" scrawled on the ground
-    behind you.
+  - **Calling cards.** When he creeps up close behind you, he scrawls your name,
+    "I SEE YOU" or "RUN" on the ground. The writing only shows up when your
+    light falls on it.
   - **Rage.** Every escape from him (a broken grab, a stun, a hiding spot in
     mid-chase) builds rage; at three he **frenzies** for 20 s: faster, glowing
     red, bursting doors instantly, screaming instead of whistling.
@@ -1017,13 +1033,6 @@ a complete automated expedition with all enemies active.
 | --- | --- |
 | ![A narrow flashlight beam reveals trees in otherwise dark woods](docs/screenshots/woods_light_on.png) | ![Five-part objective clues beside the partially explored woods map](docs/screenshots/woods_field_notes.png) |
 
-| Werewolf | Sasquatch (Bigfoot) | Lantern moth |
-| --- | --- | --- |
-| ![Original werewolf walking sprite in a flashlight beam](docs/screenshots/woods_werewolf.png) | ![Long-armed Sasquatch sprite in a flashlight beam](docs/screenshots/woods_bigfoot.png) | ![Original lantern moth sprite with patterned wings](docs/screenshots/woods_lantern_moth.png) |
-
-| Vampire | Witch | Briar revenant |
-| --- | --- | --- |
-| ![Pale vampire with a high collar and long cloak](docs/screenshots/woods_vampire.png) | ![Witch with staff and pointed hat](docs/screenshots/woods_witch.png) | ![Antlered briar revenant with twig limbs](docs/screenshots/woods_briar_revenant.png) |
 
 | Abandoned village | Witch's bog | Old graveyard |
 | --- | --- | --- |

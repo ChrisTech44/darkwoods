@@ -18,7 +18,6 @@ produced by `python3 tools/verify.py --graphical` and
 | `campsite.png` | `upgrade_campsite.png` | `camp_upgrade.gd` |
 | `mess_hall.png` | `upgrade_mess_hall.png` | `camp_upgrade.gd` |
 | `woods_light_on.png`, `woods_field_notes.png` | same names | `woods_replay.gd` |
-| `woods_<creature>.png` | same names | `forest_hunt.gd` |
 | `monster_<species>.png` | same names | `content_expansion.gd` |
 | `landmark_<region>.png` | same names | `surround_world.gd` |
 | `item_belt.png` | `item_belt.png` | `content_expansion.gd` |

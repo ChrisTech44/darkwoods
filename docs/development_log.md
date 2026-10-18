@@ -1,5 +1,29 @@
 # Development log
 
+## 2026-10-17 — README clips show the new monsters
+
+All clips were re-recorded in real time (the old ones ran at half speed: two
+physics steps per 15 fps frame at 60 Hz; now four). New clips: the stalker
+shadowing a survivor and scrawling "I SEE YOU" behind them, the stalker grab,
+the Mimic, the Toadstool Imps, the Night Owl, the Witch's frog curse,
+Bigfoot's throw, the werewolf under the moon, Bear Hug and the face moth.
+Storm, door and van were kept; the outdated chase, flash, hide, snare and
+signal-fire clips and six old creature screenshots were removed.
+
+Changes found while staging the clips:
+- The stalker now writes calling cards himself: only when he's within reach
+  behind his favourite, at his own spot, not 110 px behind them wherever he
+  was.
+- Cards fade in only under your flashlight (or within 60 px).
+- The owl draws above the sight mask and grips the survivor while carrying.
+- A flash that swats a moth no longer also says "nothing caught in the beam".
+- The Mimic closes the last few pixels when navigation stops short.
+- Witch curses and the stalker's next card can be forced (for clips).
+
+**Verification:** `monster_revamp.gd` 140/140 after the changes. Every clip
+was checked on a contact sheet. The full `verify.py` was not rerun for this
+increment (usage limit).
+
 ## 2026-10-17 — The stalker's grip: you can't just mash out every time
 
 The user asked what stopped a player freeing themselves every time. Answer:

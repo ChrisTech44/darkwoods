@@ -1,5 +1,39 @@
 # Development log
 
+## 2026-10-17 — The stalker's grip: you can't just mash out every time
+
+The user asked what stopped a player freeing themselves every time. Answer:
+nothing (14 presses, no penalty, while the walk to the hook takes about 20 s).
+Changes, agreed with the user:
+- **Struggle drains** while you aren't pressing (`CampPlayer.struggle_decay`):
+  0.1/s for creature holds, 0.12/s in the stalker's grip. At about 6 presses/s a
+  first stalker grab takes about 4 s, a second about 14 s, and a third needs
+  very fast hands.
+- **Each grab is harder** (`CampKiller.hold`): 8 more presses per previous grab
+  by the same kind of creature tonight (the stalker: 14, 22, 30…).
+- **He shakes you:** every 3 s while carrying he knocks back 25% of your
+  progress; the view jolts (`jolted`, camera shake in `EffectsOverlay`).
+- **Tearing free costs you:** 1 s on the ground (tripped) and you drop your held
+  stack. Teammates' flashes, flares and the air horn still free you instantly
+  with no cost.
+- Fixed on the way: a recovery pause could freeze the stalker while he was
+  carrying someone (his carry and shake stopped); holders now skip the pause,
+  as cryptids already did.
+
+**Verification:** `monster_revamp.gd` 140/140, with new grip checks:
+- escalating presses;
+- drain while idle;
+- the jolt knocking progress back;
+- tearing free tripping you and dropping what you held;
+- a teammate's flash freeing you cleanly.
+
+Also passing:
+- woods_playthrough 227, chase_toolkit 29, offline_slice 65, design_feedback 52,
+  chase_props 46, roles_abilities 33, night_events 31 and killers_modifiers 32,
+  all 0 failures;
+- two-player woods network round: all peers pass;
+- `verify.py`: all 169 steps passed.
+
 ## 2026-10-17 — Monster revamp: one verb per creature, and the stalker at the centre
 
 User request: revamp the monsters and add fun ones, not all lethal (stealing,

@@ -520,6 +520,7 @@ func _stalker() -> void:
 	stalker.stun_remaining = 0.0
 	_check(level.use_supply(player, "air_horn") and stalker.stun_remaining > 4.0, "air_horn_stuns_him")
 	stalker.stun_remaining = 0.0
+	await _grip_checks(stalker)
 	stalker.frenzy = 0.0
 	stalker.traits.rage = 0
 	for slip in range(3):
@@ -550,6 +551,42 @@ func _stalker() -> void:
 	level.snares.snares.append({"position": (trail + along * 2).round(), "armed": true})
 	level.snares.advance(0.016)
 	_check(player.snared > 0.0 and is_equal_approx(player.health, 85.0), "bear_trap_bites")
+
+
+## The stalker's grip: struggle drains, each grab needs more presses, he jolts
+## you, tearing free costs you, and teammates still free you at once.
+func _grip_checks(stalker: CampKiller) -> void:
+	_reset()
+	player.health = 40.0
+	stalker.global_position = trail + along * 10
+	stalker.enabled = true
+	stalker.stun_immunity = 0.0
+	var times: int = player.grab_counts.get(stalker.headline.to_upper(), 0)
+	stalker.traits.strike(player)
+	_check(is_equal_approx(player.struggle_step, 1.0 / (14.0 + 8.0 * times)), "each_grab_needs_more_presses")
+	player.struggle = 0.5
+	stalker.traits.shake_clock = 10.0
+	await _frames(60)
+	_check(player.struggle < 0.42 and player.has_effect("held"), "struggle_drains_while_you_dont_press")
+	player.struggle = 0.9
+	stalker.traits.shake_clock = 0.05
+	await _frames(6)
+	_check(player.struggle < 0.7 and player.has_effect("jolted"), "he_jolts_you_and_knocks_progress_back")
+	player.supplies["flare"] = 2
+	player.belt[0] = "flare"
+	player.selected_slot = 0
+	player.struggle = 0.999
+	level.try_interact(player)
+	_check(not player.has_effect("held") and player.has_effect("tripped") and player.supplies["flare"] == 0, "tearing_free_drops_you_and_what_you_held")
+	await _frames(70)
+	_reset()
+	player.health = 40.0
+	stalker.recover_remaining = 0.0
+	stalker.global_position = trail + along * 10
+	stalker.traits.strike(player)
+	stalker.stun_immunity = 0.0
+	_check(stalker.stun(1.5) and not player.has_effect("held") and not player.has_effect("tripped"), "a_teammates_flash_frees_you_cleanly")
+	stalker.stun_remaining = 0.0
 
 
 func _items() -> void:

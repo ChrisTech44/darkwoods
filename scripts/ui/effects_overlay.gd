@@ -7,10 +7,20 @@ extends Control
 
 const MOTH := preload("res://assets/sprites/lantern_moth.png")
 var player: CampPlayer
+var shook := false
 
 
 func _process(_delta: float) -> void:
 	queue_redraw()
+	# The stalker hitching you up on his shoulder shakes the view.
+	if player != null and is_instance_valid(player) and player.has_node("Camera2D"):
+		var camera: Camera2D = player.get_node("Camera2D")
+		if player.has_effect("jolted"):
+			camera.offset = Vector2(randf_range(-4, 4), randf_range(-3, 3))
+			shook = true
+		elif shook:
+			camera.offset = Vector2.ZERO
+			shook = false
 
 
 func _draw() -> void:

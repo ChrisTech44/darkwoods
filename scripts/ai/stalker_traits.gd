@@ -23,6 +23,12 @@ const CARRY_SPEED := 58.0
 const FRENZY_SECONDS := 20.0
 const RAGE_LIMIT := 3
 const CARD_EVERY := 80.0
+## While carrying, he jolts his captive every SHAKE_EVERY s, knocking back
+## SHAKE_LOSS of their struggle; his grip drains struggle faster than others'.
+const SHAKE_EVERY := 3.0
+const SHAKE_LOSS := 0.25
+const GRIP_DECAY := 0.12
+var shake_clock := SHAKE_EVERY
 const CARDS := ["I SEE YOU", "RUN", "%s", "%s <3", "NOT YET", "YOU'RE NEXT %s"]
 var body: CampKiller
 var favourite: CampPlayer
@@ -110,7 +116,8 @@ func strike(actor: CampPlayer) -> bool:
 	var world: Node = level()
 	if world == null or not world.plan.expedition or not actor.wounded or actor.has_effect("held"):
 		return false
-	body.hold(actor, body.headline.to_upper(), 1.0 / 14.0)
+	body.hold(actor, body.headline.to_upper(), 1.0 / 14.0, GRIP_DECAY)
+	shake_clock = SHAKE_EVERY
 	body.carrying = true
 	body.attack_remaining = body.hit_cooldown
 	world.soundscape.play_cue("chain_rattle", body.global_position, 4.0)
@@ -122,6 +129,12 @@ func _carry(world: Node, delta: float) -> void:
 	body.carrying = true
 	var victim := body.held
 	victim.global_position = body.global_position + Vector2(0, -6)
+	shake_clock -= delta
+	if shake_clock <= 0.0:
+		# He hitches you up on his shoulder: you lose your grip on the struggle.
+		shake_clock = SHAKE_EVERY
+		victim.struggle = maxf(0.0, victim.struggle - SHAKE_LOSS)
+		victim.add_effect("jolted", 0.35)
 	if body.nearby_flare() != Vector2.INF:
 		body.release_held()
 		world.announce("The flare makes him drop you!", victim)

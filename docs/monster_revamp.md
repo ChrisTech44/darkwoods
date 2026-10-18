@@ -10,6 +10,12 @@ verified. Where the build differs from the first draft:
   away for 6 s, a flare breaks it, and a sprint outruns the pull.
 - **The werewolf still fears flares** when transformed.
 - **Bigfoot fur** is scored when picked up (+300 each).
+- **The grip** (user follow-up): struggle drains while you aren't pressing
+  (0.1/s for creatures, 0.12/s for the stalker); each grab by the same kind of
+  creature needs 8 more presses than the last; the stalker jolts his captive
+  every 3 s (−25% progress); tearing free of him leaves you tripped (1 s) and
+  drops what you held. Teammates' flashes, flares and the air horn free you
+  instantly and cleanly.
 - **Blood Moon** turns pranksters (Puffballs, Lantern Moths, Imps) into
   werewolves and brings the moon out about twice as often.
 

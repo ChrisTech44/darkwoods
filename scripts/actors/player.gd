@@ -97,6 +97,11 @@ var effect_data: Dictionary = {}
 var struggle: float = 0.0
 ## Fraction of a full break-free each E press earns (set by the holder).
 var struggle_step: float = 0.1
+## Struggle lost per second while you aren't pressing (set by the holder): slow
+## or casual pressing never gets you out.
+var struggle_decay: float = 0.1
+## Times each kind of creature has grabbed this survivor tonight (escalation).
+var grab_counts: Dictionary = {}
 ## Host only: the creature holding this survivor (CampKiller), or null.
 var holder: Node = null
 ## Decaying shove from throws, pounces and charges (px/s).
@@ -288,6 +293,8 @@ func clear_effect(name: String) -> void:
 
 
 func _tick_effects(delta: float) -> void:
+	if has_effect("held"):
+		struggle = maxf(0.0, struggle - struggle_decay * delta)
 	for name: String in effects.keys():
 		if name == "held":
 			continue
@@ -300,10 +307,11 @@ func _tick_effects(delta: float) -> void:
 
 ## The survivor is grabbed by `by` (a creature) until it lets go or they wriggle
 ## free: every E press adds `per_press` of a full escape.
-func grab(by: Node, label: String, per_press: float) -> void:
+func grab(by: Node, label: String, per_press: float, decay: float = 0.1) -> void:
 	holder = by
 	struggle = 0.0
 	struggle_step = per_press
+	struggle_decay = decay
 	effect_data["held_by"] = label
 	effects["held"] = 1.0
 	knock = Vector2.ZERO

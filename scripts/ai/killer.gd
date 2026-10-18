@@ -89,7 +89,7 @@ func _physics_process(delta: float) -> void:
 	if tick_stun(delta):
 		return
 	attack_remaining = maxf(0.0, attack_remaining - delta)
-	if recover_remaining > 0.0:
+	if recover_remaining > 0.0 and not is_instance_valid(held):
 		# Catching its breath after a hit: the survivor's head start.
 		recover_remaining = maxf(0.0, recover_remaining - delta)
 		velocity = Vector2.ZERO
@@ -261,11 +261,19 @@ func land_hit(actor: CampPlayer, damage: float) -> bool:
 
 
 ## Grab `actor`: they can't move until released or they wriggle free (E).
-func hold(actor: CampPlayer, label: String, per_press: float) -> void:
+## Every grab by the same kind of creature is harder than the last: it takes
+## GRAB_ESCALATION more presses each time (14, 22, 30… for the stalker).
+const GRAB_ESCALATION := 8
+
+
+func hold(actor: CampPlayer, label: String, per_press: float, decay: float = 0.1) -> void:
 	if is_instance_valid(held) and held != actor:
 		release_held()
 	held = actor
-	actor.grab(self, label, per_press)
+	var times: int = actor.grab_counts.get(label, 0)
+	actor.grab_counts[label] = times + 1
+	var presses := 1.0 / per_press + GRAB_ESCALATION * times
+	actor.grab(self, label, 1.0 / presses, decay)
 
 
 func release_held() -> void:

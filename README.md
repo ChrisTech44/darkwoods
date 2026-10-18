@@ -381,9 +381,13 @@ chosen by the seed and announced in the Dusk message and the Tab pack heading.
     dark, only to turn up behind you later. Sooner or later, he lunges.
   - **The grab and the hook.** He doesn't hit a wounded survivor (50 health or
     less): he **throws them over his shoulder** and walks them to **his hook**,
-    a post in his lair in the woods. Mash **E** to wriggle free; a teammate's
-    flash, a flare or the **air horn** makes him drop you. Reach the hook and
-    you're downed there, **pinned on everyone's map**: a rescue run.
+    a post in his lair in the woods. His grip is hard to break: your struggle
+    drains when you stop mashing, every few seconds he **hitches you up on his
+    shoulder** (the view jolts and you lose a chunk of progress), and each time
+    he grabs you it takes more presses. Tear free and you **hit the ground and
+    drop what you were holding**. A teammate's flash, a flare or the **air horn**
+    makes him drop you cleanly. Reach the hook and you're downed there,
+    **pinned on everyone's map**: a rescue run.
   - **He remembers.** Use a hiding spot twice and he checks it, and drags you out.
   - **Bear traps** on the trails you walk most: a loud snap, 15 damage and 4 s
     stuck. They glint in your light; **E** disarms one; a teammate frees you.
@@ -761,8 +765,12 @@ design is in [docs/monster_revamp.md](docs/monster_revamp.md).
 
 **Held?** When something holds you (bite, hug, mud, stare, talons, the stalker's
 shoulder) the screen says **HELD BY … · MASH E** with a bar: every press of **E**
-wriggles you closer to free. A teammate pressing **E** beside you pulls twice as
-hard, and a teammate's **flash** makes the creature let go.
+wriggles you closer to free, but the bar **drains** whenever you stop, so only
+fast, steady mashing works. **Each grab by the same kind of creature needs 8
+more presses than the last** (the stalker: 14, then 22, then 30). A teammate
+pressing **E** beside you pulls twice as hard, and a teammate's **flash** (or a
+flare near the stalker, or the air horn) frees you at once: teamwork is the
+reliable way out.
 
 **Creature items** (V to use, from your belt):
 

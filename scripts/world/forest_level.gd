@@ -374,8 +374,15 @@ func try_interact(actor: CampPlayer) -> bool:
 		return false
 	# Held by a creature: every press wriggles toward breaking free.
 	if actor.has_effect("held"):
+		var captor: Node = actor.holder
 		if actor.wriggle():
-			announce("You wriggle free!", actor)
+			if captor is CampKiller and captor.traits != null:
+				# Tearing free of the stalker leaves you sprawled, empty-handed.
+				actor.add_effect("tripped", 1.0)
+				drop_held(actor)
+				announce("You tear free and hit the ground! Whatever you held went flying. RUN!", actor)
+			else:
+				announce("You wriggle free!", actor)
 		return true
 	if actor.has_effect("asleep") or actor.has_effect("tripped"):
 		return false

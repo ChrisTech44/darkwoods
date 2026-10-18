@@ -648,7 +648,7 @@ The gate, entrance, water and lobby art were checked in captured frames.
 
 ## Monster revamp
 
-`tests/integration/monster_revamp.gd` (in `verify.py`, 135 checks) gives every
+`tests/integration/monster_revamp.gd` (in `verify.py`, 140 checks) gives every
 creature a controlled scene on a straight woods trail with everything else off.
 - **Roster:** every creature spawns with a brain, Buster is unique, the jackals
   come as a pair, and every name is unique.
@@ -678,7 +678,9 @@ creature a controlled scene on a straight woods trail with everything else off.
   - Bear Hug: love at first sight, the hug, the squeeze, 15 wriggles.
 - **The stalker:** traits and song; the wounded carried to the hook and pinned;
   wriggling free; the air horn stun; rage to frenzy; melting in a beam; spot
-  memory; calling cards; the bear trap bite.
+  memory; calling cards; the bear trap bite. His grip: each grab needs more
+  presses, struggle drains while idle, he jolts progress back, tearing free
+  trips you and drops what you held, and a teammate's flash frees you cleanly.
 - **Items:** every new item is placed each night, reachable, and at least
   30 px from any other pickup; coffee, garlic and bug spray work.
 

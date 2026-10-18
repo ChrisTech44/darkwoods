@@ -42,7 +42,7 @@ static func lines(topic: String, level: Node = null) -> Array[String]:
 			out.append("Moon dial (top right) fills toward the next full moon;")
 			out.append("werewolves change while it is out. Red: Blood Moon.")
 		"THE KILLER":
-			var who := "THE STALKER OR THE GROUNDSKEEPER"
+			var who := "THE STALKER"
 			if level != null and level.plan.expedition:
 				who = "TONIGHT: THE " + level.plan.headline.to_upper()
 			out.append(who)

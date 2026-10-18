@@ -39,6 +39,12 @@ func _ready() -> void:
 	var limiter := AudioEffectLimiter.new()
 	limiter.ceiling_db = -1.0
 	AudioServer.add_bus_effect(0, limiter)
+	# Deafened by the Banshee: a muffling low-pass on everything except voice chat.
+	for bus in ["Effects", "Ambience", "Music"]:
+		var muffle := AudioEffectLowPassFilter.new()
+		muffle.cutoff_hz = 450.0
+		AudioServer.add_bus_effect(AudioServer.get_bus_index(bus), muffle)
+		AudioServer.set_bus_effect_enabled(AudioServer.get_bus_index(bus), AudioServer.get_bus_effect_count(AudioServer.get_bus_index(bus)) - 1, false)
 	var settings := ConfigFile.new()
 	if settings.load(settings_path) == OK:
 		for bus in BUSES:
@@ -69,6 +75,26 @@ func set_duck(offsets: Dictionary) -> void:
 	for bus in BUSES:
 		var index := AudioServer.get_bus_index(bus)
 		AudioServer.set_bus_volume_db(index, linear_to_db(maxf(volumes[bus], 0.0001)) + float(duck.get(bus, 0.0)))
+
+
+var muffled := false
+
+
+## Banshee deafness for this machine's player: muffle and quieten the round.
+func set_muffled(on: bool) -> void:
+	if on == muffled:
+		return
+	muffled = on
+	for bus in ["Effects", "Ambience", "Music"]:
+		var index := AudioServer.get_bus_index(bus)
+		AudioServer.set_bus_effect_enabled(index, AudioServer.get_bus_effect_count(index) - 1, on)
+	var quiet := {"Effects": -14.0, "Ambience": -10.0, "Music": -10.0} if on else {}
+	for bus in quiet:
+		duck[bus] = quiet[bus]
+	if not on:
+		for bus in ["Effects", "Ambience", "Music"]:
+			duck.erase(bus)
+	set_duck(duck)
 
 
 func stream_for(cue: String) -> AudioStream:

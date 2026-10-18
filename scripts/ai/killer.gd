@@ -25,7 +25,8 @@ var search_index: int = 0
 var retreat_remaining: float = 0.0
 var stun_remaining: float = 0.0
 var stun_immunity: float = 0.0
-## F7 headline killer: "stalker" or "groundskeeper" (cryptids ignore it).
+## Headline killer: always "stalker" now (cryptids ignore it; the Groundskeeper
+## is a woods creature).
 var headline := "stalker"
 ## Escalation tier = night phase + 1 (1 Dusk … 4 Witching Hour), set by NightClock.
 var tier := 1
@@ -44,6 +45,8 @@ const THREATS := {
 	"switchback_hound": [30.0, 2.5], "relay_jackal": [15.0, 1.2], "ration_moth": [15.0, 1.0],
 	"lens_eater": [20.0, 2.0], "mimic": [25.0, 3.0], "owl": [10.0, 4.0], "bog_hands": [0.0, 4.0],
 	"imps": [0.0, 4.0], "teddy": [5.0, 3.0],
+	"cuckoo": [0.0, 4.0], "banshee": [10.0, 3.0], "slug": [10.0, 3.0], "surveyor": [0.0, 4.0],
+	"hitchhiker": [0.0, 4.0], "tollkeeper": [10.0, 3.0], "echo": [0.0, 4.0], "fortune_teller": [0.0, 4.0],
 }
 ## Expedition nights keep every creature out of camp until Deep Night (the
 ## second half): camp neither shows nor sounds to them, and they never path
@@ -64,7 +67,6 @@ var hit_damage := 45.0
 var hit_cooldown := 4.0
 var recover_remaining := 0.0
 const STALKER_SHEET := preload("res://assets/sprites/stalker.png")
-const GROUNDSKEEPER_SHEET := preload("res://assets/sprites/groundskeeper.png")
 @onready var agent: NavigationAgent2D = $NavigationAgent2D
 
 
@@ -428,7 +430,7 @@ func _draw() -> void:
 		row = 1
 	var frame := 0 if velocity.length() < 1.0 else 1 + int(stride / 9.0) % 2
 	# SpriteCook stalker: 40x48 frames, feet at the body origin like the old 32x40 art.
-	var sheet: Texture2D = GROUNDSKEEPER_SHEET if headline == "groundskeeper" else STALKER_SHEET
+	var sheet: Texture2D = STALKER_SHEET
 	var tint := Color.WHITE
 	if frenzy > 0.0 and not faded:
 		# A pulsing red aura while he's in a frenzy.

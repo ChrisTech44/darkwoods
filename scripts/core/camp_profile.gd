@@ -14,7 +14,7 @@ const BADGES := {
 	"lake_legend": ["LAKE LEGEND", "Escape by boat."],
 	"radio_ham": ["RADIO HAM", "Escape by Radio Rescue."],
 	"gatecrasher": ["GATECRASHER", "Escape through the Ranger Gate."],
-	"snare_dancer": ["SNARE DANCER", "Escape a Groundskeeper night."],
+	"snare_dancer": ["MOWER MECHANIC", "Pull the Groundskeeper's spark plug, then escape."],
 	"red_sky": ["RED SKY", "Escape under a Blood Moon."],
 	"daily_dose": ["DAILY DOSE", "Escape a Daily Night."],
 	"field_guide": ["FIELD GUIDE", "Sight ten different creatures."],
@@ -25,7 +25,7 @@ const BADGES := {
 ## (docs/monster_revamp.md). Keys are species ids; NAMES are what players see.
 const TIPS := {
 	"stalker": "He whistles the camp song. Wounded, he carries you to his hook; an air horn or a teammate's flash makes him drop you.",
-	"groundskeeper": "Sets snares on trails you walked. Watch for the glint; disarm with E. He carries the wounded to his hook too.",
+	"groundskeeper": "Rides a mower that runs you down on open ground but turns wide: sidestep late, or duck into trees or a cabin. When he walks off to rake for you, pull its spark plug (hold E).",
 	"vampire": "Its gaze draws you in and its bite drains you. Garlic keeps it away; hold your beam on it; mash E if it bites.",
 	"werewolf": "A harmless hiker until the moon comes out. Then hide, or throw wolfsbane; its pounce knocks you flying.",
 	"bigfoot": "Shy. Light it up from far away and it runs (and drops fur). Sneak up on it and it throws you.",
@@ -47,12 +47,22 @@ const TIPS := {
 	"bog_hands": "They hide in mud puddles on the trail. Walk around puddles; if they grab you, mash E or get a teammate to pull.",
 	"imps": "They trip you and hide what you drop. A flash poofs them; bug spray keeps them off.",
 	"teddy": "Once it sees you it follows forever, slowly. If it hugs you, mash E or get a teammate to flash it.",
+	"cuckoo": "It calls CUCKOO three times when it sees you. Still in its sight on the third and you're thrown back 8 seconds. Break line of sight, or flash it.",
+	"banshee": "A swelling ring means she's drawing breath: get out of it or behind cover, or her scream leaves you deaf for 25 s.",
+	"slug": "Its slime trail makes you skate. Walk around the shine; a salt ward makes it shrivel and dissolves the slime.",
+	"surveyor": "Its touch leaves you LOST: no map, signposts or skyline. Stand beside a teammate for 3 s or read a ranger note.",
+	"hitchhiker": "It rides on your back (slow, no sprint, lights off). Walk into a teammate to pass it on, or wait it out.",
+	"tollkeeper": "He blocks a trail. E pays one supply and he lets you by for a minute; no supplies costs 15 health.",
+	"echo": "It whistles the stalker's tune from the wrong place. Harmless; your light bursts it up close.",
+	"fortune_teller": "She turns a tarot card when she reaches you: three help, four hurt. Walk away to decline.",
 }
 const NAMES := {"stalker": "THE STALKER", "groundskeeper": "THE GROUNDSKEEPER", "vampire": "THE VAMPIRE", "werewolf": "THE WEREWOLF", "bigfoot": "BIGFOOT",
 	"witch": "THE WITCH", "lantern_moth": "THE LANTERN MOTH", "ration_moth": "THE PUFFBALL", "briar_revenant": "THE SCARECROW",
 	"switchback_hound": "BUSTER, THE STALKER'S HOUND", "relay_jackal": "TRASH JACKALS", "lens_eater": "THE PEEPER", "shutter_wraith": "THE PAPARAZZO",
 	"last_car_conductor": "THE CONDUCTOR", "stoneback_ram": "THE RAM", "candle_grazer": "THE SNUFFER", "bramble_seamstress": "THE SEAMSTRESS",
-	"boiler_saint": "THE LULLABY SAINT", "mimic": "THE MIMIC", "owl": "THE NIGHT OWL", "bog_hands": "THE BOG HANDS", "imps": "THE TOADSTOOL IMPS", "teddy": "BEAR HUG"}
+	"boiler_saint": "THE LULLABY SAINT", "mimic": "THE MIMIC", "owl": "THE NIGHT OWL", "bog_hands": "THE BOG HANDS", "imps": "THE TOADSTOOL IMPS", "teddy": "BEAR HUG",
+	"cuckoo": "THE CUCKOO", "banshee": "THE BANSHEE", "slug": "THE SLUG", "surveyor": "THE SURVEYOR", "hitchhiker": "THE HITCHHIKER",
+	"tollkeeper": "THE TOLLKEEPER", "echo": "THE ECHO", "fortune_teller": "THE FORTUNE TELLER"}
 
 
 static func display_name(species: String) -> String:
@@ -144,7 +154,7 @@ static func score_night(won: bool, route: String, relics: int, notes: int, reviv
 
 
 ## Record a finished night; returns newly earned badge ids.
-func record_night(seed_value: int, card: Dictionary, won: bool, route: String, headline: String, modifiers: Array, daily: bool, helped: bool) -> Array[String]:
+func record_night(seed_value: int, card: Dictionary, won: bool, route: String, _headline: String, modifiers: Array, daily: bool, helped: bool, feats: Array = []) -> Array[String]:
 	data.set_value("stats", "nights", get_count("nights") + 1)
 	if won:
 		data.set_value("stats", "escapes", get_count("escapes") + 1)
@@ -165,7 +175,7 @@ func record_night(seed_value: int, card: Dictionary, won: bool, route: String, h
 	award.call("lake_legend", won and route == "BOAT")
 	award.call("radio_ham", won and route == "RADIO RESCUE")
 	award.call("gatecrasher", won and route == "RANGER GATE")
-	award.call("snare_dancer", won and headline == "groundskeeper")
+	award.call("snare_dancer", won and "mower" in feats)
 	award.call("red_sky", won and "blood_moon" in modifiers)
 	award.call("daily_dose", won and daily)
 	award.call("field_guide", seen_count() >= 10)

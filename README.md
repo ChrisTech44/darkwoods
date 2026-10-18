@@ -45,9 +45,9 @@ and get your friends out together.
   make progress (Dusk → Nightfall → Deep Night → Witching Hour). There is no
   timer to beat; the danger keeps rising until you escape.
 - **Something different every night.** Each night is generated from a seed: the
-  camp layout, where the parts are, which escape is rumoured to work, which killer
-  hunts you (the **Stalker** or the **Groundskeeper**), weather, events and
-  modifiers such as Blood Moon.
+  camp layout, where the parts are, which escape is rumoured to work, which
+  creatures roam the woods, weather, events and modifiers such as Blood Moon.
+  **The Stalker** hunts you every night.
 - **Fear you can fight.** You cannot kill anything. You can run, hide in lockers
   and bushes, slam doors, throw flares, flash creatures with your light, set
   traps of noise, and use your survivor's special ability.
@@ -408,14 +408,14 @@ everyone else today (the seed is the date, e.g. Night 20261017).
 
 **CAMP JOURNAL** on the main menu shows your nights and escapes, a **bestiary**
 (each creature's survival tip unlocks the first time you see it) and **merit
-badges** such as First Light, Route Master, Pyromaniac, Lake Legend, Snare
-Dancer, Red Sky, Daily Dose, Field Guide, Top Marks and Team Player. New badges
+badges** such as First Light, Route Master, Pyromaniac, Lake Legend, Mower
+Mechanic (pull the Groundskeeper's spark plug, then escape), Red Sky, Daily Dose, Field Guide, Top Marks and Team Player. New badges
 appear on the results screen. Progress is saved locally on each player's machine.
 
 ## Tonight's killer and night modifiers
 
-Each Woods Expedition night has a **headline killer** and **0–2 modifiers**, both
-chosen by the seed and announced in the Dusk message and the Tab pack heading.
+Every night **the Stalker** is the killer, joined by **0–2 modifiers** chosen by
+the seed and announced in the Dusk message and the notebook.
 
 - **The Stalker** is the reason this game exists: the camp's old counselor in a
   canvas mask, and nothing else in the woods behaves like him.
@@ -445,8 +445,8 @@ chosen by the seed and announced in the Dusk message and the Tab pack heading.
   - **Escalation.** In Deep Night his search memory lasts 50% longer and
     **once** he may sabotage the van (VAN ALARM, the part pinned on your map); in
     the Witching Hour he runs faster and **once** cuts the generator.
-- **The Groundskeeper** shares the grab, the hook, the memory and the rage, and
-  sets **rake snares** instead of bear traps (they hold you 4 s and rattle).
+- **The Groundskeeper** is no longer an alternative killer: he now roams the
+  woods on his ride-on mower (see [the creature table](#know-what-is-following-you)).
 
 | Modifier | Effect |
 | --- | --- |
@@ -797,6 +797,15 @@ design is in [docs/monster_revamp.md](docs/monster_revamp.md).
 | **The Bog Hands** | Hide in **mud puddles** on trails. Step in and they hold you; after 6 s you're **dragged under** (downed). | A bubbling puddle. | Walk around puddles; mash **E** or have a teammate pull you; a flare scares them off. |
 | **The Toadstool Imps** | Tie your laces: you **trip** and drop what you hold, then they **steal it and hide it** nearby (and tell you which way). | Giggling. | A flash poofs them; **bug spray** keeps them off. |
 | **Bear Hug** | A giant camp teddy that **never stops following** you once it has seen you, slowly. If it catches you it **hugs**: held and squeezed. | Squeaky footsteps. | Keep moving; mash **E**, or a teammate flashes it. |
+| **The Groundskeeper** | Drives a **ride-on mower**: faster than a sprint on open trail, **runs you over** (35 and a launch), but turns wide and only sees what his **headlight** shows. Lose him in trees, a cabin or a hiding spot and he parks and walks with his **rake**, dragging people out of hiding spots near him. | The engine, always; a headlight beam. | Sidestep late, cut through trees, duck indoors. While he's away from it, **hold E at the mower 3 s to pull the spark plug**: he's on foot for 90 s. |
+| **The Cuckoo** | A clock-headed thing on spider legs. When it sees you it calls **CUCKOO** three times; still in its sight on the third and **time snaps you back 8 s** to where you stood. | The calls, and the bird popping out. | Break line of sight before the third call, or flash it. |
+| **The Banshee** | Drifts toward you, **draws a long breath** (a ring swells around her) and **screams**: everyone inside with a clear line is **deafened for 25 s**: the world goes muffled, so no whistle, calls or heartbeat warning. | A gasp and the swelling ring. | Get out of the ring or behind something solid before she lets go. |
+| **The Slug** | Leaves a **slime trail** across the paths; step in it and you **skate** (slow to start, can't stop or turn sharply). Its touch coats you for 8 s. | A glistening shine on the trail. | Walk around the shine. A **salt ward** makes it shrivel and flee and dissolves the slime near you. |
+| **The Surveyor** | Touch and you're **LOST** for 40 s: your map is scribble, the skyline and signposts mean nothing, your location reads "???". | A faceless figure with a tripod. | Stand beside a teammate for 3 s, or pick up a ranger note. Hold your light on it and it backs off. |
+| **The Hitchhiker** | A ghost child that **rides on your back**: two-thirds speed, no sprint, and it keeps **switching your flashlight off**. | Giggling. | **Walk into a teammate** to pass it on (TAG!), or wait 45 s. |
+| **The Tollkeeper** | A troll who **blocks a trail**. Walk past unpaid and he **shoves you back** (10). | His lantern ring on the path. | **E** pays one supply from your belt and he lets you by for a minute (no supplies: 15 health). Or go round. |
+| **The Echo** | Whistles **the stalker's camp song** from the wrong place, so you hear "him" where he isn't. Never attacks. | The whistle itself. | Put your light on it up close and it bursts into smoke. |
+| **The Fortune Teller** | Reaches you, holds you a moment and turns a **tarot card**: The Sun (full light), The Star (a part's region), Strength (+30) help; The Tower (the stalker finds you), The Moon (no light 20 s), The Fool (your belt spills) and Death (30) hurt. Then she vanishes. | A soft chime and a glowing crystal ball. | She drifts slowly: walk away to decline. |
 
 **Region guardians** stay in their regions:
 
@@ -834,9 +843,11 @@ reliable way out.
 Rations double as **bait** (Buster, jackals), the **salt ward** reflects witch
 curses, and **glow moss** also makes you glow for 60 s (nothing can snuff it).
 
-Each expedition has **27 creatures, plus the headline killer**: the Vampire and
-the Witch in their regions, the six guardians (the jackals are a pair), and **18
-roamers spread across the whole forest**, none within 1,100 px of camp. Roamers
+Each expedition has **30 creatures, plus the Stalker** (playtesters found more
+too oppressive): the Vampire and the Witch in their regions, the six guardians
+(the jackals are a pair), and **21 roamers spread across the whole forest**, none
+within 1,100 px of camp. There are 22 roaming kinds, so each night one of them
+sits out, a different one depending on the seed. Roamers
 follow trail circuits and investigate sensed activity. There's a three-flare
 stash in Maintenance for when they come.
 
@@ -848,7 +859,7 @@ open to everything. The director that steers creatures toward survivors waits
 until Nightfall.
 
 **How hard things hit.** Most creatures above don't simply hit you. The ones
-that do: the stalker 50 (4 s cooldown), the Groundskeeper 40 (3.5 s), the
+that do: the stalker 50 (4 s cooldown), the Groundskeeper's mower 35 (his rake 25), the
 Scarecrow 60, the werewolf's pounce 35, the Ram's charge 30, the Mimic 25,
 Bigfoot's throw and the Night Owl's drop 10. Holds drain over time: the Vampire
 6/s, Bear Hug 5/s, the Peeper 4/s. After a hit the creature pauses for half its
@@ -1040,9 +1051,9 @@ atlas; the in-game field map still reveals only explored trails.
 Inspection lighting (ambient raised, sight mask off) so the art is readable;
 normal nights are far darker. Captured by `tools/capture_showcase.gd`.
 
-| Signal Fire hold-out | The Groundskeeper and a snare |
+| Signal Fire hold-out | The Groundskeeper's parked mower |
 | --- | --- |
-| ![The quarry-rim signal pyre blazing during its 45-second hold-out](docs/screenshots/signal_fire.png) | ![The straw-hatted Groundskeeper beside a steel snare on a walked trail](docs/screenshots/groundskeeper_snare.png) |
+| ![The quarry-rim signal pyre blazing during its 45-second hold-out](docs/screenshots/signal_fire.png) | ![The Groundskeeper's mower parked on the trail while he walks off with his rake](docs/screenshots/groundskeeper_parked.png) |
 
 | Scout's Mark | Lost Camper |
 | --- | --- |
@@ -1081,7 +1092,7 @@ a complete automated expedition with all enemies active.
 
 ### Every creature
 
-In-engine portraits of all 21 woods creatures (AI paused, brightened lighting;
+In-engine portraits of the original 21 woods creatures (AI paused, brightened lighting;
 the werewolf, Mimic and Bog Hands shown in their true forms).
 
 | The Vampire | The Werewolf | Bigfoot |
@@ -1111,6 +1122,20 @@ the werewolf, Mimic and Bog Hands shown in their true forms).
 | Trash Jackal | The Ram | The Snuffer |
 | --- | --- | --- |
 | ![Trash Jackal](docs/screenshots/monster_relay_jackal.png) | ![The Ram](docs/screenshots/monster_stoneback_ram.png) | ![The Snuffer](docs/screenshots/monster_candle_grazer.png) |
+
+New on 18 October (normal lighting, flashlight on, AI paused, each shown mid-tell):
+
+| The Groundskeeper | The Cuckoo (two calls in) | The Banshee (drawing breath) |
+| --- | --- | --- |
+| ![The Groundskeeper on his ride-on mower](docs/screenshots/monster_groundskeeper.png) | ![The Cuckoo counting](docs/screenshots/monster_cuckoo.png) | ![The Banshee's breath ring](docs/screenshots/monster_banshee.png) |
+
+| The Slug (and its trail) | The Surveyor | The Hitchhiker (riding) |
+| --- | --- | --- |
+| ![The Slug and its slime trail](docs/screenshots/monster_slug.png) | ![The Surveyor](docs/screenshots/monster_surveyor.png) | ![The Hitchhiker on a survivor's back](docs/screenshots/monster_hitchhiker.png) |
+
+| The Tollkeeper | The Echo | The Fortune Teller (The Tower) |
+| --- | --- | --- |
+| ![The Tollkeeper and his toll ring](docs/screenshots/monster_tollkeeper.png) | ![The Echo](docs/screenshots/monster_echo.png) | ![The Fortune Teller's card](docs/screenshots/monster_fortune_teller.png) |
 
 ### New optional biomes
 

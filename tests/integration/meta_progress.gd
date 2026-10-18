@@ -39,7 +39,7 @@ func _score_checks() -> void:
 
 func _profile_checks(profile: CampProfile) -> void:
 	var card := {"score": 1900, "grade": "S"}
-	var earned := profile.record_night(42, card, true, "SIGNAL FIRE", "groundskeeper", ["blood_moon"], true, true)
+	var earned := profile.record_night(42, card, true, "SIGNAL FIRE", "stalker", ["blood_moon"], true, true, ["mower"])
 	for id in ["first_light", "pyromaniac", "snare_dancer", "red_sky", "daily_dose", "top_marks", "team_player"]:
 		_check(id in earned, "badge_" + id)
 	_check(profile.best(42) == 1900 and profile.get_count("nights") == 1 and profile.get_count("escapes") == 1, "night_recorded")

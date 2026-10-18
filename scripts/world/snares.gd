@@ -37,9 +37,10 @@ func active() -> bool:
 	return level.plan.expedition
 
 
-## "snare" (Groundskeeper) or "bear_trap" (the stalker).
+## The stalker's bear traps (the rake-snare variant belonged to the old
+## Groundskeeper headliner and is kept only as data).
 func kind() -> String:
-	return "snare" if level.killer.headline == "groundskeeper" else "bear_trap"
+	return "bear_trap"
 
 
 func advance(delta: float) -> void:
@@ -95,11 +96,11 @@ func try_place(at: Vector2) -> bool:
 func prompt(actor: CampPlayer) -> String:
 	var friend := _snared_friend(actor)
 	if friend != null:
-		return "E · FREE TEAMMATE FROM THE SNARE"
+		return "E · FREE TEAMMATE FROM THE TRAP"
 	if actor.snared > 0.0:
-		return "SNARED %.1fs · A TEAMMATE CAN FREE YOU" % actor.snared
+		return "TRAPPED %.1fs · A TEAMMATE CAN FREE YOU" % actor.snared
 	if _snare_near(actor) >= 0:
-		return "E · DISARM SNARE (QUIET)"
+		return "E · DISARM BEAR TRAP (QUIET)"
 	return ""
 
 

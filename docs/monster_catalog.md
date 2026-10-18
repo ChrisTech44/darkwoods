@@ -71,8 +71,10 @@ Heart-pounding goals for every new or reworked monster:
 
 The current stalker becomes the first **headline killer**, the night's main
 antagonist. **Implemented in F7 (17 October 2026)**: the tiers below, and H01
-the Groundskeeper (snares) as the seeded alternative headline killer. H02–H04
-and Hunter's Moon remain planned. Tier changes are driven by night phase:
+the Groundskeeper (snares) as the seeded alternative headline killer. **Superseded
+18 October:** the Stalker is the only headline killer; the Groundskeeper is a woods
+creature with a mower (see [monster revamp](monster_revamp.md#18-october-additions)).
+H02–H04 and Hunter's Moon remain planned. Tier changes are driven by night phase:
 
 | Tier / phase | Stalker behavior |
 | --- | --- |

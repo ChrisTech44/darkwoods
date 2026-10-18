@@ -1,5 +1,66 @@
 # Development log
 
+## 2026-10-18 — Stalker-only nights, nine new creatures, mower Groundskeeper, region identity
+
+User asked to finish the remaining review items, make the Groundskeeper "very,
+very different" with an awesome mechanic, then changed direction: the Stalker
+stays the only headline killer, the Groundskeeper becomes a woods creature, add
+more creatures with unique fun/penalizing/annoying verbs and improve regions,
+using SpriteCook down to 400 then 300 credits.
+
+- **Stalker every night.** `RoundPlan.HEADLINES = ["stalker"]` (the old RNG roll
+  is kept so modifier picks per seed don't shift); bear traps always; trap
+  prompts renamed; the Groundskeeper killer sheet/cue branches removed. Badge
+  "Snare Dancer" (id kept for old profiles) is now **Mower Mechanic**: pull the
+  Groundskeeper's spark plug and escape (`level.feats`, synced).
+- **Groundskeeper creature** (`brains/groundskeeper.gd`): ride-on mower with
+  momentum steering (1.9 rad/s turn, brakes for sharp turns), headlight-cone
+  sight (270 px, plus 46 px around) with a real PointLight2D headlight, runs
+  survivors over (35 + launch); loses you behind trees/cabins/hiding spots,
+  parks and walks with a rake that drags people out of nearby hiding spots,
+  then returns; hold E 3 s at the parked mower to pull the spark plug (90 s on
+  foot, loud). Engine is a positional loop on every peer. New generic hooks:
+  `level.holding(actor)` and `creature_prompt()` so creatures can offer E actions.
+- **Eight more creatures**, each with a verb nothing else has: Cuckoo (rewind
+  8 s after three calls in sight), Banshee (inhale ring then deafness: local
+  low-pass and ducking on Effects/Ambience/Music), Slug (slime skid physics;
+  salt ward shrivels it), Surveyor (LOST: map scribble, skyline/signposts/
+  location/place titles hidden; teammate 3 s or a ranger note cures),
+  Hitchhiker (rides your back: slow, no sprint, lights off; TAG a teammate),
+  Tollkeeper (pay a supply or be shoved back), Echo (fake stalker whistles,
+  played per peer; light bursts it), Fortune Teller (forced tarot card, 3 boons /
+  4 banes, on-screen card). Roamers 18 → 21 and 30 creatures total, keeping the
+  17 October playtest cap: 22 roaming kinds (duplicates and the roaming Witch
+  removed; she stays in the bog), so one kind rests each night, rotating with
+  the seed. Blood Moon now also turns the Echo, Hitchhiker and Cuckoo into
+  werewolves, so it still converts five. Names, tips, threat rows, calls,
+  player effects (`slimed`, `piggyback`, `lost`, `deaf`, `dark`, `rewound`,
+  `card`) and the field guide updated.
+- **Regions:** each landmark's searchable centrepiece is its own object (sluice
+  valve, cider press, candle lectern, telescope, track switch, ore cart) on a
+  halo in the region's colour, replacing the shared altar; nine regions get a
+  gateway object (village sign, bog boardwalk, graveyard gate, flood gauge,
+  orchard arch, lychgate, armillary pillar, rail crossing, mine sign) placed
+  beside the trail at the crossing nearest camp.
+- **SpriteCook:** 60 credits (476 → 416, floor 300): relic + mower sheet,
+  creature sheet F (first try came back 64×64 because width/height act as the
+  whole canvas; re-run as an edit at 512), sheet G, entrance sheet. All asset ids
+  and sha12 in `spritecook-assets.json`; slicing in `tools/slice_landmark_props.gd`
+  and `tools/import_spritecook_creatures.gd -- --only <sheet>`.
+- Tests: new `tests/integration/new_creatures.gd` (33 checks, added to
+  verify.py); `killers_modifiers` updated for stalker-only nights; the monster
+  roster check now requires the Groundskeeper to spawn.
+
+Verification: full `python3 tools/verify.py`: 197/197 steps passed with no
+warnings (exit 0). Earlier runs on this increment caught and led to fixes for:
+the woods_replay species count (the Stalker is now the only journal entry that
+never spawns), Blood Moon converting too few creatures, the Mower Mechanic badge
+test, and the 30-creature playtest cap. Graphical captures:
+[creature evidence](evidence/creatures/README.md) (staging and limits listed
+there). Not established: mower chase feel and speed tuning in live play,
+balance of the tarot table and Tollkeeper placement, co-op behaviour of TAG,
+LOST guidance and the Echo's client whistle, and listening checks.
+
 ## 2026-10-18 — Building names, place titles, clearer names, skyline layout
 
 User asked to fix building-name readability and name duplication/clarity next

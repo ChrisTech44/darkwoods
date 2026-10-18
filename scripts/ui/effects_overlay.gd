@@ -55,15 +55,39 @@ func _draw() -> void:
 		draw_rect(Rect2(bar.position, Vector2(bar.size.x * player.struggle, bar.size.y)), Color("e0a060"))
 	if player.has_effect("achoo"):
 		_centered("ACHOO!", size.y * 0.42, 12, Color("f4e6b0"))
+	if player.has_effect("card"):
+		_tarot(str(player.effect_data.get("card", "")), fx["card"])
+	if player.has_effect("rewound"):
+		_vignette(Color(0.85, 0.75, 0.45), 0.6)
+	if player.has_effect("deaf"):
+		# Ears ringing: faint concentric rings at the screen edges.
+		var ring := fmod(t * 0.8, 1.0)
+		draw_arc(size * 0.5, 120.0 + ring * 80.0, 0, TAU, 48, Color(0.85, 0.9, 1.0, 0.12 * (1.0 - ring)), 2.0)
 	# Badges for everything else on you.
 	var badges: Array[String] = []
 	for name: String in fx:
-		if name in ["held", "drowsy", "asleep", "whiteout", "face_moth", "achoo"] or not CampPlayer.EFFECT_NAMES.has(name):
+		if name in ["held", "drowsy", "asleep", "whiteout", "face_moth", "achoo", "piggyback", "rewound"] or not CampPlayer.EFFECT_NAMES.has(name):
 			continue
 		badges.append("%s %ds" % [CampPlayer.EFFECT_NAMES[name], ceili(fx[name])])
 	if not badges.is_empty():
 		var text := "  ".join(badges)
 		draw_string(ThemeDB.fallback_font, Vector2(size.x - 9 - ThemeDB.fallback_font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x, 144), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("d7c4f0"))
+
+
+## The Fortune Teller's card, flipped up in the middle of the screen.
+func _tarot(card: String, remaining: float) -> void:
+	var good := card in ["THE SUN", "THE STAR", "STRENGTH"]
+	var alpha := clampf(remaining / 0.5, 0.0, 1.0)
+	var flip := clampf((3.0 - remaining) / 0.3, 0.0, 1.0)
+	var box := Rect2(size.x * 0.5 - 26.0 * flip, 54, 52.0 * flip, 78)
+	draw_rect(box.grow(2), Color(0.05, 0.03, 0.08, 0.85 * alpha))
+	draw_rect(box, Color(0.93, 0.87, 0.72, alpha))
+	draw_rect(box.grow(-3), Color(0.55, 0.35, 0.75, alpha) if good else Color(0.45, 0.12, 0.14, alpha), false, 1.0)
+	if flip < 1.0:
+		return
+	var symbol: String = {"THE SUN": "☀", "THE STAR": "★", "STRENGTH": "∞", "THE TOWER": "▲", "THE MOON": "☾", "THE FOOL": "◇", "DEATH": "✝"}.get(card, "?")
+	draw_string(ThemeDB.fallback_font, Vector2(box.position.x, box.position.y + 44), symbol, HORIZONTAL_ALIGNMENT_CENTER, box.size.x, 22, Color(0.25, 0.15, 0.3, alpha))
+	draw_string(ThemeDB.fallback_font, Vector2(box.position.x, box.end.y - 8), card, HORIZONTAL_ALIGNMENT_CENTER, box.size.x, 7, Color(0.2, 0.1, 0.15, alpha))
 
 
 func _vignette(tint: Color, strength: float) -> void:

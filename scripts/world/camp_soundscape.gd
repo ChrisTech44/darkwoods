@@ -11,17 +11,20 @@ const ENEMY_STEP_RANGE := 240.0
 const CHORUS_RANGE := 2000.0
 const CHORUS_DISTANCE := 480.0
 ## Headline killers vocalise on the hunt: [cue, pitch].
-const KILLER_CUES := {"stalker": ["screech_3", 0.7], "groundskeeper": ["screech_2", 0.62]}
+const KILLER_CUES := {"stalker": ["screech_3", 0.7]}
 ## Heavier creatures step lower and louder.
 const STEP_PITCH := {"bigfoot": 0.55, "stoneback_ram": 0.6, "boiler_saint": 0.62, "werewolf": 0.7, "switchback_hound": 0.9, "relay_jackal": 1.0, "lantern_moth": 1.3, "ration_moth": 1.35, "teddy": 1.8, "imps": 1.6, "mimic": 1.0}
 const CREATURE_CUES := {"werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl",
 	"switchback_hound": "dog_bark", "relay_jackal": "monster_6", "shutter_wraith": "monster_9", "lens_eater": "screech_1",
 	"bramble_seamstress": "monster_7", "candle_grazer": "screech_2", "boiler_saint": "screech_3", "last_car_conductor": "train",
 	"stoneback_ram": "monster_8", "ration_moth": "screech_5",
-	"mimic": "screech_4", "owl": "owl", "bog_hands": "bog_gurgle", "imps": "giggle", "teddy": "squeak"}
+	"mimic": "screech_4", "owl": "owl", "bog_hands": "bog_gurgle", "imps": "giggle", "teddy": "squeak",
+	"groundskeeper": "monster_8", "cuckoo": "squeak", "banshee": "revenant_screech", "slug": "bog_gurgle", "surveyor": "eerie",
+	"hitchhiker": "giggle", "tollkeeper": "monster_8", "echo": "wind", "fortune_teller": "bells"}
 ## The second species sharing a screech is pitched lower so the two stay distinct.
 const CREATURE_PITCH := {"relay_jackal": 0.8, "lens_eater": 0.78, "candle_grazer": 0.82, "ration_moth": 1.25,
-	"mimic": 0.85, "owl": 0.7}
+	"mimic": 0.85, "owl": 0.7, "groundskeeper": 1.1, "cuckoo": 1.5, "banshee": 1.4, "slug": 0.6, "surveyor": 0.8,
+	"hitchhiker": 0.7, "tollkeeper": 1.25, "echo": 1.3, "fortune_teller": 1.6}
 const RADIO_TALK_SECONDS := 7.0
 var level: Node2D
 var mixer: Node
@@ -65,6 +68,7 @@ var next_sound_id := 0
 ## Positional loops that follow sources: lullaby per Saint, croak per frog.
 var follow_loops: Dictionary = {}
 const LULLABY_RANGE := 300.0
+const MOWER_RANGE := 650.0
 
 
 func _ready() -> void:
@@ -133,6 +137,7 @@ func _physics_process(delta: float) -> void:
 		last_position = actor.global_position
 		return
 	var alive := actor.status == CampPlayer.Status.ALIVE
+	mixer.set_muffled(actor.has_effect("deaf"))
 	var indoor := _indoors(actor.global_position)
 	var distance := last_position.distance_to(actor.global_position)
 	last_position = actor.global_position
@@ -297,8 +302,7 @@ func _killer_voice(enemy: CampKiller, delta: float) -> void:
 		if play_cue(voice[0], enemy.global_position, 2.0, voice[1], enemy):
 			killer_call_clock = rng.randf_range(4.0, 6.0)
 	elif enemy.state == CampKiller.State.INVESTIGATE:
-		var growl := "monster_8" if enemy.headline == "groundskeeper" else "screech_5"
-		if play_cue(growl, enemy.global_position, 6.0, 0.8 if growl == "monster_8" else 0.55, enemy):
+		if play_cue("screech_5", enemy.global_position, 6.0, 0.55, enemy):
 			killer_call_clock = rng.randf_range(7.0, 11.0)
 
 
@@ -391,10 +395,7 @@ func _events() -> void:
 		if held and not prop_state.get(key, false):
 			# One snap per trap, from replicated state (the trap code plays nothing itself).
 			played_counts["snare"] = played_counts.get("snare", 0) + 1
-			if level.killer.headline == "groundskeeper":
-				play_cue("metal_clang", actor.global_position, -4.0, 1.3)
-			else:
-				play_cue("bear_trap", actor.global_position)
+			play_cue("bear_trap", actor.global_position)
 			play_cue("chain_rattle", actor.global_position)
 		prop_state[key] = held
 		_survivor_voice(actor)
@@ -494,6 +495,9 @@ func _follow_loops() -> void:
 	for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
 		if enemy.species == "boiler_saint" and enemy.enabled and enemy.global_position.distance_to(listener) < LULLABY_RANGE + 60.0:
 			wanted[enemy.get_instance_id()] = ["lullaby", enemy]
+		# The Groundskeeper's mower engine: always audible from well off-screen.
+		elif enemy.species == "groundskeeper" and enemy.enabled and enemy.brain != null and enemy.brain.riding and enemy.global_position.distance_to(listener) < MOWER_RANGE + 60.0:
+			wanted[enemy.get_instance_id()] = ["boat_engine", enemy]
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if actor.status == CampPlayer.Status.ALIVE and actor.has_effect("frog"):
 			wanted[actor.get_instance_id()] = ["frog_croak", actor]
@@ -511,7 +515,10 @@ func _follow_loops() -> void:
 			node.stream = mixer.stream_for(cue)
 			node.bus = mixer.cues[cue]["bus"]
 			node.volume_db = float(mixer.cues[cue]["gain_db"])
-			node.max_distance = LULLABY_RANGE if cue == "lullaby" else 260.0
+			node.max_distance = {"lullaby": LULLABY_RANGE, "boat_engine": MOWER_RANGE}.get(cue, 260.0)
+			if cue == "boat_engine":
+				node.pitch_scale = 1.7
+				node.volume_db -= 4.0
 			node.attenuation = 1.3
 			add_child(node)
 			follow_loops[id] = node
@@ -623,6 +630,7 @@ func stinger(cue: String, gain_db: float, pitch: float) -> bool:
 
 func stop_round() -> void:
 	set_physics_process(false)
+	mixer.set_muffled(false)
 	for node in loops.values():
 		node.stop()
 	for voice in voices:

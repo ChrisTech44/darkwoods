@@ -55,6 +55,8 @@ var score_card: Dictionary = {}
 var notes_read := 0
 ## Bigfoot fur tufts recovered tonight (+300 score each).
 var furs := 0
+## Night feats for badges (e.g. "mower": the Groundskeeper's spark plug pulled). Synced.
+var feats: Array[String] = []
 ## The stalker's calling cards: {position, text}, newest last (synced).
 var cards: Array[Dictionary] = []
 const MAX_CARDS := 8
@@ -296,6 +298,8 @@ func _process(_delta: float) -> void:
 		var post := plan.woods.signpost_near(player.global_position)
 		if not post.is_empty() and sight.can_see(post["position"]):
 			hud.location_label.text = WoodsLayout.signpost_text(post)
+	if player.has_effect("lost"):
+		hud.location_label.text = "LOST · ??? (stay beside a teammate, or read a ranger note)"
 	hud.supplies_label.text = "LIGHT %ds / FLARES %d" % [int(player.flashlight_charge), player.supplies["flare"]] if plan.expedition else "QUICK CAMP"
 	hud.ability_label.text = abilities.status_text(player) + " · H GIVE" if player.status == CampPlayer.Status.ALIVE else ""
 	for enemy: CampKiller in get_tree().get_nodes_in_group("cryptids"):
@@ -404,6 +408,9 @@ func try_interact(actor: CampPlayer) -> bool:
 		return props.interact(actor)
 	if not snares.prompt(actor).is_empty():
 		return snares.interact(actor)
+	var creature := creature_prompt(actor)
+	if not creature.is_empty():
+		return creature[0].brain.interact(actor)
 	if not events.prompt(actor).is_empty():
 		return events.interact(actor)
 	if van.can_board(actor):
@@ -431,6 +438,7 @@ func try_interact(actor: CampPlayer) -> bool:
 				return false
 			if pickup.kind == "ranger_note":
 				pickup.consume()
+				actor.clear_effect("lost")
 				read_note(pickup.get_meta("part", ""))
 				return true
 			if pickup.kind == "bigfoot_fur":
@@ -485,6 +493,25 @@ func try_interact(actor: CampPlayer) -> bool:
 	announce("Hold E to revive. A medkit makes it faster." if nearby_downed(actor)!=null else "Nothing to use here. Tab opens the map and plan.",actor)
 	actor.noise_emitted.emit(actor.global_position)
 	return false
+
+
+## Whether `actor` is holding E right now (local key offline, input packets online).
+func holding(actor: CampPlayer) -> bool:
+	var net: Node = get_node("/root/Net")
+	if net.active:
+		var id: Variant = net.actors.find_key(actor)
+		return id != null and net.holding(id)
+	return actor == player and Input.is_action_pressed("interact")
+
+
+## A creature that offers an E action beside it (the mower's spark plug, a toll).
+func creature_prompt(actor: CampPlayer) -> Array:
+	for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
+		if enemy.enabled and enemy.brain != null and enemy.brain.has_method("prompt"):
+			var text: String = enemy.brain.prompt(actor)
+			if not text.is_empty():
+				return [enemy, text]
+	return []
 
 
 func nearby_downed(actor: CampPlayer) -> CampPlayer:
@@ -715,6 +742,9 @@ func context_prompt() -> String:
 	var snare_prompt := snares.prompt(player)
 	if not snare_prompt.is_empty():
 		return snare_prompt
+	var creature := creature_prompt(player)
+	if not creature.is_empty():
+		return creature[1]
 	var event_prompt := events.prompt(player)
 	if not event_prompt.is_empty():
 		return event_prompt
@@ -841,7 +871,7 @@ func record_profile(success: bool) -> String:
 	profile_recorded = true
 	var session: Node = get_node("/root/Session")
 	var helped: bool = int(abilities.stat(player)["revives"]) > 0
-	var earned: Array[String] = session.profile.record_night(plan.seed_value, score_card, success, escape_route, plan.headline, plan.modifiers, session.daily, helped)
+	var earned: Array[String] = session.profile.record_night(plan.seed_value, score_card, success, escape_route, plan.headline, plan.modifiers, session.daily, helped, feats)
 	var text := ""
 	for id in earned:
 		text += "\nNEW BADGE: " + CampProfile.BADGES[id][0]
@@ -1005,7 +1035,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif not paused and event.is_action_pressed("eat"):
 		use_supply(player, "rations")
 	elif not paused and event.is_action_pressed("flashlight"):
-		if not player.expedition or player.flashlight_charge > 0:
+		if player.has_effect("dark"):
+			announce("The card's curse: your flashlight won't light.", player)
+		elif not player.expedition or player.flashlight_charge > 0:
 			player.flashlight_on = not player.flashlight_on
 		else:
 			announce("Flashlight empty. R uses a spare battery.")

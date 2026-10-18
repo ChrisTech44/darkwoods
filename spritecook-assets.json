@@ -1,329 +1,357 @@
 {
-  "note": "SpriteCook asset IDs for the art revamp (account-owned). Sources in art_sources/spritecook; game sprites rebuilt by tools/slice_spritecook_props.gd, tools/import_spritecook_survivors.gd, tools/import_spritecook_stalker.gd, tools/import_spritecook_creatures.gd, tools/slice_spritecook_grid.gd, tools/import_spritecook_textures.gd.",
-  "assets": [
-    {
-      "asset_id": "841427ac-28ae-4c9c-b3e4-5e1558688588",
-      "label": "forest props 3x3 (pines, birch, dead tree, spruce, shrub, boulder, stump)",
-      "file": "art_sources/spritecook/forest_props_sheet.png",
-      "sha12": "23ba199b39d7"
-    },
-    {
-      "asset_id": "a9e245d3-f917-476a-affd-0b0f660a9c35",
-      "label": "upload: old survivor poses reference (6x4)"
-    },
-    {
-      "asset_id": "68dff824-8143-44d4-a989-f1c95a5b2c93",
-      "label": "survivors 6x4 pose grid (edit of reference)",
-      "file": "art_sources/spritecook/survivors_sheet.png",
-      "sha12": "8b44e3af89b9"
-    },
-    {
-      "asset_id": "99f35eb9-6ac2-4132-a0bc-15b49ba69673",
-      "label": "upload: old stalker poses reference (2x2)"
-    },
-    {
-      "asset_id": "3ae44181-0b06-40b5-826f-958ea0330cd7",
-      "label": "stalker 2x2 pose grid (edit of reference)",
-      "file": "art_sources/spritecook/stalker_sheet.png",
-      "sha12": "a36c5f85b567"
-    },
-    {
-      "asset_id": "f56a7c3b-d2cd-43d2-91ad-63822fa45c39",
-      "label": "upload: old creature poses reference A (4x4)"
-    },
-    {
-      "asset_id": "1dee1596-3921-4df8-b59c-1f4a0e0ab970",
-      "label": "creatures A 4x4 pose grid (werewolf, bigfoot, vampire, witch; NB 2.1, edit of reference)",
-      "file": "art_sources/spritecook/creatures_A_sheet.png",
-      "sha12": "01fc995156cb"
-    },
-    {
-      "asset_id": "73047fbe-6295-4373-b238-8f797e9f102a",
-      "label": "upload: old creature poses reference B (4x4)"
-    },
-    {
-      "asset_id": "e909fda0-d3db-449d-8342-faba4f983d49",
-      "label": "creatures B 4x4 pose grid (briar revenant, lantern moth, switchback hound, relay jackal; NB 2.1, edit of reference)",
-      "file": "art_sources/spritecook/creatures_B_sheet.png",
-      "sha12": "c8cb88081fb4"
-    },
-    {
-      "asset_id": "af499940-b9d7-46d5-a813-b10d63b6864b",
-      "label": "upload: old creature poses reference C (4x4)"
-    },
-    {
-      "asset_id": "acf836ae-c3ab-414e-b060-cc1b771199fd",
-      "label": "creatures C 4x4 pose grid (ration moth, lens eater, boiler saint, shutter wraith; NB 2.1, edit of reference)",
-      "file": "art_sources/spritecook/creatures_C_sheet.png",
-      "sha12": "b481618a74d8"
-    },
-    {
-      "asset_id": "b21678f0-a1f6-496b-8c10-024944ac2529",
-      "label": "upload: old creature poses reference D (4x4)"
-    },
-    {
-      "asset_id": "b1f1c61b-2dff-47e8-b67a-68df4c8ea12b",
-      "label": "creatures D 4x4 pose grid (bramble seamstress, last-car conductor, stoneback ram, candle grazer; NB 2 Lite, edit of reference)",
-      "file": "art_sources/spritecook/creatures_D_sheet.png",
-      "sha12": "075ce57df99d"
-    },
-    {
-      "asset_id": "306f2649-204c-458b-b600-2445aaae1cc4",
-      "label": "items 4x4 (16 pickups)",
-      "file": "art_sources/spritecook/items_sheet.png",
-      "sha12": "8aa0cfed227d"
-    },
-    {
-      "asset_id": "f528d4f6-e588-4a0c-b7ee-ef3f9c4add9a",
-      "label": "camp objects 4x4 (van, tent, campfire, cache, ...)",
-      "file": "art_sources/spritecook/camp_objects_sheet.png",
-      "sha12": "67d13e423195"
-    },
-    {
-      "asset_id": "2730b2f4-e90b-4e15-b5c1-b783b3ed399b",
-      "label": "furniture 4x4",
-      "file": "art_sources/spritecook/furniture_sheet.png",
-      "sha12": "463bb5bf30d6"
-    },
-    {
-      "asset_id": "22a3c1a9-5165-4f4e-8a3f-45b3a643a6be",
-      "label": "landmarks 4x4 (bell, well, cauldron, crypt, ...)",
-      "file": "art_sources/spritecook/landmarks_sheet.png",
-      "sha12": "a110bb89b3d1"
-    },
-    {
-      "asset_id": "f371c6e0-c5e1-4254-b455-6586d3ea96c7",
-      "label": "seamless ground textures 2x2 (grass, forest floor, trail, road)",
-      "file": "art_sources/spritecook/ground_textures_sheet.png",
-      "sha12": "99a798e4f3e0"
-    },
-    {
-      "asset_id": "55de92d7-52c3-45ab-980f-e7500d98f12f",
-      "label": "seamless material textures 3x3 (floors, shingles, water, cobbles, mud, dead grass, flagstones)",
-      "file": "art_sources/spritecook/material_textures_sheet.png",
-      "sha12": "e1be4de4d796"
-    },
-    {
-      "asset_id": "21aff075-0f4d-4d82-8977-3379367b4072",
-      "label": "title screen illustration 384x216",
-      "file": "art_sources/spritecook/title_art.png",
-      "sha12": "dad8144f0099"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 escape props 4x4, 12 credits, NB 2.1; style from camp objects; alpha 130 inspected unchanged",
-      "file": "art_sources/spritecook/escape_props_sheet.png",
-      "sha12": "bd01be0f0a2d"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_transformer; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_transformer.png",
-      "sha12": "e94b3527279a"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_breaker; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_breaker.png",
-      "sha12": "f68969374109"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_relay; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_relay.png",
-      "sha12": "85e06fd9ac49"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_beacon; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_beacon.png",
-      "sha12": "fd73491b59a7"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice outboard_motor; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/outboard_motor.png",
-      "sha12": "70d39c7af097"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_boat; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_boat.png",
-      "sha12": "40ad436cabcf"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_boathouse; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_boathouse.png",
-      "sha12": "4f4a91130e75"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_ranger_booth; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_ranger_booth.png",
-      "sha12": "206a329c5e38"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_gate; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_gate.png",
-      "sha12": "204e8b6491e8"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_logs; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_logs.png",
-      "sha12": "0bbc396b699a"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_logging; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_logging.png",
-      "sha12": "4701ae3bb2fb"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_pier; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_pier.png",
-      "sha12": "ce61d0ff94b1"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_lake_thing; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_lake_thing.png",
-      "sha12": "bd675efda164"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_bridge; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_bridge.png",
-      "sha12": "a885eb757517"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice boat_fuel; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/boat_fuel.png",
-      "sha12": "5ab54dc7f3b4"
-    },
-    {
-      "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
-      "label": "F5 slice f5_codes; reproduce with tools/slice_escape_props.gd",
-      "file": "assets/sprites/sc/f5_codes.png",
-      "sha12": "840f376e1ac1"
-    },
-    {
-      "asset_id": "bc1d5e5d-12dc-4f2e-a563-de7e9ba99899",
-      "label": "Groundskeeper 2x2 pose grid (edit of stalker grid 3ae44181; side cells swapped on import)",
-      "file": "art_sources/spritecook/groundskeeper_sheet.png",
-      "sha12": "ea79b2c35c5c"
-    },
-    {
-      "asset_id": "3515fa92-b210-4c00-9754-46ccb24de32e",
-      "label": "night props 4x4 (pyre, lit pyre, kerosene, flare gun, snares, gift crate, signpost, helicopter, apple tree, trellis, mossy log, tires, drum, cooler, glow mushrooms)",
-      "file": "art_sources/spritecook/night_props_sheet.png",
-      "sha12": "0e942e911399"
-    },
-    {
-      "asset_id": "e0f0b0e5-1285-4778-9212-e2c4906ed10d",
-      "label": "ground decals 4x4 (grass tufts, fern, clover, rocks, pebbles, root, leaves, needles, puddle, flowers, mushrooms, dry grass, weeds, branch)",
-      "file": "art_sources/spritecook/ground_decals_sheet.png",
-      "sha12": "d5c69a454a9d"
-    },
-    {
-      "asset_id": "37bc6d77-b5ed-40d8-9d62-83b5e42e2071",
-      "label": "seamless surface textures 3x3 (asphalt, quarry gravel, mossy flagstones, court tiles, orchard soil, dock planks, lawn, leaf litter, mossy floor)",
-      "file": "art_sources/spritecook/surface_textures_sheet.png",
-      "sha12": "d87d9652930d"
-    },
-    {
-      "asset_id": "fc9cc664-2002-4a18-a3e9-fd06d3d8f28d",
-      "label": "world objects 4x4 (fences, gates, doors, fallen woodpile, track, helipad, barrier, car, scarecrow, fire pit, totem, fallen tree, torn tent)",
-      "file": "art_sources/spritecook/world_objects_sheet.png",
-      "sha12": "50f0d62cb7f7"
-    },
-    {
-      "asset_id": "de4ead72-5027-4523-b29a-275b3576f468",
-      "label": "forest dressing 4x4 (rocks, ferns, berry bush, fairy ring, hollow log, hunting stand, poster, pot, canoe, bench, birdhouse, bones, standing stones, bicycle, lantern post, shrine)",
-      "file": "art_sources/spritecook/forest_dressing_sheet.png",
-      "sha12": "b770fa24bf35"
-    },
-    {
-      "asset_id": "a72439a4-a21b-44b2-b986-e525df8e5f89",
-      "label": "effects and markers 4x4 (flare, blood, tin, hex, thorns, pin, help, mark, ripple, ember, footprints, stun, alert, suspicion, skull)",
-      "file": "art_sources/spritecook/effects_sheet.png",
-      "sha12": "4bab07d9177d"
-    },
-    {
-      "asset_id": "afba93aa-9fc2-422e-b116-05e43ff607f8",
-      "label": "UI pieces 4x4 (panel, slots, buttons, map frame, compass, battery, skyline icons, badge, plaque); sliced by tools/slice_spritecook_components.gd",
-      "file": "art_sources/spritecook/ui_sheet.png",
-      "sha12": "bcb8deb305d8"
-    },
-    {
-      "asset_id": "4479377e-cb79-4216-ab1b-caf730983e5d",
-      "label": "loading screen illustration 384x216",
-      "file": "art_sources/spritecook/loading_art.png",
-      "sha12": "454db32ab932"
-    },
-    {
-      "asset_id": "048c20c3-4385-4c1e-a579-98440fd5e56b",
-      "label": "survivor selection illustration 384x216 (cabin interior)",
-      "file": "art_sources/spritecook/selection_art.png",
-      "sha12": "8ea7d5e114df"
-    },
-    {
-      "asset_id": "2dfbbdd7-33d7-4a2b-9844-7995c3855044",
-      "label": "co-op lobby illustration 384x216 (campfire clearing)",
-      "file": "art_sources/spritecook/lobby_art.png",
-      "sha12": "0dcb6fbd6c2c"
-    },
-    {
-      "asset_id": "70bcb8a3-3ec2-4e02-bd52-0f66ecce00dd",
-      "label": "survivor portraits (4x2 returned; six used)",
-      "file": "art_sources/spritecook/portraits_sheet.png",
-      "sha12": "0174c4051544"
-    },
-    {
-      "asset_id": "ce808f12-9900-4755-b02e-6b5bd7014bb3",
-      "label": "survivors 6x4 mid-stride walk poses (edit of 68dff824)",
-      "file": "art_sources/spritecook/survivors_stride_sheet.png",
-      "sha12": "fc125f8646f9"
-    },
-    {
-      "asset_id": "5682a6ba-4e3e-4e14-98d9-359027e121df",
-      "label": "stalker 2x2 mid-stride poses (edit of 3ae44181)",
-      "file": "art_sources/spritecook/stalker_stride_sheet.png",
-      "sha12": "c50893f95bd0"
-    },
-    {
-      "asset_id": "4256fff8-407c-4483-a595-dc80ed965e23",
-      "label": "groundskeeper 2x2 mid-stride poses (edit of bc1d5e5d)",
-      "file": "art_sources/spritecook/groundskeeper_stride_sheet.png",
-      "sha12": "0c9b236c189d"
-    },
-    {
-      "asset_id": "e1f93cd1-20b0-48a0-909b-808c3d8c441c",
-      "label": "gateway 2x2 (straight double gate closed/open, lantern trail post, rail fence), 12 credits, NB 2.1, style from world objects; slices gateway_closed, gateway_open, trail_lantern, rail_fence via tools/slice_spritecook_grid.gd",
-      "file": "art_sources/spritecook/gateway_sheet.png",
-      "sha12": "c171cf194d35"
-    },
-    {
-      "asset_id": "eb9892fd-4c08-41bb-a085-cb92a2bb8ea1",
-      "label": "vertical gateway 2x2 (top-down fence run, padlocked edge-on gate, unused open pose, post), 12 credits, NB 2.1, style from gateway sheet; slices fence_run_v, gateway_v_closed, fence_post and derived gateway_v_open",
-      "file": "art_sources/spritecook/gateway_vertical_sheet.png",
-      "sha12": "7c56d3874dae"
-    },
-    {
-      "asset_id": "99e8743e-aa77-44da-842c-0c1cc279a2ab",
-      "label": "creatures E 4x4 pose grid (owl, bog hands, toadstool imps, teddy bear; NB 2.1, style from creatures A and D), 12 credits; tools/import_spritecook_creatures.gd",
-      "file": "art_sources/spritecook/creatures_E_sheet.png",
-      "sha12": "b217387bf56f"
-    },
-    {
-      "asset_id": "611eff00-fc0d-4598-9d06-296808714bf3",
-      "label": "monster items 4x4 (garlic, wolfsbane, bug spray, scissors, train ticket, air horn, coffee, bigfoot fur, bear trap open/sprung, hook post, mud puddle, jackal den, moon icon, frog, heart patch), 12 credits; tools/slice_spritecook_grid.gd",
-      "file": "art_sources/spritecook/monster_items_sheet.png",
-      "sha12": "347ca1c7dece"
-    }
-  ]
+ "note": "SpriteCook asset IDs for the art revamp (account-owned). Sources in art_sources/spritecook; game sprites rebuilt by tools/slice_spritecook_props.gd, tools/import_spritecook_survivors.gd, tools/import_spritecook_stalker.gd, tools/import_spritecook_creatures.gd, tools/slice_spritecook_grid.gd, tools/import_spritecook_textures.gd.",
+ "assets": [
+  {
+   "asset_id": "841427ac-28ae-4c9c-b3e4-5e1558688588",
+   "label": "forest props 3x3 (pines, birch, dead tree, spruce, shrub, boulder, stump)",
+   "file": "art_sources/spritecook/forest_props_sheet.png",
+   "sha12": "23ba199b39d7"
+  },
+  {
+   "asset_id": "a9e245d3-f917-476a-affd-0b0f660a9c35",
+   "label": "upload: old survivor poses reference (6x4)"
+  },
+  {
+   "asset_id": "68dff824-8143-44d4-a989-f1c95a5b2c93",
+   "label": "survivors 6x4 pose grid (edit of reference)",
+   "file": "art_sources/spritecook/survivors_sheet.png",
+   "sha12": "8b44e3af89b9"
+  },
+  {
+   "asset_id": "99f35eb9-6ac2-4132-a0bc-15b49ba69673",
+   "label": "upload: old stalker poses reference (2x2)"
+  },
+  {
+   "asset_id": "3ae44181-0b06-40b5-826f-958ea0330cd7",
+   "label": "stalker 2x2 pose grid (edit of reference)",
+   "file": "art_sources/spritecook/stalker_sheet.png",
+   "sha12": "a36c5f85b567"
+  },
+  {
+   "asset_id": "f56a7c3b-d2cd-43d2-91ad-63822fa45c39",
+   "label": "upload: old creature poses reference A (4x4)"
+  },
+  {
+   "asset_id": "1dee1596-3921-4df8-b59c-1f4a0e0ab970",
+   "label": "creatures A 4x4 pose grid (werewolf, bigfoot, vampire, witch; NB 2.1, edit of reference)",
+   "file": "art_sources/spritecook/creatures_A_sheet.png",
+   "sha12": "01fc995156cb"
+  },
+  {
+   "asset_id": "73047fbe-6295-4373-b238-8f797e9f102a",
+   "label": "upload: old creature poses reference B (4x4)"
+  },
+  {
+   "asset_id": "e909fda0-d3db-449d-8342-faba4f983d49",
+   "label": "creatures B 4x4 pose grid (briar revenant, lantern moth, switchback hound, relay jackal; NB 2.1, edit of reference)",
+   "file": "art_sources/spritecook/creatures_B_sheet.png",
+   "sha12": "c8cb88081fb4"
+  },
+  {
+   "asset_id": "af499940-b9d7-46d5-a813-b10d63b6864b",
+   "label": "upload: old creature poses reference C (4x4)"
+  },
+  {
+   "asset_id": "acf836ae-c3ab-414e-b060-cc1b771199fd",
+   "label": "creatures C 4x4 pose grid (ration moth, lens eater, boiler saint, shutter wraith; NB 2.1, edit of reference)",
+   "file": "art_sources/spritecook/creatures_C_sheet.png",
+   "sha12": "b481618a74d8"
+  },
+  {
+   "asset_id": "b21678f0-a1f6-496b-8c10-024944ac2529",
+   "label": "upload: old creature poses reference D (4x4)"
+  },
+  {
+   "asset_id": "b1f1c61b-2dff-47e8-b67a-68df4c8ea12b",
+   "label": "creatures D 4x4 pose grid (bramble seamstress, last-car conductor, stoneback ram, candle grazer; NB 2 Lite, edit of reference)",
+   "file": "art_sources/spritecook/creatures_D_sheet.png",
+   "sha12": "075ce57df99d"
+  },
+  {
+   "asset_id": "306f2649-204c-458b-b600-2445aaae1cc4",
+   "label": "items 4x4 (16 pickups)",
+   "file": "art_sources/spritecook/items_sheet.png",
+   "sha12": "8aa0cfed227d"
+  },
+  {
+   "asset_id": "f528d4f6-e588-4a0c-b7ee-ef3f9c4add9a",
+   "label": "camp objects 4x4 (van, tent, campfire, cache, ...)",
+   "file": "art_sources/spritecook/camp_objects_sheet.png",
+   "sha12": "67d13e423195"
+  },
+  {
+   "asset_id": "2730b2f4-e90b-4e15-b5c1-b783b3ed399b",
+   "label": "furniture 4x4",
+   "file": "art_sources/spritecook/furniture_sheet.png",
+   "sha12": "463bb5bf30d6"
+  },
+  {
+   "asset_id": "22a3c1a9-5165-4f4e-8a3f-45b3a643a6be",
+   "label": "landmarks 4x4 (bell, well, cauldron, crypt, ...)",
+   "file": "art_sources/spritecook/landmarks_sheet.png",
+   "sha12": "a110bb89b3d1"
+  },
+  {
+   "asset_id": "f371c6e0-c5e1-4254-b455-6586d3ea96c7",
+   "label": "seamless ground textures 2x2 (grass, forest floor, trail, road)",
+   "file": "art_sources/spritecook/ground_textures_sheet.png",
+   "sha12": "99a798e4f3e0"
+  },
+  {
+   "asset_id": "55de92d7-52c3-45ab-980f-e7500d98f12f",
+   "label": "seamless material textures 3x3 (floors, shingles, water, cobbles, mud, dead grass, flagstones)",
+   "file": "art_sources/spritecook/material_textures_sheet.png",
+   "sha12": "e1be4de4d796"
+  },
+  {
+   "asset_id": "21aff075-0f4d-4d82-8977-3379367b4072",
+   "label": "title screen illustration 384x216",
+   "file": "art_sources/spritecook/title_art.png",
+   "sha12": "dad8144f0099"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 escape props 4x4, 12 credits, NB 2.1; style from camp objects; alpha 130 inspected unchanged",
+   "file": "art_sources/spritecook/escape_props_sheet.png",
+   "sha12": "bd01be0f0a2d"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_transformer; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_transformer.png",
+   "sha12": "e94b3527279a"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_breaker; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_breaker.png",
+   "sha12": "f68969374109"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_relay; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_relay.png",
+   "sha12": "85e06fd9ac49"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_beacon; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_beacon.png",
+   "sha12": "fd73491b59a7"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice outboard_motor; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/outboard_motor.png",
+   "sha12": "70d39c7af097"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_boat; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_boat.png",
+   "sha12": "40ad436cabcf"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_boathouse; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_boathouse.png",
+   "sha12": "4f4a91130e75"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_ranger_booth; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_ranger_booth.png",
+   "sha12": "206a329c5e38"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_gate; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_gate.png",
+   "sha12": "204e8b6491e8"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_logs; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_logs.png",
+   "sha12": "0bbc396b699a"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_logging; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_logging.png",
+   "sha12": "4701ae3bb2fb"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_pier; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_pier.png",
+   "sha12": "ce61d0ff94b1"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_lake_thing; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_lake_thing.png",
+   "sha12": "bd675efda164"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_bridge; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_bridge.png",
+   "sha12": "a885eb757517"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice boat_fuel; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/boat_fuel.png",
+   "sha12": "5ab54dc7f3b4"
+  },
+  {
+   "asset_id": "2c73fea2-b81f-4718-aea3-141a26f056bb",
+   "label": "F5 slice f5_codes; reproduce with tools/slice_escape_props.gd",
+   "file": "assets/sprites/sc/f5_codes.png",
+   "sha12": "840f376e1ac1"
+  },
+  {
+   "asset_id": "bc1d5e5d-12dc-4f2e-a563-de7e9ba99899",
+   "label": "Groundskeeper 2x2 pose grid (edit of stalker grid 3ae44181; side cells swapped on import)",
+   "file": "art_sources/spritecook/groundskeeper_sheet.png",
+   "sha12": "ea79b2c35c5c"
+  },
+  {
+   "asset_id": "3515fa92-b210-4c00-9754-46ccb24de32e",
+   "label": "night props 4x4 (pyre, lit pyre, kerosene, flare gun, snares, gift crate, signpost, helicopter, apple tree, trellis, mossy log, tires, drum, cooler, glow mushrooms)",
+   "file": "art_sources/spritecook/night_props_sheet.png",
+   "sha12": "0e942e911399"
+  },
+  {
+   "asset_id": "e0f0b0e5-1285-4778-9212-e2c4906ed10d",
+   "label": "ground decals 4x4 (grass tufts, fern, clover, rocks, pebbles, root, leaves, needles, puddle, flowers, mushrooms, dry grass, weeds, branch)",
+   "file": "art_sources/spritecook/ground_decals_sheet.png",
+   "sha12": "d5c69a454a9d"
+  },
+  {
+   "asset_id": "37bc6d77-b5ed-40d8-9d62-83b5e42e2071",
+   "label": "seamless surface textures 3x3 (asphalt, quarry gravel, mossy flagstones, court tiles, orchard soil, dock planks, lawn, leaf litter, mossy floor)",
+   "file": "art_sources/spritecook/surface_textures_sheet.png",
+   "sha12": "d87d9652930d"
+  },
+  {
+   "asset_id": "fc9cc664-2002-4a18-a3e9-fd06d3d8f28d",
+   "label": "world objects 4x4 (fences, gates, doors, fallen woodpile, track, helipad, barrier, car, scarecrow, fire pit, totem, fallen tree, torn tent)",
+   "file": "art_sources/spritecook/world_objects_sheet.png",
+   "sha12": "50f0d62cb7f7"
+  },
+  {
+   "asset_id": "de4ead72-5027-4523-b29a-275b3576f468",
+   "label": "forest dressing 4x4 (rocks, ferns, berry bush, fairy ring, hollow log, hunting stand, poster, pot, canoe, bench, birdhouse, bones, standing stones, bicycle, lantern post, shrine)",
+   "file": "art_sources/spritecook/forest_dressing_sheet.png",
+   "sha12": "b770fa24bf35"
+  },
+  {
+   "asset_id": "a72439a4-a21b-44b2-b986-e525df8e5f89",
+   "label": "effects and markers 4x4 (flare, blood, tin, hex, thorns, pin, help, mark, ripple, ember, footprints, stun, alert, suspicion, skull)",
+   "file": "art_sources/spritecook/effects_sheet.png",
+   "sha12": "4bab07d9177d"
+  },
+  {
+   "asset_id": "afba93aa-9fc2-422e-b116-05e43ff607f8",
+   "label": "UI pieces 4x4 (panel, slots, buttons, map frame, compass, battery, skyline icons, badge, plaque); sliced by tools/slice_spritecook_components.gd",
+   "file": "art_sources/spritecook/ui_sheet.png",
+   "sha12": "bcb8deb305d8"
+  },
+  {
+   "asset_id": "4479377e-cb79-4216-ab1b-caf730983e5d",
+   "label": "loading screen illustration 384x216",
+   "file": "art_sources/spritecook/loading_art.png",
+   "sha12": "454db32ab932"
+  },
+  {
+   "asset_id": "048c20c3-4385-4c1e-a579-98440fd5e56b",
+   "label": "survivor selection illustration 384x216 (cabin interior)",
+   "file": "art_sources/spritecook/selection_art.png",
+   "sha12": "8ea7d5e114df"
+  },
+  {
+   "asset_id": "2dfbbdd7-33d7-4a2b-9844-7995c3855044",
+   "label": "co-op lobby illustration 384x216 (campfire clearing)",
+   "file": "art_sources/spritecook/lobby_art.png",
+   "sha12": "0dcb6fbd6c2c"
+  },
+  {
+   "asset_id": "70bcb8a3-3ec2-4e02-bd52-0f66ecce00dd",
+   "label": "survivor portraits (4x2 returned; six used)",
+   "file": "art_sources/spritecook/portraits_sheet.png",
+   "sha12": "0174c4051544"
+  },
+  {
+   "asset_id": "ce808f12-9900-4755-b02e-6b5bd7014bb3",
+   "label": "survivors 6x4 mid-stride walk poses (edit of 68dff824)",
+   "file": "art_sources/spritecook/survivors_stride_sheet.png",
+   "sha12": "fc125f8646f9"
+  },
+  {
+   "asset_id": "5682a6ba-4e3e-4e14-98d9-359027e121df",
+   "label": "stalker 2x2 mid-stride poses (edit of 3ae44181)",
+   "file": "art_sources/spritecook/stalker_stride_sheet.png",
+   "sha12": "c50893f95bd0"
+  },
+  {
+   "asset_id": "4256fff8-407c-4483-a595-dc80ed965e23",
+   "label": "groundskeeper 2x2 mid-stride poses (edit of bc1d5e5d)",
+   "file": "art_sources/spritecook/groundskeeper_stride_sheet.png",
+   "sha12": "0c9b236c189d"
+  },
+  {
+   "asset_id": "e1f93cd1-20b0-48a0-909b-808c3d8c441c",
+   "label": "gateway 2x2 (straight double gate closed/open, lantern trail post, rail fence), 12 credits, NB 2.1, style from world objects; slices gateway_closed, gateway_open, trail_lantern, rail_fence via tools/slice_spritecook_grid.gd",
+   "file": "art_sources/spritecook/gateway_sheet.png",
+   "sha12": "c171cf194d35"
+  },
+  {
+   "asset_id": "eb9892fd-4c08-41bb-a085-cb92a2bb8ea1",
+   "label": "vertical gateway 2x2 (top-down fence run, padlocked edge-on gate, unused open pose, post), 12 credits, NB 2.1, style from gateway sheet; slices fence_run_v, gateway_v_closed, fence_post and derived gateway_v_open",
+   "file": "art_sources/spritecook/gateway_vertical_sheet.png",
+   "sha12": "7c56d3874dae"
+  },
+  {
+   "asset_id": "99e8743e-aa77-44da-842c-0c1cc279a2ab",
+   "label": "creatures E 4x4 pose grid (owl, bog hands, toadstool imps, teddy bear; NB 2.1, style from creatures A and D), 12 credits; tools/import_spritecook_creatures.gd",
+   "file": "art_sources/spritecook/creatures_E_sheet.png",
+   "sha12": "b217387bf56f"
+  },
+  {
+   "asset_id": "611eff00-fc0d-4598-9d06-296808714bf3",
+   "label": "monster items 4x4 (garlic, wolfsbane, bug spray, scissors, train ticket, air horn, coffee, bigfoot fur, bear trap open/sprung, hook post, mud puddle, jackal den, moon icon, frog, heart patch), 12 credits; tools/slice_spritecook_grid.gd",
+   "file": "art_sources/spritecook/monster_items_sheet.png",
+   "sha12": "347ca1c7dece"
+  },
+  {
+   "asset_id": "906d4691-84e6-444b-9f05-e34a5715550f",
+   "label": "landmark relic stations + ride-on mower 3 views (12 credits, NB 2.1, style from F5 escape props + landmarks); slices via tools/slice_landmark_props.gd",
+   "file": "art_sources/spritecook/landmarks_mower_sheet.png",
+   "sha12": "02b1ab7419b8"
+  },
+  {
+   "asset_id": "87e0d5ad-1896-4c65-a5a3-4df41d5746a3",
+   "label": "creatures F first try: correct designs but output shrunk to 64x64 (width/height taken as canvas); kept for reference, not used"
+  },
+  {
+   "asset_id": "a8667675-3872-44a1-a4d1-3905dd65f8e0",
+   "label": "creatures F 4x4 pose grid (cuckoo, banshee, slug, surveyor; NB 2.1 edit of 87e0d5ad at 512 hint, 256 out), 12+12 credits; tools/import_spritecook_creatures.gd -- --only creatures_F_sheet",
+   "file": "art_sources/spritecook/creatures_F_sheet.png",
+   "sha12": "cf06c8c33212"
+  },
+  {
+   "asset_id": "21a15b4d-586a-4e8d-81c5-a9e350cd9935",
+   "label": "creatures G 4x4 pose grid (hitchhiker, tollkeeper, echo, fortune teller; NB 2.1, style from creatures F + E), 12 credits; tools/import_spritecook_creatures.gd -- --only creatures_G_sheet",
+   "file": "art_sources/spritecook/creatures_G_sheet.png",
+   "sha12": "7cb071fadb7d"
+  },
+  {
+   "asset_id": "c16cb703-cf88-4e0c-9b51-125be0430e0f",
+   "label": "region entrance markers 3x3 (village sign, bog boardwalk, graveyard gate, flood gauge, orchard arch, lychgate, armillary pillar, rail crossing, mine sign), 12 credits; tools/slice_landmark_props.gd",
+   "file": "art_sources/spritecook/region_entrances_sheet.png",
+   "sha12": "21e4df078211"
+  }
+ ]
 }

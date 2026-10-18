@@ -111,7 +111,7 @@ func _advance_place(delta: float) -> void:
 		place_seen[key] -= delta
 		if place_seen[key] <= 0.0:
 			place_seen.erase(key)
-	if level.player.status != CampPlayer.Status.ALIVE:
+	if level.player.status != CampPlayer.Status.ALIVE or level.player.has_effect("lost"):
 		return
 	var now: Array = current_place()
 	if now[0] != place_pending:

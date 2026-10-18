@@ -1,5 +1,5 @@
 extends SceneTree
-## F7: headline killer rotation (stalker / Groundskeeper snares), stalker escalation
+## F7: the stalker as the only headline killer (bear traps on walked trails), escalation
 ## tiers (Dusk inner-ring limit, Deep Night sabotage, Witching Hour power cut and
 ## faster door breaking) and the six night modifiers.
 var checks := 0
@@ -17,6 +17,7 @@ func _run() -> void:
 	var previous_role: String = root.get_node("Session").survivor
 	root.get_node("Session").survivor = "jock"
 	await _load(42, "groundskeeper", [])
+	_check(level.killer.headline == "stalker", "stalker_is_always_the_headline_killer")
 	await _snare_checks()
 	await _tier_checks()
 	await _load(42, "stalker", ["dead_batteries", "silent_night", "blood_moon"])
@@ -65,7 +66,7 @@ func _plan_checks() -> void:
 			seen[id] = true
 		if plan.has_modifier("fog_bank"):
 			fog_ok = fog_ok and plan.weather == "fog"
-	_check(headlines.size() == 2, "both_headline_killers_rotate")
+	_check(headlines.keys() == ["stalker"], "stalker_headlines_every_night")
 	_check(seen.size() == RoundPlan.MODIFIERS.size(), "all_six_modifiers_appear")
 	_check(counts_ok, "zero_to_two_distinct_modifiers")
 	_check(fog_ok, "fog_bank_forces_fog")
@@ -90,8 +91,8 @@ func _plan_with(seed_value: int, modifiers: Array) -> RoundPlan:
 
 func _snare_checks() -> void:
 	var snares: Snares = level.snares
-	_check(level.killer.headline == "groundskeeper" and snares.active(), "groundskeeper_headline_active")
-	_check(level.message.contains("GROUNDSKEEPER"), "dusk_message_names_the_killer")
+	_check(snares.active() and snares.kind() == "bear_trap", "stalker_bear_traps_active")
+	_check(level.message.contains("STALKER"), "dusk_message_names_the_killer")
 	var trail: Vector2 = level.plan.woods.center(Vector2i(18, 24))
 	player.position = trail + Vector2(200, 0)
 	_check(not snares.try_place(trail), "no_snare_on_unwalked_trail")
@@ -105,7 +106,7 @@ func _snare_checks() -> void:
 	player.position = trail
 	snares.advance(0.1)
 	_check(player.snared > 3.5 and not snares.snares[0]["armed"], "stepping_on_snare_holds_survivor")
-	_check(stalker.state == CampKiller.State.INVESTIGATE, "snare_rattle_calls_the_groundskeeper")
+	_check(stalker.state == CampKiller.State.INVESTIGATE, "trap_snap_calls_the_stalker")
 	stalker.enabled = false
 	player.apply_intent(Vector2.RIGHT, true, 1.0 / 60.0)
 	_check(player.velocity == Vector2.ZERO, "snared_survivor_cannot_move")

@@ -13,13 +13,20 @@ const SHEETS := {
 	"creatures_D_sheet": {"species": ["bramble_seamstress", "last_car_conductor", "stoneback_ram", "candle_grazer"],
 		"sides": {"last_car_conductor": "mirror", "stoneback_ram": "swap"}},
 	"creatures_E_sheet": {"species": ["owl", "bog_hands", "imps", "teddy"], "sides": {}},
+	"creatures_F_sheet": {"species": ["cuckoo", "banshee", "slug", "surveyor"], "sides": {"banshee": "mirror_left", "slug": "mirror_left"}},
+	"creatures_G_sheet": {"species": ["hitchhiker", "tollkeeper", "echo", "fortune_teller"], "sides": {}},
 }
 ## Flying or floating creatures bob instead of stepping.
-const HOVER: Array[String] = ["lantern_moth", "ration_moth", "shutter_wraith", "owl", "bog_hands"]
+const HOVER: Array[String] = ["lantern_moth", "ration_moth", "shutter_wraith", "owl", "bog_hands", "banshee", "slug", "hitchhiker", "fortune_teller"]
 
 
 func _initialize() -> void:
+	# `-- --only creatures_F_sheet` rebuilds one sheet and leaves the rest alone.
+	var args := OS.get_cmdline_user_args()
+	var only := args[args.find("--only") + 1] if "--only" in args and args.find("--only") + 1 < args.size() else ""
 	for sheet_name: String in SHEETS:
+		if not only.is_empty() and sheet_name != only:
+			continue
 		var path := ProjectSettings.globalize_path("res://art_sources/spritecook/%s.png" % sheet_name)
 		if not FileAccess.file_exists(path):
 			print("skip missing ", sheet_name)
@@ -37,6 +44,10 @@ func _initialize() -> void:
 			if fix == "mirror":
 				poses[3] = poses[2].duplicate()
 				poses[3].flip_x()
+			elif fix == "mirror_left":
+				# Both side rows face left: the right-facing row is the mirror.
+				poses[2] = poses[3].duplicate()
+				poses[2].flip_x()
 			elif fix == "swap":
 				var right := poses[3]
 				poses[3] = poses[2]

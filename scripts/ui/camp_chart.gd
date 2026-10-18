@@ -57,6 +57,15 @@ func _draw() -> void:
 	else:
 		_fit(CampMap.CAMP_BOUNDS)
 	draw_rect(Rect2(to_map(window.position), window.size * factor), Color("1d2b26"))
+	if player.has_effect("lost"):
+		# The Surveyor took your bearings: the map is scribble.
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 77
+		for index in range(40):
+			var a := Vector2(rng.randf() * size.x, rng.randf() * size.y)
+			draw_line(a, a + Vector2.from_angle(rng.randf() * TAU) * rng.randf_range(6, 30), Color("4d5a48"), 1.0)
+		draw_string(ThemeDB.fallback_font, Vector2(0, size.y * 0.5), "YOU'RE LOST", HORIZONTAL_ALIGNMENT_CENTER, size.x, 9, Color("e7a07f"))
+		return
 	if plan.expedition:
 		_draw_woods()
 	_draw_camp()

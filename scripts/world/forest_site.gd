@@ -6,6 +6,9 @@ var definition: Dictionary
 var actions: Array[Dictionary] = []
 var cooldown: float = 0.0
 var level: Node2D
+## Entrance marker beside the trail where it enters the region (nearest camp).
+var entrance := Vector2.INF
+const ENTRANCE_KINDS: Array[String] = ["village", "bog", "graveyard", "mill", "orchard", "chapel", "observatory", "rail", "quarry"]
 
 
 func _ready() -> void:
@@ -32,6 +35,31 @@ func _ready() -> void:
 		actions = []
 	else:
 		actions = [{"kind":"relic", "label":"SEARCH LANDMARK / RARE TOOL (LOUD)", "position":center, "used":false}]
+	_find_entrance()
+
+
+## The trail crossing into this region closest to camp, with the marker set
+## beside the path (not on it) so it never blocks the way.
+func _find_entrance() -> void:
+	if level == null or not "plan" in level or definition["kind"] not in ENTRANCE_KINDS:
+		return
+	var woods: WoodsLayout = level.plan.woods
+	var bounds: Rect2 = definition["bounds"]
+	var camp := CampMap.CAMP_BOUNDS.get_center()
+	var best := INF
+	for cell: Vector2i in woods.links:
+		if not bounds.has_point(woods.center(cell)):
+			continue
+		for next: Vector2i in woods.links[cell]:
+			if bounds.has_point(woods.center(next)):
+				continue
+			var inside := woods.center(cell)
+			var outside := woods.center(next)
+			var crossing := inside.lerp(outside, 0.35)
+			var distance := crossing.distance_to(camp)
+			if distance < best:
+				best = distance
+				entrance = crossing + inside.direction_to(outside).orthogonal() * 40.0
 
 
 func _physics_process(delta: float) -> void:
@@ -157,6 +185,10 @@ func _draw() -> void:
 			draw_rect(Rect2(center + Vector2(-57, -26), Vector2(51, 44)), Color("65766e"))
 	else:
 		_draw_landmark(bounds, center)
+	if entrance != Vector2.INF:
+		# A region's own gateway object at its main approach.
+		draw_circle(entrance + Vector2(0, 2), 14, Color(0.03, 0.06, 0.06, 0.3))
+		PixelArt.draw_standing(self, "entry_" + definition["kind"], entrance + Vector2(0, 6), 36)
 	for action in actions:
 		if action["used"]:
 			draw_string(ThemeDB.fallback_font, action["position"] + Vector2(-12, 10), "EMPTY", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("8b9b80"))
@@ -173,6 +205,10 @@ const FLOORS := {"mill": "mossy_flagstones", "orchard": "orchard_soil", "observa
 ## Ground dressing sprites per landmark: [sprite, width].
 const DRESSING := {"orchard": [["apple_tree", 46]], "mill": [["mossy_log", 40], ["barrel", 14]], "rail": [["tire_stack", 26], ["drum_side", 26], ["crates", 30]],
 	"observatory": [["glow_mushrooms", 20], ["decal_mossy_stone", 18]], "quarry": [["boulder", 30], ["decal_pebbles", 18]], "chapel": [["gravestone", 16], ["grave_cross", 16]]}
+
+## Region colour for the centrepiece halo, and its sprite width.
+const RELIC_TINT := {"mill": Color("6fb3b0"), "orchard": Color("e0a050"), "chapel": Color("f2d27a"), "observatory": Color("a98fe0"), "rail": Color("e0644f"), "quarry": Color("d8dccf")}
+const RELIC_WIDTH := {"mill": 40, "orchard": 42, "chapel": 26, "observatory": 42, "rail": 36, "quarry": 42}
 
 func _draw_landmark(bounds: Rect2, center: Vector2) -> void:
 	var kind: String = definition["kind"]
@@ -198,8 +234,12 @@ func _draw_landmark(bounds: Rect2, center: Vector2) -> void:
 			draw_circle(at, 8, Color("566b58"))
 	if not _draw_centerpiece_sprite(kind, center + Vector2(0,-95)):
 		_draw_centerpiece(kind, center + Vector2(0,-95))
-	# Central reward altar is visually distinct from surrounding dressing.
-	if not PixelArt.draw_standing(self, "altar", center + Vector2(0, 12), 26):
+	# Each region's searchable centrepiece is its own object (sluice valve, cider
+	# press, candle lectern, telescope, track switch, ore cart) on a ground halo
+	# in the region's colour, instead of one shared altar everywhere.
+	draw_circle(center + Vector2(0, 8), 30, Color(RELIC_TINT.get(kind, Color("e2d4a2")), 0.16))
+	draw_arc(center + Vector2(0, 8), 30, 0, TAU, 32, Color(RELIC_TINT.get(kind, Color("e2d4a2")), 0.35), 1.0)
+	if not PixelArt.draw_standing(self, "relic_" + kind, center + Vector2(0, 14), RELIC_WIDTH.get(kind, 36)) and not PixelArt.draw_standing(self, "altar", center + Vector2(0, 12), 26):
 		draw_rect(Rect2(center-Vector2(16,12),Vector2(32,24)), Color("242f32"))
 		draw_circle(center,4,Color("e2d4a2"))
 	# The painted hint goes once the landmark has been searched ("EMPTY" replaces it).

@@ -86,7 +86,8 @@ func _seed_checks() -> void:
 		for encounter in a.encounters:
 			found_species[encounter["species"]] = true
 		found_weather[a.weather] = true
-	_check(found_species.size() == CampProfile.TIPS.size() - 2 and found_weather.size() == 3, "seeds_vary_all_creatures_and_weather")
+	# Every journal creature spawns except the Stalker (the headline killer).
+	_check(found_species.size() == CampProfile.TIPS.size() - 1 and found_weather.size() == 3, "seeds_vary_all_creatures_and_weather")
 
 
 func _wait_world() -> void:

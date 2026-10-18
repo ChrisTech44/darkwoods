@@ -51,7 +51,7 @@ static func capture(net: Node) -> Dictionary:
 		entities[entity.get_meta("network_id")]=row
 	return {"players":players,"enemies":enemies,"items":items,"sites":sites,"entities":entities,
 		"van":{"installed":level.van.installed,"progress":level.van.start_progress,"running":level.van.running,"remaining":level.van.remaining},
-		"escapes":level.escapes.snapshot(),"rescue":level.rescue.snapshot(),"pins":level.pins,"cards":level.cards,"clues":level.clues,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"props":level.props.snapshot(),"abilities":level.abilities.snapshot(),"signal":level.signal_fire.snapshot(),"snares":level.snares.snapshot(),"events":level.events.snapshot(),"killer_kind":level.killer.headline,"sabotage":level.night_clock.sabotage_state(),"awards":level.awards_text,"score":level.score_card,"revive":level.revive_progress,"finished":level.finished,"won":level.won,"escape_route":level.escape_route,"message":level.message,"message_time":level.message_time,"sounds":level.sound_log}
+		"escapes":level.escapes.snapshot(),"rescue":level.rescue.snapshot(),"pins":level.pins,"cards":level.cards,"clues":level.clues,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"props":level.props.snapshot(),"abilities":level.abilities.snapshot(),"signal":level.signal_fire.snapshot(),"snares":level.snares.snapshot(),"events":level.events.snapshot(),"killer_kind":level.killer.headline,"sabotage":level.night_clock.sabotage_state(),"awards":level.awards_text,"score":level.score_card,"revive":level.revive_progress,"finished":level.finished,"won":level.won,"escape_route":level.escape_route,"message":level.message,"message_time":level.message_time,"sounds":level.sound_log,"feats":level.feats}
 
 static func apply(net: Node, state: Dictionary) -> void:
 	var level: Node2D=net.world
@@ -161,6 +161,7 @@ static func apply(net: Node, state: Dictionary) -> void:
 	level.message_time=state["message_time"]
 	level.escape_route=state["escape_route"]
 	level.soundscape.replay(state.get("sounds", []))
+	level.feats.assign(state.get("feats", []))
 	if state["finished"] and not level.finished:
 		level.finished=true
 		level.won=state["won"]

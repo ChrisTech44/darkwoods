@@ -61,8 +61,9 @@ Code map:
 ## The stalker: the reason this game exists
 
 The stalker is the camp's old counselor in a canvas mask. Everything below is
-his alone (the Groundskeeper headline night shares the grab, the hook, the
-memory and the rage; he sets rake snares instead of bear traps).
+his alone, and since 18 October he is the killer every night. (The
+Groundskeeper used to be an alternative headliner sharing these traits; he is
+now a woods creature with a ride-on mower; see "18 October additions" below.)
 
 | Trait | What happens | Counter |
 | --- | --- | --- |
@@ -153,3 +154,21 @@ hunters and pranksters.
 5. **Items:** loot tables and icons (new SpriteCook sheet), the journal and
    tips.
 6. **Tests, docs, screenshots and clips.**
+
+## 18 October additions
+
+The Stalker is the only headline killer. Nine new creatures, each with a verb
+nothing else has (brains in `scripts/ai/brains/`, art from SpriteCook sheets F and
+G, tests in `tests/integration/new_creatures.gd`):
+
+| Id | Name | Verb | Counter |
+| --- | --- | --- | --- |
+| `groundskeeper` | The Groundskeeper | Ride-on mower: momentum steering, headlight-cone sight, runs you over (35 + launch); on foot he rakes hiding spots. | Sidestep late, trees, cabins; pull the parked mower's spark plug (hold E 3 s: 90 s on foot). |
+| `cuckoo` | The Cuckoo | Three calls while you're in sight, then you're rewound to where you stood 8 s ago. | Break line of sight; flash it. |
+| `banshee` | The Banshee | Inhale ring, then a scream: deafened 25 s (muffled local audio). | Leave the ring or get behind cover. |
+| `slug` | The Slug | Slime trails make you skate; touch coats you 8 s. | Walk around; salt ward shrivels it and dissolves slime. |
+| `surveyor` | The Surveyor | Touch makes you LOST 40 s (map, skyline, signposts, location hidden). | A teammate beside you 3 s, or a ranger note. |
+| `hitchhiker` | The Hitchhiker | Rides your back: slow, no sprint, switches your light off. | Walk into a teammate (TAG) or wait 45 s. |
+| `tollkeeper` | The Tollkeeper | Blocks a trail; shoves back anyone unpaid. | E pays one supply (or 15 health) for a minute's passage. |
+| `echo` | The Echo | Whistles the stalker's camp song from the wrong place. | Your light bursts it up close. |
+| `fortune_teller` | The Fortune Teller | Forced tarot card: 3 boons, 4 banes. | Walk away. |

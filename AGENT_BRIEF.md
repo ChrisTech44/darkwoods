@@ -56,10 +56,12 @@ These are code-backed facts, not a substitute for human acceptance testing.
   80% of the best prepared escape. Twelve minutes within a phase advances stalled
   teams only as far as Deep Night. Phase timers reset on transition; no dawn
   deadline. Installed/prepared steps count, not simply carried parts.
-- One headline killer per round: Stalker or Groundskeeper. Both currently receive
-  `StalkerTraits` and `CampSong`: the same Row, Row, Row Your Boat whistle,
-  shadowing, calling cards, grab/hook, hiding memory and rage. Their normal-hit
-  damage/cooldown, trap type/frequency, art and some vocal cues differ.
+- The Stalker is the headline killer every night (user decision, 18 October):
+  `StalkerTraits` and `CampSong` give the Row, Row, Row Your Boat whistle,
+  shadowing, calling cards, grab/hook, hiding memory, rage and bear traps. The
+  Groundskeeper is now a woods creature (ride-on mower, rake, spark-plug
+  sabotage), one of 30 creatures per night; nine kinds were added on 18 October
+  and one of the 22 roaming kinds rests each night (rotating by seed).
 - Shared shadowing is conditional: Expedition, Nightfall onward, PATROL,
   chosen living survivor in eligible woods. Only that survivor's beam triggers
   fading within 240px and clear sight. CHASE/INVESTIGATE/SEARCH bypass this beam

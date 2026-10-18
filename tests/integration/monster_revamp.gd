@@ -122,13 +122,16 @@ func _roster_checks() -> void:
 	_check(level.plan.encounters.size() == RoundPlan.CRYPTID_COUNT, "roster_size")
 	var missing: Array = []
 	for species: String in CampProfile.TIPS:
-		if species in ["stalker", "groundskeeper", "vampire", "witch"]:
+		if species in ["stalker", "vampire", "witch"]:
 			continue
 		if not seen.has(species):
 			missing.append(species)
 		if CreatureBrain.for_species(species) == null:
 			missing.append("brain:" + species)
-	_check(missing.is_empty(), "every_creature_spawns_with_a_brain %s" % str(missing))
+	# 30 creatures a night: one roaming kind rests, rotating with the seed.
+	var resting: Array = missing.filter(func(entry: String) -> bool: return not entry.begins_with("brain:") and entry in RoundPlan.ROAMER_SPECIES)
+	var broken: Array = missing.filter(func(entry: String) -> bool: return entry not in resting)
+	_check(broken.is_empty() and resting.size() == RoundPlan.ROAMER_SPECIES.size() - RoundPlan.ROAMERS, "every_creature_spawns_with_a_brain %s (resting tonight: %s)" % [str(broken), str(resting)])
 	_check(level.plan.encounters.filter(func(row: Dictionary) -> bool: return row["species"] == "switchback_hound").size() == 1, "buster_is_unique")
 	_check(level.plan.encounters.filter(func(row: Dictionary) -> bool: return row["species"] == "relay_jackal").size() == 2, "jackals_come_as_a_pair")
 	var names: Dictionary = {}

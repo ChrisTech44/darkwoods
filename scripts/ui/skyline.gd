@@ -58,8 +58,9 @@ static func edge_point(point: Vector2, view: Vector2) -> Vector2:
 func _draw() -> void:
 	if level == null or level.finished or not is_instance_valid(level.player):
 		return
-	# World bearings would sit under the open notebook: hide them there.
-	if level.hud != null and level.hud.notebook.visible:
+	# World bearings would sit under the open notebook: hide them there. LOST
+	# survivors (the Surveyor) see no bearings at all.
+	if (level.hud != null and level.hud.notebook.visible) or level.player.has_effect("lost"):
 		return
 	var to_screen := get_viewport().get_canvas_transform()
 	var view := get_viewport_rect().size

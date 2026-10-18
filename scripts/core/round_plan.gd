@@ -3,15 +3,19 @@ extends RefCounted
 ## Seeded authority-side run recipe. No gameplay relies on global RNG state.
 
 ## Two region dwellers, six landmark guardians (the Rail Yard's jackals come
-## as a pair) and ROAMERS spread through the woods.
-const ROAMERS := 18
+## as a pair) and ROAMERS spread through the woods. 30 in all: playtesters found
+## more too oppressive (17 October), so with 22 roaming kinds one sits out each
+## night, rotating with the seed.
+const ROAMERS := 21
 const CRYPTID_COUNT := 9 + ROAMERS
 ## No roaming creature starts this close to camp (the first stretch is for exploring).
 const SAFE_RADIUS := 1100.0
-## One night's roaming mix (docs/monster_revamp.md): every creature once, plus a
-## few extra pranksters; the order rotates with the seed. Buster is unique.
+## One night's roaming mix (docs/monster_revamp.md, docs/monster_catalog.md):
+## each roaming kind at most once (the Witch lives in the bog); the order and
+## the kind that rests rotate with the seed.
 const ROAMER_SPECIES: Array[String] = ["werewolf", "bigfoot", "lantern_moth", "ration_moth", "briar_revenant", "switchback_hound", "lens_eater",
-	"last_car_conductor", "mimic", "owl", "bog_hands", "imps", "teddy", "bog_hands", "imps", "lantern_moth", "ration_moth", "witch"]
+	"last_car_conductor", "mimic", "owl", "bog_hands", "imps", "teddy",
+	"groundskeeper", "cuckoo", "banshee", "slug", "surveyor", "hitchhiker", "tollkeeper", "echo", "fortune_teller"]
 ## Region guardians in zones 3..8: Mill, Orchard, Observatory, Rail Yard, Quarry, Chapel.
 const GUARDIANS: Array[String] = ["boiler_saint", "bramble_seamstress", "shutter_wraith", "relay_jackal", "stoneback_ram", "candle_grazer"]
 ## Monster-revamp items in the woods (count each) and at camp spots.
@@ -45,7 +49,9 @@ const ESCAPE_NAMES := {"van": "THE CAMP VAN", "radio": "RADIO RESCUE", "boat": "
 static var force_all_escapes := false
 var escape_options: Array[String] = ["van"]
 ## F7: tonight's headline killer and 0–2 night modifiers (separate seeded RNGs).
-const HEADLINES: Array[String] = ["stalker", "groundskeeper"]
+## The Stalker is the game's antagonist every night (the Groundskeeper is now a
+## woods creature with his own mower, not an alternative headliner).
+const HEADLINES: Array[String] = ["stalker"]
 const MODIFIERS: Array[String] = ["blood_moon", "dead_batteries", "fog_bank", "silent_night", "generous_woods", "lone_wolf"]
 const MODIFIER_NAMES := {"blood_moon": "BLOOD MOON", "dead_batteries": "DEAD BATTERIES", "fog_bank": "FOG BANK", "silent_night": "SILENT NIGHT", "generous_woods": "GENEROUS WOODS", "lone_wolf": "LONE WOLF"}
 const MODIFIER_RULES := {"blood_moon": "werewolves everywhere, the moon comes out more often; the killer runs faster", "dead_batteries": "spare batteries hold 40 charge", "fog_bank": "thick fog: shorter sight for everyone", "silent_night": "no music; creatures hear farther", "generous_woods": "half again as many supplies", "lone_wolf": "everyone starts in a different cabin"}
@@ -163,7 +169,7 @@ func generate(value: int, mode: String) -> void:
 		# Blood Moon: pranksters turn into werewolves, same total count.
 		var converted := 0
 		for encounter in encounters:
-			if encounter["species"] in ["ration_moth", "lantern_moth", "imps"] and not encounter.has("home") and converted < 5:
+			if encounter["species"] in ["ration_moth", "lantern_moth", "imps", "echo", "hitchhiker", "cuckoo"] and not encounter.has("home") and converted < 5:
 				encounter["species"] = "werewolf"
 				converted += 1
 
@@ -367,7 +373,9 @@ func modifier_text() -> String:
 func _choose_night_rules(value: int) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = value + 2727
-	headline = force_headline if not force_headline.is_empty() else HEADLINES[rng.randi_range(0, HEADLINES.size() - 1)]
+	# The roll is kept so modifier picks for a seed stay the same as before.
+	rng.randi_range(0, 1)
+	headline = force_headline if force_headline in HEADLINES else HEADLINES[0]
 	if force_modifiers != null:
 		modifiers.assign(force_modifiers)
 		return

@@ -108,7 +108,10 @@ var holder: Node = null
 var knock: Vector2 = Vector2.ZERO
 const EFFECT_NAMES := {"held": "HELD", "frog": "FROG", "backwards": "BACKWARDS", "float": "FLOATING", "helium": "HELIUM VOICE",
 	"sneezy": "SNEEZY", "drowsy": "DROWSY", "asleep": "ASLEEP", "hypnotized": "DRAWN", "whiteout": "BLINDED", "face_moth": "MOTH ON YOUR FACE",
-	"tethered": "STITCHED", "garlic": "GARLIC", "bug_spray": "BUG SPRAY", "coffee": "CAFFEINATED", "marked": "PHOTOGRAPHED", "tripped": "TRIPPED"}
+	"tethered": "STITCHED", "garlic": "GARLIC", "bug_spray": "BUG SPRAY", "coffee": "CAFFEINATED", "marked": "PHOTOGRAPHED", "tripped": "TRIPPED",
+	"slimed": "SLIMED", "piggyback": "HITCHHIKER ON YOUR BACK", "lost": "LOST", "deaf": "DEAFENED", "dark": "CURSED DARK", "rewound": "REWOUND"}
+## Slime skid: your actual velocity eases toward where you steer (Slug trails).
+var skid := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -131,6 +134,8 @@ func _physics_process(delta: float) -> void:
 	hurt_time = maxf(0.0, hurt_time - delta)
 	flicker = maxf(0.0, flicker - delta)
 	_tick_effects(delta)
+	if has_effect("dark"):
+		flashlight_on = false
 	if expedition and CampMap.is_woods(global_position) and flashlight_on and status == Status.ALIVE:
 		flashlight_charge = maxf(0.0, flashlight_charge - delta * light_drain)
 		if flashlight_charge <= 0:
@@ -196,7 +201,7 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 		exhausted = false
 	var heavy := "outboard_motor" in inventory
 	var frog := has_effect("frog")
-	sprinting = wants_sprint and not heavy and not frog and not assisting_motor and movement != Vector2.ZERO and not exhausted and stamina > 0.0
+	sprinting = wants_sprint and not heavy and not frog and not has_effect("piggyback") and not assisting_motor and movement != Vector2.ZERO and not exhausted and stamina > 0.0
 	if sprinting:
 		stamina = maxf(0.0, stamina - delta)
 		if stamina == 0.0:
@@ -222,6 +227,15 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 		velocity = velocity * 0.5 + global_position.direction_to(pull) * 34.0
 	if has_effect("float"):
 		velocity = velocity * 0.4 + Vector2(effect_data.get("drift", Vector2.RIGHT)) * 46.0
+	if has_effect("piggyback"):
+		# Something rides on your back: heavy, and no sprinting.
+		velocity *= 0.68
+	if has_effect("slimed"):
+		# On slime you skate: hard to start, harder to stop or turn.
+		skid = skid.lerp(velocity * 1.15, minf(1.0, 1.6 * delta))
+		velocity = skid
+	else:
+		skid = velocity
 	var previous := position
 	move_and_slide()
 	var distance := position.distance_to(previous)

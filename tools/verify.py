@@ -100,6 +100,8 @@ def main():
     commands.append(("notebook", ["--headless", "--audio-driver", "Dummy", *book]))
     labels = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/world_labels.gd"]
     commands.append(("world_labels", ["--headless", "--audio-driver", "Dummy", *labels]))
+    creatures = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/new_creatures.gd"]
+    commands.append(("new_creatures", ["--headless", "--audio-driver", "Dummy", *creatures]))
     if args.graphical:
         commands.append(("graphical_field_escapes", ["--audio-driver", "Dummy", *field_escapes, "--", "--capture"]))
         commands.append(("graphical_rescue", ["--audio-driver", "Dummy", *rescue, "--", "--capture"]))

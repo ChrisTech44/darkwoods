@@ -1,0 +1,241 @@
+{
+  "passed": true,
+  "platform": "macOS arm64 / loopback",
+  "checks": 375,
+  "results": [
+    {
+      "name": "camp_2_host_0",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/integration/network_peer.gd",
+        "--",
+        "--all-escapes",
+        "--side",
+        "host",
+        "--mode",
+        "camp",
+        "--port",
+        "27943",
+        "--peers",
+        "2",
+        "--index",
+        "0"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "result": [
+        {
+          "checks": 105,
+          "event": "test_result",
+          "failures": 0,
+          "largest_snapshot_payload": 1000,
+          "snapshot_bytes": 1568,
+          "suite": "network_host_camp_2"
+        }
+      ],
+      "log": "artifacts/network/camp_2_host_0.log"
+    },
+    {
+      "name": "camp_2_client_1",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/integration/network_peer.gd",
+        "--",
+        "--all-escapes",
+        "--side",
+        "client",
+        "--mode",
+        "camp",
+        "--port",
+        "27943",
+        "--peers",
+        "2",
+        "--index",
+        "1"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "result": [
+        {
+          "checks": 29,
+          "event": "test_result",
+          "failures": 0,
+          "largest_snapshot_payload": 0,
+          "snapshot_bytes": 1568,
+          "suite": "network_client_camp_2"
+        }
+      ],
+      "log": "artifacts/network/camp_2_client_1.log"
+    },
+    {
+      "name": "camp_2_late_9",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/integration/network_peer.gd",
+        "--",
+        "--all-escapes",
+        "--side",
+        "late",
+        "--mode",
+        "camp",
+        "--port",
+        "27943",
+        "--peers",
+        "2",
+        "--index",
+        "9"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "result": [
+        {
+          "checks": 2,
+          "event": "test_result",
+          "failures": 0,
+          "largest_snapshot_payload": 0,
+          "snapshot_bytes": 0,
+          "suite": "network_late_camp_2"
+        }
+      ],
+      "log": "artifacts/network/camp_2_late_9.log"
+    },
+    {
+      "name": "woods_2_host_0",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/integration/network_peer.gd",
+        "--",
+        "--all-escapes",
+        "--side",
+        "host",
+        "--mode",
+        "woods",
+        "--port",
+        "28043",
+        "--peers",
+        "2",
+        "--index",
+        "0"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "result": [
+        {
+          "checks": 180,
+          "event": "test_result",
+          "failures": 0,
+          "largest_snapshot_payload": 1000,
+          "snapshot_bytes": 3990,
+          "suite": "network_host_woods_2"
+        }
+      ],
+      "log": "artifacts/network/woods_2_host_0.log"
+    },
+    {
+      "name": "woods_2_client_1",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/integration/network_peer.gd",
+        "--",
+        "--all-escapes",
+        "--side",
+        "client",
+        "--mode",
+        "woods",
+        "--port",
+        "28043",
+        "--peers",
+        "2",
+        "--index",
+        "1"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "result": [
+        {
+          "checks": 57,
+          "event": "test_result",
+          "failures": 0,
+          "largest_snapshot_payload": 0,
+          "snapshot_bytes": 3990,
+          "suite": "network_client_woods_2"
+        }
+      ],
+      "log": "artifacts/network/woods_2_client_1.log"
+    },
+    {
+      "name": "woods_2_late_9",
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/integration/network_peer.gd",
+        "--",
+        "--all-escapes",
+        "--side",
+        "late",
+        "--mode",
+        "woods",
+        "--port",
+        "28043",
+        "--peers",
+        "2",
+        "--index",
+        "9"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "result": [
+        {
+          "checks": 2,
+          "event": "test_result",
+          "failures": 0,
+          "largest_snapshot_payload": 0,
+          "snapshot_bytes": 0,
+          "suite": "network_late_woods_2"
+        }
+      ],
+      "log": "artifacts/network/woods_2_late_9.log"
+    }
+  ]
+}

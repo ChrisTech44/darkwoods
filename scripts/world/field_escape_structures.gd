@@ -17,6 +17,8 @@ func _draw() -> void:
 		return
 	var player: CampPlayer = level.player
 	for index in [11,12,13]:
+		if (index in [11,12] and not escapes.boat_enabled) or (index == 13 and not escapes.gate_enabled):
+			continue
 		var zone: Dictionary = level.plan.woods.zones[index]
 		var anchor: Vector2 = zone["position"] + Vector2(0,42)
 		if index==12: anchor = zone["position"] + Vector2(0,84)

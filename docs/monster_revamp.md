@@ -7,13 +7,14 @@ verified. Where the build differs from the first draft:
 - **The Conductor roams the woods** (he can't send you to the Rail Yard if he
   lives there); the **Trash Jackals** (a pair) guard the Rail Yard instead.
 - **The Vampire doesn't heal.** Its gaze lasts at most 4 s before it must look
-  away for 6 s, a flare breaks it, and a sprint outruns the pull.
+  away for 6 s. Breaking its pull or escaping its bite also starts that cooldown;
+  a flare breaks it, and a sprint outruns the pull.
 - **The werewolf still fears flares** when transformed.
 - **Bigfoot fur** is scored when picked up (+300 each).
 - **The grip** (user follow-up): struggle drains while you aren't pressing
-  (0.1/s for creatures, 0.12/s for the stalker); each grab by the same kind of
-  creature needs 8 more presses than the last; the stalker jolts his captive
-  every 3 s (−25% progress); tearing free of him leaves you tripped (1 s) and
+  (0.1/s for creatures, 0.06/s for the stalker); each grab by the same kind of
+  creature adds 2 presses, capped at +4 above its base; the stalker jolts his captive
+  every 3 s (−10% progress); tearing free of him leaves you tripped (1 s) and
   drops what you held. Teammates' flashes, flares and the air horn free you
   instantly and cleanly.
 - **Blood Moon** turns pranksters (Puffballs, Lantern Moths, Imps) into
@@ -74,7 +75,7 @@ now a woods creature with a ride-on mower; see "18 October additions" below.)
 | **He remembers** | Hiding spots you have used are remembered. Searching nearby, he checks those first and drags you out. | Don't reuse a spot. |
 | **Bear traps** | Through the night he sets bear traps on the trail cells you walk most (up to four): a loud snap, 4 s stuck and 15 damage. They glint in a flashlight; **E** disarms one in 2 s. | Vary routes; watch the ground. |
 | **Calling cards** | He scrawls survivors' names and "I SEE YOU" on the ground where they have been. | Purely to scare you. |
-| **Rage** | Every time a target slips away (a door, a stun, a hiding spot, a freed captive) his rage grows. At three he **frenzies** for 20 s: faster, doors burst instantly, the whistle becomes a scream. | Don't humiliate him too often. |
+| **Rage** | Every time a target slips away (a door, a stun, a hiding spot, a freed captive) his rage grows. At three he **frenzies** for 12 s, then a 40 s rage rest: faster (capped at 90 px/s), doors burst instantly, the whistle becomes a scream. | Don't humiliate him too often. |
 | **Air horn** | A new camp item: a blast stuns him for 5 s and makes him drop anyone he carries, but every creature in the woods hears it. | — |
 
 ## Creatures

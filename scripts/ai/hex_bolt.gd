@@ -8,6 +8,7 @@ var remaining: float = 2.5
 var travel: float = 0.0
 ## Host only: the witch who cast it (her brain decides the curse).
 var source: Node = null
+var curse_kind := ""
 
 
 func _ready() -> void:
@@ -29,7 +30,7 @@ func _physics_process(delta: float) -> void:
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and Geometry2D.get_closest_point_to_segment(actor.global_position, from, to).distance_to(actor.global_position) <= 9:
 			if is_instance_valid(source) and source.brain != null and source.brain.has_method("curse"):
-				source.brain.curse(actor)
+				source.brain.curse(actor, curse_kind)
 			else:
 				actor.apply_hex(1.6)
 			queue_free()
@@ -40,7 +41,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _draw() -> void:
+	var tint: Color = preload("res://scripts/ai/brains/witch.gd").COLORS.get(curse_kind, Color("b6a0df"))
 	for index in range(5):
-		draw_circle(-direction * index * 4, 3 - index * 0.4, Color(0.62, 0.5, 0.8, 0.8 - index * 0.14))
+		draw_circle(-direction * index * 4, 3 - index * 0.4, Color(tint, 0.8 - index * 0.14))
 	if not PixelArt.draw_in(self, "fx_hex", Rect2(-6, -6, 12, 12)):
 		draw_rect(Rect2(-2, -2, 4, 4), Color("e2d3f3"))

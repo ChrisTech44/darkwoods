@@ -96,10 +96,10 @@ func advance(delta: float) -> void:
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		var id := actor.get_instance_id()
 		relief[id] = RELIEF_SECONDS if chased(actor) else maxf(0.0, relief.get(id, 0.0) - delta)
-	# Lingering in a phase keeps raising the pressure; the Witching Hour never plateaus.
+	# Pressure plateaus even in the finale; no endless escalation.
 	var through := phase_elapsed / DREAD_RAMP_SECONDS
-	through = through if phase == 3 else minf(through, 1.0)
-	dread = clampf(PHASE_DREAD[phase] + through * 20.0 + heat + level.van.installed.size() * 3.0, 0.0, 100.0)
+	through = minf(through, 1.0)
+	dread = clampf(PHASE_DREAD[phase] + through * 20.0 + heat + level.van.installed.size() * 3.0, 0.0, 80.0)
 	_escalate(delta)
 	director_clock -= delta
 	if director_clock <= 0.0:

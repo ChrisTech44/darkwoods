@@ -36,24 +36,26 @@ func physics(delta: float) -> bool:
 	# Garlic: keep a respectful distance from anyone carrying its smell.
 	for actor in survivors():
 		if actor.has_effect("garlic") and body.global_position.distance_to(actor.global_position) < GARLIC_DISTANCE:
+			if gazing: _rest()
 			flee_from(actor.global_position, 80.0, delta)
 			return true
-	gaze_target = null
-	gazing = false
 	gaze_rest = maxf(0.0, gaze_rest - delta)
 	var victim := nearest_seen(GAZE)
 	var scared := body.nearby_flare() != Vector2.INF
-	if victim == null or scared or gaze_rest > 0.0:
-		gaze_time = 0.0
-	elif not victim.has_effect("garlic") and not in_beam(victim, body.global_position, GAZE, 0.8):
+	var eligible := victim != null and not scared and not victim.has_effect("garlic") and not in_beam(victim, body.global_position, GAZE, 0.8)
+	if gazing and (not eligible or victim != gaze_target):
+		_rest()
+	gaze_target = null
+	gazing = false
+	if eligible and gaze_rest <= 0.0:
 		gaze_time += delta
 		if gaze_time >= GAZE_HOLD:
-			gaze_time = 0.0
-			gaze_rest = GAZE_REST
-		gaze_target = victim
-		gazing = true
-		victim.add_effect("hypnotized", 0.25)
-		victim.effect_data["pull_to"] = body.global_position
+			_rest()
+		else:
+			gaze_target = victim
+			gazing = true
+			victim.add_effect("hypnotized", 0.25)
+			victim.effect_data["pull_to"] = body.global_position
 	# A steady beam slows it; otherwise it glides in.
 	var lit := victim != null and in_beam(victim, body.global_position, 145.0, 0.88)
 	body.config.killer_chase_speed = 40.0 if lit else 72.0
@@ -61,7 +63,7 @@ func physics(delta: float) -> bool:
 
 
 func contact(actor: CampPlayer) -> bool:
-	if actor.has_effect("garlic") or actor.has_effect("held"):
+	if gaze_rest > 0.0 or actor.has_effect("garlic") or actor.has_effect("held"):
 		return true
 	body.hold(actor, display_name, 1.0 / 8.0)
 	latched = true
@@ -82,8 +84,22 @@ func _drain(actor: CampPlayer, delta: float) -> void:
 		actor.set_status(CampPlayer.Status.DOWNED)
 
 
-func on_released(_actor: CampPlayer) -> void:
+func _rest() -> void:
+	if is_instance_valid(gaze_target):
+		gaze_target.clear_effect("hypnotized")
+	gaze_time = 0.0
+	gaze_rest = GAZE_REST
+	gazing = false
+
+
+func on_stunned() -> void:
+	_rest()
+
+
+func on_released(actor: CampPlayer) -> void:
 	latched = false
+	actor.clear_effect("hypnotized")
+	_rest()
 
 
 func draw_over() -> void:

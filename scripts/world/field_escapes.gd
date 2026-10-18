@@ -46,6 +46,13 @@ func _ready() -> void:
 	gate_point = level.plan.woods.zones[13]["position"] + Vector2(0,500)
 	breaker_point = gate_point + Vector2(-116,28)
 	bridge = level.plan.woods.zones[13]["position"] + Vector2(0,-500)
+	if gate_enabled:
+		_build_gate()
+	art = preload("res://scripts/world/field_escape_structures.gd").new()
+	art.escapes = self
+	add_child(art)
+
+func _build_gate() -> void:
 	gate_body = StaticBody2D.new()
 	gate_body.collision_layer = CampPlayer.BARRIER_LAYER
 	gate_body.collision_mask = 0
@@ -65,9 +72,6 @@ func _ready() -> void:
 		var lamp := CampLights.lamp(self,at,175,Color("d6ce9b"),0.9)
 		lamp.enabled = false
 		floodlights.append(lamp)
-	art = preload("res://scripts/world/field_escape_structures.gd").new()
-	art.escapes = self
-	add_child(art)
 
 func _process(delta: float) -> void:
 	if not active:
@@ -78,7 +82,7 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 func near(actor: CampPlayer, point: Vector2) -> bool:
-	return level.rescue.near(actor, point)
+	return active and actor.is_in_group("survivors") and actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and actor.global_position.distance_to(point) <= actor.config.interact_radius and level.clear_path(actor.global_position, point)
 
 func prompt(actor: CampPlayer) -> String:
 	if not active:
@@ -87,7 +91,10 @@ func prompt(actor: CampPlayer) -> String:
 		if boat_started:
 			return "BOAT %.1fs · STAY ON DOCK / DODGE RIPPLE CIRCLES" % boat_remaining
 		if boat_installed.size() < 3:
-			return "E · FIT MOTOR / BOAT FUEL / DRAIN PLUG (%d/3)" % boat_installed.size()
+			for kind in BOAT_PARTS:
+				if kind in actor.inventory and kind not in boat_installed:
+					return "E · INSTALL %s (%d/3)" % [part_name(kind), boat_installed.size()]
+			return "BOAT REPAIR · NEED %s (%d/3)" % [part_name(next_boat_part()), boat_installed.size()]
 		return "E · START 25s LAUNCH / GATHER TEAM"
 	if not gate_enabled:
 		return ""
@@ -269,12 +276,37 @@ func heading() -> String:
 		return "RANGER GATE OPEN · RUN NORTH TO THE BRIDGE"
 	return ""
 
+static func part_name(kind: String) -> String:
+	return {"outboard_motor": "MOTOR", "boat_fuel": "MARINE FUEL", "drain_plug": "DRAIN PLUG"}.get(kind, kind.to_upper())
+
+func next_boat_part() -> String:
+	for kind in BOAT_PARTS:
+		if kind not in boat_installed:
+			return kind
+	return ""
+
+func boat_step(kind: String) -> String:
+	if kind in boat_installed:
+		return "✓ %s INSTALLED" % part_name(kind)
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if kind in actor.inventory:
+			return "· %s: %s → DOCK REPAIR" % [part_name(kind), "YOU" if actor == level.player else (actor.peer_name if not actor.peer_name.is_empty() else "TEAMMATE")]
+	var at := Vector2.ZERO
+	for item: Dictionary in level.plan.loot:
+		if item["kind"] == kind: at = item["position"]
+	for pickup: CampPickup in level.pickups:
+		if pickup.kind == kind and pickup.available:
+			at = pickup.global_position
+	var region: Dictionary = level.plan.woods.zone_at(at)
+	var where: String = WoodsLayout.short_name(region) if not region.is_empty() else "DROPPED / SEE MAP"
+	return "· %s / %s" % [part_name(kind), where]
+
 func pack_text(page: String) -> String:
 	if page == "boat":
-		var text := "BOAT · LAKESHORE BOATHOUSE SOUTHEAST\n"
+		var text := "BOAT · LAKESHORE DOCK (SOUTHEAST)\n"
 		for kind in BOAT_PARTS:
-			text += ("✓ " if kind in boat_installed else "· ") + kind.replace("_"," ").to_upper() + " / " + {"outboard_motor":"LOGGING CAMP WEST", "boat_fuel":"RAIL YARD EAST", "drain_plug":"OBSERVATORY NORTH"}[kind] + "\n"
-		return text + "MOTOR: 75% WALK, NO SPRINT / G DROPS\nTEAMMATE HOLDS E NEARBY: FULL WALK\nE AT BOAT: START 25s LAUNCH"
+			text += boat_step(kind) + "\n"
+		return text + "FIT ALL PARTS: MARKED REPAIR PAD ON DOCK\nMOTOR: 75% WALK; TEAMMATE HOLDS E TO HELP\nE AGAIN WHEN READY: START 25s LAUNCH"
 	var text := "RANGER GATE · NORTH ROAD → BRIDGE\n"
 	for kind in GATE_CODES:
 		text += ("✓ " if kind in gate_installed else "· ") + kind.replace("_"," ").to_upper() + " / " + WoodsLayout.short_name(level.plan.woods.zones[level.plan.gate_regions[kind]]) + "\n"
@@ -288,7 +320,7 @@ func restore(state: Dictionary) -> void:
 	gate_installed.assign(state["gate_installed"])
 	for field in ["boat_started","boat_remaining","gate_powered","gate_open","gate_progress","bridge_started","bridge_remaining","lake_wave","lake_tell","lake_target","lake_flash"]:
 		set(field,state[field])
-	if active:
+	if gate_enabled:
 		gate_body.get_child(0).set_deferred("disabled",gate_open)
 
 func _draw() -> void:

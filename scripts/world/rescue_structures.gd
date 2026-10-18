@@ -20,6 +20,8 @@ func _draw() -> void:
 		return
 	var observer: CampPlayer = level.player
 	for index in [9,10]:
+		if index == 10 and not rescue.relay_enabled:
+			continue
 		var zone: Dictionary = level.plan.woods.zones[index]
 		var at: Vector2 = zone["position"]
 		var anchor := at + Vector2(0,44)

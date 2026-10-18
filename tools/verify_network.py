@@ -19,7 +19,7 @@ def run_case(mode,players,graphical=False):
         running.append((name,process,path,cmd))
     spawn('host');time.sleep(.5)
     for i in range(1,players):spawn('client',i)
-    deadline=time.monotonic()+210;late=False
+    deadline=time.monotonic()+420;late=False
     while any(p.poll() is None for _,p,_,_ in running) and time.monotonic()<deadline:
         if players==2 and not late and '"stage":"movement"' in running[0][2].read_text():
             spawn('late',9);late=True

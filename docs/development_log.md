@@ -1,5 +1,75 @@
 # Development log
 
+## 2026-10-18 — Friends playtest balance and objective clarity (main)
+
+Approved playtest follow-up. The headless server edition will be isolated on
+`headless-server`; movement prediction and the broader guest-lag work are deferred.
+
+Implemented:
+
+- Stalker nearby stalking lasts 55–80s. Ordinary SEARCH sightings beyond 40px
+  return to stalking, while deliberate investigations and close contact retain
+  detection. Expedition chases have an 18s active-chase budget and then 3s recovery.
+  Escaped grabs also reset stalking and grant that recovery. Movement after all
+  speed multipliers caps at 90px/s (healthy sprint 110, wounded 99). Frenzy lasts
+  12s, then has 40s of rage rest; pressure caps at dread 80 even in a long finale.
+- Repeat grabs add two base presses, capped at +4 (Stalker 14/16/18; Vampire
+  8/10/12). Stalker struggle drains 0.06/s and jolts lose 0.1 progress every 3s.
+  These are base counts, not a promise of escaping with exactly that many presses
+  while time/decay elapse. Corrected `release_held` to call the release callback
+  before clearing its holder, so flares/stuns also run creature recovery hooks.
+- Vampire gaze breaks, target switches, garlic interruption, stun and bite release
+  start its 6s pull/bite rest. Witch draws shuffled four-curse bags without adjacent
+  repeats; cast type is selected at wind-up, shown by name/color, carried by the
+  bolt and replicated. Normal flashlight drain is one third charge/s: 270s full
+  beam, Scout 337.5s; battery, flash-burst and creature charge costs remain.
+- Boat has a labeled repair pad and individual MOTOR/FUEL/PLUG completion labels;
+  prompts name carried parts and the plan names their carrier/dock destination.
+  Normal boat-only nights exposed a substantive old bug: proximity delegated to
+  inactive Radio Rescue, so installation could not work. It now validates its
+  own active flag, survivor, radius and clear path. Removed inactive gate barriers
+  and gate/radio-only machinery. Map/skyline presentation queries live installation
+  and availability; active destinations have explicit objective annotations while
+  region names remain geography. Expanded Snuffer's README entry and counters.
+- Networking rules are `lnac-net-16` for curse state. Scene-load allowance is 90s;
+  the first-snapshot timer starts at `_go`, and load acknowledgements wait through
+  initial physics/navigation synchronization. The real-peer harness exposed a
+  disconnect immediately after a slow procedural load; gameplay starts only after
+  the loading barrier. Snapshot rate, movement prediction and smoothing are unchanged.
+
+Verification and limits:
+
+- Required import/startup checks and `git diff --check`; clean final runs recorded
+  in the selected [evidence](evidence/playtest_balance/README.md).
+- Focused final suites: creature revamp 147, content/roles 447, night phases 43,
+  field escapes 58, notebook 21, actual Stalker navigation/speed cap 17, woods
+  replay 537, normal-route graphical fixture 30 (including seven image writes):
+  **1,300 assertions, zero failures**. Seven final PNGs were opened and inspected.
+- `python3 tools/verify.py` was attempted, passed import/startup, all parse checks,
+  menu/offline/camp checks, then stopped at the flashlight fixture's old duration
+  assumptions. Focused reruns corrected and verified those assertions; this is
+  **not a claim that the entire broad suite passed**. A type inference error was
+  corrected before the final import. Earlier sandbox import printed user-settings
+  errors; subsequent required checks ran with normal Godot filesystem access.
+- Fixture corrections: tests explicitly use the intended role and loopback
+  address rather than inheriting saved player choices; seeded Generous Woods and
+  Dead Batteries are respected. The isolated replay keeps enemies frozen after
+  unpausing. Its first duration update expected depletion too soon and was fixed.
+  Rage tests reset the new cooldown before exercising a separate frenzy.
+- Multiplayer: `python3 tools/verify_network.py --mode all --players 2` passed
+  Quick Camp (105 host +29 guest +2 late-join checks). Its first Woods pass had
+  a test-report deadline failure during radio power, followed by stale fixture
+  callbacks after the harness had advanced to another round. The isolated rerun
+  `--mode woods --players 2` passed 180 host +57 guest +2 late-join checks, after
+  test report deadlines were made less brittle and null-world diagnostics guarded.
+  **375 final real-peer assertions, zero failures/errors/warnings**. These tests
+  exercised shared actions, all diagnostic escape routes, retries and host loss.
+- macOS arm64 / Godot 4.7.2, Dummy audio. No human balance session, real microphone,
+  listening, separate-machine LAN/Internet, Windows/Linux package acceptance is
+  inferred. Captures use normal lighting, frozen enemies and staged positions;
+  the normal-route fixture does **not** force all escapes. Existing field/network
+  diagnostic suites explicitly force all escapes. No lag optimization shipped.
+
 ## 2026-10-18 — Let the Stalker close distance before counting stalking time
 
 User requested nearby-only stalking so the killer can close gaps and become more

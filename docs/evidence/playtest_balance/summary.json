@@ -1,0 +1,57 @@
+{
+  "platform": "macOS arm64",
+  "engine": "4.7.2",
+  "checks": 1300,
+  "results": [
+    {
+      "checks": 147,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "monster_revamp"
+    },
+    {
+      "checks": 447,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "content_expansion"
+    },
+    {
+      "checks": 43,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "night_phases"
+    },
+    {
+      "checks": 58,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "field_escapes"
+    },
+    {
+      "checks": 21,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "notebook"
+    },
+    {
+      "checks": 17,
+      "event": "test_result",
+      "failures": 0,
+      "following_gap": 153.696411132812,
+      "suite": "stalker_distance",
+      "walking_gap": 218.1357421875
+    },
+    {
+      "checks": 537,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "woods_replay"
+    },
+    {
+      "checks": 30,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "playtest_balance"
+    }
+  ]
+}

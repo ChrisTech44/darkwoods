@@ -8,7 +8,7 @@ microphone is opened or requested.
 
 ## Radio Rescue (expedition)
 
-All peers must use rules `lnac-net-12` (the same build). The host owns the fuse,
+All peers must use rules `lnac-net-16` (the same build). The host owns the fuse,
 substation, six-second relay hold, persistent signal lights, countdown and
 extraction results. Clients send the usual E/hold intents. **T** switches only
 that player's objective page. A remote operator can complete the whole chain;
@@ -68,7 +68,7 @@ and shares them with everyone. The host also owns the progress-paced night (phas
 Flash-stuns (Space) and help calls are host-validated intents.
 Hiding, doors and knock-overs use the normal E intent; the host owns breath,
 door breaking and blocking. The road network changes the generated woods, so
-both copies must run rules version `lnac-net-10`. Vaults and gate openings are
+both copies must run rules version `lnac-net-16`. Vaults and gate openings are
 host-validated E actions. Clue knowledge (ranger notes,
 regions visited) is shared by the whole team.
 Nearby teammates show their names; each survivor keeps their own flashlight,

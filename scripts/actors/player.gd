@@ -32,7 +32,7 @@ var flashlight_charge: float = 90.0
 var supplies: Dictionary = {"flare": 2, "battery_pack": 1, "rations": 1, "medkit": 0}
 var invulnerability: float = 0.0
 var role: String = "jock"
-var light_drain: float = 1.0
+var light_drain: float = 1.0 / 3.0
 var sprint_hearing: float = 1.0
 var belt: Array[String] = ["flare", "battery_pack", "rations", "", "", ""]
 var selected_slot: int = 0
@@ -469,7 +469,7 @@ func apply_role() -> void:
 	match role:
 		"mechanic": supplies["battery_pack"] += 1
 		"scout":
-			light_drain = 0.8
+			light_drain *= 0.8
 			supplies["rations"] += 1
 		"medic":
 			supplies["medkit"] += 1

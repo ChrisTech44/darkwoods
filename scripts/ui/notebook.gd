@@ -193,6 +193,11 @@ func _map_side() -> String:
 
 ## First unfinished line of the selected plan (same text as the PLAN view).
 func next_step() -> String:
+	if level.current_page() == "boat":
+		for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+			for kind in FieldEscapes.BOAT_PARTS:
+				if kind in actor.inventory and kind not in level.escapes.boat_installed:
+					return "Fit %s at BOAT REPAIR on the Lakeshore dock (southeast)." % FieldEscapes.part_name(kind)
 	for line: String in plan_label.text.split("\n"):
 		if line.begins_with("· "):
 			return line.substr(2)

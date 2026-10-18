@@ -10,7 +10,7 @@ extends RefCounted
 ##   there, pinned on everyone's map.
 ## - HE REMEMBERS hiding spots you used and checks them first.
 ## - RAGE: every time a victim slips away it grows; at three he FRENZIES for
-##   20 s (faster, doors burst instantly, he screams instead of whistling).
+##   12 s (faster, doors burst instantly, he screams instead of whistling).
 ## - CALLING CARDS: he scrawls your name and threats on the ground behind you.
 ## The whistled camp song and bear traps live in CampSong and Snares.
 ## Host only; the body's synced fields (faded, frenzy, carrying) drive drawing.
@@ -21,24 +21,29 @@ const SHADOW_SPEED := 78.0
 ## slower than sprinting; only nearby, unobstructed encounters count as stalking.
 const SHADOW_RANGE := 260.0
 const APPROACH_SPEED := 88.0
-const LUNGE_AFTER := Vector2(35.0, 55.0)
+const LUNGE_AFTER := Vector2(55.0, 80.0)
 const MELT_SECONDS := 5.0
 const CARRY_SPEED := 58.0
-const FRENZY_SECONDS := 20.0
+const FRENZY_SECONDS := 12.0
+const FRENZY_REST := 40.0
+const MAX_CHASE_SECONDS := 18.0
+const MAX_SPEED := 90.0
 const RAGE_LIMIT := 3
 const CARD_EVERY := 80.0
 const CARD_RANGE := 230.0
 ## While carrying, he jolts his captive every SHAKE_EVERY s, knocking back
-## SHAKE_LOSS of their struggle; his grip drains struggle faster than others'.
+## SHAKE_LOSS of their struggle; steady escape progress remains possible.
 const SHAKE_EVERY := 3.0
-const SHAKE_LOSS := 0.25
-const GRIP_DECAY := 0.12
+const SHAKE_LOSS := 0.1
+const GRIP_DECAY := 0.06
 var shake_clock := SHAKE_EVERY
 const CARDS := ["I SEE YOU", "RUN", "%s", "%s <3", "NOT YET", "YOU'RE NEXT %s"]
 var body: CampKiller
 var favourite: CampPlayer
 var shadow_clock := 0.0
-var lunge_at := 45.0
+var lunge_at := 65.0
+var chase_time := 0.0
+var frenzy_rest := 0.0
 var melt := 0.0
 var rage := 0
 var card_clock := 40.0
@@ -50,6 +55,7 @@ var checked_spot := -1
 
 func _init(killer: CampKiller) -> void:
 	body = killer
+	lunge_at = randf_range(LUNGE_AFTER.x, LUNGE_AFTER.y)
 
 
 func level() -> Node:
@@ -61,7 +67,14 @@ func physics(delta: float) -> bool:
 	var world: Node = level()
 	if world == null or not world.plan.expedition:
 		return false
-	body.frenzy = maxf(0.0, body.frenzy - delta)
+	frenzy_rest = maxf(0.0, frenzy_rest - delta)
+	if body.state == CampKiller.State.CHASE and not is_instance_valid(body.held):
+		chase_time += delta
+		if chase_time >= MAX_CHASE_SECONDS:
+			resume_shadow()
+			return true
+	else:
+		chase_time = 0.0
 	body.door_force = 40.0 if body.frenzy > 0.0 else 1.0
 	melt = maxf(0.0, melt - delta)
 	body.faded = melt > 0.0
@@ -102,6 +115,24 @@ func physics(delta: float) -> bool:
 		return false
 	body.steer(_behind(favourite, SHADOW_DISTANCE), SHADOW_SPEED, delta)
 	return true
+
+
+## Ordinary sightings start another stalking encounter; deliberate investigations
+## and point-blank contact retain the normal response.
+func wants_shadow(actor: CampPlayer) -> bool:
+	var world := level()
+	return world != null and world.plan.expedition and world.night_clock.phase >= 1 and body.state in [CampKiller.State.PATROL, CampKiller.State.SEARCH] and CampMap.is_woods(actor.global_position) and body.global_position.distance_to(actor.global_position) > 40.0
+
+
+func resume_shadow() -> void:
+	body.visible_target = null
+	body.memory.clear()
+	body.transition(CampKiller.State.PATROL)
+	body.recover_remaining = maxf(body.recover_remaining, 3.0)
+	body.velocity = Vector2.ZERO
+	shadow_clock = 0.0
+	chase_time = 0.0
+	lunge_at = randf_range(LUNGE_AFTER.x, LUNGE_AFTER.y)
 
 
 func _pick_favourite() -> void:
@@ -173,11 +204,14 @@ func _hang(world: Node, victim: CampPlayer, hook: Vector2) -> void:
 
 ## Someone slipped away from him: a broken hold, a stun, a vanished hider.
 func humiliated() -> void:
+	if frenzy_rest > 0.0:
+		return
 	rage += 1
 	if rage < RAGE_LIMIT:
 		return
 	rage = 0
 	body.frenzy = FRENZY_SECONDS
+	frenzy_rest = FRENZY_SECONDS + FRENZY_REST
 	var world: Node = level()
 	if world != null:
 		world.soundscape.broadcast("screech_3", body.global_position, 10.0, 0.6)

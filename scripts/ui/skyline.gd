@@ -32,12 +32,17 @@ static func beacons(plan: RoundPlan, from: Vector2) -> Array[Dictionary]:
 ## Regions the team knows hold a missing part show its name on the marker.
 static func beacon_label(level: Node2D, beacon: Dictionary) -> String:
 	var label: String = beacon["label"]
-	if beacon["kind"] == "chapel" and level.rescue.transmitted:
+	if beacon["kind"] == "chapel" and level.rescue.relay_enabled and level.rescue.transmitted:
 		label += " · RESCUE"
 	for kind: String in level.clues:
+		if kind not in level.plan.required or not level.plan.cache_zone.has(kind) or not ObjectiveState.on_ground(level, kind):
+			continue
 		var zone: Dictionary = level.plan.woods.zones[level.plan.cache_zone[kind]]
 		if zone["kind"] == beacon["kind"] and level.clues[kind] >= 1 and kind not in level.van.installed:
 			label += " · " + kind.replace("_", " ").to_upper()
+	var route: String = {"boathouse": "boat", "ranger": "gate", "relay": "radio", "quarry": "signal"}.get(beacon["kind"], "")
+	if not route.is_empty() and level.plan.has_escape(route):
+		label += " · " + {"boat": "BOAT REPAIR", "gate": "ESCAPE", "radio": "TRANSMIT", "signal": "SIGNAL FIRE"}[route]
 	return label
 
 

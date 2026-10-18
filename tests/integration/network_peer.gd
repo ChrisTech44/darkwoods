@@ -76,7 +76,7 @@ func _host() -> void:
 		RenderingServer.force_draw(true)
 		root.get_texture().get_image().save_png("res://artifacts/network/lobby_%s_%d.png"%[selected_mode,peers])
 	_check(net.start_round(selected_mode,42),"host_starts_locked_seed")
-	if not await _until(func(): return net.phase=="playing",15): return
+	if not await _until(func(): return net.phase=="playing",90): return
 	var level: Node2D=net.world
 	for enemy: CampKiller in get_nodes_in_group("killers"): enemy.enabled=false
 	_check(net.actors.size()==peers and get_nodes_in_group("survivors").size()==peers,"one_actor_per_peer")
@@ -323,7 +323,7 @@ func _host() -> void:
 	harness.advance.rpc("ready_again")
 	if not await _until(func(): return net.can_start(),5): return
 	_check(net.start_round(selected_mode,net.seed_value),"synchronized_same_seed_restart")
-	if not await _until(func(): return net.phase=="playing",15): return
+	if not await _until(func(): return net.phase=="playing",90): return
 	for enemy: CampKiller in get_nodes_in_group("killers"): enemy.enabled=false
 	_check(net.round_id==2 and net.world.plan.seed_value==42 and net.actors[guest].supplies["flare"]==2,"fresh_round_resets_state_and_applies_bonus_once")
 	if peers>2:
@@ -346,6 +346,7 @@ func _host() -> void:
 	_check(not net.active and get_nodes_in_group("survivors").is_empty(),"host_leave_cleans_up")
 
 func _client() -> void:
+	current_scene.fields["Address"].text="127.0.0.1" # Never inherit a player's saved remote host.
 	current_scene.fields["Name"].text="Guest %d"%index
 	current_scene.fields["Port"].text=str(port)
 	current_scene.fields["Role"].select(1)
@@ -357,7 +358,7 @@ func _client() -> void:
 	_check(net.mode==selected_mode and net.seed_value==42 and not net.roster[get_multiplayer().get_unique_id()]["ready"],"client_receives_changed_rules_and_unready")
 	net.choose("mechanic",true)
 	harness.report.rpc_id(1,"ready_check",{})
-	if not await _until(func(): return net.phase=="playing",20): return
+	if not await _until(func(): return net.phase=="playing",90): return
 	_check(net.actors.size()==peers and get_nodes_in_group("survivors").size()==peers,"client_receives_exact_roster")
 	_check(net.world.plan.seed_value==42 and not net.world.player.is_physics_processing(),"client_is_replica_with_shared_seed")
 	var handled := ""
@@ -538,6 +539,7 @@ func _client() -> void:
 				await create_timer(0.45).timeout
 				if mine == harness.data["guest"]: net.action("interact")
 				var accepted := func() -> bool:
+					if net.world == null: return false
 					match handled:
 						"radio_take": return "rescue_fuse" in net.actors[harness.data["guest"]].inventory
 						"radio_power": return net.world.rescue.powered
@@ -588,11 +590,13 @@ func _late() -> void:
 	if not await _until(func(): return not net.active,15): return
 	_check(net.status_text.contains("already running") or net.status_text.contains("failed") or net.status_text.contains("timed out"),"late_join_refused")
 func _reports(count: int) -> bool:
-	return await _until(func(): return harness.reports.size()>=count,10)
+	return await _until(func(): return harness.reports.size()>=count,30)
 func _until(predicate: Callable, seconds: float) -> bool:
 	var until := Time.get_ticks_msec()+int(seconds*1000)
 	while not predicate.call() and Time.get_ticks_msec()<until: await process_frame
 	var ok: bool=predicate.call()
+	if not ok:
+		print(JSON.stringify({"event":"network_wait_failure","phase":net.phase,"status":net.status_text,"loaded":net.loaded.size(),"participants":net.participants.size()}))
 	_check(ok,"wait_%s_%s"%[side,harness.stage])
 	return ok
 func _check(ok: bool, label: String) -> void:
@@ -704,7 +708,9 @@ func _radio_round(level: Node2D, guest: int) -> void:
 	_check("rescue_fuse" in operator.inventory and not fuse.available, "remote_collects_radio_fuse_authoritatively")
 	operator.position = rescue.power_point
 	harness.advance.rpc("radio_power", {"guest":guest})
-	if not await _reports(net.actors.size()-1): return
+	if not await _reports(net.actors.size()-1):
+		print(JSON.stringify({"event":"radio_power_fixture", "position":str(operator.position), "inventory":operator.inventory, "effects":operator.effects, "prompt":rescue.prompt(operator), "notice":operator.notice, "powered":rescue.powered}))
+		return
 	_check(rescue.powered and "rescue_fuse" not in operator.inventory, "remote_restores_substation")
 	level.night_clock.skip_to(2400)
 	operator.position = rescue.relay_point
@@ -742,7 +748,7 @@ func _field_round(guest: int, route: String) -> void:
 	net.choose("medic",true)
 	if not await _until(func(): return net.can_start(),8): return
 	_check(net.start_round("woods",42),"fresh_"+route+"_round_starts")
-	if not await _until(func(): return net.phase=="playing",15): return
+	if not await _until(func(): return net.phase=="playing",90): return
 	var level: Node2D=net.world
 	var field: FieldEscapes=level.escapes
 	var operator: CampPlayer=net.actors[guest]

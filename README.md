@@ -302,7 +302,7 @@ the notebook's Log.
 - **Lose:** everyone is downed with no one left to revive them (solo players get
   one 20-second chance to drag themselves back up).
 - There is **no time limit**. Waiting is not safe, though: pressure keeps
-  rising, and in the Witching Hour it never stops.
+  rising until it reaches a fixed ceiling, including in the Witching Hour.
 
 ## Tips for your first nights
 
@@ -377,7 +377,7 @@ phase and how long you have been out.
 | **Dusk** | Start | Battery and key are in camp. Grab tools and supplies, plan routes. The woods are at their calmest. |
 | **Nightfall** | One step secured (e.g. first van part), or 12 quiet minutes | Ranger radio reveals the **fuel** cache. First storm of the night. |
 | **Deep Night** | Half an escape ready (e.g. third van part), or 12 more quiet minutes | Radio reveals the **first extra part**. The stalker hears farther. A blackout hits camp. |
-| **Witching Hour** | An escape nearly or fully ready (e.g. fourth van part) | Radio reveals the **last extra part**. The stalker chases faster, and pressure keeps climbing until you leave. |
+| **Witching Hour** | An escape nearly or fully ready (e.g. fourth van part) | Radio reveals the **last extra part**. The stalker chases faster, and pressure reaches a fixed ceiling even if you delay leaving. |
 
 - **Where the parts are changes every night.** The three locked caches (fuel and
   the two extra parts) go to three different regions in three different
@@ -455,15 +455,17 @@ the seed and announced in the Dusk message and the notebook.
     walking but slower than sprinting. His lunge timer only advances within
     **260 px with clear sight**; distance and intervening walls pause it. Nearby,
     he follows about **130 px behind** at 78 px/s. Catch him in your beam and he
-    melts into the dark, only to turn up behind you later. After initially 45 s
-    of nearby shadowing (35–55 s thereafter), he lunges. Ordinary detection can
-    still start a chase directly; Quick Camp has no shadowing.
+    melts into the dark, only to turn up behind you later. After **55–80 s**
+    of nearby shadowing, he lunges. Ordinary distant sightings during a search
+    return him to stalking; deliberate noise investigations and point-blank
+    encounters can start a chase. A chase lasts at most **18 s** before a
+    three-second recovery and another stalking interval. Quick Camp has no shadowing.
   - **The grab and the hook.** He doesn't hit a wounded survivor (50 health or
     less): he **throws them over his shoulder** and walks them to **his hook**,
     a post in his lair in the woods. His grip is hard to break: your struggle
     drains when you stop mashing, every few seconds he **hitches you up on his
     shoulder** (the view jolts and you lose a chunk of progress), and each time
-    he grabs you it takes more presses. Tear free and you **hit the ground and
+    he grabs you it takes more presses, capped at **18**. Tear free and you **hit the ground and
     drop what you were holding**. A teammate's flash, a flare or the **air horn**
     makes him drop you cleanly. Reach the hook and you're downed there,
     **pinned on everyone's map**: a rescue run.
@@ -474,8 +476,10 @@ the seed and announced in the Dusk message and the notebook.
     "I SEE YOU" or "RUN" on the ground. The writing only shows up when your
     light falls on it.
   - **Rage.** Every escape from him (a broken grab, a stun, a hiding spot in
-    mid-chase) builds rage; at three he **frenzies** for 20 s: faster, glowing
-    red, bursting doors instantly, screaming instead of whistling.
+    mid-chase) builds rage; at three he **frenzies** for **12 s**: faster, glowing
+    red, bursting doors instantly, screaming instead of whistling. He then needs
+    **40 s** before building rage again. His final speed is capped at **90 px/s**,
+    including Blood Moon and phase bonuses (normal sprint is 110; wounded is 99).
   - **Escalation.** In Deep Night his search memory lasts 50% longer and
     **once** he may sabotage the van (VAN ALARM, the part pinned on your map); in
     the Witching Hour he runs faster and **once** cuts the generator.
@@ -581,7 +585,12 @@ carrier to **75% walking speed**, and prevents sprinting/vaulting. **G** sets it
 down immediately. A standing teammate can **hold E within 48 px** to help: both
 walk at normal speed without sprinting while assisting.
 
-Once all three parts are fitted, E at the boat starts a **25-second launch**. Stay on the
+Bring all three parts to the **BOAT REPAIR pad on the Lakeshore dock**,
+southeast of camp. This is separate from the Camp Boathouse. Stand on the pad
+and press E to fit the parts you carry; MOTOR / FUEL / PLUG each show OK when
+fitted. The notebook names the carrier and directs them to the dock.
+
+Once all three parts are fitted, E again at the pad starts a **25-second launch**. Stay on the
 wooden dock within **80 px** of the boat point. The **Lake Thing** marks three
 fixed dock positions with glowing ripple circles, each warning for **2 seconds**
 before striking. Step outside a circle or throw a flare within 100 px with clear
@@ -692,6 +701,9 @@ rather than memorizing screen coordinates.
 ### Flashlight and survival supplies
 
 Every survivor has a built-in **flashlight**; it is not a pickup or belt item.
+A full charge lasts **270 seconds of ordinary woods use** (337.5 as the Scout).
+The HUD shows remaining beam time; flash bursts and light-eating creatures can
+use charge sooner. Spare batteries still restore 70 charge out of 90.
 Toggle it with **F**. It starts with **90 charge**, drains at 1 charge/second
 while lit in expedition woods (Scout: 0.8/second), and switches off at zero.
 Camp use does not drain charge. Teammates see its light too.
@@ -816,10 +828,10 @@ design is in [docs/monster_revamp.md](docs/monster_revamp.md).
 
 | Creature | What it does | Tell | How to beat it |
 | --- | --- | --- | --- |
-| **The Vampire** | **Hypnotises**: if it can see you (and your beam isn't on it) you're drawn toward it. Up close it **latches on** and drains health. | Red eyes; the screen edges pulse red. | **Garlic** keeps it away; hold your beam on it (it slows and the pull breaks); sprint away; mash **E** if bitten. |
+| **The Vampire** | **Hypnotises**: if it can see you (and your beam isn't on it) you're drawn toward it. Up close it **latches on** and drains health. | Red eyes; the screen edges pulse red. | **Garlic** keeps it away; hold your beam on it (it slows and the pull breaks); sprint away; mash **E** if bitten. Breaking its pull or escaping a bite gives **6 s without another pull or bite**. |
 | **The Werewolf** | A harmless **lost hiker** until the **moon** comes out (moon icon, about every three minutes from Nightfall). Then it rampages: pounces **knock you flying** (35) and doors burst. | A howl. | Hide until the clouds return, throw **wolfsbane**, or use a flare. |
 | **Bigfoot** | **Shy.** Never hunts. Sneak up on it in the dark and it **throws you** across the clearing (10, and you may drop what you hold). | Grunting. | Light it up from a distance: it bolts and drops **Bigfoot fur** (+300 score). |
-| **The Witch** | Her hex bolt **curses**: **Frog** (12 s: can't carry parts or use items), **Backwards** controls (10 s), **Swap** places with a teammate, or **Float** like a balloon (8 s). | Cackle and a casting ring. | Sidestep the bolt's line; a **salt ward** bounces it back and turns *her* into a frog. |
+| **The Witch** | Her hex bolt **curses**: **Frog** (12 s: can't carry parts or use items), **Backwards** controls (10 s), **Swap** places with a teammate, or **Float** like a balloon (8 s). | Cackle, casting ring and the curse name. Four curses are shuffled; no consecutive repeats. | Sidestep the bolt's line; a **salt ward** bounces it back and turns *her* into a frog. |
 | **The Lantern Moth** | Flies to your light and **lands on your face**: a moth fills your screen and drinks your battery. | Fluttering. | **Space** swats it (or a teammate's flash); **bug spray**; light off. |
 | **The Puffball** | Swells and bursts: spores give you a **helium voice** (60 s, on voice chat too) and loud **sneezes** (30 s). | A pale cloud growing. | Walk around it, or **stand still** as it bursts to hold your breath. |
 | **The Scarecrow** | **Only moves when nobody is looking.** Unwatched it's very fast and its touch hurts (60). A flash can't stop it. | Rustling straw. | Keep a light on it and back away; take turns as a team. |
@@ -852,11 +864,19 @@ design is in [docs/monster_revamp.md](docs/monster_revamp.md).
 | White Stone Quarry | **The Ram** | A telegraphed **CHARGE** that bowls over everyone in its path (30) and bursts doors. | Step out of the line. |
 | Drowned Chapel | **The Snuffer** | Walks in a bubble of **darkness**: flashlights cut out and flares die near it. | **Glow moss** can't be snuffed; walk away. |
 
+**The Snuffer — Drowned Chapel:** a slow, harmless light-eater that follows
+nearby survivors. Within **140 px** it switches off flashlights and destroys
+flares, leaving you exposed to other creatures. **Glow moss** protects your own
+light from its snuffing. Walk out of its bubble and toggle F to restore your
+beam; throwing more flares into the bubble wastes them.
+
 **Held?** When something holds you (bite, hug, mud, stare, talons, the stalker's
 shoulder) the screen says **HELD BY … · MASH E** with a bar: every press of **E**
 wriggles you closer to free, but the bar **drains** whenever you stop, so only
-fast, steady mashing works. **Each grab by the same kind of creature needs 8
-more presses than the last** (the stalker: 14, then 22, then 30). A teammate
+fast, steady mashing works. **Repeat grabs add two presses, capped at four above the first grab**
+(the Stalker: 14, 16, then at most 18; Vampire: 8, 10, then at most 12).
+Those are base counts; progress still drains between presses. Escaping the
+Stalker gives a three-second head start. A teammate
 pressing **E** beside you pulls twice as hard, and a teammate's **flash** (or a
 flare near the stalker, or the air horn) frees you at once: teamwork is the
 reliable way out.

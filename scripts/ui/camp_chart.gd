@@ -122,6 +122,8 @@ func _draw_camp() -> void:
 func route_parts() -> Array:
 	if level == null:
 		return plan.required
+	if not plan.has_escape(level.current_page()):
+		return []
 	match level.current_page():
 		"radio": return ["rescue_fuse"]
 		"boat": return FieldEscapes.BOAT_PARTS
@@ -139,7 +141,7 @@ func objective_items() -> Array[Dictionary]:
 	var parts := route_parts()
 	for index in range(level.pickups.size()):
 		var pickup: CampPickup = level.pickups[index]
-		if not pickup.available or pickup.kind not in parts:
+		if not pickup.available or pickup.kind not in parts or ObjectiveState.installed(level, pickup.kind):
 			continue
 		if level.current_page() == "van" and pickup.kind in van.installed:
 			continue
@@ -157,7 +159,7 @@ func destination() -> Dictionary:
 		return {"position": van.global_position, "name": "VAN"}
 	match level.current_page():
 		"radio": return {"position": level.rescue.landing, "name": "LANDING ZONE"}
-		"boat": return {"position": level.escapes.boat_point, "name": "BOAT"}
+		"boat": return {"position": level.escapes.boat_point, "name": "BOAT REPAIR"}
 		"gate": return {"position": level.escapes.gate_point, "name": "RANGER GATE"}
 		"signal": return {"position": level.signal_fire.pyre, "name": "SIGNAL PYRE"}
 	return {"position": van.global_position, "name": "VAN"}

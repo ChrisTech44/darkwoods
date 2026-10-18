@@ -12,7 +12,9 @@ Historical implementation records remain in [development log](docs/development_l
 A specification describes intended behavior; source inspection and execution
 records establish what the build actually does. Resolve discrepancies explicitly.
 
-Current user request: audit graphics defects and plan an overhaul of the map,
+Current user request: approved friends-playtest balance/objective fixes on main,
+then a separate `headless-server` branch before guest-lag optimization. Earlier
+graphics priority: audit defects and plan an overhaul of the map,
 Tab notes/help and hint menus so players understand where they are, what is
 happening and what to do next. See the
 [graphics audit and interface plan](docs/graphics_readability_plan.md).
@@ -62,11 +64,21 @@ These are code-backed facts, not a substitute for human acceptance testing.
   Groundskeeper is now a woods creature (ride-on mower, rake, spark-plug
   sabotage), one of 30 creatures per night; nine kinds were added on 18 October
   and one of the 22 roaming kinds rests each night (rotating by seed).
-- Shared shadowing is conditional: Expedition, Nightfall onward, PATROL,
-  chosen living survivor in eligible woods. Only that survivor's beam triggers
-  fading within 240px and clear sight. CHASE/INVESTIGATE/SEARCH bypass this beam
-  check. Space flash is a separate short-range stun. Do not describe continuous
-  flashlight repulsion or Stalker-exclusive shadowing as current behavior.
+- Stalker shadowing: Expedition, Nightfall onward, chosen living survivor in
+  eligible woods; nearby clear-sight time before lunging is 55–80s. Ordinary
+  SEARCH sightings beyond 40px return to stalking. Deliberate investigations and
+  close contact retain detection. Chase is capped at 18s, followed by 3s recovery.
+  Only the favourite's beam fades a stalking Stalker within 240px; Space flash is
+  separate. Final movement caps at 90px/s; frenzy lasts 12s with 40s rage rest.
+- Repeat grabs add 2 presses, capped at +4 above each creature's base (Stalker
+  14–18, Vampire 8–12), excluding decay. Stalker decay is 0.06/s and jolts cost
+  0.1 progress. Vampire gaze breaks/bite releases start a 6s pull/bite cooldown.
+  Witch curses use shuffled bags without adjacent repeats, with replicated cast
+  tells/bolt types. Flashlight passive drain is one third charge per second:
+  full beam 270s, Scout 337.5s; other consumers retain their existing charge cost.
+- Boat parts install at the marked Lakeshore dock repair pad, with individual
+  completion labels. Inactive gate barriers/structures and radio-only relay
+  presentation are omitted. Geography remains visible independently of escapes.
 - Story events, phase weather, van sabotage and a generator power cut exist.
   Scheduled events can be skipped when their phase is passed before their delay.
   The generator is outside the Maintenance workshop door.

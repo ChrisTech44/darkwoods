@@ -115,3 +115,13 @@ and [multiplayer setup](multiplayer_guide.md). Automated fixtures use placements
 and accelerated clock/countdown tails. They do not prove normal-speed human
 balance, real cross-machine Internet or Windows/Linux/export behavior. No
 microphone feature or new audio asset was added.
+
+## Playtest clarity update — 18 October 2026
+
+Fit motor, marine fuel and drain plug with E on the **BOAT REPAIR** pad on the
+Lakeshore dock southeast of camp, separate from the Camp Boathouse. Its MOTOR /
+FUEL / PLUG labels each change to OK. The plan names whoever carries each part;
+carriers are directed to the dock. E again after all three are fitted starts the
+existing 25-second launch; the 80px extraction circle and Lake Thing remain.
+Inactive routes do not get objective annotations or gate barriers. Region names
+are geographic landmarks and remain visible on other nights.

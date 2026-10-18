@@ -41,7 +41,7 @@ static func capture(net: Node) -> Dictionary:
 			entity.set_meta("network_id",net.next_entity_id)
 		var row := {"position":entity.position}
 		if entity is HexBolt:
-			row.merge({"kind":"bolt","direction":entity.direction,"remaining":entity.remaining})
+			row.merge({"kind":"bolt","curse_kind":entity.curse_kind,"direction":entity.direction,"remaining":entity.remaining})
 		elif entity is LandmarkHazard:
 			row.merge({"kind":"patch","thorns":entity.thorns,"remaining":entity.remaining})
 		elif entity is NoiseLure:

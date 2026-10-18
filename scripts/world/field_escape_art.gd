@@ -119,10 +119,18 @@ static func draw_structure(canvas: Node2D, zone: Dictionary, powered: bool, open
 			canvas.draw_string(ThemeDB.fallback_font,at+Vector2(-45,64),"RANGER ROAD / NORTH",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("e3c993"))
 
 static func draw_boat(canvas: Node2D, at: Vector2, installed: Array[String], started: bool, pulse: float) -> void:
-	var hull := at+Vector2(0,-38 + sin(pulse*1.8)*1.5)
+	var hull := at+Vector2(0,-78 + sin(pulse*1.8)*1.5)
 	PixelArt.draw_standing(canvas,"f5_boat" if "outboard_motor" in installed else "canoe",hull,86)
+	# The physical interaction point is the repair pad, at the boat's feet.
+	canvas.draw_rect(Rect2(at + Vector2(-42, -35), Vector2(84, 34)), Color("172924"))
+	canvas.draw_rect(Rect2(at + Vector2(-42, -35), Vector2(84, 34)), Color("dbbf7e"), false)
+	canvas.draw_string(ThemeDB.fallback_font, at + Vector2(-42, -25), "BOAT REPAIR", HORIZONTAL_ALIGNMENT_CENTER, 84, 8, Color("f2dfaa"))
 	for index in range(3):
-		canvas.draw_circle(at+Vector2(-9+index*9,-12),2,Color("dfcc8d") if index<installed.size() else Color("314b44"))
+		var done: bool = FieldEscapes.BOAT_PARTS[index] in installed
+		var label: String = ["MOTOR", "FUEL", "PLUG"][index]
+		var x := -40 + index * 27
+		canvas.draw_string(ThemeDB.fallback_font, at + Vector2(x, -15), label, HORIZONTAL_ALIGNMENT_CENTER, 27, 7, Color("e5d8ac"))
+		canvas.draw_string(ThemeDB.fallback_font, at + Vector2(x, -6), "OK" if done else "--", HORIZONTAL_ALIGNMENT_CENTER, 27, 7, Color("b7de98") if done else Color("b7a891"))
 	if started:
 		for index in range(5):
 			canvas.draw_arc(hull+Vector2(0,18),12+fmod(pulse*18+index*8,40),0,PI,20,Color("749f96"))

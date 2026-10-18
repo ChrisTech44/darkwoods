@@ -150,6 +150,10 @@ func _vampire() -> void:
 	await _frames(4)
 	var lit_free: bool = not player.has_effect("hypnotized") or player.effects.get("hypnotized", 0.0) <= 0.25
 	_check(lit_free, "beam_on_vampire_breaks_the_pull")
+	_check(vampire.brain.gaze_rest > 5.0, "breaking_gaze_starts_six_second_rest")
+	vampire.brain.contact(player)
+	_check(not player.has_effect("held"), "no_bite_during_gaze_recovery")
+	vampire.brain.gaze_rest = 0.0 # Separate bite fixture after recovery.
 	vampire.brain.contact(player)
 	_check(player.has_effect("held") and vampire.held == player, "vampire_bite_latches")
 	await _frames(30)
@@ -157,6 +161,7 @@ func _vampire() -> void:
 	for press in range(8):
 		level.try_interact(player)
 	_check(not player.has_effect("held") and vampire.held == null, "eight_presses_break_the_bite")
+	_check(vampire.brain.gaze_rest == 6.0, "escaping_bite_starts_recovery")
 	_reset()
 	player.add_effect("garlic", 60.0)
 	vampire.recover_remaining = 0.0
@@ -215,6 +220,20 @@ func _witch() -> void:
 	_reset()
 	var witch := _spawn("witch", along * 150)
 	witch.enabled = false
+	var seen: Array[String] = []
+	var previous := ""
+	var varied := true
+	for index in range(40):
+		var picked: String = witch.brain.next_curse()
+		varied = varied and picked != previous
+		previous = picked
+		seen.append(picked)
+		if index % 4 == 3:
+			var unique := {}
+			for value in seen: unique[value] = true
+			varied = varied and unique.size() == 4
+			seen.clear()
+	_check(varied, "random_curse_bags_cover_all_four_without_adjacent_repeats")
 	player.inventory.append("fuel")
 	witch.brain.curse(player, "frog")
 	_check(player.has_effect("frog") and "fuel" not in player.inventory and not level.use_supply(player, "flare"), "frog_curse_drops_parts_and_blocks_items")
@@ -526,9 +545,12 @@ func _stalker() -> void:
 	await _grip_checks(stalker)
 	stalker.frenzy = 0.0
 	stalker.traits.rage = 0
+	stalker.traits.frenzy_rest = 0.0 # Independent rage fixture after repeated escapes.
 	for slip in range(3):
 		stalker.traits.humiliated()
 	_check(stalker.frenzy > 0.0 and stalker.door_force > 1.0 or stalker.frenzy > 0.0, "three_humiliations_send_him_into_a_frenzy")
+	for slip in range(6): stalker.traits.humiliated()
+	_check(stalker.traits.rage == 0 and stalker.frenzy <= 12.0, "frenzy_cannot_chain_during_rage_rest")
 	stalker.frenzy = 0.0
 	# Shadowing: caught in your beam, he melts away.
 	level.night_clock.force_phase(1)
@@ -566,21 +588,26 @@ func _grip_checks(stalker: CampKiller) -> void:
 	stalker.stun_immunity = 0.0
 	var times: int = player.grab_counts.get(stalker.headline.to_upper(), 0)
 	stalker.traits.strike(player)
-	_check(is_equal_approx(player.struggle_step, 1.0 / (14.0 + 8.0 * times)), "each_grab_needs_more_presses")
+	_check(is_equal_approx(player.struggle_step, 1.0 / (14.0 + mini(4, 2 * times))), "each_grab_needs_more_presses")
 	player.struggle = 0.5
 	stalker.traits.shake_clock = 10.0
 	await _frames(60)
-	_check(player.struggle < 0.42 and player.has_effect("held"), "struggle_drains_while_you_dont_press")
+	_check(player.struggle < 0.47 and player.has_effect("held"), "struggle_drains_while_you_dont_press")
 	player.struggle = 0.9
 	stalker.traits.shake_clock = 0.05
 	await _frames(6)
-	_check(player.struggle < 0.7 and player.has_effect("jolted"), "he_jolts_you_and_knocks_progress_back")
+	_check(player.struggle < 0.82 and player.has_effect("jolted"), "he_jolts_you_and_knocks_progress_back")
 	player.supplies["flare"] = 2
 	player.belt[0] = "flare"
 	player.selected_slot = 0
 	player.struggle = 0.999
 	level.try_interact(player)
 	_check(not player.has_effect("held") and player.has_effect("tripped") and player.supplies["flare"] == 0, "tearing_free_drops_you_and_what_you_held")
+	_check(stalker.recover_remaining >= 3.0, "escaped_stalker_gives_three_second_head_start")
+	for repeat in range(20):
+		stalker.hold(player, stalker.headline.to_upper(), 1.0 / 14.0, 0.06)
+		player.release()
+	_check(is_equal_approx(player.struggle_step, 1.0 / 18.0), "repeat_grabs_plateau_at_eighteen")
 	await _frames(70)
 	_reset()
 	player.health = 40.0

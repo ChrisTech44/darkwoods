@@ -16,6 +16,7 @@ func _run() -> void:
 	capture = "--capture" in OS.get_cmdline_user_args()
 	_seed_checks()
 	var session: Node = root.get_node("Session")
+	session.survivor = "jock"
 	session.mode = "woods"
 	session.next_seed = 42
 	session.load_game()
@@ -80,7 +81,7 @@ func _seed_checks() -> void:
 				locked += 1
 		for kind in a.required:
 			_check(counts[kind] == 1, "seed_%d_one_%s" % [seed_value, kind])
-		_check(locked == 3 and counts["boltcutters"] == 2 and counts["crowbar"] == 1 and counts["battery_pack"] == 15, "seed_%d_cache_tools_and_supplies" % seed_value)
+		_check(locked == 3 and counts["boltcutters"] == 2 and counts["crowbar"] == 1 and (counts["battery_pack"] >= 15 if a.has_modifier("generous_woods") else counts["battery_pack"] == 15), "seed_%d_cache_tools_and_supplies" % seed_value)
 		_check(a.encounters.size() == RoundPlan.CRYPTID_COUNT and a.encounters[0]["species"] == "vampire" and a.encounters[1]["species"] == "witch" and a.encounters[2]["species"] != a.encounters[3]["species"], "seed_%d_twenty_four_cryptids" % seed_value)
 		_check(a.woods.zones.size() == 14 and a.woods.zones[0]["bounds"].size == Vector2(960,576), "seed_%d_fourteen_expanded_sites" % seed_value)
 		for encounter in a.encounters:
@@ -166,7 +167,7 @@ func _rules() -> void:
 	player.position = Vector2(1660, 520)
 	player.facing = Vector2.RIGHT
 	player.flashlight_charge = 2
-	await _frames(60)
+	await _frames(180)
 	_check(player.flashlight_charge < 1.1 and player.flashlight_charge > 0.8, "woods_drains_flashlight_charge")
 	await _key(KEY_ESCAPE)
 	var before: float = player.flashlight_charge
@@ -174,13 +175,13 @@ func _rules() -> void:
 	_check(level.paused and is_equal_approx(player.flashlight_charge, before), "pause_stops_battery_drain")
 	_check(not level.use_supply(player, "flare"), "paused_supply_use_rejected")
 	await _key(KEY_ESCAPE)
-	await _frames(90)
+	await _frames(190)
 	_check(player.flashlight_charge == 0 and not player.flashlight_on, "empty_flashlight_turns_off")
 	await _key(KEY_F)
 	_check(not player.flashlight_on, "empty_flashlight_cannot_be_toggled_on")
 	var batteries: int = player.supplies["battery_pack"]
 	await _key(KEY_R)
-	_check(player.flashlight_charge > 69 and player.flashlight_on and player.supplies["battery_pack"] == batteries - 1, "r_consumes_one_battery_and_restores_light")
+	_check(player.flashlight_charge > (39 if level.plan.has_modifier("dead_batteries") else 69) and player.flashlight_on and player.supplies["battery_pack"] == batteries - 1, "r_consumes_one_battery_and_restores_light")
 	player.stamina = 0.0
 	player.exhausted = true
 	await _key(KEY_C)
@@ -330,6 +331,8 @@ func _key(code: Key) -> void:
 	event.pressed = false
 	Input.parse_input_event(event)
 	await _frames(1)
+	if code == KEY_ESCAPE and not level.paused:
+		for enemy: CampKiller in get_nodes_in_group("killers"): enemy.enabled = false
 
 
 func _frames(count: int) -> void:

@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-15"
+const RULES := "lnac-net-16"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -189,7 +189,7 @@ func _begin(chosen_mode: String, value: int, peers: Dictionary, generation: int)
 	next_entity_id=0
 	menu_open=false
 	waiting=true
-	deadline=Time.get_ticks_msec()+20000
+	deadline=Time.get_ticks_msec()+90000
 	last_packet=Time.get_ticks_msec()
 	var session: Node=get_node("/root/Session")
 	session.mode=mode
@@ -233,8 +233,16 @@ func attach_world(level: Node2D) -> void:
 		for site in level.camp_map.sites: site.set_physics_process(false)
 		level.night_clock.set_physics_process(false)
 		level.props.set_physics_process(false)
-	if multiplayer.is_server(): _accept_loaded(local_id,round_id)
-	else: _world_loaded.rpc_id(1,round_id)
+	_announce_world_loaded(weakref(level), round_id)
+
+func _announce_world_loaded(reference: WeakRef, generation: int) -> void:
+	# Navigation synchronizes after _ready. Keep the loading barrier until the
+	# initial physics frames have finished on every peer.
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	if not active or generation != round_id or world != reference.get_ref() or phase != "loading": return
+	if multiplayer.is_server(): _accept_loaded(multiplayer.get_unique_id(), round_id)
+	else: _world_loaded.rpc_id(1, round_id)
 
 @rpc("any_peer","call_remote","reliable",0)
 func _world_loaded(generation: int) -> void:
@@ -249,6 +257,8 @@ func _accept_loaded(id: int, generation: int) -> void:
 func _go(generation: int) -> void:
 	if not active or generation!=round_id or world==null: return
 	phase="playing"
+	# The first-snapshot timeout starts after scene loading, not before it.
+	last_packet=Time.get_ticks_msec()
 	waiting=false
 	for actor: CampPlayer in actors.values(): actor.controls_enabled=true
 	if multiplayer.is_server():

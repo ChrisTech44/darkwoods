@@ -10,6 +10,30 @@ var cast_cooldown := 1.5
 var frogged := 0.0
 ## Clips and tests can force the next random curse ("" draws one).
 var forced := ""
+var curse_bag: Array[String] = []
+var last_curse := ""
+var cast_kind := "frog"
+const COLORS := {"frog": Color("9ad46b"), "backwards": Color("f3b36b"), "swap": Color("78d7e8"), "float": Color("d6a0ec")}
+
+
+func next_curse() -> String:
+	if not forced.is_empty():
+		return forced
+	if curse_bag.is_empty():
+		curse_bag.assign(CURSES)
+		curse_bag.shuffle()
+		if curse_bag.back() == last_curse:
+			var first := curse_bag[0]
+			curse_bag[0] = curse_bag[-1]
+			curse_bag[-1] = first
+	last_curse = curse_bag.pop_back()
+	return last_curse
+
+
+func draw_over() -> void:
+	if body.casting:
+		body.draw_string_outline(ThemeDB.fallback_font, Vector2(-32, -65), cast_kind.to_upper(), HORIZONTAL_ALIGNMENT_CENTER, 64, 9, 3, Color("111b18"))
+		body.draw_string(ThemeDB.fallback_font, Vector2(-32, -65), cast_kind.to_upper(), HORIZONTAL_ALIGNMENT_CENTER, 64, 9, COLORS[cast_kind])
 
 
 func setup() -> void:
@@ -50,11 +74,13 @@ func physics(delta: float) -> bool:
 				bolt.position = body.global_position
 				bolt.direction = body.global_position.direction_to(body.cast_aim)
 				bolt.source = body
+				bolt.curse_kind = cast_kind
 				body.get_parent().add_child(bolt)
 				cue("witch_cackle", 2.0)
 		return true
 	if distance >= 60.0 and distance <= 205.0 and cast_cooldown <= 0.0 and body.has_line_of_sight(target.global_position):
 		body.casting = true
+		cast_kind = next_curse()
 		body.spell_started.emit()
 		body.cast_remaining = 0.8
 		# The aim locks for the wind-up: no late homing.
@@ -85,7 +111,7 @@ func curse(actor: CampPlayer, kind: String = "") -> void:
 		cue("witch_cackle", 2.0, 1.6)
 		return
 	if kind.is_empty():
-		kind = forced if not forced.is_empty() else CURSES[randi() % CURSES.size()]
+		kind = next_curse()
 	var world: Node = level()
 	match kind:
 		"frog":
@@ -133,8 +159,9 @@ func draw() -> bool:
 
 
 func snapshot() -> Dictionary:
-	return {"frogged": frogged}
+	return {"frogged": frogged, "cast_kind": cast_kind}
 
 
 func restore(state: Dictionary) -> void:
 	frogged = state.get("frogged", 0.0)
+	cast_kind = state.get("cast_kind", "frog")

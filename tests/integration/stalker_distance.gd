@@ -86,6 +86,16 @@ func _run() -> void:
 	var before: int = level.cards.size()
 	traits._cards(level, 0.1)
 	_check(level.cards.size() == before + 1, "calling_card_range_remains_230_despite_closer_shadow_distance")
+	# Exercise the final velocity after exaggerated phase/modifier/frenzy stacking.
+	_reset(80.0)
+	killer.enabled = true
+	killer.state = CampKiller.State.CHASE
+	killer.config.killer_chase_speed = 200.0
+	killer.frenzy = 12.0
+	for frame in range(12): await physics_frame
+	_check(is_equal_approx(killer.velocity.length(), 90.0), "stacked_chase_speed_is_actually_capped")
+	_check(player.config.sprint_speed * CampPlayer.WOUNDED_SPRINT > killer.velocity.length(), "wounded_sprint_can_gain_a_gap")
+	killer.enabled = false
 	print(JSON.stringify({"event": "test_result", "suite": "stalker_distance", "checks": checks, "failures": failures, "walking_gap": gap, "following_gap": following_gap}))
 	await root.get_node("AudioManager").prepare_shutdown()
 	quit(0 if failures == 0 else 1)

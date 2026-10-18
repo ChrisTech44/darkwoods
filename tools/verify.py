@@ -104,7 +104,10 @@ def main():
     commands.append(("world_labels", ["--headless", "--audio-driver", "Dummy", *labels]))
     creatures = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/new_creatures.gd"]
     commands.append(("new_creatures", ["--headless", "--audio-driver", "Dummy", *creatures]))
+    balance = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/playtest_balance.gd"]
+    commands.append(("playtest_balance", ["--headless", "--audio-driver", "Dummy", *balance]))
     if args.graphical:
+        commands.append(("graphical_balance", ["--audio-driver", "Dummy", *balance, "--", "--capture"]))
         commands.append(("graphical_field_escapes", ["--audio-driver", "Dummy", *field_escapes, "--", "--capture"]))
         commands.append(("graphical_rescue", ["--audio-driver", "Dummy", *rescue, "--", "--capture"]))
         commands.append(("graphical_player_render", ["--audio-driver", "Dummy", *render]))
@@ -150,7 +153,7 @@ def main():
                   if re.search(r"(?:SCRIPT ERROR|ERROR|Parse Error):", line)]
         warnings = [line for line in clean.splitlines() if "WARNING:" in line]
         passed = status == 0 and not errors and not timed_out
-        if name == "stalker_distance" or name in ("field_escapes", "graphical_field_escapes", "radio_rescue", "graphical_rescue", "player_render", "graphical_player_render", "content_expansion", "graphical_content", "navigation_aids", "graphical_navigation", "night_phases", "graphical_nights", "chase_toolkit", "graphical_chase", "chase_props", "graphical_props", "road_network", "graphical_roads", "rotation_clues", "graphical_clues", "barriers", "graphical_barriers", "roles_abilities", "signal_fire", "killers_modifiers", "meta_progress", "night_events", "menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
+        if name in ("stalker_distance", "playtest_balance", "graphical_balance", "monster_revamp", "notebook", "world_labels", "new_creatures", "sound_feedback") or name in ("field_escapes", "graphical_field_escapes", "radio_rescue", "graphical_rescue", "player_render", "graphical_player_render", "content_expansion", "graphical_content", "navigation_aids", "graphical_navigation", "night_phases", "graphical_nights", "chase_toolkit", "graphical_chase", "chase_props", "graphical_props", "road_network", "graphical_roads", "rotation_clues", "graphical_clues", "barriers", "graphical_barriers", "roles_abilities", "signal_fire", "killers_modifiers", "meta_progress", "night_events", "menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
             summaries = []
             for line in clean.splitlines():
                 if line.startswith("{"):

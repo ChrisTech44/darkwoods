@@ -88,6 +88,7 @@ func _physics_process(delta: float) -> void:
 	if not enabled:
 		velocity = Vector2.ZERO
 		return
+	frenzy = maxf(0.0, frenzy - delta)
 	if tick_stun(delta):
 		return
 	attack_remaining = maxf(0.0, attack_remaining - delta)
@@ -113,6 +114,11 @@ func _physics_process(delta: float) -> void:
 		transition(State.SEARCH)
 		retreat_remaining = 0.8
 	if is_instance_valid(visible_target):
+		if traits != null and traits.wants_shadow(visible_target):
+			traits.favourite = visible_target
+			transition(State.PATROL)
+			velocity = Vector2.ZERO
+			return
 		last_seen = visible_target.global_position
 		memory[visible_target.get_instance_id()] = {"position": last_seen, "remaining": config.memory_seconds}
 		transition(State.CHASE)
@@ -170,6 +176,8 @@ func _physics_process(delta: float) -> void:
 			velocity *= 1.25
 		if retreat_remaining > 0:
 			velocity = direction * maxf(config.killer_patrol_speed, 82)
+	if traits != null:
+		velocity = velocity.limit_length(StalkerTraits.MAX_SPEED)
 	if camp_closed and velocity != Vector2.ZERO and not in_camp(global_position) and in_camp(global_position + velocity.normalized() * 12.0):
 		# A route that cuts through camp is refused: turn back to the woods.
 		velocity = Vector2.ZERO
@@ -263,9 +271,9 @@ func land_hit(actor: CampPlayer, damage: float) -> bool:
 
 
 ## Grab `actor`: they can't move until released or they wriggle free (E).
-## Every grab by the same kind of creature is harder than the last: it takes
-## GRAB_ESCALATION more presses each time (14, 22, 30… for the stalker).
-const GRAB_ESCALATION := 8
+## Repeat grabs add two presses, capped at four above that creature's base.
+const GRAB_ESCALATION := 2
+const GRAB_EXTRA_CAP := 4
 
 
 func hold(actor: CampPlayer, label: String, per_press: float, decay: float = 0.1) -> void:
@@ -274,15 +282,15 @@ func hold(actor: CampPlayer, label: String, per_press: float, decay: float = 0.1
 	held = actor
 	var times: int = actor.grab_counts.get(label, 0)
 	actor.grab_counts[label] = times + 1
-	var presses := 1.0 / per_press + GRAB_ESCALATION * times
+	var presses := 1.0 / per_press + mini(GRAB_EXTRA_CAP, GRAB_ESCALATION * times)
 	actor.grab(self, label, 1.0 / presses, decay)
 
 
 func release_held() -> void:
 	var victim := held
-	held = null
 	if is_instance_valid(victim) and victim.holder == self:
 		victim.release()
+	held = null
 
 
 ## Called by the survivor when they break free or the hold ends.
@@ -292,6 +300,7 @@ func on_released(actor: CampPlayer) -> void:
 		carrying = false
 		if traits != null:
 			traits.humiliated()
+			traits.resume_shadow()
 		# A struggle that worked leaves the creature reeling for a moment.
 		recover_remaining = maxf(recover_remaining, 1.2)
 

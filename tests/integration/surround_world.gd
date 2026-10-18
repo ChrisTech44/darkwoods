@@ -48,7 +48,7 @@ class Overview extends Control:
 			[1,"2 WITCH'S BOG","ROTATING CACHE",Vector2(288,84)],
 			[10,"11 RADIO RELAY","DISTRESS CALL",Vector2(288,108)],
 			[6,"7 RAIL YARD","BOAT FUEL",Vector2(288,132)],
-			[12,"13 BOATHOUSE","BOAT / LAKE THING",Vector2(288,156)],
+			[12,"13 LAKESHORE","BOAT / LAKE THING",Vector2(288,156)],
 			[8,"9 CHAPEL","RADIO RESCUE",Vector2(288,180)]
 		]
 		for label in labels:

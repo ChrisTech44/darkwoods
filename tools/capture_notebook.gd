@@ -27,6 +27,18 @@ func _run() -> void:
 	var book: CampNotebook = level.hud.notebook
 	await _frames(30)
 	await _shot(tag + "dusk_title")
+	# Entering a building: the place title and the door plaque outside.
+	var spawn: Vector2 = level.player.position
+	for building: CampBuilding in level.camp_map.buildings:
+		if building.label == "MAINTENANCE":
+			level.player.position = building.door + Vector2(0, 40)
+			level.player.facing = Vector2.UP
+			await _frames(60)
+			await _shot(tag + "door_plaque")
+			level.player.position = building.bounds.get_center()
+			await _frames(40)
+			await _shot(tag + "place_title")
+	level.player.position = spawn
 	book.open_view("map")
 	await _shot(tag + "map_camp")
 	for pickup in level.pickups:

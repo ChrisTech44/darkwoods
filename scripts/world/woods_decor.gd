@@ -164,7 +164,10 @@ func _signpost(post: Dictionary) -> void:
 		var target: Dictionary = targets[index]
 		var step: Vector2i = target["step"]
 		var top := at.y - 12 + index * 9
-		var board := Rect2(at.x - 22, top, 45, 8)
+		# Boards grow to fit their name (measured), never squeezing the text.
+		var name_width := ThemeDB.fallback_font.get_string_size(target["short"], HORIZONTAL_ALIGNMENT_LEFT, -1, 6).x
+		var board_width := maxf(45.0, name_width + 13.0)
+		var board := Rect2(at.x - board_width * 0.5, top, board_width, 8)
 		var face := Color("b49b69") if index == 0 else Color("8f7d57")
 		# A weathered plank with a pointed end toward its trail, grain and nails.
 		var pointed_right := step.x >= 0
@@ -174,11 +177,11 @@ func _signpost(post: Dictionary) -> void:
 			body = PackedVector2Array([board.position, Vector2(board.end.x, board.position.y), board.end, Vector2(board.position.x, board.end.y), Vector2(tip_x, board.get_center().y)])
 		draw_colored_polygon(body, face)
 		draw_polyline(body + PackedVector2Array([body[0]]), Color("2e2619"), 1.0)
-		draw_line(board.position + Vector2(2, 3), board.position + Vector2(40, 3), face.darkened(0.18), 1.0)
+		draw_line(board.position + Vector2(2, 3), board.position + Vector2(board_width - 5, 3), face.darkened(0.18), 1.0)
 		draw_rect(Rect2(board.position + Vector2(20, 3), Vector2(1, 1)), Color("3a3326"))
 		# Painted arrow in the board's left notch: the real next trail toward that place.
 		var tip := Vector2(board.position.x + 5, top + 4)
 		var arrow := Vector2(step).normalized()
 		var side := Vector2(-arrow.y, arrow.x)
 		draw_colored_polygon(PackedVector2Array([tip + arrow * 3, tip - arrow * 2 + side * 3, tip - arrow * 2 - side * 3]), Color("2a2a22"))
-		draw_string(ThemeDB.fallback_font, Vector2(board.position.x + 10, top + 7), target["short"], HORIZONTAL_ALIGNMENT_LEFT, 34, 6, Color("2a2a22"))
+		draw_string(ThemeDB.fallback_font, Vector2(board.position.x + 10, top + 7), target["short"], HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Color("2a2a22"))

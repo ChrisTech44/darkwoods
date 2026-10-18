@@ -240,6 +240,15 @@ editor). Python is optional. More detail:
 plans (the van and the rumoured escape). The map then marks that route's goal.
 The world keeps running while the notebook is open (offline too; use Esc to pause).
 
+### Finding your way
+
+Walk up to a camp building and its name appears on the plaque beside the door
+(when you can see the door); step inside and a short title names the place.
+Entering a woods region or leaving camp does the same. Signposts, the map and
+the skyline use the same short names, each taken from the place's full name
+(e.g. OBSERVATORY for the Starless Observatory). The camp's own boathouse is
+the **Camp Boathouse**; the one in the woods is the **Lakeshore** boathouse.
+
 ### Moon dial and ranger radio
 
 The **moon dial** (top right) is dark until Nightfall, then waxes toward full
@@ -355,7 +364,7 @@ phase and how long you have been out.
   - Walking into a part's region also names it. Once its cache has been revealed
     by radio, it's marked on your map `(CACHE MAPPED)`.
   - Skyline markers show which part waits in a region you know about, e.g.
-    `DOME · FUSE`.
+    `OBSERVATORY · FUSE`.
 - **Parts arrive by radio.** Tab lists every required part; unrevealed ones show
   which phase the radio will announce them in, e.g. `FUEL / RADIO AT NIGHTFALL ·
   ORCHARD`. Each installed part deepens the night and unlocks the next one, so the

@@ -72,4 +72,4 @@ func _draw() -> void:
 		draw_rect(awning, Color("6b6049"))
 	draw_rect(awning, Color("1d2723"), false, 1.0)
 	draw_line(Vector2(awning.position.x, awning.end.y), awning.end, Color("b8a27a"), 1.0)
-	draw_string(ThemeDB.fallback_font, building.bounds.position + Vector2(14, building.bounds.size.y - 8), building.label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.89, 0.8, 0.63, 0.75))
+	# The name lives on the door plaque (CampBuilding), not on the fading roof.

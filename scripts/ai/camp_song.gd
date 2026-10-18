@@ -19,6 +19,8 @@ func _ready() -> void:
 	max_distance = 1100.0
 	attenuation = 1.2
 	volume_db = -3.0
+	# Stopped with the rest of the round's sound (AudioManager.prepare_shutdown).
+	add_to_group("round_audio")
 
 
 static func tune() -> AudioStreamWAV:
@@ -67,4 +69,12 @@ func _process(delta: float) -> void:
 			level.soundscape.play_cue("screech_3", killer.global_position, 4.0, 0.7)
 		return
 	pitch_scale = 1.15 if hunting else 1.0
-	play()
+	# Like all round sound, no playback without an audio device: a whistle left
+	# playing on a headless/dummy driver at exit leaked its WAV playback.
+	if get_node("/root/AudioManager").output_enabled:
+		play()
+
+
+func stop_round() -> void:
+	set_process(false)
+	stop()

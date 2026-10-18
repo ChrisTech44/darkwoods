@@ -134,6 +134,10 @@ func location_label(point: Vector2) -> String:
 	for building in buildings:
 		if building.bounds.grow(16).has_point(point):
 			return building.label
+	# Approaching a door: name the building you're about to enter.
+	for building in buildings:
+		if point.distance_to(building.door + Vector2(0, 20)) < 56.0:
+			return "OUTSIDE " + building.label
 	if point.x > 1056 and point.y > 760:
 		return "BLACKWATER SHORE"
 	if point.y > 560:

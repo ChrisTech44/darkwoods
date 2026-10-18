@@ -106,7 +106,29 @@ func _draw() -> void:
 		if not PixelArt.draw_material(self, "dock_planks", Rect2(x, step.position.y, mini(16, int(step.end.x) - x), 20), Color(0.86, 0.72, 0.52)):
 			draw_rect(Rect2(x, step.position.y, 16, 20), Color("77684c"))
 	draw_rect(step, Color("2a231a"), false, 1.0)
-	draw_string(ThemeDB.fallback_font, bounds.position + Vector2(28, 20), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("dec99c"))
+	_draw_plaque()
+
+
+## The building's name on a post-mounted board beside the door, below the eave
+## and clear of the porch awning, so it never fades with the roof or hides
+## under it. (The roof and interior no longer paint the name themselves.)
+func plaque_rect() -> Rect2:
+	var width := ThemeDB.fallback_font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 8.0
+	var left := door.x + 30.0
+	# Keep the board on the building's side of the door when it is near the right wall.
+	if left + width > bounds.end.x + 10.0:
+		left = door.x - 30.0 - width
+	return Rect2(left, bounds.end.y + 11.0, width, 10.0)
+
+
+func _draw_plaque() -> void:
+	var board := plaque_rect()
+	var post_x := board.get_center().x
+	draw_rect(Rect2(post_x - 1, board.end.y, 2, 6), Color("3b2f22"))
+	draw_rect(Rect2(board.position + Vector2(1, 2), board.size), Color(0, 0, 0, 0.35))
+	draw_rect(board, Color("c9b07a"))
+	draw_rect(board, Color("2e2619"), false, 1.0)
+	draw_string(ThemeDB.fallback_font, board.position + Vector2(4, 8), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("251f16"))
 
 
 const FURNITURE_ART := {"bed": "bunk", "medical": "cot", "desk": "desk", "crate": "crates", "bench": "workbench",

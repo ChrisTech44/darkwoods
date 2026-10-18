@@ -98,6 +98,8 @@ def main():
     commands.append(("sound_feedback", ["--headless", "--audio-driver", "Dummy", *sounds]))
     book = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/notebook.gd"]
     commands.append(("notebook", ["--headless", "--audio-driver", "Dummy", *book]))
+    labels = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/world_labels.gd"]
+    commands.append(("world_labels", ["--headless", "--audio-driver", "Dummy", *labels]))
     if args.graphical:
         commands.append(("graphical_field_escapes", ["--audio-driver", "Dummy", *field_escapes, "--", "--capture"]))
         commands.append(("graphical_rescue", ["--audio-driver", "Dummy", *rescue, "--", "--capture"]))

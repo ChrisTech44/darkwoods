@@ -42,7 +42,10 @@ var fences: Array[Dictionary] = []
 var blocked: Dictionary = {}
 const SIGN_SPACING := 640.0
 const SIGN_OFFSET := Vector2(-44, -40)
-const SIGN_NAMES := {"village":"VILLAGE", "bog":"BOG", "graveyard":"GRAVES", "mill":"MILL", "orchard":"ORCHARD", "observatory":"DOME", "rail":"RAILS", "quarry":"QUARRY", "chapel":"CHAPEL", "substation":"POWER", "relay":"RELAY", "logging":"LOGGING", "boathouse":"BOAT", "ranger":"GATE"}
+## Short names for signboards, skyline markers and the map: each is a word (or
+## two) taken from the region's full name, so they can be matched to it, and the
+## woods boathouse never reads like the camp's (CAMP BOATHOUSE vs LAKESHORE).
+const SIGN_NAMES := {"village":"VILLAGE", "bog":"BOG", "graveyard":"GRAVEYARD", "mill":"MILL", "orchard":"ORCHARD", "observatory":"OBSERVATORY", "rail":"RAIL YARD", "quarry":"QUARRY", "chapel":"CHAPEL", "substation":"SUBSTATION", "relay":"RADIO RELAY", "logging":"LOGGING CAMP", "boathouse":"LAKESHORE", "ranger":"RANGER GATE"}
 const COMPASS := {Vector2i.UP:"N", Vector2i.DOWN:"S", Vector2i.LEFT:"W", Vector2i.RIGHT:"E"}
 
 func generate(seed_value: int) -> void:

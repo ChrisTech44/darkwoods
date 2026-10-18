@@ -12,7 +12,7 @@ const BASE := [
 	[Rect2(480, 600, 288, 224), "ranger", "RANGER LODGE"],
 	[Rect2(256, 608, 176, 176), "bath", "BATHHOUSE"],
 	[Rect2(960, 640, 176, 160), "infirmary", "FIRST AID"],
-	[Rect2(1200, 624, 224, 160), "boat", "BOATHOUSE"]
+	[Rect2(1200, 624, 224, 160), "boat", "CAMP BOATHOUSE"]
 ]
 const MAIN_ROADS: Array[Rect2] = [
 	Rect2(36, 192, 716, 48), Rect2(736, 192, 48, 104),

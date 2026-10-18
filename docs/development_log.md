@@ -1,5 +1,56 @@
 # Development log
 
+## 2026-10-18 — Building names, place titles, clearer names, skyline layout
+
+User asked to fix building-name readability and name duplication/clarity next
+(the camp-song leak is deferred).
+
+- **Building names:** the roof (which fades as you approach) and the interior
+  top wall no longer paint the name. Each building has a post-mounted name
+  plaque beside its door, below the eave and clear of the porch awning
+  (`CampBuilding.plaque_rect`). Because the plaque is outside the flashlight
+  cone on a normal approach, the skyline layer also shows the name anchored on
+  the plaque when you are within 130 px **and** have a clear line to the door
+  threshold (walls block it; never from inside). The location line reads
+  `OUTSIDE <BUILDING>` within 56 px of a door.
+- **Place titles:** entering a building, a woods region or camp shows a short
+  lower-centre title with a subtitle (e.g. `MAINTENANCE / CAMP BUILDING`,
+  `RANGER ROAD AND BRIDGE / NORTH WOODS`). It waits 0.5 s so a doorstep does not
+  flicker, does not repeat the same place within 10 s, skips the opening place
+  (the Dusk title covers it), gives way to phase titles and hides under the
+  notebook. `THE WOODS` is shown only on leaving camp.
+- **Names:** short names are now words from each full name: OBSERVATORY (was
+  DOME), GRAVEYARD (GRAVES), RAIL YARD (RAILS), SUBSTATION (POWER), RADIO RELAY,
+  LOGGING CAMP, LAKESHORE (BOAT), RANGER GATE (GATE). The camp building is
+  `CAMP BOATHOUSE`, distinct from the woods' Lakeshore Boathouse. Signpost
+  boards now size to their measured text instead of a fixed 34 px.
+- **Skyline:** one layout pass (`Skyline.layout`) for help calls, tracked
+  objectives, door names, pins and landmarks: priority order, icons within
+  14 px merge into `+N`, labels try below/above/further below and never enter
+  the top HUD band or another label or icon; plain landmarks with no room keep
+  only their icon; labels get a dark backing. Hidden while the notebook is open.
+- New `tests/integration/world_labels.gd` (plaques clear of roof/awning, distinct
+  boathouse names, short names derived from full names, place title and doorstep
+  repeat, location line, crowded skyline never overlaps and stays out of the top
+  HUD, help wins and merges). Added to `tools/verify.py`.
+
+- **Camp-song leak fixed:** the synthesized whistle was the only round sound
+  that played without an audio device, and the shutdown drain only runs with
+  one, so a whistle mid-play at exit leaked its `AudioStreamWAV` playback
+  (intermittent `2 ObjectDB instances were leaked`). It now plays only with
+  audio output (like every other round sound) and stops with `round_audio`.
+  `offline_playthrough` ×3, `woods_playthrough` and `monster_revamp` then ran
+  with no warning.
+- The skyline keeps optional labels out of the place-title box.
+
+Verification: full `tools/verify.py` before the leak fix: 183/183 passed (the
+only warnings were that leak). After the leak/place-box changes: import and
+startup clean; `world_labels` 11, `navigation_aids` 45, `offline_playthrough`
+×3, `woods_playthrough` 227, `monster_revamp` 140, all passing, no warnings.
+Captures: [label evidence](evidence/labels/README.md). `git diff --check` clean.
+
+Still open from the review: region landmark identity (repeated shrine props).
+
 ## 2026-10-18 — Sound pack, notebook/map overhaul, moon dial, radio transcript
 
 User supplied 17 MP3s and asked to fix the marked defects, integrate the audio

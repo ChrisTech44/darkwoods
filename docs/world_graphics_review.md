@@ -10,6 +10,9 @@ state), the fading killer's dark shadow, and partly #5 (pickup piles label once;
 two adjacent piles can both label). Dramatic phase titles shipped with the ranger
 radio transcript. Still open: #2 building names, #3 region-entry titles, #4
 skyline collision pass, landmark identity. [Evidence](evidence/notebook/README.md).
+A further increment fixed #2 (door plaques plus a line-of-sight door name),
+#3 (place titles on entry), #4 (one skyline layout pass) and the naming item
+(clear short names, CAMP BOATHOUSE vs LAKESHORE). Landmark identity remains open.
 
 ## Assessment
 

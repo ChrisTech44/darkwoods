@@ -630,6 +630,10 @@ round. Quick Camp keeps its original van-only rules.
 
 ## Survivors and their abilities
 
+**Planned replacement:** [Christian, John, Max and Alex](docs/four_survivor_overhaul.md)
+have a new four-character design, including creature-sample experiments. It is
+not implemented; the six roles below remain the playable roster.
+
 Choose one of **six survivors** before starting, with exact bonuses, an animated
 preview, saved choice, Random Survivor and Settings. The Jock has 5s stamina;
 Grease Monkey starts the engine in 1.5s; Scout saves light; First-Aid Kid rescues

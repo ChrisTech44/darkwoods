@@ -12,9 +12,14 @@ Historical implementation records remain in [development log](docs/development_l
 A specification describes intended behavior; source inspection and execution
 records establish what the build actually does. Resolve discrepancies explicitly.
 
-Current user request: approved friends-playtest balance/objective fixes on main,
-then a separate `headless-server` branch before guest-lag optimization. Earlier
-graphics priority: audit defects and plan an overhaul of the map,
+Current design request: replace the six generic survivors with Christian, John,
+Max and Alex using the [four-survivor overhaul](docs/four_survivor_overhaul.md).
+This is a documented target, not implemented roster replacement. Christian must
+borrow the full range of creature signatures, including moon-dependent Werewolf
+transformation and Paparazzo friendly-fire flashbang/photo consequences. The new
+design supersedes earlier roster proposals; preserve its individual drawbacks.
+Earlier requests covered friends-playtest fixes, a dedicated-server branch and
+guest-lag optimization. Earlier graphics priority: audit defects and plan an overhaul of the map,
 Tab notes/help and hint menus so players understand where they are, what is
 happening and what to do next. See the
 [graphics audit and interface plan](docs/graphics_readability_plan.md).

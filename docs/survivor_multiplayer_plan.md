@@ -1,5 +1,12 @@
 # Survivor selection and the road to co-op
 
+**19 October 2026 roster direction:** the
+[four-survivor overhaul](four_survivor_overhaul.md) replaces this document’s future
+six-archetype roster with Christian, John, Max and Alex. That replacement is
+design only; the six roles remain implemented. Retain unrelated selection/co-op
+acceptance requirements. Historical numbers/status below may be superseded by
+current code and the maintained brief.
+
 Status: **offline selection and six personal bonuses implemented**. See
 [content update](content_update.md) for the shipped rules and execution evidence.
 The human balance gate and full all-role input-only rounds remain pending.

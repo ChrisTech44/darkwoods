@@ -1,5 +1,30 @@
 # Development log
 
+## 2026-10-19 — Four-friend survivor overhaul specification
+
+Created the [four-survivor overhaul](four_survivor_overhaul.md), replacing the
+future six-role direction with Christian, John, Max and Alex. Personality drives
+each benefit and drawback: dangerous curiosity/sample experiments, dedication
+and deferred damage, cash and risky payouts, isolation and an interruptible
+personal return. Player code, current six-role roster and balance are unchanged.
+
+The later Christian amendment explicitly includes moon-dependent Werewolf
+transformation and Paparazzo flashbangs affecting exposed teammates, plus the
+photo-to-Stalker consequence. A catalogue covers all 30 current creature-brain
+species and identifies Stalker/Lake Thing as separate special-source proposals.
+Acquisition, transformations, friendly fire, counters, graphical reuse, missing
+AI effect adapters, all five escape routes, Quick Camp, authoritative events,
+old-role/save migration and implementation/acceptance stages are documented.
+Targets and proposed engineering defaults are distinguished from implemented
+behaviour and untuned values. Earlier brainstorm sets are not accumulated kits.
+
+Linked the specification from the maintained brief, player survivor section and
+legacy survivor plan, explicitly retaining the implemented six-role status.
+Verification: checked source rules, all 30 catalogue species, local Markdown
+targets/anchors and diff whitespace. Godot 4.7.2 import and five-frame startup
+completed with exit zero and no engine warnings/errors. No new graphics, gameplay,
+listening, microphone or network acceptance is claimed; no broad suite rerun.
+
 ## 2026-10-19 — Permanent objective scenery on inactive nights
 
 Fixed the diagnosed route-dependent substation artwork omission. Expedition now

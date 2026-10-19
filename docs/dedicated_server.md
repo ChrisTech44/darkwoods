@@ -7,8 +7,8 @@ Older clients must update. The server owns AI, movement validation, damage,
 inventory, clues, objectives and extraction, using the same gameplay scene.
 
 Trail exploration is shared by the whole team, including travel by humans other
-than the server's reference survivor. Update both server and clients for this fix;
-older rules18 builds connect but do not send/render the added coverage correctly.
+than the server's reference survivor. Earlier rules-18 builds had an incomplete
+coverage path; current server and clients both require lnac-net-20.
 [Map replication checks](evidence/map_exploration/README.md).
 
 ## Run from source
@@ -22,9 +22,9 @@ python3 tools/run_server.py --mode woods --port 27840 --min-players 2
 On Genesect's Snap installation, prefix the command with
 `GODOT_BIN=/snap/bin/godot-4` so noninteractive shells find the engine. After
 friends finish the current night, stop the old process, pull the current branch,
-update every player's `main` copy and relaunch with your usual options. Rules 17
-and 18 cannot join each other. Diagnostics for this update did not restart the
-regular server.
+update every player's `main` copy and relaunch with your usual options. Client
+and server protocol must match lnac-net-20; older rules-17/18/19 clients cannot
+join it. Diagnostics for this update did not restart the regular server.
 
 The source launcher first runs Godot's headless import step to generate asset
 imports and register script classes. A fresh clone has no `.godot` cache; starting
@@ -99,7 +99,10 @@ python3 tools/package_server.py
 ```
 
 This writes `artifacts/server/last-night-server.zip`: a server PCK, shell launcher,
-build metadata and this guide. **It requires Godot 4.7.2 installed on the target
+build metadata and this guide. Metadata records the actual engine build, protocol,
+source commit and whether the checkout was dirty. Export runs in a fresh staging
+directory, validates the new PCK and replaces the ZIP last; failed exports preserve
+the previous bundle. **It requires Godot 4.7.2 installed on the target
 OS**; it does not bundle an untested native engine binary. On Linux, unpack it,
 make the launcher executable if necessary, and run:
 
@@ -134,12 +137,15 @@ measured the regular server, including matched external/loopback clients; extern
 multi-second stalls remained while loopback delivery stayed steady.
 No hosting account was provisioned. See the
 [network investigation](network_lag_investigation.md) for timings and limits.
-An observed diagnostic issue remains when several clients disconnect nearly
-simultaneously: ENet can print `Unable to send packet on channel 0, max channels: 0`.
-In the local stress runs, all gameplay assertions still passed, the world was freed
-and the server remained listening. Those runs are recorded as failures by the
-strict error-free harness; orderly staggered departures are checked separately.
-This console-error case is unresolved and must not be described as clean acceptance.
+The October 19 review reproduced and fixed the simultaneous-disconnect channel-0
+error. The ENet delegate filters packets to native peers whose channels have
+already closed, while retaining server relay for client-to-client traffic.
+Source and exported-PCK four-player runs now pass the strict error-free gate,
+including all four distinct roles, projectile/status/sound replication, copied
+song cleanup, synthetic channel-3 relay, extraction, another round and simultaneous
+leaves. Microphone capture was disabled. This local macOS acceptance does not
+extend the earlier Linux/network results to the new build. See the
+[server review and execution evidence](server_review.md).
 
 Player poses now use an independent 30Hz stream; full world state uses 20Hz
 unordered fragments. Both clients and server must update to rules lnac-net-20 and

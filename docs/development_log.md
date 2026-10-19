@@ -1,5 +1,58 @@
 # Development log
 
+## 2026-10-19 — Dedicated authority audit and private gallery refresh
+
+Reviewed the production dedicated path after the ability overhaul. Fixed a
+join-order/peer-ID-order mismatch that could assign the reference body the wrong
+camper role. The real ENet test now deliberately reverses those orders and checks
+all four distinct roles on authority and clients. Reproduced three native
+channel-0 errors on simultaneous leaves, then added an ENet packet-boundary
+delegate that skips already-closed destinations while preserving server relay.
+Both source and PCK four-client stress runs passed 77 authority + 70 client checks
+without errors/warnings; the source run filtered three closing packets. Tests
+cover movement/exploration, real Witch X/projectile/status/native cue, copied
+Saint loop cleanup, synthetic channel-3 client relay, normal extraction/results,
+automatic second round, reference-human removal and empty cleanup.
+
+Fixed Max's pending stake surviving a menu (cancel without charge offline/online)
+and Christian's own commitment blocking its X cancellation when self-tripped.
+The survivor catalogue passes 169 checks. Four-client abilities-off gates pass on
+listen host, dedicated source and dedicated PCK, including attempted guest rule
+changes and local cash tampering. Synthetic voice passes 24 codec/routing + 8
+guest + 13 host checks, microphone capture off. Packaging now records actual
+protocol/engine/commit/dirty state, uses fresh staging, rejects no-output exports
+and replaces the coherent ZIP last. Launcher/package/result-validation Python
+tests pass 12/12. Runtime suites now require a single passing result and reject
+warnings; obsolete flashlight and Settings-path test assumptions were corrected.
+The stricter graphical content gate also found two native MP3 objects leaked at
+exit: radio/stinger children were outside the tracked positional-voice list.
+Shutdown now stops/releases every audio child and rejects delayed radio-talk
+callbacks after stop. The same 426-assertion capture gate passes without warnings;
+30 sound checks pass with native graphical playback and with headless output off. A stale graphical
+visibility assertion/design paragraph still expected the earlier 160px/2.0 call
+falloff; corrected it to the already implemented 560px/1.2 without changing gameplay. Native PCM checks found the wet-step +4 dB gain
+exceeded source headroom (source peak −0.8 dBFS, observed native peak 0.962).
+Reduced only its runtime gain to −1 dB; source bytes/hash unchanged. Corrected the
+audio decode fixture's WAV loop-property handling for the synthesized whistle
+and allowed 240s for the 68-cue graphical PCM gate. It passes 215 assertions
+without errors/warnings (wet-step peak now 0.541). Final import/startup and
+Markdown links/diff checks pass. The remaining broad graphical checks continue
+separately; this increment's acceptance is the targeted executed gates above.
+
+Refreshed all 52 private ability MP4s against the implemented overhaul, including
+30 Christian interactions/variants/research and John/Max/Alex. Fully decoded all
+52, checked gallery JavaScript/paths and inspected nine contact sheets; inspected
+new Puffball/Slug replacements again after correcting the staged moving-target
+fixture. The passive Alex clip deliberately does not activate X. Staged bright
+lighting, supplied samples, hidden sight/roof layers, controlled AI and disabled
+microphone capture are labelled. Gallery/raw media remain ignored locally;
+recording used no additional SpriteCook credits.
+
+Findings and preserved reports: [server review](server_review.md). Local macOS
+Godot 4.7.2 acceptance does not establish the new build on Linux/Windows, Internet
+performance, real microphones, listening quality or production deployment. The
+regular server was not restarted. Both clients and authority require lnac-net-20.
+
 ## 2026-10-19 — Ability delivery, readable decisions and host rules
 
 Fixed Christian's Mimic to borrow a living present player's sprite and overhead

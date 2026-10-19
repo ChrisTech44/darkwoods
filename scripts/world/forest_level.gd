@@ -1039,6 +1039,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			abilities.give(player)
 			return
 	if event.is_action_pressed("pause"):
+		if not paused: SurvivorKits.cancel_stake(player)
 		paused = not paused
 		for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
 			enemy.enabled = not paused

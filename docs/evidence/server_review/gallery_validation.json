@@ -1,0 +1,24 @@
+{
+  "game_commit": "3a62410",
+  "private_local_path": "artifacts/ability_gallery/index.html",
+  "clips": 52,
+  "core_christian_interactions": 30,
+  "roles": {
+    "christian": 40,
+    "john": 3,
+    "max": 5,
+    "alex": 4
+  },
+  "full_decode_passed": true,
+  "all_media_paths_exist": true,
+  "javascript_syntax": "node --check passed",
+  "contact_sheets_inspected": 9,
+  "microphone_capture": false,
+  "fixture_limits": [
+    "bright lighting",
+    "hidden sight/roof layers",
+    "supplied samples/positions",
+    "controlled AI"
+  ],
+  "total_bytes": 54508702
+}

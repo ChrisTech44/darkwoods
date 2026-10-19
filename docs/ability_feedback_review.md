@@ -104,4 +104,15 @@ audio are reused. Asset IDs/hashes are in [the manifest](../spritecook-assets.js
 `tools/slice_ability_effects.gd` preserves the sheet's inspected alpha and boundaries.
 
 [Selected actual screenshots, executed gates and limits](evidence/ability_feedback/README.md).
-The previous private 52-clip gallery predates these changes and is historical.
+The private ignored `artifacts/ability_gallery/index.html` now contains 52 refreshed
+MP4s from this implementation: all 30 Christian interactions, variants/research,
+and John/Max/Alex demonstrations. Every MP4 was fully decoded; all nine contact
+sheets were inspected. Staged samples/positions, bright lighting, hidden sight/roof
+layers and controlled AI are explicitly labelled; recordings are demonstrations,
+not natural-play or dedicated-server acceptance. Microphones stayed off.
+
+Opening the pause/menu cancels Max's pending purchase/gamble without charging.
+Christian can cancel his own committed gaze/song/stillness powers even while their
+own pulse marks him tripped; outside incapacitation restrictions still apply.
+Radio/stinger shutdown now releases native playback and prevents delayed radio
+callbacks from starting after stop. See the [follow-up server review](server_review.md).

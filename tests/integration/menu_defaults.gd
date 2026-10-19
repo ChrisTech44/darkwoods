@@ -18,14 +18,14 @@ func _run() -> void:
 	_check(not menu.get_node("SettingsPanel").visible, "knobs_hidden_behind_settings")
 	menu.get_node("Menu/Settings").pressed.emit()
 	_check(menu.get_node("SettingsPanel").visible, "settings_opens")
-	_check(menu.get_node("SettingsPanel/Content/AudioControls").get_child_count() == 8, "five_mix_sliders_voice_controls_and_status_visible")
+	_check(menu.get_node("SettingsPanel").find_child("AudioControls", true, false).get_child_count() == 8, "five_mix_sliders_voice_controls_and_status_visible")
 	var music: AudioStreamPlayer = menu.get_node("MenuAudio/music")
 	_check(music.stream != null and music.bus == "Music" and (not mixer.output_enabled or music.playing), "menu_music_plays_on_music_bus")
 	var audio_ref: WeakRef = weakref(menu.get_node("MenuAudio"))
 	var saved_path: String = mixer.settings_path
 	var saved_volumes: Dictionary = mixer.volumes.duplicate()
 	mixer.settings_path = "user://menu_controls_test.cfg"
-	var music_slider: HSlider = menu.get_node("SettingsPanel/Content/AudioControls").get_child(3).get_node("Music")
+	var music_slider: HSlider = menu.get_node("SettingsPanel").find_child("AudioControls", true, false).get_child(3).get_node("Music")
 	music_slider.value = 0
 	_check(AudioServer.is_bus_mute(AudioServer.get_bus_index("Music")), "menu_music_knob_mutes_immediately")
 	music_slider.value = 30

@@ -36,6 +36,7 @@ var call_timers: Dictionary = {}
 var last_position := Vector2.ZERO
 var step_distance := 0.0
 var threat_gain := 0.0
+var stopped := false
 var rng := RandomNumberGenerator.new()
 var played_counts: Dictionary = {}
 var last_step_cue := ""
@@ -405,6 +406,7 @@ func _events() -> void:
 
 
 func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float = 1.0, source: Node2D = null, length: float = 0.0) -> bool:
+	if stopped: return false
 	if ServerRuntime.requested(): return false
 	var monster := cue in CREATURE_CUES.values() or cue.begins_with("screech")
 	var radius: float = LOUD_CUES.get(cue, MONSTER_RANGE if monster else (VOICE_RANGE if cue in ["grunt", "gasp"] else (ENEMY_STEP_RANGE if source is CampKiller else 230.0)))
@@ -451,6 +453,7 @@ func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float =
 ## A host-side sound event (creature attack, item use) that every peer hears
 ## once: played here, and logged for clients, who replay it from snapshots.
 func broadcast(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float = 1.0, length: float = 0.0) -> bool:
+	if stopped: return false
 	var net: Node = get_node_or_null("/root/Net")
 	if net != null and net.active and multiplayer.is_server():
 		var now := Time.get_ticks_msec()
@@ -542,6 +545,7 @@ func _follow_loops() -> void:
 ## Ranger radio at each phase change (the part reveals): a burst of static, then a
 ## short faded excerpt of chatter. Non-positional, like a walkie on your belt.
 func radio_broadcast(phase: int) -> bool:
+	if stopped: return false
 	if level.finished or not mixer.cues.has("radio_talk") or mixer.stream_for("radio_talk") == null:
 		return false
 	played_counts["phase_stinger"] = played_counts.get("phase_stinger", 0) + 1
@@ -564,7 +568,7 @@ func _finish_radio_static(source: WeakRef) -> void:
 
 
 func _start_radio_talk(offset: float) -> void:
-	if level.finished:
+	if stopped or level.finished:
 		return
 	var talk := _radio_voice("radio_talk", offset)
 	var fade := talk.create_tween()
@@ -624,6 +628,7 @@ func _prop_sounds() -> void:
 
 ## Non-positional phase stinger: a distant call that marks the night getting worse.
 func stinger(cue: String, gain_db: float, pitch: float) -> bool:
+	if stopped: return false
 	if level.finished or not mixer.cues.has(cue) or mixer.stream_for(cue) == null:
 		return false
 	played_counts["phase_stinger"] = played_counts.get("phase_stinger", 0) + 1
@@ -641,7 +646,14 @@ func stinger(cue: String, gain_db: float, pitch: float) -> bool:
 
 
 func stop_round() -> void:
+	stopped = true
 	set_physics_process(false)
+	# Radio/stingers are non-positional children, outside the positional voice
+	# list. Release every playback before AudioManager drains native commands.
+	for child in get_children():
+		if child is AudioStreamPlayer or child is AudioStreamPlayer2D:
+			child.stop()
+			child.stream = null
 	mixer.set_muffled(false)
 	for node in loops.values():
 		node.stop()

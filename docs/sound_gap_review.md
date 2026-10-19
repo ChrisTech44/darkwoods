@@ -14,6 +14,14 @@ Still missing: whistle recording, thread snap, snore, noise-tin rattle,
 flashlight/pickup/install/flare UI-feedback sounds, phase stingers, revive.
 Mix balance remains unjudged by ear; two-machine playback was not tested.
 
+**19 October follow-up:** Christian's copied creature cues, Cuckoo rewind and
+following Saint/mower loops are implemented and exercised locally; see the
+[ability delivery audit](ability_feedback_review.md). Native shutdown diagnostics
+found and fixed radio/stinger playback leaks and blocked late callbacks after
+stop. Wet footsteps' runtime gain drops from +4 to −1 dB for measured peak
+headroom, preserving the source MP3. No listening/microphone acceptance is added.
+[Server/audio findings and evidence](server_review.md).
+
 ## Reviewer's assessment
 
 The atmosphere already has substantial coverage: woods/bog beds, campfire, rain,

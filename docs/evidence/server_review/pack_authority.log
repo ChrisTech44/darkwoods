@@ -1,0 +1,160 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"audio_driver":"Dummy","camper_abilities_enabled":true,"event":"server_listening","max_players":4,"min_players":4,"mode":"woods","port":51421,"rules":"lnac-net-20"}
+{"event":"server_status","loaded":[],"participants":[],"phase":"lobby","players":0,"round":0,"snapshot_bytes":0}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"event":"assertion","name":"wait_server_","passed":true}
+{"event":"assertion","name":"fixture_join_order_differs_from_reference_peer_order","passed":true}
+{"event":"server_ready_countdown","players":4,"seconds":1.0}
+{"active":true,"event":"probe_net_state","phase":"loading","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"event":"loading_started"}
+{"event":"round_ready","milestone":"M1"}
+{"event":"server_world_loaded","round":1}
+{"event":"server_peer_loaded","peer":1219468551,"round":1}
+{"event":"server_peer_loaded","peer":76042904,"round":1}
+{"event":"server_peer_loaded","peer":1773390990,"round":1}
+{"event":"server_peer_loaded","peer":1067322968,"round":1}
+{"event":"server_round_started","players":4,"round":1}
+{"active":true,"event":"probe_net_state","phase":"playing","side":"server","status":"Night 13 / 4 survivors"}
+{"event":"assertion","name":"wait_server_","passed":true}
+{"event":"assertion","name":"server_has_no_survivor_or_slot","passed":true}
+{"event":"assertion","name":"all_human_clients_have_exactly_one_actor","passed":true}
+{"event":"assertion","name":"server_initializes_no_voice_codec_or_capture","passed":true}
+{"event":"assertion","name":"server_has_no_audio_playback","passed":true}
+{"event":"assertion","name":"server_focus_is_a_real_client_and_hud_disabled","passed":true}
+{"event":"test_stage_sending","stage":"explore_ready"}
+{"event":"test_stage_sent","stage":"explore_ready"}
+{"event":"assertion","name":"wait_server_explore_ready","passed":true}
+{"event":"assertion","name":"dedicated_discovers_non_reference_human_travel","passed":true}
+{"event":"test_stage_sending","stage":"explore_walk"}
+{"event":"test_stage_sent","stage":"explore_walk"}
+{"event":"assertion","name":"wait_server_explore_walk","passed":true}
+{"event":"assertion","name":"all_clients_receive_team_trail_progress_76042904","passed":true}
+{"event":"assertion","name":"all_clients_receive_team_trail_progress_1067322968","passed":true}
+{"event":"assertion","name":"all_clients_receive_team_trail_progress_1219468551","passed":true}
+{"event":"assertion","name":"all_clients_receive_team_trail_progress_1773390990","passed":true}
+{"event":"test_stage_sending","stage":"move"}
+{"event":"test_stage_sent","stage":"move"}
+{"event":"assertion","name":"wait_server_move","passed":true}
+{"event":"assertion","name":"server_accepts_movement_76042904","passed":true}
+{"event":"assertion","name":"client_receives_own_motion_76042904","passed":true}
+{"event":"assertion","name":"server_accepts_movement_1067322968","passed":true}
+{"event":"assertion","name":"client_receives_own_motion_1067322968","passed":true}
+{"event":"assertion","name":"server_accepts_movement_1219468551","passed":true}
+{"event":"assertion","name":"client_receives_own_motion_1219468551","passed":true}
+{"event":"assertion","name":"server_accepts_movement_1773390990","passed":true}
+{"event":"assertion","name":"client_receives_own_motion_1773390990","passed":true}
+{"event":"test_stage_sending","stage":"relay"}
+{"event":"test_stage_sent","stage":"relay"}
+{"event":"assertion","name":"wait_server_relay","passed":true}
+{"event":"assertion","name":"dedicated_receives_synthetic_voice_channel_packets","passed":true}
+{"event":"assertion","name":"client_to_client_voice_channel_relay_preserves_peer_ids","passed":true}
+{"event":"assertion","name":"client_to_client_voice_channel_relay_preserves_peer_ids","passed":true}
+{"event":"assertion","name":"client_to_client_voice_channel_relay_preserves_peer_ids","passed":true}
+{"event":"assertion","name":"client_to_client_voice_channel_relay_preserves_peer_ids","passed":true}
+{"event":"assertion","name":"dedicated_preserves_requested_role_76042904","passed":true}
+{"event":"assertion","name":"dedicated_preserves_requested_role_1067322968","passed":true}
+{"event":"assertion","name":"dedicated_preserves_requested_role_1219468551","passed":true}
+{"event":"assertion","name":"dedicated_preserves_requested_role_1773390990","passed":true}
+{"event":"assertion","name":"dedicated_roster_contains_requested_christian","passed":true}
+{"event":"assertion","name":"dedicated_spell_fixture_has_real_clear_collision_path","passed":true}
+{"event":"test_stage_sending","stage":"sample_shot"}
+{"event":"test_stage_sent","stage":"sample_shot"}
+{"event":"assertion","name":"wait_server_sample_shot","passed":true}
+{"event":"assertion","name":"dedicated_projectile_applies_authoritative_curse","passed":true}
+{"event":"assertion","name":"all_clients_render_shot_hit_and_audio","passed":true}
+{"event":"assertion","name":"all_clients_render_shot_hit_and_audio","passed":true}
+{"event":"assertion","name":"all_clients_render_shot_hit_and_audio","passed":true}
+{"event":"assertion","name":"all_clients_render_shot_hit_and_audio","passed":true}
+{"event":"test_stage_sending","stage":"sample_song"}
+{"event":"test_stage_sent","stage":"sample_song"}
+{"event":"assertion","name":"wait_server_sample_song","passed":true}
+{"event":"assertion","name":"dedicated_copied_song_reaches_each_client","passed":true}
+{"event":"assertion","name":"dedicated_copied_song_reaches_each_client","passed":true}
+{"event":"assertion","name":"dedicated_copied_song_reaches_each_client","passed":true}
+{"event":"assertion","name":"dedicated_copied_song_reaches_each_client","passed":true}
+{"event":"test_stage_sending","stage":"sample_stop"}
+{"event":"test_stage_sent","stage":"sample_stop"}
+{"event":"assertion","name":"wait_server_sample_stop","passed":true}
+{"event":"assertion","name":"dedicated_copied_song_stops_on_each_client","passed":true}
+{"event":"assertion","name":"dedicated_copied_song_stops_on_each_client","passed":true}
+{"event":"assertion","name":"dedicated_copied_song_stops_on_each_client","passed":true}
+{"event":"assertion","name":"dedicated_copied_song_stops_on_each_client","passed":true}
+{"event":"test_stage_sending","stage":"max_cancel"}
+{"event":"test_stage_sent","stage":"max_cancel"}
+{"event":"assertion","name":"wait_server_max_cancel","passed":true}
+{"event":"assertion","name":"dedicated_menu_cancels_stake_without_charge","passed":true}
+{"event":"assertion","name":"normal_boat_night_without_all_escape_override","passed":true}
+{"event":"test_stage_sending","stage":"fit"}
+{"event":"test_stage_sent","stage":"fit"}
+{"event":"night_phase","phase":"NIGHTFALL","revealed":["fuel"],"time":6}
+{"event":"night_phase","phase":"DEEP NIGHT","revealed":["spark_plug"],"time":6}
+{"event":"night_phase","phase":"WITCHING HOUR","revealed":["tire"],"time":6}
+{"event":"assertion","name":"wait_server_fit","passed":true}
+{"event":"assertion","name":"remote_installs_normal_night_boat_authoritatively","passed":true}
+{"event":"test_stage_sending","stage":"launch"}
+{"event":"test_stage_sent","stage":"launch"}
+{"event":"assertion","name":"wait_server_launch","passed":true}
+{"event":"assertion","name":"remote_starts_launch","passed":true}
+{"event":"round_finished","result":"BOAT evacuation: 4 survivor(s) recovered. You: escaped.","won":true}
+{"event":"assertion","name":"wait_server_launch","passed":true}
+{"event":"test_stage_sending","stage":"result"}
+{"event":"test_stage_sent","stage":"result"}
+{"event":"server_results","next_lobby_in":8.0,"won":true}
+{"event":"assertion","name":"wait_server_result","passed":true}
+{"event":"assertion","name":"all_connected_survivors_escape","passed":true}
+{"event":"assertion","name":"client_matches_server_result","passed":true}
+{"event":"assertion","name":"client_matches_server_result","passed":true}
+{"event":"assertion","name":"client_matches_server_result","passed":true}
+{"event":"assertion","name":"client_matches_server_result","passed":true}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Night 13 / 4 survivors"}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Night 13 / 4 survivors"}
+{"event":"assertion","name":"wait_server_result","passed":true}
+{"event":"assertion","name":"automatic_lobby_frees_world_and_actors","passed":true}
+{"event":"assertion","name":"automatic_lobby_clears_readiness","passed":true}
+{"event":"test_stage_sending","stage":"ready_again"}
+{"event":"test_stage_sent","stage":"ready_again"}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Night 13 / 4 survivors"}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Night 13 / 4 survivors"}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Night 13 / 4 survivors"}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Night 13 / 4 survivors"}
+{"event":"server_ready_countdown","players":4,"seconds":1.0}
+{"active":true,"event":"probe_net_state","phase":"loading","side":"server","status":"Night 13 / 4 survivors"}
+{"event":"loading_started"}
+{"event":"round_ready","milestone":"M1"}
+{"event":"server_world_loaded","round":2}
+{"event":"server_peer_loaded","peer":76042904,"round":2}
+{"event":"server_peer_loaded","peer":1067322968,"round":2}
+{"event":"server_peer_loaded","peer":1219468551,"round":2}
+{"event":"server_peer_loaded","peer":1773390990,"round":2}
+{"event":"server_round_started","players":4,"round":2}
+{"active":true,"event":"probe_net_state","phase":"playing","side":"server","status":"Night 13 / 4 survivors"}
+{"event":"assertion","name":"wait_server_ready_again","passed":true}
+{"event":"assertion","name":"second_round_has_only_humans","passed":true}
+{"event":"assertion","name":"second_round_resets_inventory_and_role_once","passed":true}
+{"event":"test_stage_sending","stage":"leave_focus"}
+{"event":"test_stage_sent","stage":"leave_focus"}
+{"event":"server_peer_left","peer":76042904}
+{"event":"assertion","name":"wait_server_leave_focus","passed":true}
+{"event":"assertion","name":"server_survives_first_client_departure","passed":true}
+{"event":"test_stage_sending","stage":"leave_all"}
+{"event":"test_stage_sent","stage":"leave_all"}
+{"event":"server_peer_left","peer":1219468551}
+{"event":"server_peer_left","peer":1067322968}
+{"event":"server_peer_left","peer":1773390990}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Night 13 / 4 survivors"}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Night 13 / 4 survivors"}
+{"event":"assertion","name":"wait_server_leave_all","passed":true}
+{"event":"assertion","name":"empty_server_cleans_up_and_keeps_listening","passed":true}
+{"event":"assertion","name":"server_retains_native_relay_capability","passed":true}
+{"closing_packets_dropped":1,"event":"transport_diagnostics","relay":true}
+{"checks":77,"event":"test_result","failures":0,"players":4,"suite":"dedicated_server"}

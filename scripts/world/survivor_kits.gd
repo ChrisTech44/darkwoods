@@ -33,7 +33,9 @@ static func able(actor: CampPlayer) -> bool:
 
 static func use(actor: CampPlayer) -> bool:
 	var level: Node = world(actor)
-	if level == null or not enabled(actor) or level.paused or level.finished or not able(actor): return false
+	if level == null or not enabled(actor) or level.paused or level.finished: return false
+	var committed_cancel: bool=actor.role=="christian" and actor.kit.get("cast",{}).get("kind","") in ["owl","teddy","lens_eater","vampire","boiler_saint"] and actor.status==CampPlayer.Status.ALIVE and actor.hidden_spot<0 and not actor.has_effect("held") and not actor.has_effect("asleep") and not actor.has_effect("frog")
+	if not able(actor) and not committed_cancel: return false
 	if actor.ability_cooldown > 0.0: return false
 	match actor.role:
 		"christian": return CreatureSamples.use(actor)
@@ -64,6 +66,9 @@ static func use(actor: CampPlayer) -> bool:
 			actor.kit["channel"] = RETURN_CHANNEL
 			return true
 	return false
+
+static func cancel_stake(actor: CampPlayer) -> void:
+	if actor.role=="max": actor.kit["stake_time"]=-1.0
 
 static func stake(actor: CampPlayer) -> int:
 	return stake_for_cash(actor,float(actor.kit.get("stake_time",0.0)))

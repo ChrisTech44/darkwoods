@@ -59,7 +59,7 @@ func _ready() -> void:
 
 func host_dedicated(port: int) -> Error:
 	if active or port < 1 or port > 65535: return ERR_INVALID_PARAMETER
-	var peer := ENetMultiplayerPeer.new()
+	var peer := CampENetPeer.new()
 	var error := peer.create_server(port, MAX_PLAYERS, 3)
 	if error != OK: return error
 	multiplayer.multiplayer_peer = peer
@@ -73,7 +73,7 @@ func host_dedicated(port: int) -> Error:
 
 func host(port: int, player_name: String, role: String) -> Error:
 	if active or port<1 or port>65535: return ERR_INVALID_PARAMETER
-	var peer := ENetMultiplayerPeer.new()
+	var peer := CampENetPeer.new()
 	var error := peer.create_server(port,MAX_PLAYERS-1,3)
 	if error!=OK:
 		status_text="Cannot host on UDP port %d (%s)." % [port,error_string(error)]
@@ -90,7 +90,7 @@ func host(port: int, player_name: String, role: String) -> Error:
 
 func join(address: String, port: int, player_name: String, role: String) -> Error:
 	if active or address.strip_edges().is_empty() or address.length()>253 or port<1 or port>65535: return ERR_INVALID_PARAMETER
-	var peer := ENetMultiplayerPeer.new()
+	var peer := CampENetPeer.new()
 	var error := peer.create_client(address.strip_edges(),port,3)
 	if error!=OK:
 		status_text="Cannot join (%s)." % error_string(error)
@@ -238,7 +238,11 @@ func _begin(chosen_mode: String, value: int, peers: Dictionary, generation: int,
 	session.camper_abilities_enabled=camper_abilities_enabled
 	session.mode=mode
 	session.next_seed=seed_value
-	session.survivor=participants[participants.keys()[0] if dedicated else multiplayer.get_unique_id()]["role"]
+	var ordered_ids: Array=participants.keys()
+	ordered_ids.sort()
+	# attach_world reuses the first sorted human as the dedicated reference.
+	# Lobby insertion order can differ from random ENet peer-ID order.
+	session.survivor=participants[ordered_ids[0] if dedicated else multiplayer.get_unique_id()]["role"]
 	session.load_game()
 	changed.emit()
 
@@ -482,6 +486,7 @@ func _accept_action(id: int, generation: int, code: String, slot: int) -> void:
 		"pin": world.place_pin(actor,id,actor.peer_name)
 		"ability": world.abilities.use(actor)
 		"ability_release": world.abilities.release(actor)
+		"ability_cancel": SurvivorKits.cancel_stake(actor)
 		"give": world.abilities.give(actor)
 		"light":
 			if not actor.expedition or actor.flashlight_charge>0: actor.flashlight_on=not actor.flashlight_on
@@ -529,6 +534,7 @@ func _process(delta: float) -> void:
 
 func handle_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
+		if not menu_open: action("ability_cancel")
 		menu_open=not menu_open
 		world.hud.show_pause(menu_open)
 		get_viewport().set_input_as_handled()

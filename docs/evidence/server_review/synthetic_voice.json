@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "voice_chat",
+      "passed": true,
+      "exit_code": 0,
+      "errors": [],
+      "result": [
+        {
+          "checks": 24,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "voice_chat"
+        }
+      ],
+      "log": "artifacts/voice/voice_chat.log"
+    },
+    {
+      "name": "voice_guest",
+      "passed": true,
+      "exit_code": 0,
+      "errors": [],
+      "result": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "voice_peer_client"
+        }
+      ],
+      "log": "artifacts/voice/voice_guest.log"
+    },
+    {
+      "name": "voice_host",
+      "passed": true,
+      "exit_code": 0,
+      "errors": [],
+      "result": [
+        {
+          "checks": 13,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "voice_peer_host"
+        }
+      ],
+      "log": "artifacts/voice/voice_host.log"
+    }
+  ]
+}

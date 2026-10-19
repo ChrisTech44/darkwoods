@@ -168,14 +168,14 @@ func _rules() -> void:
 	player.facing = Vector2.RIGHT
 	player.flashlight_charge = 2
 	await _frames(180)
-	_check(player.flashlight_charge < 1.1 and player.flashlight_charge > 0.8, "woods_drains_flashlight_charge")
+	_check(absf(player.flashlight_charge - (2.0 - 3.0 * 90.0 / 420.0)) < 0.1, "woods_drains_flashlight_charge")
 	await _key(KEY_ESCAPE)
 	var before: float = player.flashlight_charge
 	await _frames(60)
 	_check(level.paused and is_equal_approx(player.flashlight_charge, before), "pause_stops_battery_drain")
 	_check(not level.use_supply(player, "flare"), "paused_supply_use_rejected")
 	await _key(KEY_ESCAPE)
-	await _frames(190)
+	await _frames(400)
 	_check(player.flashlight_charge == 0 and not player.flashlight_on, "empty_flashlight_turns_off")
 	await _key(KEY_F)
 	_check(not player.flashlight_on, "empty_flashlight_cannot_be_toggled_on")

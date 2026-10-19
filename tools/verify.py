@@ -9,9 +9,26 @@ import subprocess
 from godot_cli import ROOT, godot_binary
 
 
+def passing_test_summary(name, output):
+    if name in {'version', 'import', 'startup'} or name.startswith('parse_'):
+        return True
+    summaries = []
+    for line in output.splitlines():
+        if not line.startswith('{'):
+            continue
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            return False
+        if event.get('event') == 'test_result':
+            summaries.append(event)
+    return len(summaries) == 1 and summaries[0].get('failures') == 0
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--graphical", action="store_true", help="Also open a real window and save screenshots.")
+    parser.add_argument("--from-step", help="Run this named step and the remaining steps; the report explicitly lists skipped steps.")
     args = parser.parse_args()
     engine = godot_binary()
     evidence = ROOT / "artifacts" / "verification"
@@ -88,8 +105,8 @@ def main():
     commands.append(("meta_progress", ["--headless", *meta]))
     story = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/night_events.gd"]
     commands.append(("night_events", ["--headless", "--audio-driver", "Dummy", *story]))
-    roles = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/roles_abilities.gd"]
-    commands.append(("roles_abilities", ["--headless", *roles]))
+    roles = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/four_survivors.gd"]
+    commands.append(("four_survivors", ["--headless", *roles]))
     commands.append(("objective_scenery", ["--headless", "--path", str(ROOT), "--audio-driver", "Dummy", "--script", "res://tests/integration/objective_scenery.gd"]))
     rescue = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/radio_rescue.gd", "--", "--all-escapes"]
     commands.append(("radio_rescue", ["--headless", *rescue]))
@@ -103,6 +120,8 @@ def main():
     commands.append(("stalker_distance", ["--headless", "--audio-driver", "Dummy", *stalking]))
     sounds = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/sound_feedback.gd"]
     commands.append(("sound_feedback", ["--headless", "--audio-driver", "Dummy", *sounds]))
+    ability_feedback = ["--path", str(ROOT), "--audio-driver", "Dummy", "--fixed-fps", "60", "--script", "res://tests/integration/ability_feedback.gd"]
+    commands.append(("ability_feedback", ["--headless", *ability_feedback]))
     book = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/notebook.gd"]
     commands.append(("notebook", ["--headless", "--audio-driver", "Dummy", *book]))
     labels = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/world_labels.gd"]
@@ -112,6 +131,7 @@ def main():
     balance = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/playtest_balance.gd"]
     commands.append(("playtest_balance", ["--headless", "--audio-driver", "Dummy", *balance]))
     if args.graphical:
+        commands.append(("graphical_ability_feedback", [*ability_feedback, "--", "--capture"]))
         commands.append(("graphical_balance", ["--audio-driver", "Dummy", *balance, "--", "--capture"]))
         commands.append(("graphical_field_escapes", ["--audio-driver", "Dummy", *field_escapes, "--", "--capture"]))
         commands.append(("graphical_rescue", ["--audio-driver", "Dummy", *rescue, "--", "--capture"]))
@@ -138,11 +158,19 @@ def main():
         commands.append(("graphical_woods", [*woods, "--", "--capture"]))
         commands.append(("graphical_expedition", [*expedition, "--", "--capture"]))
         commands.append(("graphical_hunt", [*hunt, "--", "--capture"]))
+    skipped_steps = []
+    if args.from_step:
+        names = [name for name, _ in commands]
+        if args.from_step not in names:
+            parser.error("Unknown step: " + args.from_step)
+        start = names.index(args.from_step)
+        skipped_steps = names[:start]
+        commands = commands[start:]
     results = []
     for name, arguments in commands:
         command = [engine, *arguments]
         timed_out = False
-        timeout = 240 if name in ("graphical_expedition", "woods_playthrough", "graphical_polish", "layout_polish", "chase_props", "woods_replay", "graphical_woods", "menu_defaults", "graphical_defaults", "surround_world", "graphical_surround", "navigation_seeds") else 90
+        timeout = 240 if name in ("graphical_audio", "graphical_expedition", "woods_playthrough", "graphical_polish", "layout_polish", "chase_props", "woods_replay", "graphical_woods", "menu_defaults", "graphical_defaults", "surround_world", "graphical_surround", "navigation_seeds") else 90
         try:
             result = subprocess.run(command, cwd=ROOT, stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT, text=True, timeout=timeout)
@@ -158,14 +186,7 @@ def main():
                   if re.search(r"(?:SCRIPT ERROR|ERROR|Parse Error):", line)]
         warnings = [line for line in clean.splitlines() if "WARNING:" in line]
         passed = status == 0 and not errors and not timed_out
-        if name in ("stalker_distance", "playtest_balance", "graphical_balance", "monster_revamp", "notebook", "world_labels", "new_creatures", "sound_feedback") or name in ("field_escapes", "graphical_field_escapes", "radio_rescue", "graphical_rescue", "player_render", "graphical_player_render", "content_expansion", "graphical_content", "navigation_aids", "graphical_navigation", "night_phases", "graphical_nights", "chase_toolkit", "graphical_chase", "chase_props", "graphical_props", "road_network", "graphical_roads", "rotation_clues", "graphical_clues", "barriers", "graphical_barriers", "roles_abilities", "signal_fire", "killers_modifiers", "meta_progress", "night_events", "menu_smoke", "graphical_smoke", "offline_slice", "graphical_offline", "offline_playthrough", "graphical_playthrough", "camp_upgrade", "graphical_upgrade", "woods_replay", "graphical_woods", "woods_playthrough", "graphical_expedition", "forest_hunt", "graphical_hunt", "layout_polish", "graphical_polish", "audio_polish", "graphical_audio", "menu_defaults", "graphical_defaults", "woods_shadows", "graphical_shadows", "woods_visibility", "graphical_visibility", "surround_world", "graphical_surround", "navigation_seeds"):
-            summaries = []
-            for line in clean.splitlines():
-                if line.startswith("{"):
-                    event = json.loads(line)
-                    if event.get("event") == "test_result":
-                        summaries.append(event)
-            passed = passed and len(summaries) == 1 and summaries[0]["failures"] == 0
+        passed = passed and not warnings and passing_test_summary(name, clean)
         record = {"step": name, "command": command, "exit_code": status,
                   "passed": passed, "errors": errors, "warnings": warnings,
                   "timed_out": timed_out, "log": str(log.relative_to(ROOT))}
@@ -176,7 +197,8 @@ def main():
             break
     report = {"timestamp_utc": datetime.now(timezone.utc).isoformat(),
               "passed": len(results) == len(commands) and all(r["passed"] for r in results),
-              "graphical": args.graphical, "results": results}
+              "graphical": args.graphical, "from_step": args.from_step,
+              "skipped_steps": skipped_steps, "results": results}
     (evidence / "summary.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     return 0 if report["passed"] else 1
 

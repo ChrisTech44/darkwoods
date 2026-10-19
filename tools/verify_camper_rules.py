@@ -1,19 +1,27 @@
 """Verify disabled camper powers with real listen-host and dedicated processes."""
 from pathlib import Path
-import json,os,re,subprocess,time
+import argparse,json,os,re,subprocess,time
 from godot_cli import ROOT,godot_binary
 
 def main():
-    out=ROOT/'artifacts/ability_polish/rules';out.mkdir(parents=True,exist_ok=True)
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--pack',type=Path)
+    args=parser.parse_args()
+    if args.pack and not args.pack.is_file():parser.error('Pack does not exist')
+    out=ROOT/('artifacts/ability_polish/rules_pack' if args.pack else 'artifacts/ability_polish/rules');out.mkdir(parents=True,exist_ok=True)
     results=[]
     for dedicated in (False,True):
+        if args.pack and not dedicated:continue
         port=29381+int(dedicated);running=[];streams=[]
         specs=[('server' if dedicated else 'host',0)]+[('client',i) for i in range(0 if dedicated else 1,4)]
         for side,index in specs:
             path=out/f'{"dedicated" if dedicated else "listen"}_{side}_{index}.log'
             stream=path.open('w');streams.append(stream)
             env=os.environ.copy();env.update(LNAC_RULE_SIDE=side,LNAC_RULE_PORT=str(port),LNAC_RULE_INDEX=str(index),LNAC_RULE_HUMANS='4')
-            cmd=[godot_binary(),'--headless','--audio-driver','Dummy','--path',str(ROOT),'--script','res://tests/integration/camper_rule_peer.gd']
+            cmd=[godot_binary(),'--headless','--audio-driver','Dummy']
+            if side=='server' and args.pack:cmd+=['--main-pack',str(args.pack.resolve())]
+            else:cmd+=['--path',str(ROOT)]
+            cmd+=['--script',str(ROOT/'tests/integration/camper_rule_peer.gd')]
             if side=='server':cmd+=['--','--dedicated-server','--port',str(port),'--mode','camp','--seed','42','--min-players','4','--start-delay','1','--no-camper-abilities']
             proc=subprocess.Popen(cmd,cwd=ROOT,env=env,stdout=stream,stderr=subprocess.STDOUT)
             running.append((proc,path));time.sleep(.3)

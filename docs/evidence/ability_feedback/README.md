@@ -51,5 +51,9 @@ Artwork: one SpriteCook asset `bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f`, NB2.1,
 reroll, animation or cleanup. [Asset hashes](../../../spritecook-assets.json) and
 [reproducible slicing](../../../tools/slice_ability_effects.gd).
 
-The gallery under ignored `artifacts/ability_gallery/` stays private. Its refresh
-is recorded separately when final MP4 validation completes.
+The gallery under ignored `artifacts/ability_gallery/` stays private. All 52 MP4s
+were refreshed against this implementation, fully decoded and visually sampled
+across nine contact sheets. It includes all 30 Christian interactions and variants,
+plus the other three campers. Staged bright fixtures, controlled AI, hidden
+sight/roofs and microphone-off conditions are labelled in the recordings and local
+README. No additional SpriteCook credits were spent on recordings.

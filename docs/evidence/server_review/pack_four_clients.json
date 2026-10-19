@@ -1,0 +1,164 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "side": "server",
+      "index": 0,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 77,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_server"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--main-pack",
+        "/Users/christianfranklin/games/darkwoods/artifacts/server/last-night-server.pck",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd",
+        "--",
+        "--dedicated-server",
+        "--port",
+        "51421",
+        "--mode",
+        "woods",
+        "--seed",
+        "13",
+        "--min-players",
+        "4",
+        "--start-delay",
+        "1",
+        "--result-delay",
+        "8"
+      ],
+      "log": "artifacts/dedicated/woods_4_pack_simultaneous_1792452886200425000_server_0.log"
+    },
+    {
+      "side": "client",
+      "index": 0,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 17,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+      ],
+      "log": "artifacts/dedicated/woods_4_pack_simultaneous_1792452886200425000_client_0.log"
+    },
+    {
+      "side": "client",
+      "index": 1,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 17,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+      ],
+      "log": "artifacts/dedicated/woods_4_pack_simultaneous_1792452886200425000_client_1.log"
+    },
+    {
+      "side": "client",
+      "index": 2,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 19,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+      ],
+      "log": "artifacts/dedicated/woods_4_pack_simultaneous_1792452886200425000_client_2.log"
+    },
+    {
+      "side": "client",
+      "index": 3,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 17,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+      ],
+      "log": "artifacts/dedicated/woods_4_pack_simultaneous_1792452886200425000_client_3.log"
+    }
+  ],
+  "client_path": "/Users/christianfranklin/games/darkwoods",
+  "portable_pack": true,
+  "simultaneous_disconnect": true,
+  "graphical_clients": false,
+  "headless_replica_scenery_hidden": true
+}

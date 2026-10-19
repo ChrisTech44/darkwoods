@@ -33,6 +33,7 @@ func _run() -> void:
 	check(seeds.size() == 4, "normal_seeds_cover_four_secondary_routes")
 	for route: String in seeds:
 		root.get_node("Session").mode = "woods"
+		root.get_node("Session").survivor = "christian"
 		root.get_node("Session").next_seed = seeds[route]
 		change_scene_to_file("res://scenes/world/forest_level.tscn")
 		await frames(12)
@@ -53,10 +54,10 @@ func _run() -> void:
 		actor.position = level.escapes.boat_point
 		actor.facing = Vector2.UP
 		actor.flashlight_on = true
-		check(is_equal_approx(actor.flashlight_charge / actor.light_drain, 270.0) or actor.role == "alex", "full_light_lasts_270_seconds")
+		check(is_equal_approx(actor.flashlight_charge / actor.light_drain, 420.0), "full_light_lasts_420_seconds")
 		var at := actor.position
 		actor._physics_process(3.0)
-		check(is_equal_approx(actor.flashlight_charge, 89.0) or actor.role == "alex", "three_seconds_cost_one_charge")
+		check(is_equal_approx(actor.flashlight_charge, 90.0 - 3.0 * 90.0 / 420.0), "three_seconds_uses_seven_minute_drain")
 		actor.position = at
 		actor.inventory.append("outboard_motor")
 		for pickup in level.pickups:

@@ -4,6 +4,7 @@ class Probe extends Node:
 	var stage := ""
 	var data := {}
 	var reports := {}
+	var relay_seen := {}
 	@rpc("authority", "call_remote", "reliable", 0)
 	func advance(value: String, payload: Dictionary = {}) -> void:
 		stage = value
@@ -11,6 +12,10 @@ class Probe extends Node:
 	@rpc("any_peer", "call_remote", "reliable", 0)
 	func report(value: String, payload: Dictionary = {}) -> void:
 		if value == stage: reports[multiplayer.get_remote_sender_id()] = payload
+
+	@rpc("any_peer","call_remote","unreliable_ordered",3)
+	func relay_probe() -> void:
+		relay_seen[multiplayer.get_remote_sender_id()]=true
 
 var probe: Probe
 var net: Node
@@ -20,6 +25,7 @@ var humans := int(OS.get_environment("LNAC_TEST_PLAYERS"))
 var index := int(OS.get_environment("LNAC_TEST_INDEX"))
 var checks := 0
 var failures := 0
+var role: String = SurvivorRoster.IDS[index % 4]
 
 func _initialize() -> void:
 	run.call_deferred()
@@ -66,6 +72,16 @@ func run() -> void:
 	quit(0 if failures == 0 else 1)
 
 func server() -> void:
+	if humans>1:
+		if not await until(func(): return net.phase=="lobby" and net.roster.size()==humans): return
+		# Deterministically reproduce join-order vs random-peer-ID disagreement.
+		var order: Array=net.roster.keys()
+		order.sort()
+		order.reverse()
+		var reversed_roster := {}
+		for id: int in order: reversed_roster[id]=net.roster[id]
+		net.roster=reversed_roster
+		check(net.roster.keys()[0]!=net.roster.keys().min(),"fixture_join_order_differs_from_reference_peer_order")
 	if not await until(func(): return net.phase == "playing"): return
 	check(net.dedicated and not net.actors.has(1) and not net.roster.has(1), "server_has_no_survivor_or_slot")
 	check(net.actors.size() == humans and get_nodes_in_group("survivors").size() == humans, "all_human_clients_have_exactly_one_actor")
@@ -95,6 +111,11 @@ func server() -> void:
 	for id: int in ids:
 		check(net.actors[id].position.distance_to(initial[id]) > 10.0, "server_accepts_movement_" + str(id))
 		check(probe.reports[id].get("moved", false), "client_receives_own_motion_" + str(id))
+	stage("relay")
+	if not await reports(humans): return
+	check(probe.relay_seen.size()==humans,"dedicated_receives_synthetic_voice_channel_packets")
+	for row: Dictionary in probe.reports.values(): check(row.get("heard",0)==humans-1,"client_to_client_voice_channel_relay_preserves_peer_ids")
+	await ability_checks(ids)
 	var guest: int = ids[0]
 	if level.plan.expedition:
 		check(level.plan.escape_options == ["van", "boat"], "normal_boat_night_without_all_escape_override")
@@ -147,6 +168,9 @@ func server() -> void:
 	if not await until(func(): return net.roster.is_empty() and net.phase == "lobby"): return
 	for frame in range(4): await process_frame
 	check(net.active and net.world == null and get_nodes_in_group("survivors").is_empty(), "empty_server_cleans_up_and_keeps_listening")
+	var transport: CampENetPeer=net.get_multiplayer().multiplayer_peer
+	check(transport.is_server_relay_supported(),"server_retains_native_relay_capability")
+	print(JSON.stringify({"event":"transport_diagnostics","closing_packets_dropped":transport.dropped_closing_packets,"relay":transport.is_server_relay_supported()}))
 
 func capture(label: String) -> void:
 	if DisplayServer.get_name() == "headless": return
@@ -162,19 +186,26 @@ func client() -> void:
 	root.get_node("Voice").mode = "off" # In-memory only; never alter player preferences.
 	var address := OS.get_environment("LNAC_TEST_HOST")
 	if address.is_empty(): address = "127.0.0.1"
-	check(net.join(address, port, "Server guest %d" % index, "christian") == OK, "client_connects")
+	check(net.join(address, port, "Server guest %d" % index, role) == OK, "client_connects")
 	if not await until(func(): return net.phase == "lobby"): return
-	net.choose("christian", true)
+	net.choose(role, true)
 	if not await until(func(): return net.phase == "playing"): return
 	check(net.actors.size() == humans and not net.actors.has(1), "main_client_accepts_server_without_host_avatar")
 	await capture("joined")
 	var own: int = get_multiplayer().get_unique_id()
+	check(net.actors[own].role==role,"client_keeps_requested_character")
 	var handled := ""
 	while net.active:
 		await process_frame
 		if probe.stage == handled: continue
 		handled = probe.stage
 		match handled:
+			"relay":
+				for repeat in range(8):
+					probe.relay_probe.rpc()
+					await create_timer(0.03).timeout
+				await until(func(): return probe.relay_seen.size()==humans-1,10)
+				probe.report.rpc_id(1,handled,{"heard":probe.relay_seen.size()})
 			"explore_ready":
 				await until(func(): return net.world.plan.woods.visited.has(probe.data.entry))
 				probe.report.rpc_id(1,handled,{})
@@ -185,6 +216,37 @@ func client() -> void:
 					Input.action_release("move_left")
 				await until(func(): return net.world.plan.woods.visited.has(probe.data.next))
 				probe.report.rpc_id(1,handled,{"explored":net.world.plan.woods.visited.has(probe.data.entry) and net.world.plan.woods.visited.has(probe.data.next) and not net.world.plan.woods.visited.has(Vector2i.ZERO)})
+			"sample_shot":
+				var caster: CampPlayer=net.actors[probe.data.caster]
+				var victim: CampPlayer=net.actors[probe.data.victim]
+				await create_timer(0.4).timeout
+				if own==probe.data.caster: net.action("ability")
+				var travelled: bool=await until(func(): return caster.kit.get("cast",{}).get("projectile",false),10)
+				await until(func(): return victim.has_effect("backwards"),10)
+				probe.report.rpc_id(1,handled,{"flight":travelled,"hit":victim.has_effect("backwards"),"cue":net.world.soundscape.played_counts.get("witch_cackle",0)>0})
+			"sample_song":
+				await create_timer(0.4).timeout
+				if own==probe.data.caster: net.action("ability")
+				var key: String="sample_song:%d" % net.actors[probe.data.caster].get_instance_id()
+				await until(func(): return net.world.soundscape.follow_loops.has(key),10)
+				probe.report.rpc_id(1,handled,{"song":net.world.soundscape.follow_loops.has(key)})
+			"sample_stop":
+				var key: String="sample_song:%d" % net.actors[probe.data.caster].get_instance_id()
+				await until(func(): return not net.world.soundscape.follow_loops.has(key),10)
+				probe.report.rpc_id(1,handled,{"stopped":not net.world.soundscape.follow_loops.has(key)})
+			"max_cancel":
+				await create_timer(0.4).timeout
+				if own==probe.data.owner:
+					net.action("ability")
+					await until(func(): return net.actors[own].kit.stake_time>=0,10)
+					var escape := InputEventAction.new()
+					escape.action="pause"
+					escape.pressed=true
+					net.handle_input(escape)
+					await until(func(): return net.actors[own].kit.stake_time<0,10)
+					net.handle_input(escape)
+				await until(func(): return net.actors[probe.data.owner].kit.stake_time<0,10)
+				probe.report.rpc_id(1,handled,{"cancelled":net.actors[probe.data.owner].kit.stake_time<0,"cash":net.actors[probe.data.owner].kit.cash})
 			"move":
 				var start: Vector2 = net.actors[own].position
 				Input.action_press("move_down")
@@ -206,7 +268,7 @@ func client() -> void:
 			"result":
 				await until(func(): return net.phase == "results", 10)
 				probe.report.rpc_id(1, handled, {"won":net.world.won})
-			"ready_again": net.choose("christian", true)
+			"ready_again": net.choose(role, true)
 			"leave_focus":
 				if own == probe.data.peer:
 					net.leave()
@@ -216,3 +278,53 @@ func client() -> void:
 					await create_timer(0.35 * index).timeout
 				net.leave()
 				return
+
+func ability_checks(ids: Array) -> void:
+	for id: int in ids: check(net.actors[id].role==net.participants[id].role,"dedicated_preserves_requested_role_"+str(id))
+	var casters: Array=ids.filter(func(id): return net.actors[id].role=="christian")
+	check(not casters.is_empty(),"dedicated_roster_contains_requested_christian")
+	if casters.is_empty() or ids.size()<2: return
+	var caster: CampPlayer=net.actors[casters[0]]
+	var victim_id: int=ids.filter(func(id): return id!=casters[0])[0]
+	var victim: CampPlayer=net.actors[victim_id]
+	for id: int in ids: net.actors[id].position=Vector2(700,700)
+	var origin := Vector2.ZERO
+	for y in range(350,800,24):
+		for x in range(120,1400,24):
+			var point := Vector2(x,y)
+			if SurvivorKits.safe_point(caster,point) and SurvivorKits.safe_point(victim,point+Vector2(85,0)) and net.world.clear_path(point,point+Vector2(85,0)):
+				origin=point
+				break
+		if origin!=Vector2.ZERO: break
+	check(origin!=Vector2.ZERO,"dedicated_spell_fixture_has_real_clear_collision_path")
+	for i in range(ids.size()):
+		if ids[i] not in [casters[0],victim_id]: net.actors[ids[i]].position=origin+Vector2(0,60+20*i)
+	caster.position=origin
+	caster.facing=Vector2.RIGHT
+	victim.position=origin+Vector2(85,0)
+	caster.kit.sample="witch"
+	caster.kit.subtype="backwards"
+	caster.ability_cooldown=0
+	stage("sample_shot",{"caster":casters[0],"victim":victim_id})
+	if not await reports(humans): return
+	check(victim.has_effect("backwards"),"dedicated_projectile_applies_authoritative_curse")
+	for row: Dictionary in probe.reports.values(): check(row.get("flight",false) and row.get("hit",false) and row.get("cue",false),"all_clients_render_shot_hit_and_audio")
+	victim.clear_effect("backwards")
+	CreatureSamples.finish_cast(caster)
+	caster.kit.sample="boiler_saint"
+	caster.add_effect("coffee",10)
+	caster.ability_cooldown=0
+	stage("sample_song",{"caster":casters[0]})
+	if not await reports(humans): return
+	for row: Dictionary in probe.reports.values(): check(row.get("song",false),"dedicated_copied_song_reaches_each_client")
+	CreatureSamples.finish_cast(caster)
+	stage("sample_stop",{"caster":casters[0]})
+	if not await reports(humans): return
+	for row: Dictionary in probe.reports.values(): check(row.get("stopped",false),"dedicated_copied_song_stops_on_each_client")
+	for id: int in ids:
+		net.actors[id].effects.clear()
+		if net.actors[id].role=="max":
+			net.actors[id].ability_cooldown=0
+			stage("max_cancel",{"owner":id})
+			if not await reports(humans): return
+			check(net.actors[id].kit.stake_time<0 and net.actors[id].kit.cash==6,"dedicated_menu_cancels_stake_without_charge")

@@ -587,7 +587,7 @@
       "path": "res://assets/audio/wet_footsteps.mp3",
       "bus": "Effects",
       "loop": true,
-      "gain_db": 4,
+      "gain_db": -1,
       "duration_seconds": 7.079156,
       "sha256": "adce5e544ba42485c67c389103c4a9224c169f3b7835169a42fa3c3997af92a5",
       "source": "User supplied, 17 October 2026",

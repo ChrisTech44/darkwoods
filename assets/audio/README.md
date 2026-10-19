@@ -164,3 +164,13 @@ or self-recorded MP3s; drop them in this folder and they can be wired into
 Delivered on 18 October (see the table above): dog bark/whine, sneeze, giggle,
 camera shutter/charge, train, squeaky toy, mud gurgle, lullaby, frog croak,
 bear trap, air horn, plus a gasp, a grunt, scissors and a helicopter.
+
+### 19 October 2026 gain/shutdown verification
+
+The original `wet_footsteps.mp3` measures −30.5 dB mean and −0.8 dBFS peak.
+Its earlier +4 dB runtime gain exceeded the source's peak headroom; the native
+PCM regression also measured a 0.962 peak against its 0.95 gate. Runtime gain is
+now −1 dB (source bytes/hash unchanged). This is a measured headroom correction,
+not human mix/listening acceptance. Radio/stinger shutdown now releases all
+native streams and blocks delayed radio callbacks after stop. See the
+[executed server/audio review](../../docs/server_review.md).

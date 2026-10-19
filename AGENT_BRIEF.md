@@ -114,7 +114,10 @@ after import errors, including when Godot exits zero. Exported packs skip import
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
 cleanup are implemented. The game protocol is `lnac-net-20`, compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
-See [server guide](docs/dedicated_server.md); execution/OS limits remain separate
+The October 19 [server review](docs/server_review.md) fixes mixed-role assignment,
+batched-disconnect packet sends and stale package metadata. Actual four-client
+source/PCK and disabled-rule runs cover these changes; target OS and Internet
+acceptance remain separate. See [server guide](docs/dedicated_server.md); execution/OS limits remain separate
 acceptance gates. This supersedes the older branch-only status: dedicated source is present in main and executed by the current rule checks. It includes measured redraw caching,
 bounded prediction/reconciliation and buffered remote motion; see evidence below.
 

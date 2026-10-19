@@ -58,6 +58,7 @@ func run() -> void:
 	await sharing_checks()
 	watching_checks()
 	rule_checks()
+	cancellation_checks()
 	print(JSON.stringify({"event":"test_result","suite":"four_survivors","checks":checks,"failures":failures}))
 	await root.get_node("AudioManager").prepare_shutdown()
 	quit(1 if failures else 0)
@@ -327,6 +328,35 @@ func watching_checks() -> void:
 	check(CreatureSamples.motion(christian)[3],"scarecrow_close_facing_without_light_watches")
 	observer.facing = Vector2.RIGHT
 	check(not CreatureSamples.motion(christian)[3],"scarecrow_turn_away_frees_form")
+
+func cancellation_checks() -> void:
+	var max_actor: CampPlayer=friends.max
+	max_actor.role="max"
+	max_actor.status=CampPlayer.Status.ALIVE
+	max_actor.effects.clear()
+	SurvivorAbilities.setup(max_actor)
+	max_actor.kit.cash=24
+	check(level.abilities.use(max_actor),"pending_buy_starts_before_menu")
+	SurvivorKits.advance(max_actor,1.4)
+	SurvivorKits.cancel_stake(max_actor)
+	check(not level.abilities.release(max_actor) and max_actor.kit.cash==24,"cancelled_stake_cannot_charge_after_menu")
+	var christian: CampPlayer=friends.christian
+	var target: CampPlayer=friends.john
+	christian.position=Vector2(900,520)
+	target.position=Vector2(980,520)
+	christian.facing=Vector2.RIGHT
+	christian.effects.clear()
+	christian.holder=null
+	target.effects.clear()
+	target.holder=null
+	target.status=CampPlayer.Status.ALIVE
+	SurvivorAbilities.setup(christian)
+	christian.kit.sample="teddy"
+	check(level.abilities.use(christian),"committed_hug_starts")
+	CreatureSamples.advance(christian,0.81)
+	christian.ability_cooldown=0
+	check(christian.has_effect("tripped") and target.holder==christian,"committed_hug_really_locks_both_bodies")
+	check(level.abilities.use(christian) and christian.kit.cast.is_empty() and target.holder==null,"own_commitment_does_not_block_x_cancel")
 
 func rule_checks() -> void:
 	var christian: CampPlayer = friends.christian

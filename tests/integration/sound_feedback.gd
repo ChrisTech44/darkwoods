@@ -82,6 +82,27 @@ func _run() -> void:
 	_check(sound.follow_loops.is_empty(), "frog_croak_loop_stops")
 	# Creature cues map to the new recordings.
 	_check(CampSoundscape.CREATURE_CUES["switchback_hound"] == "dog_bark" and CampSoundscape.CREATURE_CUES["imps"] == "giggle" and CampSoundscape.CREATURE_CUES["teddy"] == "squeak" and CampSoundscape.CREATURE_CUES["bog_hands"] == "bog_gurgle" and CampSoundscape.CREATURE_CUES["last_car_conductor"] == "train", "creature_cue_mapping")
+	# Radio/stingers are outside the positional voice list. Shutdown must also
+	# release their native playback and reject the queued radio-talk callback.
+	var tail := AudioStreamPlayer.new()
+	tail.stream = mixer.stream_for("radio_talk")
+	sound.add_child(tail)
+	if mixer.output_enabled: tail.play()
+	sound.radio_broadcast(1)
+	sound.stinger("bells", -8.0, 1.0)
+	sound.stop_round()
+	var clean := true
+	for child in sound.get_children():
+		if child is AudioStreamPlayer or child is AudioStreamPlayer2D:
+			clean = clean and not child.playing and child.stream == null
+	_check(clean, "shutdown_releases_all_positional_and_radio_streams")
+	_check(not sound.radio_broadcast(2) and not sound.stinger("bells", -8.0, 1.0) and not sound.broadcast("bells", level.player.position), "stopped_round_rejects_new_audio_events")
+	await create_timer(0.7).timeout
+	var resumed := false
+	for child in sound.get_children():
+		if child is AudioStreamPlayer or child is AudioStreamPlayer2D:
+			resumed = resumed or child.stream != null or child.playing
+	_check(not resumed, "delayed_radio_cannot_restart_after_shutdown")
 	print(JSON.stringify({"event": "test_result", "suite": "sound_feedback", "checks": checks, "failures": failures}))
 	await mixer.prepare_shutdown()
 	quit(0 if failures == 0 else 1)

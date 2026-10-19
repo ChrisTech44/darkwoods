@@ -222,13 +222,19 @@ The main menu now owns ominous music and subdued forest ambience, with the same
 saved mixer controls available before Play. Its channels stop/free on departure;
 round channels remain separate. This adds no microphone capture or permissions.
 
-The surrounding-forest build keeps the same bounded local audio pool for 24
-creatures: calls are gated at 160px, enemy steps at 110px and moving emitters
-attenuate quadratically. Native sound assets, AI hearing and optional future
-network voice remain separate.
+Current source (verified 19 October) bounds positional voices to 20. Ordinary
+creature calls carry 560px with native attenuation 1.2; enemy footsteps carry
+240px with attenuation 2.0, and loud-cue overrides have their own ranges. Moving
+emitters follow their source. These playback rules are separate from AI hearing
+and opt-in network voice. Shutdown stops/releases positional, radio and stinger
+streams and prevents delayed radio callbacks from restarting playback; native and
+headless lifecycle checks are recorded in the [server review](server_review.md).
 
 
 ## ENet foundation now available
+
+Historical ENet-only stage: the later opt-in voice implementation and acceptance
+sections supersede the media-absence claims below.
 
 The current listen host validates lobby identities/roles/readiness, locks round
 IDs/seed, and owns positions, health/life state, inventory and accepted actions.

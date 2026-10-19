@@ -157,7 +157,8 @@ func _decode_mix() -> void:
 		AudioServer.set_bus_send(send_index, "AudioTest")
 		var source := AudioStreamPlayer.new()
 		source.stream = mixer.stream_for(cue).duplicate()
-		source.stream.loop = false
+		if source.stream is AudioStreamMP3: source.stream.loop = false
+		else: source.stream.loop_mode = AudioStreamWAV.LOOP_DISABLED
 		source.bus = mixer.cues[cue]["bus"]
 		source.volume_db = mixer.cues[cue]["gain_db"]
 		root.add_child(source)
@@ -175,7 +176,8 @@ func _decode_mix() -> void:
 		_check(frames > 0 and peak > 0.0000001 and peak < 0.95, "decoded_nonzero_gain_staged_pcm_" + cue)
 		print(JSON.stringify({"event": "audio_pcm", "cue": cue, "frames": frames, "peak": peak}))
 		if mixer.cues[cue]["loop"]:
-			source.stream.loop = true
+			if source.stream is AudioStreamMP3: source.stream.loop = true
+			else: source.stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 			source.seek(source.stream.get_length() - 0.08)
 			await _audio_wait(350)
 			_check(source.playing and source.get_playback_position() < 0.9, "native_loop_wraps_" + cue)

@@ -1,0 +1,67 @@
+[
+  {
+    "log": "artifacts/ability_polish/rules_pack/dedicated_server_0.log",
+    "passed": true,
+    "result": [
+      {
+        "checks": 10,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "camper_rule_server"
+      }
+    ],
+    "errors": []
+  },
+  {
+    "log": "artifacts/ability_polish/rules_pack/dedicated_client_0.log",
+    "passed": true,
+    "result": [
+      {
+        "checks": 8,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "camper_rule_client"
+      }
+    ],
+    "errors": []
+  },
+  {
+    "log": "artifacts/ability_polish/rules_pack/dedicated_client_1.log",
+    "passed": true,
+    "result": [
+      {
+        "checks": 8,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "camper_rule_client"
+      }
+    ],
+    "errors": []
+  },
+  {
+    "log": "artifacts/ability_polish/rules_pack/dedicated_client_2.log",
+    "passed": true,
+    "result": [
+      {
+        "checks": 8,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "camper_rule_client"
+      }
+    ],
+    "errors": []
+  },
+  {
+    "log": "artifacts/ability_polish/rules_pack/dedicated_client_3.log",
+    "passed": true,
+    "result": [
+      {
+        "checks": 8,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "camper_rule_client"
+      }
+    ],
+    "errors": []
+  }
+]

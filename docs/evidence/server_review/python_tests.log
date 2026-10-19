@@ -1,0 +1,17 @@
+test_disabled_powers_forwarded_to_authority (test_server_launcher.ServerLauncherTests.test_disabled_powers_forwarded_to_authority) ... ok
+test_exported_pack_skips_source_import (test_server_launcher.ServerLauncherTests.test_exported_pack_skips_source_import) ... ok
+test_failed_import_never_starts_server (test_server_launcher.ServerLauncherTests.test_failed_import_never_starts_server) ... ok
+test_source_prepared_before_runtime (test_server_launcher.ServerLauncherTests.test_source_prepared_before_runtime) ... ok
+test_zero_exit_with_script_error_never_starts_server (test_server_launcher.ServerLauncherTests.test_zero_exit_with_script_error_never_starts_server) ... ok
+test_current_metadata_and_archive_come_from_same_new_build (test_server_package.ServerPackageTests.test_current_metadata_and_archive_come_from_same_new_build) ... ok
+test_missing_protocol_fails (test_server_package.ServerPackageTests.test_missing_protocol_fails) ... ok
+test_rules_read_from_game (test_server_package.ServerPackageTests.test_rules_read_from_game) ... ok
+test_successful_exit_without_new_pack_cannot_repackage_stale_file (test_server_package.ServerPackageTests.test_successful_exit_without_new_pack_cannot_repackage_stale_file) ... ok
+test_duplicate_or_malformed_results_fail (test_verify_results.VerifyResultTests.test_duplicate_or_malformed_results_fail) ... ok
+test_new_suites_cannot_skip_result_validation (test_verify_results.VerifyResultTests.test_new_suites_cannot_skip_result_validation) ... ok
+test_parse_checks_do_not_need_a_test_result (test_verify_results.VerifyResultTests.test_parse_checks_do_not_need_a_test_result) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.008s
+
+OK

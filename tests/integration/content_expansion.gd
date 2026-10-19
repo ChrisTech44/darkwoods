@@ -53,7 +53,7 @@ func _run() -> void:
 			_check(actor.config != base and actor.config.stamina_max == 4,"private_stamina_%s_%s"%[role,expedition])
 			_check(actor.config.start_hold_seconds == 2.0,"ignition_stat_"+role)
 			_check(actor.config.revive_seconds == 3,"revive_stat_"+role)
-			_check(is_equal_approx(actor.light_drain, 1.0 / 3.0) and actor.sprint_hearing == 1.0,"sensing_modifiers_"+role)
+			_check(is_equal_approx(actor.light_drain, 90.0 / 420.0) and actor.sprint_hearing == 1.0,"sensing_modifiers_"+role)
 			actor.position = level.plan.woods.center(Vector2i(18,24))
 			actor._physics_process(1.0)
 			_check(is_equal_approx(actor.flashlight_charge,90.0-(actor.light_drain if expedition else 0.0)),"actual_light_drain_%s_%s"%[role,expedition])

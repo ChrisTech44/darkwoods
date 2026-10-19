@@ -61,7 +61,7 @@ func _run() -> void:
 				monster.position = from + Vector2(60, 0)
 				level.soundscape.play_cue("witch_cackle", monster.position, 0, 1, monster)
 				var voice: AudioStreamPlayer2D = level.soundscape.voices[-1]
-				_check(voice.max_distance == 160 and voice.attenuation == 2, "monster_native_proximity_falloff")
+				_check(voice.max_distance == CampSoundscape.MONSTER_RANGE and is_equal_approx(voice.attenuation, 1.2), "monster_native_proximity_falloff")
 				monster.position += Vector2(20, 0)
 				await _frames(2)
 				_check(voice.global_position == monster.global_position, "playing_call_follows_moving_monster")

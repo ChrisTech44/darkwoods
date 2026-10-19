@@ -6,6 +6,9 @@ source clients: macOS Godot 4.7.2. Remote commands/files were confined to
 left unchanged. A separate, self-terminating server used UDP 27841 and an isolated
 source copy under `artifacts/lag_probe/checkout`.
 
+Latest follow-up: [rendering measurements and regression evidence](evidence/smoothness/README.md).
+The historical transport results below precede the rendering increment.
+
 ## Findings and implemented increment
 
 The old client waits for complete compressed world snapshots before updating any

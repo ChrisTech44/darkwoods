@@ -98,18 +98,18 @@ static func apply(net: Node, state: Dictionary) -> void:
 			level.pickups.append(pickup)
 			level.add_child(pickup)
 		var pickup: CampPickup=level.pickups[index]
-		pickup.kind=row[0]
 		pickup.z_index=1 if index>=level.plan.loot.size() else 0
-		pickup.position=row[1]
-		pickup.queue_redraw()
-		pickup.available=row[2]
-		pickup.visible=row[2]
-		pickup.locked=row[3]
+		pickup.restore_network(row[0], row[1], row[2], row[3])
 	for index in range(level.camp_map.sites.size()):
 		var site: ForestSite=level.camp_map.sites[index]
-		for j in range(site.actions.size()): site.actions[j]["used"]=state["sites"][index][0][j]
+		var changed := false
+		for j in range(site.actions.size()):
+			var used: bool = state["sites"][index][0][j]
+			if site.actions[j]["used"] != used:
+				site.actions[j]["used"] = used
+				changed = true
 		site.cooldown=state["sites"][index][1]
-		site.queue_redraw()
+		if changed: site.queue_redraw()
 	for id: int in net.replicas.keys():
 		if not state["entities"].has(id):
 			var old: Node2D=net.replicas[id]

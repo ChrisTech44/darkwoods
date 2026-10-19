@@ -1,5 +1,17 @@
 # Development log
 
+## 2026-10-18 — Preserve cached world drawings (main)
+
+Removed unconditional pickup/site redraws on 20Hz snapshots; state changes still
+redraw old/new pile neighbours and used site actions. Calling-card fades invalidate
+only while changing; seeded hook location is cached. No gameplay/lighting change.
+Matched graphical 18-leg probes improved mean frames 50.21→8.51ms (19.9→117.6 FPS)
+on macOS M2, Woods fog seed 1788400090, live AI, local dedicated server. Instrumented
+method profiling, not a universal performance guarantee. Inspected actual capture.
+Graphical render fixture 8/8 and real ENet Camp/Woods 379 assertions pass. Required
+import/startup, error scan and diff checks clean. Temporary copies are ignored.
+See [evidence and limits](evidence/smoothness/README.md). Prediction remains next.
+
 ## 2026-10-18 — Real Genesect delays and independent player transport (main)
 
 Authorized SSH investigation was limited to games/darkwoods. The production

@@ -21,15 +21,15 @@ const SHADOW_SPEED := 78.0
 ## slower than sprinting; only nearby, unobstructed encounters count as stalking.
 const SHADOW_RANGE := 260.0
 const APPROACH_SPEED := 88.0
-const LUNGE_AFTER := Vector2(55.0, 80.0)
+const LUNGE_AFTER := Vector2(90.0, 130.0)
 const MELT_SECONDS := 5.0
 const CARRY_SPEED := 58.0
 const FRENZY_SECONDS := 12.0
 const FRENZY_REST := 40.0
-const MAX_CHASE_SECONDS := 18.0
+const MAX_CHASE_SECONDS := 12.0
 const MAX_SPEED := 90.0
 const RAGE_LIMIT := 3
-const CARD_EVERY := 80.0
+const CARD_EVERY := 24.0
 const CARD_RANGE := 230.0
 ## While carrying, he jolts his captive every SHAKE_EVERY s, knocking back
 ## SHAKE_LOSS of their struggle; steady escape progress remains possible.
@@ -46,7 +46,7 @@ var chase_time := 0.0
 var frenzy_rest := 0.0
 var melt := 0.0
 var rage := 0
-var card_clock := 40.0
+var card_clock := 8.0
 var used_spots: Dictionary = {}
 ## Clips can choose his next scrawl ("" picks one at random).
 var next_card := ""
@@ -92,7 +92,7 @@ func physics(delta: float) -> bool:
 	_check_memory()
 	if body.state != CampKiller.State.PATROL or world.night_clock.phase < 1:
 		return false
-	if not is_instance_valid(favourite) or favourite.status != CampPlayer.Status.ALIVE:
+	if not is_instance_valid(favourite) or favourite.status != CampPlayer.Status.ALIVE or favourite.hidden_spot >= 0 or not CampMap.is_woods(favourite.global_position):
 		_pick_favourite()
 	if not is_instance_valid(favourite) or not CampMap.is_woods(favourite.global_position) or (CampKiller.camp_closed and CampKiller.in_camp(favourite.global_position)):
 		return false
@@ -138,7 +138,7 @@ func resume_shadow() -> void:
 func _pick_favourite() -> void:
 	var options: Array[CampPlayer] = []
 	for actor: CampPlayer in body.get_tree().get_nodes_in_group("survivors"):
-		if actor.status == CampPlayer.Status.ALIVE:
+		if actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and CampMap.is_woods(actor.global_position) and not (CampKiller.camp_closed and CampKiller.in_camp(actor.global_position)):
 			options.append(actor)
 	favourite = options[randi() % options.size()] if not options.is_empty() else null
 	shadow_clock = 0.0

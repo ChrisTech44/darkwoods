@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-19"
+const RULES := "lnac-net-20"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -25,6 +25,7 @@ var world: Node2D
 var round_id := 0
 var seed_value := 0
 var mode := "camp"
+var camper_abilities_enabled := true
 var menu_open := false
 var waiting := false
 var loaded := {}
@@ -158,23 +159,26 @@ func _accept_choice(id: int, role: String, ready: bool) -> void:
 
 func _broadcast_roster() -> void:
 	if dedicated: get_node("/root/Server").ready_since = -1.0
-	if not dedicated or not roster.is_empty(): _lobby.rpc(roster,mode,seed_value)
+	if not dedicated or not roster.is_empty(): _lobby.rpc(roster,mode,seed_value,camper_abilities_enabled)
 	changed.emit()
 
 @rpc("authority","call_remote","reliable",0)
-func _lobby(peers: Dictionary, chosen_mode: String, value: int) -> void:
+func _lobby(peers: Dictionary, chosen_mode: String, value: int, powers: bool = true) -> void:
 	if not active: return
 	roster=peers
+	camper_abilities_enabled=powers
 	mode=chosen_mode
 	seed_value=value
 	phase="lobby"
 	status_text="Connected. Choose your survivor and mark Ready."
 	changed.emit()
 
-func configure_lobby(chosen_mode: String, value: int) -> void:
+func configure_lobby(chosen_mode: String, value: int, powers: Variant = null) -> void:
 	if not active or not multiplayer.is_server() or phase!="lobby" or chosen_mode not in ["camp","woods"]: return
 	value=clampi(value,0,2147483646)
-	if mode==chosen_mode and seed_value==value: return
+	var selected_powers: bool = camper_abilities_enabled if powers == null else bool(powers)
+	if mode==chosen_mode and seed_value==value and camper_abilities_enabled==selected_powers: return
+	camper_abilities_enabled=selected_powers
 	mode=chosen_mode
 	seed_value=value
 	for entry in roster.values(): entry["ready"]=false
@@ -191,13 +195,14 @@ func start_round(chosen_mode: String, chosen_seed: int) -> bool:
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	var value := chosen_seed if chosen_seed>0 else rng.randi_range(1,2147483646)
-	_begin.rpc(chosen_mode,clampi(value,1,2147483646),roster,round_id+1)
+	_begin.rpc(chosen_mode,clampi(value,1,2147483646),roster,round_id+1,camper_abilities_enabled)
 	return true
 
 @rpc("authority","call_local","reliable",0)
-func _begin(chosen_mode: String, value: int, peers: Dictionary, generation: int) -> void:
+func _begin(chosen_mode: String, value: int, peers: Dictionary, generation: int, powers: bool = true) -> void:
 	if not active: return
 	phase="loading"
+	camper_abilities_enabled=powers
 	round_id=generation
 	mode=chosen_mode
 	seed_value=value
@@ -230,6 +235,7 @@ func _begin(chosen_mode: String, value: int, peers: Dictionary, generation: int)
 	deadline=Time.get_ticks_msec()+90000
 	last_packet=Time.get_ticks_msec()
 	var session: Node=get_node("/root/Session")
+	session.camper_abilities_enabled=camper_abilities_enabled
 	session.mode=mode
 	session.next_seed=seed_value
 	session.survivor=participants[participants.keys()[0] if dedicated else multiplayer.get_unique_id()]["role"]

@@ -16,11 +16,16 @@ const PAYOUTS := ["flare", "battery_pack", "rations", "medkit", "noise_tin", "sa
 static func world(actor: CampPlayer) -> Node:
 	return actor.get_tree().get_first_node_in_group("round_world")
 
+static func enabled(actor: CampPlayer) -> bool:
+	var level: Node = world(actor)
+	if level != null and is_instance_valid(level.abilities): return level.abilities.enabled
+	return actor.get_node("/root/Session").camper_abilities_enabled
+
 static func setup(actor: CampPlayer) -> void:
 	actor.kit = {"owner":actor.get_instance_id(), "debt":0.0, "alone":0.0,
 		"isolated":false, "marker":Vector2.ZERO, "marker_life":0.0, "channel":0.0,
-		"cash":6 if actor.role == "max" else 0, "stake_time":-1.0,
-		"sample":"shutter_wraith" if actor.role == "christian" and not actor.expedition else "",
+		"cash":6 if actor.role == "max" and enabled(actor) else 0, "stake_time":-1.0,
+		"sample":"shutter_wraith" if actor.role == "christian" and not actor.expedition and enabled(actor) else "",
 		"subtype":"frog", "form":"", "form_time":0.0, "action_cd":0.0}
 
 static func able(actor: CampPlayer) -> bool:
@@ -28,7 +33,7 @@ static func able(actor: CampPlayer) -> bool:
 
 static func use(actor: CampPlayer) -> bool:
 	var level: Node = world(actor)
-	if level == null or level.paused or level.finished or not able(actor): return false
+	if level == null or not enabled(actor) or level.paused or level.finished or not able(actor): return false
 	if actor.ability_cooldown > 0.0: return false
 	match actor.role:
 		"christian": return CreatureSamples.use(actor)
@@ -60,13 +65,19 @@ static func use(actor: CampPlayer) -> bool:
 			return true
 	return false
 
+static func stake(actor: CampPlayer) -> int:
+	return stake_for_cash(actor,float(actor.kit.get("stake_time",0.0)))
+
+static func stake_for_cash(actor: CampPlayer, held: float) -> int:
+	return CASH_PRICE * mini(int(actor.kit.get("cash",0)) / CASH_PRICE,1+mini(2,int(held/0.65)))
+
 static func release(actor: CampPlayer) -> bool:
 	if actor.role != "max" or actor.kit.get("stake_time", -1.0) < 0.0: return false
 	var held: float = actor.kit["stake_time"]
 	actor.kit["stake_time"] = -1.0
 	var level: Node = world(actor)
-	if level == null or level.paused or level.finished or not able(actor): return false
-	var cost := CASH_PRICE * mini(int(actor.kit["cash"]) / CASH_PRICE,1+mini(2,int(held/0.65)))
+	if level == null or not enabled(actor) or level.paused or level.finished or not able(actor): return false
+	var cost := stake_for_cash(actor,held)
 	if cost < CASH_PRICE: return false
 	actor.kit["cash"] -= cost
 	actor.ability_cooldown = 1.0
@@ -81,6 +92,11 @@ static func release(actor: CampPlayer) -> bool:
 
 static func advance(actor: CampPlayer, delta: float) -> void:
 	if actor.kit.is_empty(): return
+	if not enabled(actor):
+		settle(actor)
+		cleanup(actor)
+		actor.kit["isolated"] = false
+		return
 	if actor.role == "john" and actor.ability_active <= 0.0: settle(actor)
 	if actor.role == "max" and actor.kit["stake_time"] >= 0.0:
 		actor.kit["stake_time"] = minf(2.0, actor.kit["stake_time"] + delta)
@@ -133,7 +149,7 @@ static func cancel_return(actor: CampPlayer) -> void:
 static func hit(actor: CampPlayer, damage: float) -> void:
 	cancel_return(actor)
 	actor.kit["stake_time"] = -1.0
-	if actor.role == "max": spill(actor,mini(int(actor.kit["cash"]),maxi(1,int(actor.kit["cash"]) / 3)))
+	if actor.role == "max" and enabled(actor): spill(actor,mini(int(actor.kit["cash"]),maxi(1,int(actor.kit["cash"]) / 3)))
 
 static func settle(actor: CampPlayer) -> void:
 	var debt: float = actor.kit.get("debt",0.0)
@@ -158,7 +174,7 @@ static func cleanup(actor: CampPlayer) -> void:
 
 static func progress(actor: CampPlayer, key: String) -> void:
 	var level: Node = world(actor)
-	if level == null or not is_instance_valid(level.abilities): return
+	if level == null or not is_instance_valid(level.abilities) or not enabled(actor): return
 	if level.abilities.completed.has(key): return
 	level.abilities.completed[key] = true
 	if actor.role != "john": return
@@ -166,7 +182,7 @@ static func progress(actor: CampPlayer, key: String) -> void:
 	actor.exhausted = false
 
 static func earn(actor: CampPlayer, key: String, amount: int) -> void:
-	if actor.role != "max": return
+	if actor.role != "max" or not enabled(actor): return
 	var level: Node = world(actor)
 	if level == null or not is_instance_valid(level.abilities) or level.abilities.receipts.has(key): return
 	level.abilities.receipts[key] = true
@@ -182,12 +198,13 @@ static func spill(actor: CampPlayer, amount: int) -> void:
 	pickup.cash_amount = amount
 
 static func status(actor: CampPlayer) -> String:
+	if not enabled(actor): return "CAMPER ABILITIES OFF"
 	match actor.role:
 		"christian": return CreatureSamples.status(actor)
 		"john":
 			if actor.ability_active > 0.0: return "DEBT %d / AFTER %d / %.1fs" % [actor.kit["debt"],maxf(0,actor.health-actor.kit["debt"]),actor.ability_active]
 		"max":
-			if actor.kit.get("stake_time",-1.0) >= 0.0: return "RELEASE X: STAKE $%d" % (CASH_PRICE*mini(int(actor.kit["cash"])/CASH_PRICE,1+mini(2,int(actor.kit["stake_time"]/0.65))))
+			if actor.kit.get("stake_time",-1.0) >= 0.0: return ("BUY 1 / $4" if actor.kit["stake_time"]<0.45 else "GAMBLE $%d / RELEASE X" % stake(actor))
 			return "X BUY $4 / HOLD GAMBLE / $%d" % actor.kit.get("cash",0)
 		"alex":
 			if actor.kit["channel"] > 0.0: return "RETURN %.1fs / HIT CANCELS" % actor.kit["channel"]

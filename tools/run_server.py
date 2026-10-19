@@ -43,6 +43,7 @@ def main():
     parser.add_argument("--start-delay", type=integer(1, 60), default=3)
     parser.add_argument("--result-delay", type=integer(3, 300), default=15)
     parser.add_argument("--pack", type=Path, help="Run a packaged server PCK instead of the source project")
+    parser.add_argument("--no-camper-abilities", action="store_true", help="Disable every camper passive and active power for this server")
     args = parser.parse_args()
     engine = godot_binary()
     cmd = [engine, "--headless", "--disable-render-loop", "--audio-driver", "Dummy"]
@@ -60,6 +61,8 @@ def main():
     cmd += ["--", "--dedicated-server"]
     for name in ["port", "mode", "seed", "min_players", "start_delay", "result_delay"]:
         cmd += ["--" + name.replace("_", "-"), str(getattr(args, name))]
+    if args.no_camper_abilities:
+        cmd += ["--no-camper-abilities"]
     try:
         return subprocess.call(cmd, cwd=ROOT)
     except KeyboardInterrupt:

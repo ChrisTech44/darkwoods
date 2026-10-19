@@ -27,6 +27,7 @@ var supplies_label: Label
 var voice_label: Label
 ## X active ability state and the current kit's graphic.
 var ability_label: Label
+var power_detail: Label
 var ability_icon: TextureRect
 ## Tab notebook (map, plan, guide, log); owns `chart` and `inventory_label`.
 var notebook: CampNotebook
@@ -107,6 +108,9 @@ func _ready() -> void:
 	root.add_child(ability_icon)
 	ability_label = _label(Vector2(20, 33), Vector2(169, 10), 7)
 	ability_label.add_theme_color_override("font_color", Color("c9d7a4"))
+	power_detail = _label(Vector2(9,112),Vector2(252,32),8)
+	power_detail.add_theme_stylebox_override("normal",CampStyle.box("101e22ee","63705b",3))
+	power_detail.hide()
 	voice_label = _label(Vector2(190, 37), Vector2(185, 10), 7)
 	voice_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	voice_label.add_theme_color_override("font_color", Color("a9c8d6"))
@@ -233,7 +237,9 @@ func set_status(heading: String, detail: String, energy: float) -> void:
 ## Health bar turns from red to a pulsing deep red when wounded; a hit flashes the edges.
 func update_ability(actor: CampPlayer, text: String) -> void:
 	ability_label.text = text
-	ability_icon.visible = actor.status == CampPlayer.Status.ALIVE
+	power_detail.text = SamplePresentation.detail(actor)
+	power_detail.visible = actor.status==CampPlayer.Status.ALIVE and not power_detail.text.is_empty() and (notebook==null or not notebook.visible)
+	ability_icon.visible = actor.status == CampPlayer.Status.ALIVE and SurvivorKits.enabled(actor)
 	if not ability_icon.visible: return
 	var art: String = {"christian":"kit_sample","john":"kit_debt","alex":"kit_return","max":"kit_wallet"}.get(actor.role,"")
 	if actor.role == "max":

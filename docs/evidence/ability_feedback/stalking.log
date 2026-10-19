@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"round_ready","milestone":"M1"}
+{"event":"night_phase","phase":"NIGHTFALL","revealed":["fuel"],"time":0}
+{"event":"assertion","name":"fixture_has_clear_road_sight","passed":true}
+{"event":"assertion","name":"distant_target_gets_approach_movement","passed":true}
+{"event":"assertion","name":"distant_approach_cannot_spend_lunge_timer","passed":true}
+{"event":"assertion","name":"approach_outpaces_walking_but_not_sprinting","passed":true}
+{"event":"assertion","name":"nearby_visible_target_advances_stalking","passed":true}
+{"event":"assertion","name":"nearby_stalking_eventually_lunges","passed":true}
+{"event":"assertion","name":"ordinary_chase_is_not_overridden_by_stalking","passed":true}
+{"event":"assertion","name":"dusk_keeps_normal_detection","passed":true}
+{"event":"assertion","name":"nearby_but_occluded_target_does_not_spend_lunge_timer","passed":true}
+{"event":"assertion","name":"occlusion_fixture_found","passed":true}
+{"event":"assertion","name":"survivor_actually_walked_the_road","passed":true}
+{"event":"assertion","name":"killer_closes_walking_gap_and_begins_stalking","passed":true}
+{"event":"assertion","name":"nearby_stalking_keeps_up_with_a_walking_survivor","passed":true}
+{"event":"assertion","name":"beam_still_interrupts_nearby_shadowing","passed":true}
+{"event":"assertion","name":"calling_card_range_remains_230_despite_closer_shadow_distance","passed":true}
+{"event":"assertion","name":"stacked_chase_speed_is_actually_capped","passed":true}
+{"event":"assertion","name":"wounded_sprint_can_gain_a_gap","passed":true}
+{"checks":17,"event":"test_result","failures":0,"following_gap":153.696411132812,"suite":"stalker_distance","walking_gap":218.1357421875}

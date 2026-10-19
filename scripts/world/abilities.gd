@@ -7,6 +7,7 @@ var marks: Array[Dictionary] = []
 var stats: Dictionary = {}
 var completed: Dictionary = {}
 var receipts: Dictionary = {}
+var enabled := true
 
 static func ability_name(role: String) -> String:
 	return {"christian":"FIELD TEST", "john":"PUSH THROUGH", "max":"CASH OUT", "alex":"MY OWN WAY BACK"}.get(role, "")
@@ -18,8 +19,12 @@ static func setup(actor: CampPlayer) -> void:
 	SurvivorKits.setup(actor)
 
 func _ready() -> void:
+	enabled = get_node("/root/Session").camper_abilities_enabled
 	CreatureSamples.reset()
 	z_index = 4
+	var ink := CanvasItemMaterial.new()
+	ink.light_mode=CanvasItemMaterial.LIGHT_MODE_UNSHADED
+	material=ink
 
 func _physics_process(delta: float) -> void:
 	var net: Node = get_node("/root/Net")

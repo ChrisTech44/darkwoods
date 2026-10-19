@@ -41,6 +41,8 @@ static func lines(topic: String, level: Node = null) -> Array[String]:
 			out.append("press E to call for help. Alone, you get one slow get-up.")
 			out.append("Moon dial (top right) fills toward the next full moon;")
 			out.append("werewolves change while it is out. Red: Blood Moon.")
+			out.append("Full flashlight: 7 minutes of ordinary woods use; flashes")
+			out.append("and creature drains spend extra. Isolated Alex: 9m20s.")
 		"THE KILLER":
 			var who := "THE STALKER"
 			if level != null and level.plan.expedition:
@@ -62,12 +64,21 @@ static func lines(topic: String, level: Node = null) -> Array[String]:
 			out.append("reveal where parts are. Locked caches need boltcutters")
 			out.append("(Maintenance or a woods toolbox) or a loud crowbar.")
 		"SURVIVORS":
+			if level != null and not level.abilities.enabled: out.append("HOST RULE: ALL CAMPER POWERS ARE OFF THIS ROUND.")
 			out.append("CHRISTIAN: survive signatures to collect one sample.")
 			out.append("X experiments can transform you or hit friends. Wolf needs moon.")
+			out.append("Faint guides show shot paths, aim cones and effect areas.")
+			out.append("Forms show time left and extra X actions on screen.")
+			out.append("Mimic copies only a living camper actually in this round.")
 			out.append("JOHN: preparing escapes refills stamina. X defers damage 6s.")
 			out.append("Debt lands afterward; grabs end the burst. Healing waits.")
 			out.append("MAX: optional searches/stolen gear earn cash; hits spill it.")
-			out.append("Tap X buys for $4. Hold X, release to gamble $4/$8/$12.")
+			out.append("Max starts with $6. Each optional search pays $4; the first")
+			out.append("recovery of stolen gear pays $3. Cash caps at $100.")
+			out.append("Tap X (<0.45s): spend $4 for 1 random ordinary supply.")
+			out.append("Hold 0.45s+, release X: gamble. Stake rises $4/$8/$12.")
+			out.append("45% lose the stake; 55% win 2/4/6 supplies, not money.")
+			out.append("Full belt: winnings drop nearby. A hit spills 1/3 cash.")
 			out.append("ALEX: after 4s alone, save light and recover stamina faster.")
 			out.append("X marks for 75s; X alone channels 2s back. Hits interrupt.")
 		"CREATURES":

@@ -1,8 +1,8 @@
 # Last Night at Camp
 
-**Dedicated server branch:** run a camp without a host survivor. See the
+**Dedicated server:** run a camp without a host survivor. See the
 [server setup and connection guide](docs/dedicated_server.md). Updated `main`
-clients (`lnac-net-19`) can join; the server code remains on this branch.
+clients (`lnac-net-20`) can join; the server code is available in this checkout.
 
 **Find the parts. Keep your light alive. Get out before the woods get you.**
 
@@ -334,7 +334,7 @@ for the next night and the next launch. Default port: **UDP 27840**. Everyone ma
 the host chooses mode/seed and starts. LAN/Wi-Fi uses the host's local IP;
 Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
 
-Update clients and server together to **lnac-net-18**. Your survivor now responds
+Update clients and server together to **lnac-net-20**. Your survivor now responds
 locally, with server corrections smoothed; other survivors use a short movement
 buffer. A long connection interruption can still pause movement. See
 [measured smoothness improvements](docs/evidence/smoothness/README.md).
@@ -464,10 +464,10 @@ the seed and announced in the Dusk message and the notebook.
     walking but slower than sprinting. His lunge timer only advances within
     **260 px with clear sight**; distance and intervening walls pause it. Nearby,
     he follows about **130 px behind** at 78 px/s. Catch him in your beam and he
-    melts into the dark, only to turn up behind you later. After **55–80 s**
+    melts into the dark, only to turn up behind you later. After **90–130 s**
     of nearby shadowing, he lunges. Ordinary distant sightings during a search
     return him to stalking; deliberate noise investigations and point-blank
-    encounters can start a chase. A chase lasts at most **18 s** before a
+    encounters can start a chase. A chase lasts at most **12 s** before a
     three-second recovery and another stalking interval. Quick Camp has no shadowing.
   - **The grab and the hook.** He doesn't hit a wounded survivor (50 health or
     less): he **throws them over his shoulder** and walks them to **his hook**,
@@ -662,8 +662,27 @@ Paparazzo sample and Max with $6 because it has no woods acquisition loop.
 
 Isolation enters beyond 190px, exits within 150px, and ignores downed/escaped
 teammates as proximity anchors. Multiple copies of a character remain allowed.
-Old role saves return to the four-character selection; personal appearance work
-still needs reference images. See the [overhaul and detailed rules](docs/four_survivor_overhaul.md).
+Old role saves return to the four-character selection; camper artwork follows
+the requested descriptions. See the [overhaul and detailed rules](docs/four_survivor_overhaul.md).
+
+Max's **tap** spends $4 for one random ordinary supply. Hold X for **0.45s or
+longer**, then release to gamble: **45% lose the stake**, **55% win 2 supplies per
+$4**. Stakes rise from $4 to $8 at 0.65s and $12 at 1.3s; the HUD shows the actual
+cost and payout before release. Winnings are supplies, not cash. Overflow drops
+nearby. No objective parts or tools are purchased.
+
+Christian's five ranged copy families launch distinct travelling shots; faint
+paths/cones/area guides show how his equipped sample applies. Transformations
+show a timer and special-action status. Mimic copies the appearance and overhead
+name of a living player actually present; solo use keeps the sample. Copied
+Cuckoo calls/rewind bells, Lullaby singing and mower engines use existing audio.
+[All 30 interaction details and evidence](docs/ability_feedback_review.md).
+
+**Disable camper powers:** main-menu Settings for offline play, or the listen-host
+lobby switch. The host controls both passive and active powers for the whole
+round; guests see the locked rule. Dedicated servers use
+`python3 tools/run_server.py --no-camper-abilities`. Ordinary supplies, flashlight,
+revives and objectives remain available.
 
 **H** hands one of your held supply to a teammate standing right beside you.
 Two survivors at the dead generator restart it quietly; alone it roars.
@@ -731,7 +750,7 @@ rather than memorizing screen coordinates.
 ### Flashlight and survival supplies
 
 Every survivor has a built-in **flashlight**; it is not a pickup or belt item.
-A full charge lasts **270 seconds of ordinary woods use** (360 while Alex’s isolation bonus is active).
+A full charge lasts **7 minutes of ordinary woods use** (9m20s while Alex’s isolation bonus is active).
 The HUD shows remaining beam time; flash bursts and light-eating creatures can
 use charge sooner. Spare batteries still restore 70 charge out of 90.
 Toggle it with **F**. It starts with **90 charge**, drains at one third charge/second

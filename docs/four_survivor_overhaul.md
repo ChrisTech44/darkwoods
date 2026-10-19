@@ -30,7 +30,7 @@ acceptance remains pending. Target-only differences are called out explicitly.
   10s; secondary pounces have 3s cooldown. Most copied AI statuses cap at 6s;
   headline sensory disruption caps at 2s, with no frog/hold-lock on the Stalker.
   Activations have warnings and finite cleanup; sample casts cannot earn samples.
-- Protocol is `lnac-net-19`. Host RNG, cash receipts/spills, sample state and the
+- Protocol is `lnac-net-20`. Host RNG, cash receipts/spills, sample state and the
   compact movement projection replicate; clients cannot award these outcomes.
 
 Current implementation differences to assess explicitly: creature slime uses a
@@ -46,6 +46,12 @@ Implementation evidence: [checks and graphical captures](evidence/four_survivors
 The final complete runner passes 218 steps; survivor/prediction suites pass
 144/81 checks. Two/four-peer listen-host and dedicated loopback gates pass.
 These scripted gates do not replace human balance or cross-machine acceptance.
+
+Current follow-up: [ability feedback/delivery audit](ability_feedback_review.md)
+adds real shots for five ranged families, readable form actions/timers, present-
+player Mimic names, native audio feedback and a host-owned all-powers-off rule.
+The complete 218-step result above describes the earlier implementation; current
+follow-up gates and limits are recorded with its evidence.
 
 ## Design intent
 

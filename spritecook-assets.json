@@ -401,6 +401,108 @@
   {
    "asset_id": "5fd8f6f2-fbff-438c-afde-29c6701affb2",
    "label": "Christian camper portrait auto-slice used as isolated redo reference; source 07bc6840"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "39182dce0a40",
+   "file": "art_sources/spritecook/ability_effects_sheet.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "b2fd4a0b2606",
+   "file": "assets/sprites/sc/sample_backwards.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "8ca17def1489",
+   "file": "assets/sprites/sc/sample_clock.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "fec5db2f40ff",
+   "file": "assets/sprites/sc/sample_echo.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "35edae8349c6",
+   "file": "assets/sprites/sc/sample_float.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "d19c634db821",
+   "file": "assets/sprites/sc/sample_frog.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "104b1d20f669",
+   "file": "assets/sprites/sc/sample_gaze.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "d646e1280560",
+   "file": "assets/sprites/sc/sample_moth.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "cfb6d456ef34",
+   "file": "assets/sprites/sc/sample_mud.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "03b658eb22d5",
+   "file": "assets/sprites/sc/sample_passenger.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "4654b31fdc19",
+   "file": "assets/sprites/sc/sample_slime.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "6163b75c35c7",
+   "file": "assets/sprites/sc/sample_song.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "570c2e37f58f",
+   "file": "assets/sprites/sc/sample_spore.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "c357dfd45809",
+   "file": "assets/sprites/sc/sample_swap.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "9e2a4a7f8508",
+   "file": "assets/sprites/sc/sample_tarot.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "608f5d867810",
+   "file": "assets/sprites/sc/sample_thread.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "bdbb8c47-eab9-4a95-b8fa-6d5b3d7bb35f",
+   "sha12": "4a261003311a",
+   "file": "assets/sprites/sc/sample_toll.png",
+   "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
   }
  ]
 }

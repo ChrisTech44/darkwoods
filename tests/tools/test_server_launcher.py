@@ -42,6 +42,11 @@ class ServerLauncherTests(unittest.TestCase):
         self.assertIn('--dedicated-server', serving.call_args.args[0])
         self.assertEqual(serving.call_args.args[0][-6:-4], ['--min-players', '2'])
 
+    def test_disabled_powers_forwarded_to_authority(self):
+        result, _, serving = self.launch(['--no-camper-abilities'], subprocess.CompletedProcess([], 0, 'Imported'))
+        self.assertEqual(result, 0)
+        self.assertIn('--no-camper-abilities', serving.call_args.args[0])
+
     def test_exported_pack_skips_source_import(self):
         with tempfile.NamedTemporaryFile(suffix='.pck') as pack:
             result, importing, serving = self.launch(['--pack', pack.name], None)

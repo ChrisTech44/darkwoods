@@ -1,5 +1,46 @@
 # Development log
 
+## 2026-10-19 — Ability delivery, readable decisions and host rules
+
+Fixed Christian's Mimic to borrow a living present player's sprite and overhead
+name, keep its sample in solo play, and end when the source dies/leaves. Owner,
+role, map/voice identity stay authoritative. Shared nameplates clear camp roofs
+and remain behind the sight mask. All 30 interactions now have an explicit
+presentation/delivery classification. Five ranged families use real wall-blocked
+shots, with four distinct Witch curses and four other projectile sprites.
+Faint local trajectories/cones/areas persist while equipped/casting; generic
+bubbles are replaced by appropriate art, including actual slime-patch positions.
+Forms show time remaining and special-action/ready/cooldown text on screen.
+
+Max's selection, guide and HUD explain tap purchase versus hold/release gamble,
+actual stake, odds, supply payouts and spills. Added native interaction cues,
+Cuckoo's three calls/rewind bell and screen effects, following Saint song and mower
+loops, and proper moving-partner stitching. Audio stimuli and audible playback
+remain separate; existing source assets and once-only event transport are reused.
+One inspected 16-piece SpriteCook sheet cost 12 credits (320 to 308), with no
+reroll/paid cleanup/animation. Details: [all 30 deliveries and rules](ability_feedback_review.md).
+
+Ordinary woods flashlight use is now 7 minutes (isolated Alex 9m20s); the HUD uses
+the same passive drain rate. Stalking intervals increase to 90–130s, chases cap at
+12s, and the physical calling-card clock starts at 8s then repeats every 24s.
+Eligible favourites are picked in the woods. Range/sight, beam fade, grab and
+speed protections remain. Added the all-camper-powers rule: offline Settings,
+listen-host lobby and dedicated `--no-camper-abilities`, covering passives and
+actives/starting cash/samples. Guests cannot change it; lobby changes clear
+readiness and round start locks the rule. Protocol advances to lnac-net-20;
+server and clients update together. Brief/server guides now reflect dedicated
+source actually present in main, superseding their older branch-only wording.
+
+Verification: survivor catalogue 164, graphical ability feedback 110, prediction
+81, stalking 17, existing sound routing 27, layout 1,323 and graphical replica
+rendering 8 checks pass. Four-role disabled real listen/dedicated sessions pass;
+normal two-peer Quick Camp passes 114/30 plus late join 2. Launcher unit tests 5
+pass; required import/startup are clean. Graphical output was opened/inspected,
+including repaired Settings clipping and dark-world guides. [Evidence, commands
+and limits](evidence/ability_feedback/README.md). No full broad regression or
+Internet/package/microphone/listening/human balance acceptance is inferred.
+The private MP4 gallery is refreshing against the new implementation.
+
 ## 2026-10-19 — Local ability video gallery
 
 Recorded 52 short MP4 demonstrations under the existing ignored

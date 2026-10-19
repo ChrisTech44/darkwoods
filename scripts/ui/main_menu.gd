@@ -54,9 +54,21 @@ func _ready() -> void:
 	panel.add_child(content)
 	var heading := Label.new()
 	heading.text = "SETTINGS"
-	heading.add_theme_font_size_override("font_size", 18)
+	heading.add_theme_font_size_override("font_size", 13)
 	content.add_child(heading)
-	content.add_child(knobs)
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size=Vector2(0,92)
+	scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+	content.add_child(scroll)
+	knobs.size_flags_horizontal=Control.SIZE_EXPAND_FILL
+	scroll.add_child(knobs)
+	var powers := CheckButton.new()
+	powers.name = "CamperAbilities"
+	powers.text = "CAMPER ABILITIES"
+	powers.add_theme_font_size_override("font_size", 9)
+	powers.button_pressed = session.camper_abilities_enabled
+	powers.toggled.connect(func(value: bool): session.camper_abilities_enabled = value)
+	content.add_child(powers)
 	var back := Button.new()
 	back.name = "Back"
 	back.text = "BACK TO CAMP"

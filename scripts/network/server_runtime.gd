@@ -6,6 +6,7 @@ var port := 27840
 var game_mode := "woods"
 var configured_seed := 0
 var min_players := 1
+var camper_abilities_enabled := true
 var start_delay := 3.0
 var result_delay := 15.0
 var ready_since := -1.0
@@ -27,6 +28,10 @@ func _ready() -> void:
 	var index := 0
 	while index < args.size():
 		var option: String = args[index]
+		if option == "--no-camper-abilities":
+			camper_abilities_enabled = false
+			index += 1
+			continue
 		if option == "--dedicated-server":
 			index += 1
 			continue
@@ -61,9 +66,9 @@ func boot() -> void:
 	if error != OK:
 		fail("Cannot bind UDP port %d: %s" % [port, error_string(error)])
 		return
-	net.configure_lobby(game_mode, configured_seed)
+	net.configure_lobby(game_mode, configured_seed, camper_abilities_enabled)
 	show_lobby()
-	print(JSON.stringify({"event": "server_listening", "port": port, "mode": game_mode, "min_players": min_players, "rules": net.RULES, "max_players": 4, "audio_driver": AudioServer.get_driver_name()}))
+	print(JSON.stringify({"event": "server_listening", "port": port, "mode": game_mode, "min_players": min_players, "rules": net.RULES, "max_players": 4, "camper_abilities_enabled": camper_abilities_enabled, "audio_driver": AudioServer.get_driver_name()}))
 
 func show_lobby() -> void:
 	ready_since = -1.0

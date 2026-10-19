@@ -77,17 +77,17 @@ These are code-backed facts, not a substitute for human acceptance testing.
   sabotage), one of 30 creatures per night; nine kinds were added on 18 October
   and one of the 22 roaming kinds rests each night (rotating by seed).
 - Stalker shadowing: Expedition, Nightfall onward, chosen living survivor in
-  eligible woods; nearby clear-sight time before lunging is 55–80s. Ordinary
+  eligible woods; nearby clear-sight time before lunging is 90–130s. Ordinary
   SEARCH sightings beyond 40px return to stalking. Deliberate investigations and
-  close contact retain detection. Chase is capped at 18s, followed by 3s recovery.
+  close contact retain detection. Chase is capped at 12s, followed by 3s recovery.
   Only the favourite's beam fades a stalking Stalker within 240px; Space flash is
   separate. Final movement caps at 90px/s; frenzy lasts 12s with 40s rage rest.
 - Repeat grabs add 2 presses, capped at +4 above each creature's base (Stalker
   14–18, Vampire 8–12), excluding decay. Stalker decay is 0.06/s and jolts cost
   0.1 progress. Vampire gaze breaks/bite releases start a 6s pull/bite cooldown.
   Witch curses use shuffled bags without adjacent repeats, with replicated cast
-  tells/bolt types. Flashlight passive drain is one third charge per second:
-  full beam 270s, isolated Alex 360s; other consumers retain their existing charge cost.
+  tells/bolt types. Flashlight passive drain is 90/420 charge per second:
+  full beam 420s (7 minutes), isolated Alex 560s; other consumers retain their existing charge cost.
 - Boat parts install at the marked Lakeshore dock repair pad, with individual
   completion labels. Permanent substation/relay, logging, lakeshore and ranger
   scenery, the boat hull and unlit pyre remain visible independently of tonight’s escapes. Inactive
@@ -104,23 +104,23 @@ These are code-backed facts, not a substitute for human acceptance testing.
   platform permissions retain their own acceptance limits; implementation alone
   does not satisfy them. Do not capture microphones or enable voice for audits.
 
-## Dedicated server branch
+## Dedicated server implementation
 
-`headless-server` adds an opt-in command-line authority for 1–4 human clients,
+The current `main` checkout includes an opt-in command-line authority for 1–4 human clients,
 with no server survivor. `tools/run_server.py` forces headless display, disabled
 render loop and Dummy audio; server paths skip voice codec/capture/playback.
 Source launch first imports assets/registers script classes and refuses to start
 after import errors, including when Godot exits zero. Exported packs skip import.
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
-cleanup are implemented. The game protocol is `lnac-net-19`, compatible with
+cleanup are implemented. The game protocol is `lnac-net-20`, compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
 See [server guide](docs/dedicated_server.md); execution/OS limits remain separate
-acceptance gates. This branch is not merged into main. It includes main's measured redraw caching,
+acceptance gates. This supersedes the older branch-only status: dedicated source is present in main and executed by the current rule checks. It includes measured redraw caching,
 bounded prediction/reconciliation and buffered remote motion; see evidence below.
 
 ## Movement transport
 
-Rules are `lnac-net-19`: authority-only 30Hz player packets include applied-input
+Rules are `lnac-net-20`: authority-only 30Hz player packets include applied-input
 acknowledgements, bounded owner movement state and server-detected discontinuity
 counters. The owner predicts shared collision/movement immediately, with no AI
 hearing, blood or gameplay outcomes; authoritative fields are restored after each
@@ -133,6 +133,12 @@ art remains cached until replicated state changes. Clients and listen/dedicated
 servers must update together. See [smoothness evidence](docs/evidence/smoothness/README.md)
 and [network investigation](docs/network_lag_investigation.md) for executed
 measurements and limits; no complete cure for multi-second link loss is claimed.
+
+Current copied-ability presentation, audio, host rule and interaction audit:
+[ability feedback review](docs/ability_feedback_review.md). Camper powers may be
+disabled offline, in the listen lobby, or with `--no-camper-abilities` on a server;
+the host locks the passive/active rule per round. Calling cards begin after an
+8s clock, then recur every 24s when physically within 230px.
 
 ## Interface and graphics direction
 

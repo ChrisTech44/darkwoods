@@ -1,8 +1,8 @@
 # Dedicated server edition
 
-This branch (`headless-server`) adds a dedicated authority for **1–4 human
+This checkout includes a dedicated authority for **1–4 human
 survivors**. The server has no survivor and consumes no player slot. Use the
-updated `main` client with rules **lnac-net-18**, or a client from this branch.
+updated `main` client with rules **lnac-net-20**, with the same protocol.
 Older clients must update. The server owns AI, movement validation, damage,
 inventory, clues, objectives and extraction, using the same gameplay scene.
 
@@ -13,7 +13,7 @@ older rules18 builds connect but do not send/render the added coverage correctly
 
 ## Run from source
 
-Use Godot **4.7.2** and Python 3. From this branch:
+Use Godot **4.7.2** and Python 3. From this checkout:
 
 ```sh
 python3 tools/run_server.py --mode woods --port 27840 --min-players 2
@@ -21,7 +21,7 @@ python3 tools/run_server.py --mode woods --port 27840 --min-players 2
 
 On Genesect's Snap installation, prefix the command with
 `GODOT_BIN=/snap/bin/godot-4` so noninteractive shells find the engine. After
-friends finish the current night, stop the old process, pull `headless-server`,
+friends finish the current night, stop the old process, pull the current branch,
 update every player's `main` copy and relaunch with your usual options. Rules 17
 and 18 cannot join each other. Diagnostics for this update did not restart the
 regular server.
@@ -57,6 +57,11 @@ Dummy audio, including when that computer has saved voice preferences.
 | `--min-players` | `1` | Required human count, 1–4 |
 | `--start-delay` | `3` | Seconds all connected players must remain ready, 1–60 |
 | `--result-delay` | `15` | Seconds results remain before returning to the lobby, 3–300 |
+| `--no-camper-abilities` | off | Disable every camper passive/active and starting cash/sample; ordinary survival and monster powers remain |
+
+The ability rule is advertised to clients, locked for each round and survives
+automatic lobby resets. Guests cannot re-enable it. Use the same flag after `--`
+when launching Godot directly. [Ability rules](ability_feedback_review.md).
 
 All players use **Host / Join Co-op**, enter the server address and UDP port,
 press **Join**, choose their survivor and mark **Ready**. Nobody presses Host or
@@ -137,7 +142,7 @@ strict error-free harness; orderly staggered departures are checked separately.
 This console-error case is unresolved and must not be described as clean acceptance.
 
 Player poses now use an independent 30Hz stream; full world state uses 20Hz
-unordered fragments. Both clients and server must update to rules lnac-net-18 and
+unordered fragments. Both clients and server must update to rules lnac-net-20 and
 the server must restart before updated clients join. Bounded local prediction, acknowledged reconciliation and buffered remote motion
 are implemented; the client also avoids unchanged pickup/site redraws. See the
 [smoothness measurements](evidence/smoothness/README.md). The main client also

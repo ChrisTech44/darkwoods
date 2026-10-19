@@ -109,7 +109,19 @@ func _ready() -> void:
 	_button("Settings","SETTINGS",Vector2(285,88),Vector2(85,23),_settings)
 	roster_label=_label("",Vector2(14,115),8)
 	roster_label.add_theme_constant_override("line_spacing",-4)
-	roster_label.size=Vector2(356,46)
+	roster_label.size=Vector2(356,30)
+	var powers := CheckButton.new()
+	powers.name="CamperAbilities"
+	powers.text="CAMPER ABILITIES (PASSIVE + ACTIVE)"
+	powers.position=Vector2(14,145)
+	powers.size=Vector2(356,16)
+	powers.add_theme_font_size_override("font_size",7)
+	powers.button_pressed=net.camper_abilities_enabled
+	powers.toggled.connect(func(value: bool):
+		if not net.active: net.camper_abilities_enabled=value
+		else: net.configure_lobby(net.mode,net.seed_value,value))
+	fields["Abilities"]=powers
+	add_child(powers)
 	ready_button=_button("Ready","READY",Vector2(14,164),Vector2(100,23),func():
 		var mine: Dictionary=net.roster.get(multiplayer.get_unique_id(),{})
 		net.choose(SurvivorRoster.IDS[role.selected],not mine.get("ready",false)))
@@ -177,6 +189,8 @@ func _process(delta: float) -> void:
 	fields["Name"].editable=not net.active
 	fields["Address"].editable=not net.active
 	fields["Port"].editable=not net.active
+	fields["Abilities"].disabled=net.active and not multiplayer.is_server()
+	fields["Abilities"].set_pressed_no_signal(net.camper_abilities_enabled)
 	fields["Mode"].disabled=net.active and not multiplayer.is_server()
 	fields["Seed"].editable=not net.active or multiplayer.is_server()
 	ready_button.disabled=not online or not net.roster.has(multiplayer.get_unique_id())

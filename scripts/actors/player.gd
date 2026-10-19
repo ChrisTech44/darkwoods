@@ -41,7 +41,7 @@ var supplies: Dictionary = {"flare": 2, "battery_pack": 1, "rations": 1, "medkit
 var invulnerability: float = 0.0
 var role: String = "christian"
 var kit: Dictionary = {}
-var light_drain: float = 1.0 / 3.0
+var light_drain: float = 90.0 / 420.0
 var sprint_hearing: float = 1.0
 var belt: Array[String] = ["flare", "battery_pack", "rations", "", "", ""]
 var selected_slot: int = 0
@@ -131,6 +131,9 @@ func _ready() -> void:
 	stamina = config.stamina_max
 	flashlight_charge = config.flashlight_capacity
 	add_to_group("survivors")
+	var nameplate: Node2D = load("res://scripts/actors/survivor_nameplate.gd").new()
+	nameplate.actor=self
+	add_child(nameplate)
 	collision_mask |= BARRIER_LAYER | WATER_LAYER
 
 
@@ -150,7 +153,7 @@ func _physics_process(delta: float) -> void:
 	if has_effect("dark"):
 		flashlight_on = false
 	if expedition and CampMap.is_woods(global_position) and flashlight_on and status == Status.ALIVE:
-		flashlight_charge = maxf(0.0, flashlight_charge - delta * light_drain * (0.75 if kit_isolated() else 1.0))
+		flashlight_charge = maxf(0.0, flashlight_charge - delta * passive_light_rate())
 		if flashlight_charge <= 0:
 			flashlight_on = false
 	invulnerability = maxf(0.0, invulnerability - delta)
@@ -443,8 +446,6 @@ func _draw() -> void:
 		draw_rect(Rect2(1, -8, 2, 1), Color("d9e6c8"))
 		return
 	if status == Status.ALIVE and CreatureSamples.draw_player(self): return
-	if not peer_name.is_empty():
-		draw_string(ThemeDB.fallback_font,name_origin(),peer_name,HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("b9d4b2"))
 	if has_effect("tethered") and effect_data.has("tether_to"):
 		# The Seamstress's thread to whoever (or whatever) you're stitched to.
 		var other: Vector2 = to_local(effect_data["tether_to"])
@@ -528,8 +529,15 @@ func held_item() -> String:
 	return belt[selected_slot]
 
 
+func display_name() -> String:
+	if kit.get("form","") == "mimic": return kit.get("mask_name",peer_name)
+	return peer_name if not peer_name.is_empty() else role.to_upper()
+
 func name_origin() -> Vector2:
 	return Vector2(-ThemeDB.fallback_font.get_string_size(peer_name,HORIZONTAL_ALIGNMENT_LEFT,-1,7).x * 0.5,-34)
+
+func passive_light_rate() -> float:
+	return light_drain*(0.75 if kit_isolated() else 1.0)
 
 func kit_isolated() -> bool:
 	return bool(kit.get("isolated",false)) if prediction_kit.is_empty() else prediction_kit[1]

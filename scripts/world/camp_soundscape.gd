@@ -505,6 +505,11 @@ func _follow_loops() -> void:
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if actor.status == CampPlayer.Status.ALIVE and actor.has_effect("frog"):
 			wanted[actor.get_instance_id()] = ["frog_croak", actor]
+		if actor.status != CampPlayer.Status.ALIVE: continue
+		if actor.kit.get("cast",{}).get("kind","")=="boiler_saint" and actor.kit.get("cast",{}).get("fired",false):
+			wanted["sample_song:%d" % actor.get_instance_id()] = ["lullaby",actor]
+		if actor.kit.get("form","")=="groundskeeper":
+			wanted["sample_mower:%d" % actor.get_instance_id()] = ["boat_engine",actor]
 	for id in follow_loops.keys():
 		if not wanted.has(id) or not is_instance_valid(follow_loops[id]):
 			if is_instance_valid(follow_loops[id]):
@@ -513,6 +518,9 @@ func _follow_loops() -> void:
 	for id in wanted:
 		var cue: String = wanted[id][0]
 		var source: Node2D = wanted[id][1]
+		if follow_loops.has(id) and follow_loops[id].stream != mixer.stream_for(cue):
+			follow_loops[id].queue_free()
+			follow_loops.erase(id)
 		if not follow_loops.has(id):
 			played_counts[cue] = played_counts.get(cue, 0) + 1
 			var node := AudioStreamPlayer2D.new()

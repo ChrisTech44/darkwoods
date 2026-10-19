@@ -57,6 +57,7 @@ func run() -> void:
 	await catalogue_checks()
 	await sharing_checks()
 	watching_checks()
+	rule_checks()
 	print(JSON.stringify({"event":"test_result","suite":"four_survivors","checks":checks,"failures":failures}))
 	await root.get_node("AudioManager").prepare_shutdown()
 	quit(1 if failures else 0)
@@ -281,7 +282,9 @@ func catalogue_checks() -> void:
 			continue
 		CreatureSamples.advance(christian,3.1)
 		# Real Witch projectiles advance along their swept segment, not a point AoE.
-		if kind=="witch": CreatureSamples.advance(christian,0.3)
+		if kind in SamplePresentation.SHOTS:
+			check(not bodies[0].sample_state.get("timers",{}).has("face_moth"),"shot_has_real_travel_before_impact_"+kind)
+			CreatureSamples.advance(christian,0.3)
 		match kind:
 			"witch": check(bodies[0].sample_state.get("timers",{}).has("frog"),"catalogue_witch_projectile_hits_ai")
 			"shutter_wraith": check(bodies[0].sample_state.get("timers",{}).has("whiteout"),"catalogue_camera_sensing_adapter")
@@ -324,3 +327,52 @@ func watching_checks() -> void:
 	check(CreatureSamples.motion(christian)[3],"scarecrow_close_facing_without_light_watches")
 	observer.facing = Vector2.RIGHT
 	check(not CreatureSamples.motion(christian)[3],"scarecrow_turn_away_frees_form")
+
+func rule_checks() -> void:
+	var christian: CampPlayer = friends.christian
+	var alex: CampPlayer = friends.alex
+	var john: CampPlayer = friends.john
+	var max_actor: CampPlayer = friends.max
+	for actor: CampPlayer in get_nodes_in_group("survivors"):
+		actor.status = CampPlayer.Status.ALIVE
+		actor.effects.clear()
+		actor.holder = null
+		SurvivorAbilities.setup(actor)
+	christian.peer_name = "Christian"
+	john.peer_name = "John in this round"
+	christian.kit.sample = "mimic"
+	check(CreatureSamples.use(christian),"mimic_uses_present_player")
+	var original_name: String = christian.peer_name
+	var borrowed_name: String = christian.kit.mask_name
+	check(christian.display_name()==borrowed_name and borrowed_name!="Christian" and christian.peer_name==original_name,"mimic_borrows_display_identity_not_network_identity")
+	var source: CampPlayer = instance_from_id(christian.kit.mask_source)
+	source.remove_from_group("survivors")
+	CreatureSamples.advance(christian,0.1)
+	check(christian.kit.form.is_empty() and christian.display_name()==original_name,"mimic_ends_when_source_leaves")
+	source.add_to_group("survivors")
+	for other: CampPlayer in get_nodes_in_group("survivors"):
+		if other != christian: other.remove_from_group("survivors")
+	christian.kit.sample="mimic"
+	christian.ability_cooldown=0
+	check(not CreatureSamples.use(christian) and christian.kit.sample=="mimic","solo_mimic_keeps_sample_without_inventing_player")
+	for actor: CampPlayer in friends.values():
+		if not actor.is_in_group("survivors"): actor.add_to_group("survivors")
+	level.abilities.enabled=false
+	for actor: CampPlayer in friends.values():
+		SurvivorAbilities.setup(actor)
+		check(not level.abilities.use(actor),"disabled_active_"+actor.role)
+	john.stamina=0
+	SurvivorKits.progress(john,"disabled:step")
+	check(john.stamina==0,"disabled_john_progress_passive")
+	SurvivorKits.earn(max_actor,"disabled:cash",4)
+	check(max_actor.kit.cash==0,"disabled_max_earning_and_starting_cash")
+	alex.position=Vector2(800,800)
+	SurvivorKits.advance(alex,5)
+	check(not alex.kit.isolated,"disabled_alex_isolation")
+	christian.kit.sample="witch"
+	check(not CreatureSamples.use(christian),"direct_sample_cannot_bypass_disabled_rule")
+	check(SurvivorKits.status(christian)=="CAMPER ABILITIES OFF","disabled_rule_visible")
+	level.abilities.enabled=true
+	check(is_equal_approx(christian.config.flashlight_capacity/christian.light_drain,420),"ordinary_flashlight_lasts_seven_minutes")
+	alex.kit.isolated=true
+	check(is_equal_approx(alex.config.flashlight_capacity/alex.passive_light_rate(),560),"isolated_alex_light_estimate_matches_drain")

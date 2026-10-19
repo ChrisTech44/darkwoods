@@ -16,7 +16,7 @@ static func name_of(kind: String) -> String:
 	return NAMES.get(kind,kind.replace("_"," ").to_upper())
 
 static func encounter(actor: CampPlayer, source: CampCryptid, subtype: String = "") -> void:
-	if actor.role != "christian" or actor.status != CampPlayer.Status.ALIVE or source == null: return
+	if not SurvivorKits.enabled(actor) or actor.role != "christian" or actor.status != CampPlayer.Status.ALIVE or source == null: return
 	var level: Node = SurvivorKits.world(actor)
 	if level == null or not is_instance_valid(level.abilities) or not level.rescue.authority(): return
 	if source.species not in SOURCES or not actor.kit.get("sample","").is_empty() or not actor.kit.get("form","").is_empty(): return
@@ -28,6 +28,7 @@ static func encounter(actor: CampPlayer, source: CampCryptid, subtype: String = 
 	actor.kit["research"] = {"kind":source.species,"subtype":subtype,"wait":3.0,"life":50.0,"key":key}
 
 static func use(actor: CampPlayer) -> bool:
+	if not SurvivorKits.enabled(actor): return false
 	var level: Node = SurvivorKits.world(actor)
 	var form: String = actor.kit.get("form","")
 	if not form.is_empty():
@@ -64,6 +65,15 @@ static func use(actor: CampPlayer) -> bool:
 		if not bodies.is_empty() and bodies[0] is CampPlayer and not level.holding(bodies[0]):
 			level.announce("A willing passenger holds E. Face them, then X.",actor)
 			return false
+	var disguise: CampPlayer = null
+	if kind == "mimic":
+		for friend: CampPlayer in actor.get_tree().get_nodes_in_group("survivors"):
+			if friend != actor and friend.status == CampPlayer.Status.ALIVE:
+				disguise = friend
+				break
+		if disguise == null:
+			level.announce("Mimic needs another living player in this round. Sample kept.",actor)
+			return false
 	if kind not in SOURCES: return false
 	actor.kit["sample"] = ""
 	actor.kit["research"] = {}
@@ -76,11 +86,10 @@ static func use(actor: CampPlayer) -> bool:
 		actor.kit["action_cd"] = 0.0
 		actor.kit["dash"] = 0.0
 		if kind == "mimic":
-			actor.kit["mask"] = "john"
-			for friend: CampPlayer in actor.get_tree().get_nodes_in_group("survivors"):
-				if friend != actor:
-					actor.kit["mask"] = friend.role
-					break
+			actor.kit["mask"] = disguise.role
+			actor.kit["mask_name"] = disguise.peer_name if not disguise.peer_name.is_empty() else disguise.role.to_upper()
+			actor.kit["mask_source"] = disguise.get_instance_id()
+		SamplePresentation.cue(actor,kind)
 		if kind == "werewolf": level.soundscape.broadcast("werewolf_howl",actor.position,4.0)
 		return true
 	var delay := 0.8
@@ -91,6 +100,7 @@ static func use(actor: CampPlayer) -> bool:
 		var ahead := actor.position + actor.facing * 90
 		if level.clear_path(actor.position,ahead): at = ahead
 	actor.kit["cast"] = {"kind":kind,"subtype":actor.kit.get("subtype","frog"),"at":at,"direction":actor.facing,"wait":delay,"life":0.0,"pulse":0.0,"fired":false,"victim":0}
+	SamplePresentation.cue(actor,kind)
 	if kind == "shutter_wraith": level.soundscape.broadcast("camera_charge",actor.position,0.0)
 	if kind == "cuckoo":
 		var seen := targets(actor,210,0.6)
@@ -120,7 +130,7 @@ static func advance(actor: CampPlayer, delta: float) -> void:
 	var form: String = actor.kit.get("form","")
 	if not form.is_empty():
 		actor.kit["form_time"] -= delta
-		if actor.kit["form_time"] <= 0 or actor.has_effect("held") or (form == "werewolf" and ((not level.night_clock.moon and not actor.kit.get("ram",false)) or actor.has_effect("wolfsbane"))):
+		if (form == "mimic" and not valid_disguise(actor)) or actor.kit["form_time"] <= 0 or actor.has_effect("held") or (form == "werewolf" and ((not level.night_clock.moon and not actor.kit.get("ram",false)) or actor.has_effect("wolfsbane"))):
 			actor.kit["form"] = ""
 			actor.kit["dash"] = 0.0
 		elif form in ["werewolf","groundskeeper","stoneback_ram"] and actor.kit.get("dash",0.0) > 0:
@@ -137,6 +147,10 @@ static func advance(actor: CampPlayer, delta: float) -> void:
 					door["broken"] = 20.0
 					door["open"] = true
 					level.props._shape(door["body"],door["rect"],false)
+	var impact: Dictionary=actor.kit.get("impact",{})
+	if not impact.is_empty():
+		impact["life"]-=delta
+		if impact["life"]<=0: actor.kit["impact"]={}
 	var cast: Dictionary = actor.kit.get("cast",{})
 	if cast.is_empty(): return
 	if actor.has_effect("held") or actor.has_effect("asleep"):
@@ -149,12 +163,22 @@ static func advance(actor: CampPlayer, delta: float) -> void:
 			if not is_instance_valid(victim) or not level.clear_path(actor.position,victim.position):
 				actor.kit["cast"] = {}
 				return
+		if cast["kind"] == "cuckoo":
+			var calls: int=cast.get("calls",0)
+			if calls<3 and cast["wait"]<=2.0-calls:
+				cast["calls"]=calls+1
+				level.soundscape.broadcast("squeak",actor.position,6.0,1.5 if calls%2==0 else 1.2)
 		if cast["wait"] <= 0:
 			cast["fired"] = true
 			fire(actor,cast)
-			if cast["life"] <= 0: finish_cast(actor)
+			if cast["life"] <= 0:
+				cast["instant"]=true
+				cast["life"]=0.35
 	else:
 		cast["life"] -= delta
+		if cast.get("instant",false):
+			if cast["life"]<=0: finish_cast(actor)
+			return
 		if cast.get("projectile",false):
 			projectile(actor,cast,delta)
 			if cast["life"] <= 0: finish_cast(actor)
@@ -221,7 +245,16 @@ static func apply(body: Node2D, kind: String, seconds: float) -> void:
 static func fire(actor: CampPlayer, cast: Dictionary) -> void:
 	var level: Node = SurvivorKits.world(actor)
 	var kind: String = cast["kind"]
+	if kind in SamplePresentation.SHOTS and not cast.get("resolved",false):
+		cast["at"]=actor.position+cast["direction"]*12
+		cast["life"]=2.5
+		cast["projectile"]=true
+		cast["distance_left"]=260.0 if kind=="witch" else (78.0 if kind=="ration_moth" else 138.0)
+		return
 	var bodies := targets(actor,170,0.4)
+	if cast.has("hit"):
+		var hit: Object=instance_from_id(cast["hit"])
+		bodies=[hit] if is_instance_valid(hit) else []
 	var first: Node2D = null if bodies.is_empty() else bodies[0]
 	match kind:
 		"witch":
@@ -240,17 +273,23 @@ static func fire(actor: CampPlayer, cast: Dictionary) -> void:
 			level.killer.hear_stimulus(actor.position,INF)
 		"ration_moth":
 			cast["life"] = 0.8
+			var caught := false
 			for body in targets(actor,78,-1.0,cast["at"],true):
 				if body.velocity.length() < 2: continue
 				apply(body,"helium",30)
 				apply(body,"sneezy",15)
+				caught=true
+			if caught: level.soundscape.broadcast("witch_cackle",cast["at"],0.0,2.2)
 		"bramble_seamstress":
 			var victims := targets(actor,80,-1.0,cast["at"],true)
 			for i in range(mini(2,victims.size())):
 				var body: Node2D = victims[i]
 				apply(body,"tethered",6)
 				var anchor: Vector2 = victims[1-i].position if victims.size()>1 else cast["at"]
-				if body is CampPlayer: body.effect_data["tether_to"] = anchor
+				if body is CampPlayer:
+					body.effect_data["tether_to"] = anchor
+					if body.has_meta("tether_partner"): body.remove_meta("tether_partner")
+					if victims.size()>1 and victims[1-i] is CampPlayer: body.set_meta("tether_partner",victims[1-i])
 				else: body.sample_state["anchor"] = anchor
 		"bigfoot":
 			if first is CampPlayer:
@@ -283,7 +322,14 @@ static func fire(actor: CampPlayer, cast: Dictionary) -> void:
 			var victim: Object = instance_from_id(cast["victim"])
 			if is_instance_valid(victim):
 				var rows: Array = history.get(victim.get_instance_id(),[])
-				if not rows.is_empty() and valid_move(victim,rows[0]): victim.position = rows[0]
+				if not rows.is_empty() and valid_move(victim,rows[0]):
+					victim.position = rows[0]
+					victim.velocity=Vector2.ZERO
+					if victim is CampPlayer:
+						victim.add_effect("rewound",0.6)
+						victim.add_effect("whiteout",0.35)
+					history[victim.get_instance_id()]=[]
+					level.soundscape.broadcast("bells",victim.position,0.0,1.8)
 		"fortune_teller":
 			var card: int = randi()%7
 			match card:
@@ -348,11 +394,15 @@ static func pulse(actor: CampPlayer, cast: Dictionary) -> void:
 				else: body.sample_state["anchor"] = actor.position
 		"boiler_saint":
 			for body in targets(actor,120,-1.0,actor.position,true):
+				if body is CampPlayer and body.has_effect("coffee"): continue
 				apply(body,"drowsy",1.0)
 				if body.velocity.length()<2:
 					var key := "still:%d" % body.get_instance_id()
 					cast[key] = float(cast.get(key,0.0))+0.5
-					if cast[key]>=2 and not (body is CampPlayer and body.has_effect("coffee")): apply(body,"asleep",3)
+					if cast[key]>=2 and not (body is CampPlayer and body.has_effect("asleep")):
+						apply(body,"asleep",3)
+						level.loud_noise(body.position,200)
+				else: cast["still:%d" % body.get_instance_id()]=0.0
 		"bog_hands","tollkeeper":
 			for flare in actor.get_tree().get_nodes_in_group("flares"):
 				if flare.position.distance_to(cast["at"])<80 and level.clear_path(flare.position,cast["at"]):
@@ -391,6 +441,7 @@ static func pulse(actor: CampPlayer, cast: Dictionary) -> void:
 			if not is_instance_valid(rider):
 				cast["life"] = 0.0
 				return
+			cast["at"]=rider.position+Vector2(0,-18)
 			if rider is CampPlayer: rider.flashlight_on = false
 			for body in targets(actor,22,-1.0,rider.position,true):
 				if body == rider: continue
@@ -427,32 +478,51 @@ static func spill_supplies(actor: CampPlayer) -> void:
 static func deceived(enemy: CampKiller, actor: CampPlayer) -> bool:
 	return enemy is CampCryptid and actor.kit.get("form","") == "mimic" and actor.position.distance_to(enemy.position)>45 and enemy.visible_target != actor and not enemy.memory.has(actor.get_instance_id())
 
+static func impact(actor: CampPlayer, cast: Dictionary, body: Node2D = null) -> void:
+	var level: Node=SurvivorKits.world(actor)
+	actor.kit["impact"]={"kind":cast["kind"],"subtype":cast["subtype"],"at":cast["at"],"life":0.45}
+	cast["projectile"]=false
+	cast["resolved"]=true
+	if cast["kind"]=="witch":
+		if body != null:
+			var curse: String=cast["subtype"]
+			if curse=="swap":
+				var others := targets(actor,140,-1.0,body.position)
+				others.erase(body)
+				if not others.is_empty() and valid_move(body,others[0].position) and valid_move(others[0],body.position):
+					var old: Vector2=body.position
+					body.position=others[0].position
+					others[0].position=old
+			else: apply(body,curse,6)
+			level.soundscape.broadcast("witch_cackle",body.position,4.0,1.2)
+		cast["life"]=0.0
+		return
+	if body != null: cast["hit"]=body.get_instance_id()
+	if body != null or cast["kind"]=="ration_moth":
+		fire(actor,cast)
+	else: cast["life"]=0.0
+
 static func projectile(actor: CampPlayer, cast: Dictionary, delta: float) -> void:
 	var level: Node = SurvivorKits.world(actor)
 	var start: Vector2 = cast["at"]
-	var end: Vector2 = start+cast["direction"]*104*delta
+	var step := minf(float(cast.get("distance_left",260.0)),104.0*delta)
+	var end: Vector2 = start+cast["direction"]*step
 	if not level.clear_path(start,end):
 		cast["life"] = 0.0
 		return
-	for body in targets(actor,120,-1.0,start,cast.get("reflected",false)):
+	for body in targets(actor,step+16,-1.0,start,cast.get("reflected",false)):
 		if Geometry2D.get_closest_point_to_segment(body.position,start,end).distance_to(body.position)>10: continue
-		if body is CampPlayer and body.ward_remaining>0 and not cast.get("reflected",false):
+		if cast["kind"]=="witch" and body is CampPlayer and body.ward_remaining>0 and not cast.get("reflected",false):
 			cast["direction"] = -cast["direction"]
 			cast["reflected"] = true
 			cast["at"] = body.position+cast["direction"]*14
 			return
-		var curse: String = cast["subtype"]
-		if curse == "swap":
-			var others := targets(actor,140,-1.0,body.position)
-			others.erase(body)
-			if not others.is_empty() and valid_move(body,others[0].position) and valid_move(others[0],body.position):
-				var old: Vector2 = body.position
-				body.position = others[0].position
-				others[0].position = old
-		else: apply(body,curse,6)
-		cast["life"] = 0.0
+		cast["at"]=body.position
+		impact(actor,cast,body)
 		return
 	cast["at"] = end
+	cast["distance_left"]=maxf(0.0,float(cast.get("distance_left",260.0))-step)
+	if cast["distance_left"]<=0: impact(actor,cast)
 
 static func tick_enemy(enemy: CampKiller, delta: float) -> bool:
 	var level: Node = enemy.get_tree().get_first_node_in_group("round_world")
@@ -542,6 +612,10 @@ static func record_history(level: Node, delta: float) -> void:
 	for key in history.keys():
 		if not alive.has(key): history.erase(key)
 
+static func valid_disguise(actor: CampPlayer) -> bool:
+	var source: Object = instance_from_id(actor.kit.get("mask_source",0))
+	return is_instance_valid(source) and source is CampPlayer and source != actor and source.is_in_group("survivors") and source.status == CampPlayer.Status.ALIVE
+
 static func status(actor: CampPlayer) -> String:
 	if not actor.kit.get("form","").is_empty(): return "X %s %.1fs" % [name_of(actor.kit["form"]),actor.kit["form_time"]]
 	if not actor.kit.get("cast",{}).is_empty(): return "FIELD TEST: " + name_of(actor.kit["cast"]["kind"])
@@ -568,7 +642,6 @@ static func draw_player(actor: CampPlayer) -> bool:
 		PixelArt.draw_in(actor,machine,Rect2(-22,-26,44,32))
 	actor.draw_texture_rect_region(texture,Rect2(-width/2,-height+3,width,height),Rect2(Vector2(frame,row)*cell,cell))
 	if "outboard_motor" in actor.inventory: PixelArt.draw_in(actor,"outboard_motor",Rect2(-20,-18,14,20))
-	actor.draw_string(ThemeDB.fallback_font,Vector2(-16,-height-3),actor.role.to_upper(),HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("e8cf86"))
 	return true
 
 static func visuals(level: Node) -> Array:
@@ -580,22 +653,27 @@ static func visuals(level: Node) -> Array:
 
 static func draw_world(canvas: Node2D, level: Node) -> void:
 	for actor: CampPlayer in canvas.get_tree().get_nodes_in_group("survivors"):
+		if not SurvivorKits.enabled(actor): continue
+		SamplePresentation.guide(canvas,level,actor)
 		if actor.kit.get("marker_life",0.0)>0 and actor==level.player:
-			canvas.draw_arc(actor.kit["marker"],12,0,TAU,24,Color("82c9d9"),2)
 			PixelArt.draw_in(canvas,"kit_return",Rect2(actor.kit["marker"]-Vector2(9,9),Vector2(18,18)))
 			canvas.draw_string(ThemeDB.fallback_font,actor.kit["marker"]+Vector2(-10,-15),"RETURN",HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("82c9d9"))
-	for row in visuals(level):
-		if level.sight != null and not level.sight.can_see(row[1]): continue
-		var color := Color("d6a0ec")
-		match row[0]:
-			"witch": PixelArt.draw_in(canvas,"fx_hex",Rect2(row[1]-Vector2(6,6),Vector2(12,12)))
-			"ration_moth":
-				for i in range(5): canvas.draw_circle(row[1]+Vector2.from_angle(i*TAU/5)*16,18,Color(0.8,0.85,0.6,0.18))
-			"bog_hands":
-				canvas.draw_circle(row[1],18,Color("344840"))
-				color = Color("8fbd98")
-			"slug": color = Color("9cbd73")
-			"tollkeeper": color = Color("e8c779")
-			"echo": canvas.draw_string(ThemeDB.fallback_font,row[1]+Vector2(0,-12),"♪",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("c9e8dc"))
-		canvas.draw_arc(row[1],28,0,TAU,24,color,1)
-		canvas.draw_string(ThemeDB.fallback_font,row[1]+Vector2(-30,-32),name_of(row[0]),HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("f3d5a8"))
+		var impact_fx: Dictionary=actor.kit.get("impact",{})
+		if not impact_fx.is_empty() and (level.sight==null or level.sight.can_see(impact_fx["at"])):
+			SamplePresentation.sprite(canvas,impact_fx.kind,impact_fx.at,impact_fx.subtype,30,impact_fx.life/0.45)
+		var cast: Dictionary=actor.kit.get("cast",{})
+		if cast.is_empty(): continue
+		var at: Vector2=cast["at"]
+		if level.sight != null and not level.sight.can_see(at): continue
+		var kind: String=cast["kind"]
+		if not cast["fired"] and kind in SamplePresentation.SHOTS:
+			SamplePresentation.sprite(canvas,kind,actor.position+cast["direction"]*12,cast["subtype"],12)
+		elif cast.get("projectile",false):
+			SamplePresentation.sprite(canvas,kind,at,cast["subtype"],18)
+		elif kind=="slug":
+			for patch: Vector2 in cast.get("patches",[]):
+				if level.sight==null or level.sight.can_see(patch): SamplePresentation.sprite(canvas,kind,patch,"",32,0.65)
+		elif kind in ["boiler_saint","candle_grazer","vampire","banshee","surveyor","shutter_wraith"]:
+			SamplePresentation.sprite(canvas,kind,actor.position+Vector2(0,-24),cast["subtype"],24)
+		else:
+			SamplePresentation.sprite(canvas,kind,at,cast["subtype"],30)

@@ -7,6 +7,8 @@ var needs_survivor_selection := false
 ## F8: local meta progress and whether this run is today's Daily Night.
 var profile := CampProfile.new()
 var daily := false
+## Round rule, chosen offline or by the host; never a client-owned preference.
+var camper_abilities_enabled := true
 
 func _ready() -> void:
 	RoundPlan.force_all_escapes = "--all-escapes" in OS.get_cmdline_user_args()

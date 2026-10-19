@@ -1,0 +1,144 @@
+{
+  "baseline_rules": "lnac-net-16",
+  "updated_rules": "lnac-net-17",
+  "world_hz_updated": 20,
+  "player_hz_updated": 30,
+  "baseline": {
+    "enet_packet_loss_scale": 65536,
+    "enet_packet_loss_scaled": 55.0,
+    "event": "network_probe_result",
+    "frame_interval_ms": {
+      "count": 3502,
+      "max": 11.084,
+      "mean": 6.89972044545974,
+      "p50": 7.137,
+      "p95": 8.882,
+      "p99": 9.729
+    },
+    "largest_render_step_pixels": 3.613037109375,
+    "movement_response_ms": {
+      "count": 24,
+      "max": 261.351,
+      "mean": 191.68925,
+      "p50": 183.631,
+      "p95": 226.942,
+      "p99": 234.085
+    },
+    "movement_response_timeouts": 0,
+    "network_tick_ms": {
+      "count": 0
+    },
+    "physics_interval_ms": {
+      "count": 1449,
+      "max": 21.863,
+      "mean": 16.6713160800552,
+      "p50": 14.189,
+      "p95": 20.824,
+      "p99": 21.472
+    },
+    "rtt_ms": {
+      "count": 25,
+      "max": 67.0,
+      "mean": 57.76,
+      "p50": 57.0,
+      "p95": 63.0,
+      "p99": 64.0
+    },
+    "side": "client",
+    "skipped_snapshot_sequences": 79,
+    "snapshot_bytes": {
+      "count": 284,
+      "max": 5238.0,
+      "mean": 4821.32394366197,
+      "p50": 4867.0,
+      "p95": 5210.0,
+      "p99": 5225.0
+    },
+    "snapshot_gap_ms": {
+      "count": 283,
+      "max": 668.911,
+      "mean": 85.2447067137809,
+      "p50": 68.963,
+      "p95": 194.59,
+      "p99": 331.692
+    },
+    "snapshots": 284
+  },
+  "updated": {
+    "enet_packet_loss_scale": 65536,
+    "enet_packet_loss_scaled": 167.0,
+    "event": "network_probe_result",
+    "frame_interval_ms": {
+      "count": 3502,
+      "max": 15.064,
+      "mean": 6.89932924043405,
+      "p50": 7.158,
+      "p95": 9.268,
+      "p99": 10.564
+    },
+    "largest_render_step_pixels": 1.31378173828125,
+    "motion_bytes": {
+      "count": 710,
+      "max": 60.0,
+      "mean": 60.0,
+      "p50": 60.0,
+      "p95": 60.0,
+      "p99": 60.0
+    },
+    "motion_gap_ms": {
+      "count": 709,
+      "max": 134.709,
+      "mean": 34.0782101551481,
+      "p50": 34.381,
+      "p95": 40.604,
+      "p99": 70.466
+    },
+    "movement_response_ms": {
+      "count": 24,
+      "max": 345.541,
+      "mean": 196.186875,
+      "p50": 170.891,
+      "p95": 281.579,
+      "p99": 337.301
+    },
+    "movement_response_timeouts": 0,
+    "network_tick_ms": {
+      "count": 0
+    },
+    "physics_interval_ms": {
+      "count": 1449,
+      "max": 26.953,
+      "mean": 16.6669247757074,
+      "p50": 14.058,
+      "p95": 21.033,
+      "p99": 21.634
+    },
+    "rtt_ms": {
+      "count": 25,
+      "max": 62.0,
+      "mean": 53.56,
+      "p50": 55.0,
+      "p95": 58.0,
+      "p99": 60.0
+    },
+    "side": "client",
+    "skipped_snapshot_sequences": 13,
+    "snapshot_bytes": {
+      "count": 471,
+      "max": 5244.0,
+      "mean": 4869.17409766454,
+      "p50": 4926.0,
+      "p95": 5227.0,
+      "p99": 5237.0
+    },
+    "snapshot_gap_ms": {
+      "count": 470,
+      "max": 134.709,
+      "mean": 51.365985106383,
+      "p50": 48.593,
+      "p95": 62.459,
+      "p99": 104.958
+    },
+    "snapshots": 471
+  }
+}

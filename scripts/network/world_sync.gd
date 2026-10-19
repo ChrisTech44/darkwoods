@@ -67,8 +67,11 @@ static func apply(net: Node, state: Dictionary) -> void:
 		if not net.actors.has(id): continue # Mid-round joining is disallowed.
 		var actor: CampPlayer=net.actors[id]
 		var row: Dictionary=players[id]
-		net.motion_targets[actor]=row["position"]
-		for field in PLAYER_FIELDS: actor.set(field,row[field])
+		# A delayed world snapshot must not overwrite a newer player pose.
+		if net.last_motion_sequence == 0: net.motion_targets[actor]=row["position"]
+		for field in PLAYER_FIELDS:
+			if net.last_motion_sequence > 0 and field in ["velocity", "facing"]: continue
+			actor.set(field,row[field])
 		actor.inventory.assign(row["inventory"])
 		actor.belt.assign(row["belt"])
 		actor.blood.assign(row["blood"])

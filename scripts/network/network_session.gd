@@ -1,11 +1,14 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-16"
+const RULES := "lnac-net-17"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
 const MAX_SNAPSHOT_BYTES := 65536
+const MOTION_INTERVAL := 1.0 / 30.0
+const WORLD_INTERVAL := 0.05
+const MAX_MOTION_BYTES := 900
 var snapshot_parts := {}
 var assembling_sequence := 0
 var expected_parts := 0
@@ -32,6 +35,10 @@ var input_sequence := 0
 var snapshot_sequence := 0
 var last_snapshot := 0
 var snapshot_clock := 0.0
+var motion_clock := 0.0
+var motion_sequence := 0
+var last_motion_sequence := 0
+var latest_motion_bytes := 0
 var latest_snapshot_bytes := 0
 var motion_targets := {}
 var replicas := {}
@@ -201,6 +208,11 @@ func _begin(chosen_mode: String, value: int, peers: Dictionary, generation: int)
 	world=null
 	input_sequence=0
 	snapshot_sequence=0
+	snapshot_clock=0.0
+	motion_clock=0.0
+	motion_sequence=0
+	last_motion_sequence=0
+	latest_motion_bytes=0
 	last_snapshot=0
 	assembling_sequence=0
 	snapshot_parts.clear()
@@ -323,9 +335,22 @@ func _physics_process(delta: float) -> void:
 			actors[id].network_direction=intent.get("direction",Vector2.ZERO) if fresh else Vector2.ZERO
 			actors[id].network_sprint=intent.get("sprint",false) if fresh else false
 			if not fresh and inputs.has(id): inputs[id]["hold"]=false
+		# Player poses must not wait for all fragments of a large world update.
+		motion_clock -= delta
+		if motion_clock <= 0.000001:
+			motion_clock = maxf(0.0, motion_clock + MOTION_INTERVAL)
+			motion_sequence += 1
+			var poses := []
+			for id: int in actors:
+				var actor: CampPlayer = actors[id]
+				poses.append([id, actor.position, actor.velocity, actor.facing])
+			var payload := var_to_bytes(poses)
+			if payload.size() <= MAX_MOTION_BYTES:
+				latest_motion_bytes = payload.size()
+				_motion_packet.rpc(round_id, motion_sequence, payload)
 		snapshot_clock-=delta
-		if snapshot_clock<=0:
-			snapshot_clock=0.05
+		if snapshot_clock<=0.000001:
+			snapshot_clock=maxf(0.0, snapshot_clock + WORLD_INTERVAL)
 			snapshot_sequence+=1
 			var bytes: PackedByteArray=var_to_bytes(WorldSync.capture(self)).compress(FileAccess.COMPRESSION_DEFLATE)
 			latest_snapshot_bytes=bytes.size()
@@ -339,6 +364,26 @@ func _physics_process(delta: float) -> void:
 				_snapshot_piece.rpc(round_id,snapshot_sequence,part,count,piece)
 	elif now-last_packet>10000:
 		leave("Host stopped responding. The camp session ended.")
+
+## One small authority-only packet on a channel independent of world fragments.
+@rpc("authority", "call_remote", "unreliable_ordered", 2)
+func _motion_packet(generation: int, sequence: int, payload: PackedByteArray) -> void:
+	if not active or multiplayer.is_server() or generation != round_id or sequence <= last_motion_sequence or world == null: return
+	if payload.is_empty() or payload.size() > MAX_MOTION_BYTES: return
+	var poses: Variant = bytes_to_var(payload)
+	if not poses is Array or poses.size() > MAX_PLAYERS: return
+	for row: Variant in poses:
+		if not row is Array or row.size() != 4: return
+		if not row[0] is int or not row[1] is Vector2 or not row[2] is Vector2 or not row[3] is Vector2: return
+		if not row[1].is_finite() or not row[2].is_finite() or not row[3].is_finite(): return
+	last_motion_sequence = sequence
+	latest_motion_bytes = payload.size()
+	for row: Array in poses:
+		if not actors.has(row[0]): continue
+		var actor: CampPlayer = actors[row[0]]
+		motion_targets[actor] = row[1]
+		actor.velocity = row[2]
+		actor.facing = row[3]
 
 @rpc("any_peer","call_remote","unreliable_ordered",2)
 func _input_packet(generation: int, sequence: int, direction: Vector2, sprint: bool, hold: bool) -> void:
@@ -391,7 +436,7 @@ func _accept_action(id: int, generation: int, code: String, slot: int) -> void:
 		"light":
 			if not actor.expedition or actor.flashlight_charge>0: actor.flashlight_on=not actor.flashlight_on
 
-@rpc("authority","call_remote","unreliable_ordered",1)
+@rpc("authority","call_remote","unreliable",1)
 func _snapshot_piece(generation: int, sequence: int, part: int, count: int, bytes: PackedByteArray) -> void:
 	if not active or multiplayer.is_server() or generation!=round_id or sequence<=last_snapshot or world==null: return
 	if count<1 or count>66 or part<0 or part>=count or bytes.is_empty() or bytes.size()>SNAPSHOT_CHUNK: return

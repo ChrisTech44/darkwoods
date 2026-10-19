@@ -2,7 +2,7 @@
 
 This branch (`headless-server`) adds a dedicated authority for **1–4 human
 survivors**. The server has no survivor and consumes no player slot. Use the
-updated `main` client with rules **lnac-net-16**, or a client from this branch.
+updated `main` client with rules **lnac-net-17**, or a client from this branch.
 Older clients must update. The server owns AI, movement validation, damage,
 inventory, clues, objectives and extraction, using the same gameplay scene.
 
@@ -105,10 +105,14 @@ Monitor `server_status`, `server_ready_countdown`, `server_results` and
 
 ## Verification limits
 
-See the development log for exact executed checks. Local macOS processes and a
-portable-pack smoke test do not establish Linux/Windows runtime, exported client,
-separate-computer LAN, Internet routing, sustained load or human listening
-acceptance. No hosting account was provisioned or remote service deployed.
+See the development log for exact executed checks. A Linux Snap Godot 4.7.2 Mono
+source server on Genesect was tested across the real network with one/four macOS
+source clients, including normal graphical rendering. This does not establish
+Linux PCK operation, Windows, exported clients, general Internet routing,
+sustained load or human listening acceptance. The existing production process
+was left unchanged; diagnostics used a separate project-local copy and spare port.
+No hosting account was provisioned. See the
+[network investigation](network_lag_investigation.md) for timings and limits.
 An observed diagnostic issue remains when several clients disconnect nearly
 simultaneously: ENet can print `Unable to send packet on channel 0, max channels: 0`.
 In the local stress runs, all gameplay assertions still passed, the world was freed
@@ -116,7 +120,9 @@ and the server remained listening. Those runs are recorded as failures by the
 strict error-free harness; orderly staggered departures are checked separately.
 This console-error case is unresolved and must not be described as clean acceptance.
 
-Movement prediction, snapshot optimization and the broader guest-lag work are
-deferred until after this server edition, as requested. Main includes the first-frame
-scenery preparation fix needed for graphical-client acceptance; this does not
-establish generally improved Internet latency.
+Player poses now use an independent 30Hz stream; full world state uses 20Hz
+unordered fragments. Both clients and server must update to rules lnac-net-17 and
+the server must restart before updated clients join. Local movement prediction
+and client rendering/scheduling profiling remain pending. The main client also
+includes the first-frame scenery preparation fix. These changes do not establish
+generally improved Internet latency or eliminate all player corrections.

@@ -21,7 +21,7 @@ def main():
     launcher.write_text('#!/bin/sh\nset -eu\nserver_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)\nexec "${GODOT_BIN:-godot}" --headless --disable-render-loop --audio-driver Dummy --main-pack "$server_dir/last-night-server.pck" -- --dedicated-server "$@"\n')
     launcher.chmod(0o755)
     shutil.copyfile(ROOT / "docs/dedicated_server.md", out / "README.md")
-    metadata = {"engine": "4.7.2", "rules": "lnac-net-16", "requires_runtime": "Godot 4.7.2 for the server OS", "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()}
+    metadata = {"engine": "4.7.2", "rules": "lnac-net-17", "requires_runtime": "Godot 4.7.2 for the server OS", "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()}
     (out / "build.json").write_text(json.dumps(metadata, indent=2) + "\n")
     archive = out / "last-night-server.zip"
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as bundle:

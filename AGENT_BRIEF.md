@@ -98,11 +98,21 @@ render loop and Dummy audio; server paths skip voice codec/capture/playback.
 Source launch first imports assets/registers script classes and refuses to start
 after import errors, including when Godot exits zero. Exported packs skip import.
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
-cleanup are implemented. The game protocol remains `lnac-net-16`, compatible with
+cleanup are implemented. The game protocol remains `lnac-net-17`, compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
 See [server guide](docs/dedicated_server.md); execution/OS limits remain separate
-acceptance gates. This branch is not merged into main. Guest-lag optimization is
-still deferred until after the server edition.
+acceptance gates. This branch is not merged into main. Player transport now includes the real-network-tested main update; local
+prediction and client rendering/scheduling profiling remain pending.
+
+## Movement transport
+
+Rules are `lnac-net-17`: authority-only player poses use small 30 Hz packets,
+independent of 20 Hz world snapshots. World fragments accept out-of-order delivery;
+old world state cannot overwrite newer player poses. Clients still render accepted
+server movement; local prediction/reconciliation is not implemented. Clients and
+listen/dedicated servers must update together. See the
+[real-network investigation](docs/network_lag_investigation.md) for executed
+Genesect timings and limits.
 
 ## Interface and graphics direction
 

@@ -6,9 +6,27 @@ Both modes keep the current survivor choices, items, enemies and escape rules.
 Voice chat follows the first [gameplay overhaul](fun_overhaul.md) slices; no
 microphone is opened or requested.
 
+## Player movement updates
+
+All players and the server must update together to **lnac-net-17**. Player poses
+(position, velocity and facing) now use bounded, single-packet authority updates
+at 30 Hz on channel 2, independent of fragmented world state. Input uses channel 2
+in the opposite direction. Full world snapshots retain their intended 20 Hz rate;
+the accumulator avoids a floating-point cadence error that could make it 15 Hz.
+World pieces use unordered unreliable delivery and are assembled by sequence and
+part index; missing/incomplete/stale snapshots still never apply. Older world
+snapshots cannot move a player backward over a newer pose.
+
+This reduces movement freezes caused by waiting for all world fragments. It does
+not add local movement prediction: your visible movement still waits for server
+updates, and a long interruption can still require a correction. Server authority,
+collision, damage, objectives and the existing voice channel are retained. See
+[network delay investigation](network_lag_investigation.md) for real Genesect
+measurements, the diagnostic tool and acceptance limits.
+
 ## Radio Rescue (expedition)
 
-All peers must use rules `lnac-net-16` (the same build). The host owns the fuse,
+All peers must use rules `lnac-net-17` (the same build). The host owns the fuse,
 substation, six-second relay hold, persistent signal lights, countdown and
 extraction results. Clients send the usual E/hold intents. **T** switches only
 that player's objective page. A remote operator can complete the whole chain;
@@ -68,7 +86,7 @@ and shares them with everyone. The host also owns the progress-paced night (phas
 Flash-stuns (Space) and help calls are host-validated intents.
 Hiding, doors and knock-overs use the normal E intent; the host owns breath,
 door breaking and blocking. The road network changes the generated woods, so
-both copies must run rules version `lnac-net-16`. Vaults and gate openings are
+both copies must run rules version `lnac-net-17`. Vaults and gate openings are
 host-validated E actions. Clue knowledge (ranger notes,
 regions visited) is shared by the whole team.
 Nearby teammates show their names; each survivor keeps their own flashlight,

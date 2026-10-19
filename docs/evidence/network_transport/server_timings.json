@@ -1,0 +1,161 @@
+{
+  "baseline": {
+    "summary": {
+      "enet_packet_loss_scale": 65536,
+      "enet_packet_loss_scaled": 0.0,
+      "event": "network_probe_result",
+      "frame_interval_ms": {
+        "count": 5505,
+        "max": 17.336,
+        "mean": 6.90230408719352,
+        "p50": 6.899,
+        "p95": 10.716,
+        "p99": 13.62
+      },
+      "largest_render_step_pixels": 0.0,
+      "movement_response_ms": {
+        "count": 0
+      },
+      "movement_response_timeouts": 0,
+      "network_tick_ms": {
+        "count": 2280,
+        "max": 2.284,
+        "mean": 0.229593859649127,
+        "p50": 0.008,
+        "p95": 1.368,
+        "p99": 1.942
+      },
+      "physics_interval_ms": {
+        "count": 2279,
+        "max": 33.344,
+        "mean": 16.6666884598508,
+        "p50": 13.803,
+        "p95": 20.728,
+        "p99": 20.736
+      },
+      "rtt_ms": {
+        "count": 0
+      },
+      "side": "server",
+      "skipped_snapshot_sequences": 0,
+      "snapshot_bytes": {
+        "count": 0
+      },
+      "snapshot_gap_ms": {
+        "count": 0
+      },
+      "snapshots": 0
+    },
+    "diagnostics": []
+  },
+  "updated": {
+    "summary": {
+      "enet_packet_loss_scale": 65536,
+      "enet_packet_loss_scaled": 0.0,
+      "event": "network_probe_result",
+      "frame_interval_ms": {
+        "count": 5506,
+        "max": 17.193,
+        "mean": 6.90227351979666,
+        "p50": 6.9,
+        "p95": 10.887,
+        "p99": 12.563
+      },
+      "largest_render_step_pixels": 0.0,
+      "motion_bytes": {
+        "count": 0
+      },
+      "motion_gap_ms": {
+        "count": 0
+      },
+      "movement_response_ms": {
+        "count": 0
+      },
+      "movement_response_timeouts": 0,
+      "network_tick_ms": {
+        "count": 2280,
+        "max": 2.167,
+        "mean": 0.29783114035088,
+        "p50": 0.009,
+        "p95": 1.372,
+        "p99": 1.932
+      },
+      "physics_interval_ms": {
+        "count": 2279,
+        "max": 33.174,
+        "mean": 16.6696445809565,
+        "p50": 13.804,
+        "p95": 20.728,
+        "p99": 20.736
+      },
+      "rtt_ms": {
+        "count": 0
+      },
+      "side": "server",
+      "skipped_snapshot_sequences": 0,
+      "snapshot_bytes": {
+        "count": 0
+      },
+      "snapshot_gap_ms": {
+        "count": 0
+      },
+      "snapshots": 0
+    },
+    "diagnostics": []
+  },
+  "four_final": {
+    "summary": {
+      "enet_packet_loss_scale": 65536,
+      "enet_packet_loss_scaled": 0.0,
+      "event": "network_probe_result",
+      "frame_interval_ms": {
+        "count": 5503,
+        "max": 26.252,
+        "mean": 6.90545248046524,
+        "p50": 6.9,
+        "p95": 11.368,
+        "p99": 13.336
+      },
+      "largest_render_step_pixels": 0.0,
+      "motion_bytes": {
+        "count": 0
+      },
+      "motion_gap_ms": {
+        "count": 0
+      },
+      "movement_response_ms": {
+        "count": 0
+      },
+      "movement_response_timeouts": 0,
+      "network_tick_ms": {
+        "count": 2280,
+        "max": 2.425,
+        "mean": 0.364349999999999,
+        "p50": 0.013,
+        "p95": 1.575,
+        "p99": 2.187
+      },
+      "physics_interval_ms": {
+        "count": 2279,
+        "max": 43.774,
+        "mean": 16.6682549363756,
+        "p50": 13.805,
+        "p95": 20.714,
+        "p99": 20.736
+      },
+      "rtt_ms": {
+        "count": 0
+      },
+      "side": "server",
+      "skipped_snapshot_sequences": 0,
+      "snapshot_bytes": {
+        "count": 0
+      },
+      "snapshot_gap_ms": {
+        "count": 0
+      },
+      "snapshots": 0
+    },
+    "diagnostics": []
+  }
+}

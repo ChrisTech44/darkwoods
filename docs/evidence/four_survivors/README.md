@@ -4,6 +4,21 @@
 These are executable diagnostic checks and actual graphical captures, not a
 human balance/playability acceptance or likeness artwork delivery.
 
+## Final regression
+
+[Full verification summary](verification.json): 218/218 steps pass, with zero
+engine errors or warnings. Includes import/startup, all project scripts, the
+[227-check active-enemy Woods escape](regression_woods_playthrough.log),
+[all five route fixtures](regression_field_escapes.log),
+[role suite](regression_roles_abilities.log),
+[creature regressions](regression_monster_revamp.log),
+[new creatures](regression_new_creatures.log),
+[audio lifecycle](regression_audio_polish.log) and
+[scripted balance](regression_playtest_balance.log). Reproduce with
+`python3 tools/verify.py`. Summary log paths identify generated artifacts;
+selected gameplay logs are preserved here. This is the final stable-source rerun;
+it supersedes the interrupted development runs.
+
 ## State and movement
 
 - [Kit/catalogue results](kits.log): 144 checks, zero failures; four unique

@@ -42,6 +42,9 @@ Mimic fools unalert creatures beyond close-inspection range while preserving
 truthful map identity; it does not override the headline Stalker's recognition.
 
 Implementation evidence: [checks and graphical captures](evidence/four_survivors/README.md).
+The final complete runner passes 218 steps; survivor/prediction suites pass
+144/81 checks. Two/four-peer listen-host and dedicated loopback gates pass.
+These scripted gates do not replace human balance or cross-machine acceptance.
 
 ## Design intent
 

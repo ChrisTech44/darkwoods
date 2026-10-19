@@ -1,0 +1,41 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"assertion","name":"all_four_secondary_escapes_rotate_across_seeds","passed":true}
+{"event":"assertion","name":"only_tonights_escape_parts_spawn","passed":true}
+{"event":"assertion","name":"signal_parts_in_three_different_regions","passed":true}
+{"event":"assertion","name":"escape_choice_reproducible_per_seed","passed":true}
+{"event":"assertion","name":"quick_camp_stays_van_only","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"all_escapes_fixture_enables_signal_fire","passed":true}
+{"event":"assertion","name":"pyre_reachable_from_camp","passed":true}
+{"event":"assertion","name":"kerosene_1_reachable","passed":true}
+{"event":"assertion","name":"kerosene_1_taken_without_belt_slot","passed":true}
+{"event":"assertion","name":"kerosene_2_reachable","passed":true}
+{"event":"assertion","name":"kerosene_2_taken_without_belt_slot","passed":true}
+{"event":"assertion","name":"flare_gun_reachable","passed":true}
+{"event":"assertion","name":"flare_gun_taken_without_belt_slot","passed":true}
+{"event":"assertion","name":"pyre_prompt","passed":true}
+{"event":"assertion","name":"pyre_takes_all_three_parts","passed":true}
+{"event":"night_phase","phase":"NIGHTFALL","revealed":["fuel"],"time":0}
+{"event":"night_phase","phase":"DEEP NIGHT","revealed":["fuse"],"time":0}
+{"event":"night_phase","phase":"WITCHING HOUR","revealed":["spark_plug"],"time":0}
+{"event":"assertion","name":"ready_pyre_brings_witching_hour","passed":true}
+{"event":"assertion","name":"lighting_starts_45s_holdout","passed":true}
+{"event":"assertion","name":"blaze_draws_the_stalker_to_the_pyre","passed":true}
+{"event":"assertion","name":"heading_shows_signal_fire_countdown","passed":true}
+{"event":"assertion","name":"pyre_is_a_depth_sorted_world_sprite","passed":true}
+{"event":"assertion","name":"pyre_turns_see_through_when_survivor_behind","passed":true}
+{"event":"assertion","name":"holdout_not_finished_early","passed":true}
+{"event":"round_finished","result":"SIGNAL FIRE evacuation: 1 survivor(s) recovered. You: escaped.","won":true}
+{"event":"assertion","name":"standing_by_pyre_escapes","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"expedition_van_departure_20s","passed":true}
+{"event":"assertion","name":"van_starts_20s_holdout","passed":true}
+{"event":"assertion","name":"engine_start_calls_the_stalker","passed":true}
+{"event":"assertion","name":"engine_revs_keep_drawing_creatures","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"only_rumoured_escape_active","passed":true}
+{"event":"assertion","name":"absent_escape_has_no_prompts","passed":true}
+{"event":"assertion","name":"dusk_message_names_the_rumour","passed":true}
+{"event":"assertion","name":"t_page_shows_signal_fire_plan","passed":true}
+{"checks":31,"event":"test_result","failures":0,"suite":"signal_fire"}

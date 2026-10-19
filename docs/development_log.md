@@ -1,5 +1,24 @@
 # Development log
 
+## 2026-10-19 — Four-survivor final regression accepted
+
+The stable-source full runner passes all 218 verification steps with no engine
+errors or warnings: required import/startup, all source parsing, movement, menu,
+content, clues, inactive scenery, five escape routes, monster/creature behavior,
+audio lifecycle, notebook/labels and scripted balance. The active-enemy Woods
+input playthrough passes 227 checks; the final survivor suite passes 144 and
+prediction passes 81. These results supersede interrupted development runs.
+
+Preserved the [full summary and selected raw logs](evidence/four_survivors/README.md),
+alongside inspected normal-light selector/form/debt/stake/return captures and
+passing two/four-peer listen-host/dedicated results. Four playable kits and all
+30 normal creature-signature handlers are implemented; the design explicitly
+records target-adapter differences and remaining human tuning/visual acceptance.
+Artwork remains reused stand-ins. No cross-machine Internet, packaged-platform,
+real-microphone or listening acceptance is inferred from these macOS diagnostics.
+Published verified increments to origin/main; no unrelated archived test logs
+or temporary project copies are included.
+
 ## 2026-10-19 — Survivor follow-up: real observers and final network gates
 
 Aligned Christian’s Scarecrow form with the source creature: a living, unhidden

@@ -258,7 +258,7 @@ world construction before the host releases simulation. New joins are lobby-only
 
 Reliable channel 0 carries lobby/start/validated action intents. Unreliable
 ordered channel 2 carries sequenced movement/sprint/hold intents; direction is
-finite/normalized and stale controls expire after 400ms. Only the host moves
+finite/normalized and stale controls expire after 400ms. Only the host accepts gameplay movement for
 actors, advances senses/AI, injury/indefinite downs/revive, supplies, item availability,
 site rewards, ignition/countdown and results. Action requests never contain
 positions, inventory rewards, health or arbitrary cue payloads. Actions are
@@ -266,7 +266,7 @@ allowlisted/rate-limited and scoped to the current round. No client-selected
 role/stat changes are accepted during play.
 
 `WorldSync` captures plain host state at 20Hz, DEFLATE-compressed into authority-
-only unreliable ordered channel 1 snapshots with round/sequence checks. Compressed
+only unordered unreliable channel 1 snapshots with round/sequence checks. Compressed
 snapshots are divided into at most 1,000-byte payload pieces to stay below the
 UDP MTU. Clients assemble one bounded current sequence, apply only complete
 snapshots and discard incomplete/stale pieces when a newer sequence arrives.
@@ -274,7 +274,17 @@ Compression is capped at 64KiB and decompression at 1MiB. Clients
 apply actor status/inventory/stamina/animation, NPC senses/telegraphs, pickup
 availability and dynamic dropped objects, site use, van/boarding/results, flares,
 hex bolts, slow patches and tin lures. Clients disable physics for actors/NPCs/
-hazards and interpolate transforms; client prediction/rollback is not implemented.
+hazards. In rules lnac-net-18 the owner alone uses presentation-only shared
+CharacterBody movement in Net physics frames. Compact 30Hz packets acknowledge
+actually applied inputs and include bounded movement state plus server ticks and
+discontinuity counters. A shadow state restores authoritative fields after every
+predicted/replayed step; no AI hearing, blood or gameplay commands are generated.
+The owner replays at most 250ms, freezes on stale authority, and eases ordinary
+corrections at up to 180px/s. Genuine server discontinuities reset presentation.
+Other actors/enemies interpolate 80ms behind authority time, extrapolate at most
+50ms, and limit render recovery speed. This is not rollback of gameplay outcomes.
+Independent player poses cannot be overwritten by stale bulk state. Static
+pickup/site draw caches invalidate on changes, including neighbouring pile labels.
 Consumed transient drop units are recycled, bounding pickup state across repeated
 drop/recovery cycles. Packet/decompression bounds are enforced. Temporary entity IDs and replica maps
 are round-scoped and cleared on retry/leave. Local sight/light/map/mixer and

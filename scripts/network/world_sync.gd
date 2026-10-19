@@ -15,7 +15,7 @@ static func capture(net: Node) -> Dictionary:
 		players[id]=row
 	var enemies := []
 	for enemy: CampKiller in level.get_tree().get_nodes_in_group("killers"):
-		var row := {"position":enemy.position}
+		var row := {"position":enemy.position,"motion_epoch":net.motion_epoch(enemy)}
 		row["target_peer"]=0
 		for id: int in net.actors:
 			if enemy.visible_target==net.actors[id]: row["target_peer"]=id
@@ -49,7 +49,7 @@ static func capture(net: Node) -> Dictionary:
 		else:
 			row.merge({"kind":"flare","remaining":entity.remaining,"time":entity.time})
 		entities[entity.get_meta("network_id")]=row
-	return {"players":players,"enemies":enemies,"items":items,"sites":sites,"entities":entities,
+	return {"tick":Engine.get_physics_frames(),"players":players,"enemies":enemies,"items":items,"sites":sites,"entities":entities,
 		"van":{"installed":level.van.installed,"progress":level.van.start_progress,"running":level.van.running,"remaining":level.van.remaining},
 		"escapes":level.escapes.snapshot(),"rescue":level.rescue.snapshot(),"pins":level.pins,"cards":level.cards,"clues":level.clues,"help":level.help_pings,"self_recovery":level.self_recovery_progress,"revive_duration":level.revive_duration,"night":level.night_clock.snapshot(),"props":level.props.snapshot(),"abilities":level.abilities.snapshot(),"signal":level.signal_fire.snapshot(),"snares":level.snares.snapshot(),"events":level.events.snapshot(),"killer_kind":level.killer.headline,"sabotage":level.night_clock.sabotage_state(),"awards":level.awards_text,"score":level.score_card,"revive":level.revive_progress,"finished":level.finished,"won":level.won,"escape_route":level.escape_route,"message":level.message,"message_time":level.message_time,"sounds":level.sound_log,"feats":level.feats}
 
@@ -60,6 +60,7 @@ static func apply(net: Node, state: Dictionary) -> void:
 		if not players.has(id):
 			var old: CampPlayer=net.actors[id]
 			net.motion_targets.erase(old)
+			net.remote_motion.erase(old)
 			level.van.passengers.erase(old)
 			net.actors.erase(id)
 			old.queue_free()
@@ -71,6 +72,7 @@ static func apply(net: Node, state: Dictionary) -> void:
 		if net.last_motion_sequence == 0: net.motion_targets[actor]=row["position"]
 		for field in PLAYER_FIELDS:
 			if net.last_motion_sequence > 0 and field in ["velocity", "facing"]: continue
+			if net.prediction.initialized and actor == net.prediction.actor and field in ["stride", "sprinting"]: continue
 			actor.set(field,row[field])
 		actor.inventory.assign(row["inventory"])
 		actor.belt.assign(row["belt"])
@@ -81,7 +83,7 @@ static func apply(net: Node, state: Dictionary) -> void:
 	for index in range(mini(enemies.size(),state["enemies"].size())):
 		var enemy: CampKiller=enemies[index]
 		var row: Dictionary=state["enemies"][index]
-		net.motion_targets[enemy]=row["position"]
+		net.buffer_motion(enemy, row["position"], row["velocity"], state.get("tick", 0), Time.get_ticks_usec() / 1000000.0, row.get("motion_epoch", 0))
 		var previous := enemy.state
 		for field in ENEMY_FIELDS: enemy.set(field,row[field])
 		if enemy is CampCryptid:
@@ -98,22 +100,23 @@ static func apply(net: Node, state: Dictionary) -> void:
 			level.pickups.append(pickup)
 			level.add_child(pickup)
 		var pickup: CampPickup=level.pickups[index]
-		pickup.kind=row[0]
 		pickup.z_index=1 if index>=level.plan.loot.size() else 0
-		pickup.position=row[1]
-		pickup.queue_redraw()
-		pickup.available=row[2]
-		pickup.visible=row[2]
-		pickup.locked=row[3]
+		pickup.restore_network(row[0], row[1], row[2], row[3])
 	for index in range(level.camp_map.sites.size()):
 		var site: ForestSite=level.camp_map.sites[index]
-		for j in range(site.actions.size()): site.actions[j]["used"]=state["sites"][index][0][j]
+		var changed := false
+		for j in range(site.actions.size()):
+			var used: bool = state["sites"][index][0][j]
+			if site.actions[j]["used"] != used:
+				site.actions[j]["used"] = used
+				changed = true
 		site.cooldown=state["sites"][index][1]
-		site.queue_redraw()
+		if changed: site.queue_redraw()
 	for id: int in net.replicas.keys():
 		if not state["entities"].has(id):
 			var old: Node2D=net.replicas[id]
 			net.motion_targets.erase(old)
+			net.remote_motion.erase(old)
 			net.replicas.erase(id)
 			old.queue_free()
 	for id: int in state["entities"]:

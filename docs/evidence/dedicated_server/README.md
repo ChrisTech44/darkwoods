@@ -51,3 +51,6 @@ Raw logs and generated packages remain ignored in artifacts. No Linux/Windows,
 exported-client, separate-computer LAN, Internet, sustained-load or human listening
 acceptance is claimed. The PCK requires a target-OS Godot 4.7.2 runtime; no native
 Linux binary or deployed hosting account was produced.
+
+Latest rules-18 source/PCK and Linux Snap acceptance is recorded in the
+[smoothness evidence](../smoothness/README.md); the results above are historical.

@@ -1,0 +1,85 @@
+{
+  "passed": true,
+  "runtime": "Linux Snap Godot 4.7.2 Mono",
+  "server_exit": 0,
+  "server_results": [
+    {
+      "checks": 37,
+      "event": "test_result",
+      "failures": 0,
+      "players": 4,
+      "suite": "dedicated_server"
+    }
+  ],
+  "server_errors": [],
+  "clients": [
+    {
+      "side": "client",
+      "index": 0,
+      "exit": 0,
+      "passed": true,
+      "results": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "side": "client",
+      "index": 1,
+      "exit": 0,
+      "passed": true,
+      "results": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "side": "client",
+      "index": 2,
+      "exit": 0,
+      "passed": true,
+      "results": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "side": "client",
+      "index": 3,
+      "exit": 0,
+      "passed": true,
+      "results": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "production_checkout_unchanged": "5debe70a0291f1f6214f0094477c64d1bd972b4c",
+  "voice_microphones": "off",
+  "headless_replica_scenery_hidden": true,
+  "port": 28336
+}

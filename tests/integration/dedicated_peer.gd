@@ -149,7 +149,9 @@ func client() -> void:
 	change_scene_to_file("res://scenes/ui/network_lobby.tscn")
 	while current_scene == null: await process_frame
 	root.get_node("Voice").mode = "off" # In-memory only; never alter player preferences.
-	check(net.join("127.0.0.1", port, "Server guest %d" % index, "mechanic") == OK, "client_connects")
+	var address := OS.get_environment("LNAC_TEST_HOST")
+	if address.is_empty(): address = "127.0.0.1"
+	check(net.join(address, port, "Server guest %d" % index, "mechanic") == OK, "client_connects")
 	if not await until(func(): return net.phase == "lobby"): return
 	net.choose("mechanic", true)
 	if not await until(func(): return net.phase == "playing"): return

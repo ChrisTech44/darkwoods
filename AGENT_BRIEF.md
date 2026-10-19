@@ -98,21 +98,27 @@ render loop and Dummy audio; server paths skip voice codec/capture/playback.
 Source launch first imports assets/registers script classes and refuses to start
 after import errors, including when Godot exits zero. Exported packs skip import.
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
-cleanup are implemented. The game protocol remains `lnac-net-17`, compatible with
+cleanup are implemented. The game protocol is `lnac-net-18`, compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
 See [server guide](docs/dedicated_server.md); execution/OS limits remain separate
-acceptance gates. This branch is not merged into main. Player transport now includes the real-network-tested main update; local
-prediction and client rendering/scheduling profiling remain pending.
+acceptance gates. This branch is not merged into main. It includes main's measured redraw caching,
+bounded prediction/reconciliation and buffered remote motion; see evidence below.
 
 ## Movement transport
 
-Rules are `lnac-net-17`: authority-only player poses use small 30 Hz packets,
-independent of 20 Hz world snapshots. World fragments accept out-of-order delivery;
-old world state cannot overwrite newer player poses. Clients still render accepted
-server movement; local prediction/reconciliation is not implemented. Clients and
-listen/dedicated servers must update together. See the
-[real-network investigation](docs/network_lag_investigation.md) for executed
-Genesect timings and limits.
+Rules are `lnac-net-18`: authority-only 30Hz player packets include applied-input
+acknowledgements, bounded owner movement state and server-detected discontinuity
+counters. The owner predicts shared collision/movement immediately, with no AI
+hearing, blood or gameplay outcomes; authoritative fields are restored after each
+presentation step. Recent input history and prediction freshness are bounded to 250ms, corrections ease at up to
+180px/s, and genuine server relocations reset presentation. Other survivors and
+enemies use an 80ms interpolation buffer, at most 50ms extrapolation and bounded
+recovery steps. Full world snapshots remain independent at 20Hz with unordered
+fragments; stale world state cannot overwrite newer player poses. Pickup/site
+art remains cached until replicated state changes. Clients and listen/dedicated
+servers must update together. See [smoothness evidence](docs/evidence/smoothness/README.md)
+and [network investigation](docs/network_lag_investigation.md) for executed
+measurements and limits; no complete cure for multi-second link loss is claimed.
 
 ## Interface and graphics direction
 

@@ -148,6 +148,8 @@ func run() -> void:
 		var result := root.get_texture().get_image().save_png(OS.get_environment("LNAC_PROBE_CAPTURE"))
 		print(JSON.stringify({"event":"probe_capture", "error":result}))
 	var summary := {"event":"network_probe_result", "side":"server" if server else "client", "frame_interval_ms":stats(frame_times), "physics_interval_ms":stats(physics_times), "network_tick_ms":stats(net_times), "snapshot_gap_ms":stats(snapshot_gaps), "snapshot_bytes":stats(snapshot_sizes), "motion_gap_ms":stats(motion_gaps), "motion_bytes":stats(motion_sizes), "movement_response_ms":stats(responses), "movement_response_timeouts":response_timeouts, "rtt_ms":stats(rtts), "enet_packet_loss_scaled":loss_scaled, "enet_packet_loss_scale":ENetPacketPeer.PACKET_LOSS_SCALE, "snapshots":snapshots, "skipped_snapshot_sequences":skipped_snapshots, "largest_render_step_pixels":largest_step}
+	if not server and "prediction" in net:
+		summary["prediction"] = {"corrections":net.prediction.corrections, "largest_correction_pixels":net.prediction.largest_correction, "history_size":net.prediction.history.size()}
 	print(JSON.stringify(summary))
 	if server:
 		get_multiplayer().multiplayer_peer.close()

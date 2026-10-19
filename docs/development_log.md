@@ -1,5 +1,75 @@
 # Development log
 
+## 2026-10-18 — Integrate smoothness into dedicated protocol18
+
+Merged main's verified redraw caching, bounded local prediction, applied-input
+acknowledgements, authority discontinuity counters and remote interpolation while
+preserving avatar-free authority, ready/loading barriers and server lifecycle.
+Server guide/brief/package metadata now require lnac-net-18; source Snap engine
+selection and updating both copies/restarting are documented. Test-only external
+host environment option keeps production RPCs unchanged and is excluded from PCK.
+
+Required imports/startup/export and error scans clean. Four launcher Python tests
+pass. Exported PCK + four main clients:69 assertions clean locally. The same PCK
+then ran with Genesect's Linux Snap 4.7.2 Mono and four main Mac clients over the
+real connection:69 assertions, no warnings/errors, server exit0. Checked extraction,
+results, second-round readiness, disconnect drops and empty-server cleanup; staged
+host placements/frozen AI/all escapes, scenery hidden on headless replicas, voice
+and microphone off. This is lifecycle acceptance, not graphical/frame evidence.
+Main's separate normal graphical run establishes ~118FPS and response median26ms.
+Remote diagnostics used only games/darkwoods/artifacts on spare28336; production
+checkout5debe70 and regular27840 unchanged. Ordinary staggered departures clean;
+simultaneous ENet-close issue remains. No Windows/exported-client/voice/load claim.
+See [reports and platform limits](evidence/smoothness/README.md).
+Git history/remote work preserved, Markdown links/diff checked. Final bundle is
+rebuilt after this commit so build.json identifies the published source revision.
+
+
+## 2026-10-18 — Predict local movement and buffer remote motion (main)
+
+Rules lnac-net-18 adds 30Hz owner applied-input acknowledgements and bounded
+movement state. CampPlayer shares collision/movement with a presentation-only
+path; a shadow restores gameplay fields and bypasses blood/AI hearing. No client
+positions or outcomes are accepted. Recent history/prediction freshness cap at
+250ms; ordinary reconciliation eases at up to 180px/s. Authority detects real
+position discontinuities before transmission and sends an epoch, preventing long
+lost travel from triggering a false teleport. Other survivors/enemies use an
+80ms sample buffer, 50ms maximum extrapolation and bounded recovery speed.
+Prediction/buffers/epochs clear on new round/lobby/leave; results still reconcile.
+An arrival-order regression ensures legacy world targets cannot drag the owner.
+Status/effect expiry stays authoritative; prediction never guesses releases.
+
+Final graphical Mac→Genesect Linux Snap 4.7.2 Mono probe: Woods fog seed1788400090,
+live AI/normal lighting, 24 input legs, no staged escapes/teleports or microphones.
+Mean frame8.49ms (~117.7FPS), response median26.38/max32.27ms, no timeouts; RTT
+mean92.88/max259ms. Max visible step1.49px, anchor correction7px. Server physics
+mean16.67/max41.09ms, measured Net tick max2.24ms. These are short real-network
+measurements, not a guarantee against multi-second link interruption. Diagnostic
+source only in games/darkwoods/artifacts/smoothness18 on spare28335; production
+checkout5debe70 and regular27840 unchanged; diagnostic server exited normally.
+
+Checks: physics74; final real ENet Camp/Woods393 including two-second omission of
+both state streams with live inputs, bounded freeze/recovery, real authority,
+forgery/extraction/restart/lifecycle. Offline authoritative checks: chase29,
+props46, roles33, monsters147, field escapes58; graphical redraw8. Four main
+clients against an isolated assembled dedicated source69. All clean. Required
+import/startup, Python syntax, diff and changed Markdown link checks pass; actual
+final capture inspected. No broad-suite/Windows/real-mic/long-session claim.
+See [metrics, captures, reports and limits](evidence/smoothness/README.md).
+Dedicated edition/package must merge and publish matching protocol18 separately.
+
+## 2026-10-18 — Preserve cached world drawings (main)
+
+Removed unconditional pickup/site redraws on 20Hz snapshots; state changes still
+redraw old/new pile neighbours and used site actions. Calling-card fades invalidate
+only while changing; seeded hook location is cached. No gameplay/lighting change.
+Matched graphical 18-leg probes improved mean frames 50.21→8.51ms (19.9→117.6 FPS)
+on macOS M2, Woods fog seed 1788400090, live AI, local dedicated server. Instrumented
+method profiling, not a universal performance guarantee. Inspected actual capture.
+Graphical render fixture 8/8 and real ENet Camp/Woods 379 assertions pass. Required
+import/startup, error scan and diff checks clean. Temporary copies are ignored.
+See [evidence and limits](evidence/smoothness/README.md). Prediction remains next.
+
 ## 2026-10-18 — Verify the user's restarted Genesect server
 
 User confirmed Genesect was updated/running and requested live metrics. SSH found

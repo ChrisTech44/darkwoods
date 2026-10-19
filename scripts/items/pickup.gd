@@ -14,6 +14,23 @@ var available: bool = true:
 				other.queue_redraw()
 
 
+## Network snapshots are frequent; only changed pile members invalidate artwork.
+func restore_network(next_kind: String, at: Vector2, present: bool, sealed: bool) -> void:
+	if kind == next_kind and position == at and available == present and locked == sealed:
+		return
+	var previous := position
+	kind = next_kind
+	position = at
+	locked = sealed
+	available = present
+	visible = present
+	queue_redraw()
+	# Moving/removing an item can change both its old and new pile's label owner.
+	for other: Node in get_parent().get_children():
+		if other is CampPickup and (other.position.distance_to(previous) < 40.0 or other.position.distance_to(at) < 40.0):
+			other.queue_redraw()
+
+
 func consume() -> void:
 	available = false
 	hide()

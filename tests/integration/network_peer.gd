@@ -208,6 +208,22 @@ func _host() -> void:
 	harness.advance.rpc("packet_recovery",{"sequence":gap})
 	if not await _reports(peers-1): return
 	for report: Dictionary in harness.reports.values(): _check(report.get("recovered",false),"snapshot_recovers_after_missing_piece")
+	# Hold BOTH authority streams while inputs continue over real ENet for two seconds.
+	net.motion_clock = 1000
+	net.snapshot_clock = 1000
+	harness.advance.rpc("prediction_gap")
+	if not await _reports(peers-1): return
+	for report: Dictionary in harness.reports.values():
+		_check(report.get("stopped",false),"prediction_stops_during_real_authority_stream_gap")
+		_check(report.get("bounded",false),"pending_inputs_bounded_during_real_stream_gap")
+	net.motion_clock = 0
+	net.snapshot_clock = 0
+	harness.advance.rpc("prediction_recovery")
+	if not await _reports(peers-1): return
+	for report: Dictionary in harness.reports.values():
+		_check(report.get("recovered",false),"prediction_recovers_to_authority_after_two_second_gap")
+		_check(report.get("smooth",false),"ordinary_travel_during_gap_does_not_teleport_on_recovery")
+		_check(report.get("independent",false),"legacy_world_target_cannot_drag_predicted_owner")
 	_check(net.largest_snapshot_payload<=1000,"snapshot_pieces_fit_network_budget")
 	# Authority fixture: move actors together on the host, never accept positions from clients.
 	var pickup: CampPickup=level.pickups[0]
@@ -502,6 +518,24 @@ func _client() -> void:
 			"packet_recovery":
 				await _until(func(): return net.last_snapshot>harness.data["sequence"],5)
 				harness.report.rpc_id(1,handled,{"recovered":net.last_snapshot>harness.data["sequence"]})
+			"prediction_gap":
+				Input.action_press("move_right")
+				await create_timer(1.7).timeout
+				var stopped_at: Vector2 = net.actors[mine].position
+				net.motion_targets[net.actors[mine]] = stopped_at # Force world-before-motion arrival ordering.
+				await create_timer(0.35).timeout
+				Input.action_release("move_right")
+				harness.report.rpc_id(1,handled,{"stopped":net.actors[mine].position.distance_to(stopped_at)<2.0,"bounded":net.prediction.history.size()<=16})
+			"prediction_recovery":
+				var observed := {"position":net.actors[mine].position,"largest":0.0}
+				var watch := func():
+					var at: Vector2 = net.actors[mine].position
+					observed.largest = maxf(observed.largest,at.distance_to(observed.position))
+					observed.position = at
+				process_frame.connect(watch)
+				await create_timer(2.0).timeout
+				process_frame.disconnect(watch)
+				harness.report.rpc_id(1,handled,{"recovered":net.prediction.actor.position.distance_to(net.prediction.simulated)<3.0,"smooth":observed.largest<12.0,"independent":not net.motion_targets.has(net.actors[mine])})
 			"pickup":
 				await create_timer(0.1).timeout
 				net.action("interact")

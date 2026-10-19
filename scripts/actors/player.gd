@@ -15,6 +15,13 @@ var notice_time := 0.0
 var net_controlled := false
 var network_direction := Vector2.ZERO
 var network_sprint := false
+var network_input_sequence := 0
+var network_applied_sequence := 0
+## Used only around presentation-only shared movement; never set by client RPCs.
+var prediction_effect_bits := -1
+var prediction_heavy := -1
+var prediction_pull := Vector2.ZERO
+var prediction_drift := Vector2.RIGHT
 var local_input: bool = true
 var controls_enabled: bool = true
 var status: Status = Status.ALIVE
@@ -143,6 +150,7 @@ func _physics_process(delta: float) -> void:
 	invulnerability = maxf(0.0, invulnerability - delta)
 	if net_controlled and controls_enabled:
 		apply_intent(network_direction,network_sprint,delta)
+		network_applied_sequence = network_input_sequence
 	elif local_input and controls_enabled:
 		apply_intent(Input.get_vector("move_left", "move_right", "move_up", "move_down"),
 			Input.is_action_pressed("sprint"), delta)
@@ -152,7 +160,13 @@ func _physics_process(delta: float) -> void:
 	queue_redraw()
 
 
-func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
+func _movement_effect(effect: String) -> bool:
+	if prediction_effect_bits < 0: return has_effect(effect)
+	var index := LocalPrediction.EFFECTS.find(effect)
+	return index >= 0 and (prediction_effect_bits & (1 << index)) != 0
+
+
+func apply_intent(direction: Vector2, wants_sprint: bool, delta: float, presentation_only: bool = false) -> void:
 	velocity = Vector2.ZERO
 	if knock.length() > 30.0 and status == Status.ALIVE:
 		# Thrown, pounced or launched: the shove wins until it fades.
@@ -164,11 +178,11 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 			knock *= 0.4
 		return
 	knock = Vector2.ZERO
-	if status == Status.ALIVE and (has_effect("held") or has_effect("asleep") or has_effect("tripped")):
+	if status == Status.ALIVE and (_movement_effect("held") or _movement_effect("asleep") or _movement_effect("tripped")):
 		sprinting = false
 		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery * 0.5)
 		return
-	if status == Status.ALIVE and has_effect("backwards"):
+	if status == Status.ALIVE and _movement_effect("backwards"):
 		direction = -direction
 	if vault_time > 0.0:
 		sprinting = false
@@ -199,9 +213,9 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 		facing = movement
 	if exhausted and stamina >= config.stamina_restart:
 		exhausted = false
-	var heavy := "outboard_motor" in inventory
-	var frog := has_effect("frog")
-	sprinting = wants_sprint and not heavy and not frog and not has_effect("piggyback") and not assisting_motor and movement != Vector2.ZERO and not exhausted and stamina > 0.0
+	var heavy := "outboard_motor" in inventory if prediction_heavy < 0 else prediction_heavy == 1
+	var frog := _movement_effect("frog")
+	sprinting = wants_sprint and not heavy and not frog and not _movement_effect("piggyback") and not assisting_motor and movement != Vector2.ZERO and not exhausted and stamina > 0.0
 	if sprinting:
 		stamina = maxf(0.0, stamina - delta)
 		if stamina == 0.0:
@@ -219,18 +233,18 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 	if frog:
 		# A frog hops: short bursts of speed.
 		velocity *= 0.55 + 0.6 * maxf(0.0, sin(stride * 0.35))
-	if has_effect("drowsy") and not has_effect("coffee"):
+	if _movement_effect("drowsy") and not _movement_effect("coffee"):
 		velocity *= 0.6
-	if has_effect("hypnotized"):
-		var pull: Vector2 = effect_data.get("pull_to", global_position)
+	if _movement_effect("hypnotized"):
+		var pull: Vector2 = effect_data.get("pull_to", global_position) if prediction_effect_bits < 0 else prediction_pull
 		# Fighting the pull: a sprint still gets you away, a walk barely holds ground.
 		velocity = velocity * 0.5 + global_position.direction_to(pull) * 34.0
-	if has_effect("float"):
-		velocity = velocity * 0.4 + Vector2(effect_data.get("drift", Vector2.RIGHT)) * 46.0
-	if has_effect("piggyback"):
+	if _movement_effect("float"):
+		velocity = velocity * 0.4 + (Vector2(effect_data.get("drift", Vector2.RIGHT)) if prediction_effect_bits < 0 else prediction_drift) * 46.0
+	if _movement_effect("piggyback"):
 		# Something rides on your back: heavy, and no sprinting.
 		velocity *= 0.68
-	if has_effect("slimed"):
+	if _movement_effect("slimed"):
 		# On slime you skate: hard to start, harder to stop or turn.
 		skid = skid.lerp(velocity * 1.15, minf(1.0, 1.6 * delta))
 		velocity = skid
@@ -240,6 +254,7 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float) -> void:
 	move_and_slide()
 	var distance := position.distance_to(previous)
 	stride += distance
+	if presentation_only: return # No AI hearing, blood, or gameplay outcomes on clients.
 	if wounded and role != "quiet":
 		# A short-lived trail: the newest drops show where a wounded survivor went.
 		# The Quiet Kid binds wounds tight and leaves none.

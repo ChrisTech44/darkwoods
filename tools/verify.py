@@ -28,6 +28,9 @@ def main():
         commands.append(("parse_" + relative.replace("/", "_"), [
             "--headless", "--path", str(ROOT), "--script", "res://" + relative, "--check-only"
         ]))
+    commands.append(("movement_prediction", ["--headless", "--audio-driver", "Dummy", "--path", str(ROOT), "--script", "res://tests/integration/movement_prediction.gd"]))
+    if args.graphical:
+        commands.append(("render_replication", ["--audio-driver", "Dummy", "--path", str(ROOT), "--script", "res://tests/integration/render_replication.gd"]))
     smoke = ["--path", str(ROOT), "--script", "res://tests/integration/menu_smoke.gd"]
     commands.append(("menu_smoke", ["--headless", *smoke]))
     offline = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/offline_slice.gd"]

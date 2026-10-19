@@ -2,7 +2,7 @@
 
 This branch (`headless-server`) adds a dedicated authority for **1–4 human
 survivors**. The server has no survivor and consumes no player slot. Use the
-updated `main` client with rules **lnac-net-17**, or a client from this branch.
+updated `main` client with rules **lnac-net-18**, or a client from this branch.
 Older clients must update. The server owns AI, movement validation, damage,
 inventory, clues, objectives and extraction, using the same gameplay scene.
 
@@ -13,6 +13,13 @@ Use Godot **4.7.2** and Python 3. From this branch:
 ```sh
 python3 tools/run_server.py --mode woods --port 27840 --min-players 2
 ```
+
+On Genesect's Snap installation, prefix the command with
+`GODOT_BIN=/snap/bin/godot-4` so noninteractive shells find the engine. After
+friends finish the current night, stop the old process, pull `headless-server`,
+update every player's `main` copy and relaunch with your usual options. Rules 17
+and 18 cannot join each other. Diagnostics for this update did not restart the
+regular server.
 
 The source launcher first runs Godot's headless import step to generate asset
 imports and register script classes. A fresh clone has no `.godot` cache; starting
@@ -107,9 +114,11 @@ Monitor `server_status`, `server_ready_countdown`, `server_results` and
 
 See the development log for exact executed checks. A Linux Snap Godot 4.7.2 Mono
 source server on Genesect was tested across the real network with one/four macOS
-source clients, including normal graphical rendering. This does not establish
-Linux PCK operation, Windows, exported clients, general Internet routing,
-sustained load or human listening acceptance. Implementation diagnostics used a separate project-local copy and spare port.
+source clients, including normal graphical rendering. The rules-18 PCK was also executed under the Linux Snap runtime with four main
+source clients across the real connection; all 69 lifecycle assertions passed.
+See [smoothness/package evidence](evidence/smoothness/README.md). This does not
+establish Windows, exported clients, general Internet routing, sustained load
+or human listening acceptance. Implementation diagnostics used a separate project-local copy and spare port.
 A subsequent [post-restart verification](evidence/production_verification/README.md)
 measured the regular server, including matched external/loopback clients; external
 multi-second stalls remained while loopback delivery stayed steady.
@@ -123,8 +132,9 @@ strict error-free harness; orderly staggered departures are checked separately.
 This console-error case is unresolved and must not be described as clean acceptance.
 
 Player poses now use an independent 30Hz stream; full world state uses 20Hz
-unordered fragments. Both clients and server must update to rules lnac-net-17 and
-the server must restart before updated clients join. Local movement prediction
-and client rendering/scheduling profiling remain pending. The main client also
+unordered fragments. Both clients and server must update to rules lnac-net-18 and
+the server must restart before updated clients join. Bounded local prediction, acknowledged reconciliation and buffered remote motion
+are implemented; the client also avoids unchanged pickup/site redraws. See the
+[smoothness measurements](evidence/smoothness/README.md). The main client also
 includes the first-frame scenery preparation fix. These changes do not establish
 generally improved Internet latency or eliminate all player corrections.

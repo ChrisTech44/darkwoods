@@ -8,7 +8,7 @@ microphone is opened or requested.
 
 ## Player movement updates
 
-All players and the server must update together to **lnac-net-17**. Player poses
+All players and the server must update together to **lnac-net-18**. Player poses
 (position, velocity and facing) now use bounded, single-packet authority updates
 at 30 Hz on channel 2, independent of fragmented world state. Input uses channel 2
 in the opposite direction. Full world snapshots retain their intended 20 Hz rate;
@@ -17,16 +17,23 @@ World pieces use unordered unreliable delivery and are assembled by sequence and
 part index; missing/incomplete/stale snapshots still never apply. Older world
 snapshots cannot move a player backward over a newer pose.
 
-This reduces movement freezes caused by waiting for all world fragments. It does
-not add local movement prediction: your visible movement still waits for server
-updates, and a long interruption can still require a correction. Server authority,
-collision, damage, objectives and the existing voice channel are retained. See
-[network delay investigation](network_lag_investigation.md) for real Genesect
-measurements, the diagnostic tool and acceptance limits.
+Your survivor now responds locally before a server round trip. Shared movement
+and collision predict presentation only; the server still owns stamina, injuries,
+AI, inventory, clues, abilities and objectives. Acknowledged inputs are discarded
+and only recent pending inputs replay. Ordinary corrections ease in; true server
+relocations reset the position. Other survivors and enemies render with a short
+80ms buffer and at most 50ms extrapolation.
+
+Prediction stops after 250ms without a fresh player packet. A multi-second
+connection stall can therefore still pause visible movement; recovery is bounded
+instead of replaying seconds of invented travel. This improves responsiveness
+without fixing the underlying network path. Unchanged item/site art also stays
+cached to avoid costly repeated drawing. See [measured smoothness improvements](evidence/smoothness/README.md)
+for graphical Genesect timings, tests and acceptance limits.
 
 ## Radio Rescue (expedition)
 
-All peers must use rules `lnac-net-17` (the same build). The host owns the fuse,
+All peers must use rules `lnac-net-18` (the same build). The host owns the fuse,
 substation, six-second relay hold, persistent signal lights, countdown and
 extraction results. Clients send the usual E/hold intents. **T** switches only
 that player's objective page. A remote operator can complete the whole chain;
@@ -86,7 +93,7 @@ and shares them with everyone. The host also owns the progress-paced night (phas
 Flash-stuns (Space) and help calls are host-validated intents.
 Hiding, doors and knock-overs use the normal E intent; the host owns breath,
 door breaking and blocking. The road network changes the generated woods, so
-both copies must run rules version `lnac-net-17`. Vaults and gate openings are
+both copies must run rules version `lnac-net-18`. Vaults and gate openings are
 host-validated E actions. Clue knowledge (ranger notes,
 regions visited) is shared by the whole team.
 Nearby teammates show their names; each survivor keeps their own flashlight,

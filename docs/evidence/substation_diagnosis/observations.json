@@ -1,0 +1,52 @@
+[
+  {
+    "breaker_assets": 0,
+    "event": "substation_inspection",
+    "path": "res://artifacts/substation_inspection/boat_front.png",
+    "power_system_active": false,
+    "routes": [
+      "van",
+      "boat"
+    ],
+    "save": 0
+  },
+  {
+    "breaker_assets": 0,
+    "event": "substation_inspection",
+    "path": "res://artifacts/substation_inspection/boat_north.png",
+    "power_system_active": false,
+    "routes": [
+      "van",
+      "boat"
+    ],
+    "save": 0
+  },
+  {
+    "breaker_assets": 1,
+    "event": "substation_inspection",
+    "path": "res://artifacts/substation_inspection/all_front.png",
+    "power_system_active": true,
+    "routes": [
+      "van",
+      "radio",
+      "boat",
+      "gate",
+      "signal"
+    ],
+    "save": 0
+  },
+  {
+    "breaker_assets": 1,
+    "event": "substation_inspection",
+    "path": "res://artifacts/substation_inspection/all_north.png",
+    "power_system_active": true,
+    "routes": [
+      "van",
+      "radio",
+      "boat",
+      "gate",
+      "signal"
+    ],
+    "save": 0
+  }
+]

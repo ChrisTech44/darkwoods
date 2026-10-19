@@ -1,5 +1,21 @@
 # Development log
 
+## 2026-10-18 — Diagnose black substation center object
+
+User asked what the north site's black box should be and why it casts black
+shadows. Asset/source and actual front/north captures identify the emergency fuse/
+breaker cabinet. RadioRescue._ready returns before creating elevated machinery
+on inactive radio/gate nights; CampMap still creates the cabinet/transformer
+collision and occluders. Normal seed13 boat reproduces zero breaker props with
+black sight/light-blocking shapes; forced all routes at the same seed/poses draws
+the cabinet and both transformers. Prior all-escape graphics audit hid this case.
+macOS Godot4.7.2, normal lighting/sight/rain, AI frozen/clock stopped/player staged,
+no microphone/network, clean exit0. Actual four captures inspected. Diagnosis and
+repair direction recorded in [evidence](evidence/substation_diagnosis/README.md)
+and world graphics review. Product code unchanged; no claim of a shipped repair.
+Required import/startup, links and diff checked for the documentation increment;
+no gameplay rerun or broad-suite claim. Server branch receives the diagnosis too.
+
 ## 2026-10-18 — Dedicated team-map acceptance
 
 Merged main's verified authoritative team exploration and compact full-state

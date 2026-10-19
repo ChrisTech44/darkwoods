@@ -14,6 +14,18 @@ A further increment fixed #2 (door plaques plus a line-of-sight door name),
 #3 (place titles on entry), #4 (one skyline layout pass) and the naming item
 (clear short names, CAMP BOATHOUSE vs LAKESHORE). Landmark identity remains open.
 
+## Confirmed follow-up: invisible substation machinery
+
+A normal seed13 Boat night leaves the center breaker cabinet and transformers
+invisible while retaining solid light/sight-blocking rectangles, producing black
+boxes/shadows. RadioRescue returns before creating their artwork unless radio or
+gate is active; CampMap creates the obstacles every night. The intended cabinet
+is the emergency fuse/breaker panel. Same-seed actual front/north captures reproduce
+the failure and show the artwork with forced all routes. The original audit's
+forced all-escape fixture masked this defect. Preserve static scenery independently
+of objective activation; gate only interactions/prompts/power. This is diagnosed,
+not repaired. [Evidence and source reasoning](evidence/substation_diagnosis/README.md).
+
 ## Assessment
 
 The forest has a strong miniature-horror identity: warm camp materials, dark

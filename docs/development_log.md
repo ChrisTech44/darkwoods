@@ -1,5 +1,33 @@
 # Development log
 
+## 2026-10-19 — Local ability video gallery
+
+Recorded 52 short MP4 demonstrations under the existing ignored
+`artifacts/ability_gallery/` directory, with an offline searchable `index.html`:
+Christian's 30 source signatures, three additional Witch curses, six additional
+tarot outcomes and source collection; John's three progress/debt examples; Max's
+five earning/purchase/gamble/spill examples; and Alex's four isolation/return
+examples. Videos, fixture scripts, observations and review images remain local
+and untracked at the user's request. No gameplay or art files changed.
+
+Captures use real ability/target/status handlers, movement, collisions and audible
+game-event output. Setup supplies samples/positions; all escapes are forced,
+lighting is bright, sight masks and foreground trees/roofs are hidden, and enemy
+brains are controlled. These conditions appear in the recordings/gallery. Money
+and tarot outcomes are seeded examples. Microphone capture stays off. Gallery
+notes identify sparse Slug art and the Buster investigation/self-noise behavior;
+these recordings do not silently correct gameplay. The Conductor camera follows
+the actual landing, and tarot clips expose health/light/clue outcome readouts.
+
+Verification: all 52 H.264/AAC files have the expected resolution/duration and
+non-silent audio; before/action/after images were inspected for every clip. Exact
+clip boundaries match logged frame counters. Required import/startup are clean;
+gallery JavaScript syntax, media paths and ignore coverage pass. Browser runtime
+reported no available browser, so interactive browser acceptance is not claimed.
+No broad gameplay regression, real-microphone or multiplayer acceptance is inferred
+from this local capture-only increment. Raw observations and verification logs
+are retained beside the private gallery; only this development record is published.
+
 ## 2026-10-19 — Dedicated camper artwork and ability graphics
 
 Replaced the four active survivors’ placeholder mappings with dedicated named

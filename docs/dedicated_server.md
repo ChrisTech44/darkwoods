@@ -6,6 +6,11 @@ updated `main` client with rules **lnac-net-18**, or a client from this branch.
 Older clients must update. The server owns AI, movement validation, damage,
 inventory, clues, objectives and extraction, using the same gameplay scene.
 
+Trail exploration is shared by the whole team, including travel by humans other
+than the server's reference survivor. Update both server and clients for this fix;
+older rules18 builds connect but do not send/render the added coverage correctly.
+[Map replication checks](evidence/map_exploration/README.md).
+
 ## Run from source
 
 Use Godot **4.7.2** and Python 3. From this branch:

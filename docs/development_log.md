@@ -1,5 +1,46 @@
 # Development log
 
+## 2026-10-18 — Dedicated team-map acceptance
+
+Merged main's verified authoritative team exploration and compact full-state
+replication without altering dedicated roster/loading/lifecycle. Extended the
+external test driver: a non-reference human walks across a trail cell boundary;
+all four main clients receive the accumulated team map and unrelated trails stay
+hidden. Exported server PCK passes84 assertions clean, including existing normal
+seed13 boat escape, second-round reset and disconnect cleanup. macOS Godot4.7.2,
+headless drawing hidden, AI frozen/authority positions staged, voice/mic off.
+Merged import/startup/export/error and diff/link checks clean. The graphical
+listen-client258 and map15/notebook21 evidence is inherited from main. No broad
+suite or new Linux/Internet run claim. Source/PCK fix stays on the dedicated
+branch; gameplay/client changes are on main. Rules18 unchanged, but update both
+copies for shared trails; regular Genesect checkout/server was not touched.
+See [map evidence](evidence/map_exploration/README.md). Rebuild final bundle after
+this commit so metadata names its source; compare tested runtime hash.
+
+
+## 2026-10-18 — Replicate team trail exploration (main)
+
+User reported the client map did not develop while walking trails. Reproduced:
+ForestLevel marked only its reference player, and WorldSync omitted visited cells.
+Clients correctly skip authoritative level physics, so their maps stayed blank;
+dedicated authority also ignored other humans' travel. Fixed at the authority by
+recording every living/downed survivor's occupied cell. Snapshots include a fixed
+307-byte bitmap before compression, with cached decode, bounded/valid cell checks,
+full-state recovery and new-layout cache reset. No client discovery/position RPC;
+existing clue/cache hiding and host authority retained. Existing snare eligibility
+now includes all teammates' accepted travel. Additive optional field, rules18 stays.
+
+Before/after execution proves the defect and fix. Real graphical ENet Woods test
+258 assertions clean, including guest-only actual walk across two cells, map
+replication and unknown-cell concealment. Inspected before/after client notebook
+captures, normal lighting/local zoom; seed42/all escapes/AI frozen/staged host
+positions explicitly labelled. Map15 and notebook21 assertions pass. Required
+import/startup/error scans, Python syntax, diff and changed Markdown links checked.
+Voice/microphones off. No broad suite or Internet claim. See
+[evidence](evidence/map_exploration/README.md). Dedicated branch inherits the fix
+and receives its own all-human acceptance before publication; production server
+is not restarted by local verification.
+
 ## 2026-10-18 — Integrate smoothness into dedicated protocol18
 
 Merged main's verified redraw caching, bounded local prediction, applied-input

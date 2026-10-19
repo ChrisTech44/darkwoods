@@ -340,8 +340,12 @@ func _physics_process(delta: float) -> void:
 	if get_node("/root/Net").active and (not multiplayer.is_server() or get_node("/root/Net").waiting): return
 	if paused or finished:
 		return
-	if plan.woods.valid(plan.woods.cell_at(player.global_position)):
-		plan.woods.visited[plan.woods.cell_at(player.global_position)] = true
+	# The team's map follows accepted survivors, never client prediction or a
+	# dedicated server's arbitrary reference player alone.
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if actor.status not in [CampPlayer.Status.ALIVE, CampPlayer.Status.DOWNED]: continue
+		var cell := plan.woods.cell_at(actor.global_position)
+		if plan.woods.valid(cell): plan.woods.visited[cell] = true
 	message_time = maxf(0.0, message_time - delta)
 	var net: Node=get_node("/root/Net")
 	if net.active:

@@ -77,6 +77,17 @@ func server() -> void:
 	level.night_clock.director_enabled = false
 	var ids: Array = net.actors.keys()
 	ids.sort()
+	if level.plan.expedition:
+		var explorer: int = ids.back() # A different human from the server reference player.
+		for actor: CampPlayer in net.actors.values(): actor.position = Vector2(120,400)
+		net.actors[explorer].position = level.plan.woods.center(WoodsLayout.ENTRY) + Vector2.LEFT * 70
+		stage("explore_ready",{"explorer":explorer,"entry":WoodsLayout.ENTRY,"next":WoodsLayout.ENTRY+Vector2i.LEFT})
+		if not await reports(humans): return
+		check(level.plan.woods.visited.has(WoodsLayout.ENTRY),"dedicated_discovers_non_reference_human_travel")
+		stage("explore_walk",{"explorer":explorer,"entry":WoodsLayout.ENTRY,"next":WoodsLayout.ENTRY+Vector2i.LEFT})
+		if not await reports(humans): return
+		for id: int in ids: check(probe.reports[id].get("explored",false),"all_clients_receive_team_trail_progress_"+str(id))
+		for actor: CampPlayer in net.actors.values(): actor.position = Vector2(120,400)
 	var initial := {}
 	for id: int in ids: initial[id] = net.actors[id].position
 	stage("move")
@@ -164,6 +175,16 @@ func client() -> void:
 		if probe.stage == handled: continue
 		handled = probe.stage
 		match handled:
+			"explore_ready":
+				await until(func(): return net.world.plan.woods.visited.has(probe.data.entry))
+				probe.report.rpc_id(1,handled,{})
+			"explore_walk":
+				if own == probe.data.explorer:
+					Input.action_press("move_left")
+					await create_timer(0.85).timeout
+					Input.action_release("move_left")
+				await until(func(): return net.world.plan.woods.visited.has(probe.data.next))
+				probe.report.rpc_id(1,handled,{"explored":net.world.plan.woods.visited.has(probe.data.entry) and net.world.plan.woods.visited.has(probe.data.next) and not net.world.plan.woods.visited.has(Vector2i.ZERO)})
 			"move":
 				var start: Vector2 = net.actors[own].position
 				Input.action_press("move_down")

@@ -1,0 +1,12 @@
+{
+  "before": {
+    "event": "exploration_reproduction",
+    "guest_cell_recorded": false,
+    "snapshot_contains_exploration": false
+  },
+  "after": {
+    "event": "exploration_reproduction",
+    "guest_cell_recorded": true,
+    "snapshot_contains_exploration": true
+  }
+}

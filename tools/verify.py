@@ -28,6 +28,7 @@ def main():
         commands.append(("parse_" + relative.replace("/", "_"), [
             "--headless", "--path", str(ROOT), "--script", "res://" + relative, "--check-only"
         ]))
+    commands.append(("map_exploration", ["--headless", "--audio-driver", "Dummy", "--path", str(ROOT), "--script", "res://tests/integration/map_exploration.gd"]))
     commands.append(("movement_prediction", ["--headless", "--audio-driver", "Dummy", "--path", str(ROOT), "--script", "res://tests/integration/movement_prediction.gd"]))
     if args.graphical:
         commands.append(("render_replication", ["--audio-driver", "Dummy", "--path", str(ROOT), "--script", "res://tests/integration/render_replication.gd"]))

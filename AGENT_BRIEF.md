@@ -50,7 +50,9 @@ These are code-backed facts, not a substitute for human acceptance testing.
   separate objectives/tools, health, wounds, downing, teammate rescue and a
   bounded solo recovery mechanism. Consult current code for tuning values.
 - Woods have a central camp, ring/spoke roads, thickets, regions, shortcuts,
-  fences/vaults, clues, signposts, skyline bearings and player pins.
+  fences/vaults, clues, signposts, skyline bearings and player pins. Team trail
+  exploration is recorded for every living/downed survivor at the authority and
+  replicated as a bounded bitmap; local prediction does not reveal map cells.
 - Five implemented escape routes: Van, Radio Rescue, Lakeshore Boat, Ranger
   Gate, Signal Fire. Normal Expedition: van plus one seeded secondary. Quick
   Camp: van only. `--all-escapes` is a diagnostic override, not the normal rules.

@@ -1,0 +1,79 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "side": "server",
+      "index": 0,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 26,
+          "event": "test_result",
+          "failures": 0,
+          "players": 1,
+          "suite": "dedicated_server"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd",
+        "--",
+        "--dedicated-server",
+        "--port",
+        "61746",
+        "--mode",
+        "woods",
+        "--seed",
+        "13",
+        "--min-players",
+        "1",
+        "--start-delay",
+        "1",
+        "--result-delay",
+        "8"
+      ],
+      "log": "artifacts/dedicated/woods_1_1792374339899432000_server_0.log"
+    },
+    {
+      "side": "client",
+      "index": 0,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 10,
+          "event": "test_result",
+          "failures": 0,
+          "players": 1,
+          "suite": "dedicated_client"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "768x432",
+        "--path",
+        "/private/tmp/darkwoods-main-client",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+      ],
+      "log": "artifacts/dedicated/woods_1_1792374339899432000_client_0.log"
+    }
+  ],
+  "client_path": "/private/tmp/darkwoods-main-client",
+  "portable_pack": false,
+  "graphical_clients": true,
+  "headless_replica_scenery_hidden": false
+}

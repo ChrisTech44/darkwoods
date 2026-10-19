@@ -12,6 +12,19 @@ const THRESHOLDS: Array = [[Vector2(-14, 452), Vector2(-14, 582)], [Vector2(1550
 	[Vector2(602, -4), Vector2(742, -4)], [Vector2(794, 972), Vector2(934, 972)]]
 var lanterns: Array[PointLight2D] = []
 var lit := true
+## Match the terrain renderer: prepare only scenery around the current view.
+## Large source art is palette-fitted on first use; fitting every distant prop
+## in the whole forest blocks the first rendered frame and network polling.
+var view := Rect2()
+const VIEW_MARGIN := 256.0
+
+func _visible_view() -> Rect2:
+	var inverse := get_canvas_transform().affine_inverse()
+	var start := inverse * Vector2.ZERO
+	var end := inverse * get_viewport_rect().size
+	start = (start / 32).floor() * 32
+	end = (end / 32).ceil() * 32
+	return Rect2(start, end - start).grow(VIEW_MARGIN)
 
 
 func _ready() -> void:
@@ -23,6 +36,11 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	if DisplayServer.get_name() != "headless":
+		var next := _visible_view()
+		if next != view:
+			view = next
+			queue_redraw()
 	if lit != CampKiller.camp_closed:
 		_set_lit(CampKiller.camp_closed)
 
@@ -50,6 +68,7 @@ func _draw_dressing() -> void:
 		if posmod(h, 100) >= 11:
 			continue
 		var at := woods.center(cell)
+		if not view.has_point(at): continue
 		if not woods.zone_at(at).is_empty() or woods.on_road(at) or not woods.signpost_near(at, 140).is_empty():
 			continue
 		if woods.landmarks.any(func(landmark: Dictionary) -> bool: return landmark["position"].distance_to(at) < 220):
@@ -64,19 +83,24 @@ func _draw_dressing() -> void:
 
 
 func _draw() -> void:
+	if DisplayServer.get_name() == "headless": return
+	view = _visible_view()
 	# Lantern posts flank every trail mouth (lit while camp is safe); the east
 	# approach keeps its warning plaque at the trail edge and the footprints.
 	for pair: Array in THRESHOLDS:
 		for base: Vector2 in pair:
+			if not view.has_point(base): continue
 			PixelArt.draw_standing(self, "trail_lantern", base, 18, 46, Color.WHITE if lit else Color(0.62, 0.6, 0.58))
-	if PixelArt.draw_in(self, "ui_plaque", Rect2(1562, 556, 52, 22)):
+	if view.has_point(Vector2(1588, 567)) and PixelArt.draw_in(self, "ui_plaque", Rect2(1562, 556, 52, 22)):
 		draw_string(ThemeDB.fallback_font, Vector2(1569, 571), "THE WOODS", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("2a2216"))
 	for index in range(3):
+		if not view.has_point(Vector2(1590 + index * 24, 512)): continue
 		PixelArt.draw_in(self, "fx_footprints", Rect2(1590 + index * 24, 512 + (index % 2) * 7, 14, 12), Color(1, 1, 1, 0.7))
 	_draw_dressing()
 	for index in range(woods.landmarks.size()):
 		var landmark: Dictionary = woods.landmarks[index]
 		var at: Vector2 = landmark["position"] + Vector2(0, -24)
+		if not view.has_point(at): continue
 		draw_circle(at, 20, Color(0.1, 0.15, 0.12, 0.4))
 		# SpriteCook ruins: split stump, hunter's blind, cave, watchtower, shrine, scrap.
 		if not PixelArt.draw_standing(self, RUINS[index], at + Vector2(0, 18), RUIN_WIDTHS[index]):
@@ -146,8 +170,10 @@ func _draw() -> void:
 					draw_line(at + Vector2(15, -15), at + Vector2(21, -15), Color("c2ad78"))
 		draw_string(ThemeDB.fallback_font, at + Vector2(-38, 32), landmark["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("c2b58b"))
 	for post: Dictionary in woods.signposts:
+		if not view.has_point(post["position"]): continue
 		_signpost(post)
 	for lamp: Vector2 in woods.lamps:
+		if not view.has_point(lamp): continue
 		if PixelArt.draw_standing(self, "lamp_post", lamp + Vector2(0, 3), 10):
 			continue
 		draw_rect(Rect2(lamp + Vector2(-1, -16), Vector2(3, 18)), Color("4a4438"))

@@ -64,6 +64,16 @@ static func _snap_resize(source: Image, size: Vector2i) -> Image:
 			if c.a > 0.5 and not seen.has(c.to_html(false)):
 				seen[c.to_html(false)] = true
 				palette.append(Color(c, 1.0))
+	if palette.is_empty():
+		return Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
+	# Exact nearest-colour search, with the original palette order breaking ties.
+	# Scanning every source colour for every output pixel blocks network polling
+	# while the first world frame prepares high-resolution scenery.
+	var points: Array = []
+	for index in range(palette.size()):
+		var c: Color = palette[index]
+		points.append([c, index])
+	var tree := _palette_tree(points)
 	var small := source.duplicate()
 	small.resize(size.x, size.y, Image.INTERPOLATE_LANCZOS)
 	for y in range(size.y):
@@ -72,15 +82,34 @@ static func _snap_resize(source: Image, size: Vector2i) -> Image:
 			if c.a < 0.5:
 				small.set_pixel(x, y, Color(0, 0, 0, 0))
 				continue
-			var best: Color = palette[0]
-			var best_d := INF
-			for p in palette:
-				var d: float = (p.r - c.r) * (p.r - c.r) * 0.3 + (p.g - c.g) * (p.g - c.g) * 0.59 + (p.b - c.b) * (p.b - c.b) * 0.11
-				if d < best_d:
-					best_d = d
-					best = p
-			small.set_pixel(x, y, best)
+			var query := c
+			var best := [INF, 2147483647]
+			_palette_nearest(tree, query, best)
+			small.set_pixel(x, y, palette[best[1]])
 	return small
+
+
+static func _palette_tree(points: Array, depth: int = 0) -> Dictionary:
+	if points.is_empty(): return {}
+	var axis := depth % 3
+	points.sort_custom(func(a: Array, b: Array) -> bool: return a[0][axis] < b[0][axis])
+	var middle := points.size() / 2
+	return {"point": points[middle][0], "index": points[middle][1], "axis": axis,
+		"left": _palette_tree(points.slice(0, middle), depth + 1),
+		"right": _palette_tree(points.slice(middle + 1), depth + 1)}
+
+
+static func _palette_nearest(tree: Dictionary, query: Color, best: Array) -> void:
+	if tree.is_empty(): return
+	var p: Color = tree.point
+	var distance := (p.r - query.r) * (p.r - query.r) * 0.3 + (p.g - query.g) * (p.g - query.g) * 0.59 + (p.b - query.b) * (p.b - query.b) * 0.11
+	if distance < best[0] or (distance == best[0] and tree.index < best[1]):
+		best[0] = distance
+		best[1] = tree.index
+	var delta: float = query[tree.axis] - tree.point[tree.axis]
+	_palette_nearest(tree.left if delta < 0 else tree.right, query, best)
+	if delta * delta * [0.3, 0.59, 0.11][tree.axis] <= best[0]:
+		_palette_nearest(tree.right if delta < 0 else tree.left, query, best)
 
 
 ## Seamless SpriteCook material texture (res://assets/tiles/tex_<name>.png).

@@ -1,5 +1,27 @@
 # Development log
 
+## 2026-10-18 — Graphical client startup before dedicated-server acceptance (main)
+
+A real graphical client initially disconnected while preparing its first forest
+frame. Source traces ended in WoodsDecor drawing; its distant scenery eagerly
+called PixelArt's exhaustive palette fitter before networking could poll again.
+Scenery now prepares only within the camera rectangle plus a 256px margin and
+redraws as that rectangle moves. Headless scenery draws return immediately.
+PixelArt now searches the same source palette using a balanced spatial tree,
+retaining weighted RGB distance, palette-order ties, Lanczos resizing and alpha
+threshold. No AI, collision, objective, lighting or authority rules changed.
+
+Verification: required main import/startup and diff checks clean; the new
+`pixel_palette.gd` regression compares 1,768 pixels with the previous exhaustive
+algorithm, zero differences. A normal rendered main client passed two rounds
+against the separate server implementation (26 server + 10 client assertions,
+clean exits). Captures at camp and the boatyard were inspected; see
+[selected evidence](evidence/scenery_startup/README.md) for staged parts/positions,
+frozen enemies, normal lighting and microphone-off labels. The server also needed
+its ENet peer timeout aligned with the existing 90s loading allowance; that change
+belongs to headless-server. Earlier graphical attempts failed or warned at teardown;
+only the final clean run is accepted. Broader lag/prediction work remains deferred.
+
 ## 2026-10-18 — Friends playtest balance and objective clarity (main)
 
 Approved playtest follow-up. The headless server edition will be isolated on

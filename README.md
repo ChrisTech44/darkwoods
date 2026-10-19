@@ -193,7 +193,7 @@ editor). Python is optional. More detail:
 2. **Pick a survivor.** Choose Christian, John, Max or Alex; each has a
    different passive, X ability and drawback. John rewards objective preparation. Then **START NIGHT**.
 
-   ![Choosing a survivor](docs/evidence/four_survivors/select_christian.png)
+   ![Choosing a survivor](docs/evidence/camper_art/select_christian.png)
 
 3. **Read the opening message.** It names where the fuel is, which second
    escape is rumoured to work tonight, tonight's killer and any modifiers.
@@ -632,8 +632,10 @@ round. Quick Camp keeps its original van-only rules.
 
 Choose **Christian, John, Max or Alex** before starting. The four friends replace
 the old six archetypes. Selection and lobby remember the choice; Random Survivor
-chooses among these four. Existing sprites/portraits are prototype stand-ins,
-not likenesses of the real people.
+chooses among these four. Dedicated camper sprites and portraits follow the
+requested hair, facial hair, glasses and clothing, with backpacks, rolled mats
+and hiking boots. These are stylized designs from descriptions.
+[Artwork and credit record](docs/evidence/camper_art/README.md).
 
 | Survivor | Passive | X ability | Drawback |
 | --- | --- | --- | --- |

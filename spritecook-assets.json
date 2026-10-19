@@ -352,6 +352,55 @@
    "label": "region entrance markers 3x3 (village sign, bog boardwalk, graveyard gate, flood gauge, orchard arch, lychgate, armillary pillar, rail crossing, mine sign), 12 credits; tools/slice_landmark_props.gd",
    "file": "art_sources/spritecook/region_entrances_sheet.png",
    "sha12": "21e4df078211"
+  },
+  {
+   "asset_id": "8e823782-855f-437a-bcf0-5d40c8267803",
+   "label": "four friends as equipped campers \u2014 six-column directional source",
+   "file": "art_sources/spritecook/friends_poses.png",
+   "sha12": "851aaf346ab6"
+  },
+  {
+   "asset_id": "5717b85f-c417-4cac-9262-c4efb79c4ed6",
+   "label": "four camper friends \u2014 directional walking source",
+   "file": "art_sources/spritecook/friends_walks.png",
+   "sha12": "c96c9a737752"
+  },
+  {
+   "asset_id": "07bc6840-631e-4433-8e30-fa83a595dbf7",
+   "label": "Christian John Max Alex \u2014 camper portraits with packs and bedrolls",
+   "file": "art_sources/spritecook/friends_portraits.png",
+   "sha12": "ef29c5bcc253"
+  },
+  {
+   "asset_id": "4e879204-2eec-4b97-9abe-f2bacbd924fa",
+   "label": "superseded civilian prototype \u2014 missing camper gear",
+   "sha12": "e1a02c8edc21"
+  },
+  {
+   "asset_id": "5541a618-61aa-4bff-b616-54816b6f6d73",
+   "label": "superseded civilian walk prototype \u2014 not integrated",
+   "sha12": "5596ff506e50"
+  },
+  {
+   "asset_id": "79833bd2-0449-482b-b00f-3465f805ba49",
+   "label": "superseded civilian portraits \u2014 not integrated",
+   "sha12": "8895a85c23d8"
+  },
+  {
+   "asset_id": "3fad1211-303f-421a-ae3e-d24897242fb5",
+   "label": "Christian isolated camper redo: nine complete poses; right profile mirrored at import",
+   "file": "art_sources/spritecook/christian_camper_frames.png",
+   "sha12": "b098e452e8cd"
+  },
+  {
+   "asset_id": "47eef267-8306-4953-9fa8-06033947032c",
+   "label": "nine survivor ability graphics: cash tiers, wallets, dice, return, debt, sample",
+   "file": "art_sources/spritecook/survivor_ability_icons.png",
+   "sha12": "188a3a4d0862"
+  },
+  {
+   "asset_id": "5fd8f6f2-fbff-438c-afde-29c6701affb2",
+   "label": "Christian camper portrait auto-slice used as isolated redo reference; source 07bc6840"
   }
  ]
 }

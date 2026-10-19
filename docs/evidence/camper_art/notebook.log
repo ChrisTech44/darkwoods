@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"tab_opens_map","passed":true}
+{"event":"assertion","name":"tab_pages_to_log","passed":true}
+{"event":"assertion","name":"tab_after_log_closes","passed":true}
+{"event":"assertion","name":"shift_tab_from_map_closes","passed":true}
+{"event":"assertion","name":"t_opens_plan_without_changing_route","passed":true}
+{"event":"assertion","name":"t_cycles_route_and_map_follows","passed":true}
+{"event":"assertion","name":"escape_closes_notebook_not_pause","passed":true}
+{"event":"assertion","name":"installed_part_leaves_map","passed":true}
+{"event":"assertion","name":"dropped_part_marked_live","passed":true}
+{"event":"assertion","name":"unexplored_caches_stay_hidden","passed":true}
+{"event":"assertion","name":"teammate_on_map","passed":true}
+{"event":"assertion","name":"downed_teammate_on_map","passed":true}
+{"event":"assertion","name":"map_shows_next_step","passed":true}
+{"event":"assertion","name":"moon_new_before_nightfall","passed":true}
+{"event":"assertion","name":"moon_waxes_toward_next_rise","passed":true}
+{"event":"night_moon","out":true,"time":0}
+{"event":"assertion","name":"moon_full_while_out","passed":true}
+{"event":"assertion","name":"blood_moon_fixture","passed":true}
+{"event":"assertion","name":"moon_and_radio_replicate","passed":true}
+{"event":"night_phase","phase":"DEEP NIGHT","revealed":["fuel","fuse"],"time":0}
+{"event":"assertion","name":"phase_title_shown","passed":true}
+{"event":"assertion","name":"radio_transcript_matches_radio","passed":true}
+{"event":"assertion","name":"log_keeps_phase_announcement","passed":true}
+{"checks":21,"event":"test_result","failures":0,"suite":"notebook"}

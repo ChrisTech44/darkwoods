@@ -9,8 +9,8 @@ const DETAILS := [
 	"FINDER'S FEE: searches and stolen\ngear recoveries earn cash.\nTap X: buy. Hold X: gamble more.\nGetting hit spills your money.",
 	"TRAVEL ALONE: save light and\nrecover stamina while isolated.\nX: mark; X again: channel return.\nHits interrupt. Grabs prevent it."
 ]
-## Existing artwork is a prototype stand-in, not a likeness of the four friends.
-const ART := {"christian":"mechanic", "john":"jock", "max":"quartermaster", "alex":"quiet"}
+## Dedicated camper designs follow the friends' requested clothes/features.
+const ART := {"christian":"christian", "john":"john", "max":"max", "alex":"alex"}
 
 static func valid(id: String) -> String:
 	return id if id in IDS else "christian"

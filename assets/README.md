@@ -1,5 +1,41 @@
 # Original game art
 
+## Four camper friends and ability graphics (19 October 2026)
+
+The active roster has dedicated `survivor_christian/john/max/alex.png` sheets
+and matching `sc/portrait_<name>.png` portraits. All carry hiking packs, rolled
+sleeping mats, canteens and boots. Christian: short dark hair, close-cropped full
+beard, green T-shirt/grey long pants. John: dark hair, blue shirt/tan cargo shorts.
+Max: dark hair, red shirt/black shorts. Alex: bald, glasses, close-cropped full
+beard, white shirt/tan shorts. These are stylized descriptions, not photo likenesses.
+
+Rebuild from committed source images:
+
+```sh
+godot --headless --path . --script res://tools/import_friend_art.gd
+godot --headless --path . --import
+```
+
+The importer extracts connected alpha bounds to avoid chopping equipment at
+assumed grid boundaries. Group pose/walk sources contain duplicate columns;
+explicit row selections pick John, Max and Alex. Christian uses his isolated
+redo (nine poses in down/up/left rows, right mirrored), excluding the clipped
+Christian column in the group walking source. Runtime frames stay 24×32, three
+frames in down/up/right/left rows. Portraits fit 52×64. Raw sheets are preserved
+in `art_sources/spritecook/`; IDs/hashes are in the root SpriteCook manifest.
+
+Nine cropped `sc/` objects: `cash_small`, `cash_bundle`, `cash_bag`, `kit_wallet`,
+`kit_dice`, `kit_empty_wallet`, `kit_return`, `kit_debt`, `kit_sample`. Cash tier
+pictures represent existing amounts; HUD icons show existing state. Alex's marker
+has a small pennant graphic. No economy, isolation, debt or targeting rules change.
+
+Credit record: 36 first-pass civilian prototypes, 36 camper revisions, 12 Christian
+redo and 12 shared ability-icon sheet = **96 credits total**, balance **320** after
+generation. The last requested redo plus ability art cost 24. Portrait auto-slicing
+cost no credits. No paid animation, repeated reroll or additional cleanup job.
+Earlier civilian prototypes stay out of runtime assets; their IDs remain marked
+superseded in the manifest. [Captures and verification](../docs/evidence/camper_art/README.md).
+
 ## SpriteCook revamp (16 October 2026)
 
 Part of the art was regenerated with SpriteCook (Nano Banana 2.1, pixel mode) on

@@ -582,6 +582,7 @@ static func draw_world(canvas: Node2D, level: Node) -> void:
 	for actor: CampPlayer in canvas.get_tree().get_nodes_in_group("survivors"):
 		if actor.kit.get("marker_life",0.0)>0 and actor==level.player:
 			canvas.draw_arc(actor.kit["marker"],12,0,TAU,24,Color("82c9d9"),2)
+			PixelArt.draw_in(canvas,"kit_return",Rect2(actor.kit["marker"]-Vector2(9,9),Vector2(18,18)))
 			canvas.draw_string(ThemeDB.fallback_font,actor.kit["marker"]+Vector2(-10,-15),"RETURN",HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("82c9d9"))
 	for row in visuals(level):
 		if level.sight != null and not level.sight.can_see(row[1]): continue

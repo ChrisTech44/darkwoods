@@ -1,5 +1,37 @@
 # Development log
 
+## 2026-10-19 — Dedicated camper artwork and ability graphics
+
+Replaced the four active survivors’ placeholder mappings with dedicated named
+camper sheets and portraits matching the requested hair, beards, glasses and
+shirt/bottom colors. Packs, rolled mats, canteens and boots restore the woodland
+camper identity after the first civilian-looking pass was rejected. Existing NPC
+and historical archetype art remains available to its unrelated consumers.
+
+The group walk source clipped Christian. At the user’s request, one isolated
+SpriteCook redo now supplies his complete frames; its three directional rows
+are adapted to four by mirroring the intact side. The importer never uses the
+clipped Christian column. Connected alpha bounds avoid chopping limbs/gear at
+inferred grid boundaries. Rebuilds preserve 24×32 runtime frames and fit portraits
+inside 52×64. All runtime frames and four selector cards were visually inspected.
+
+Added one nine-icon sheet: three cash-drop tiers, Max’s wallet/stake/broke HUD
+indicators, Alex’s return pennant, John’s damage-debt hourglass and Christian’s
+sample vial. Existing quantities, labels, personal marker ownership, clue
+discovery and host authority remain; no new economy or gameplay rules. The
+art fixture includes normal-light cash and marker views, clears stale
+messages between staged states and explicitly redraws its frozen ability layer.
+
+Verification passes: content 389, survivor kits 144, graphical player rendering
+9, graphical replica rendering 8, layout 1,323, notebook 21. Required import/startup,
+Markdown targets and diff checks run before publication. Full broad regression
+was not repeated for the art increment. [Captures, logs, sources and limits](evidence/camper_art/README.md).
+
+Credits: civilian pass 36, camper revisions 36, Christian redo 12 and nine ability
+icons 12: 96 used overall, 320 remaining. The user’s latest requested redo plus
+icons cost 24; no further paid reroll/cleanup. IDs/hashes and rejected/superseded
+prototypes are recorded without credentials or signed URLs.
+
 ## 2026-10-19 — Four-survivor final regression accepted
 
 The stable-source full runner passes all 218 verification steps with no engine

@@ -312,7 +312,7 @@ func _process(_delta: float) -> void:
 	if player.has_effect("lost"):
 		hud.location_label.text = "LOST · ??? (stay beside a teammate, or read a ranger note)"
 	hud.supplies_label.text = "LIGHT %ds / FLARES %d" % [int(player.flashlight_charge / player.light_drain), player.supplies["flare"]] if plan.expedition else "QUICK CAMP"
-	hud.ability_label.text = abilities.status_text(player) + " · H GIVE" if player.status == CampPlayer.Status.ALIVE else ""
+	hud.update_ability(player,abilities.status_text(player) + " · H GIVE" if player.status == CampPlayer.Status.ALIVE else "")
 	for enemy: CampKiller in get_tree().get_nodes_in_group("cryptids"):
 		# No on-screen monster readout: listen for calls and your heartbeat.
 		if player.global_position.distance_to(enemy.global_position) < 180 and sight.can_see(enemy.global_position):

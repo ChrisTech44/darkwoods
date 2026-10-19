@@ -25,8 +25,9 @@ var belt_icons: Array[TextureRect] = []
 var supplies_label: Label
 ## Proximity voice: who is talking nearby, and your own mic state.
 var voice_label: Label
-## F6 active ability state, e.g. "X MARK READY · H GIVE".
+## X active ability state and the current kit's graphic.
 var ability_label: Label
+var ability_icon: TextureRect
 ## Tab notebook (map, plan, guide, log); owns `chart` and `inventory_label`.
 var notebook: CampNotebook
 var moon_dial: MoonDial
@@ -96,7 +97,15 @@ func _ready() -> void:
 	threat_label = _label(Vector2(190, 25), Vector2(185, 14), 9)
 	threat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	threat_label.add_theme_color_override("font_color", Color("e7aa83"))
-	ability_label = _label(Vector2(9, 33), Vector2(180, 10), 7)
+	ability_icon = TextureRect.new()
+	ability_icon.position = Vector2(9,33)
+	ability_icon.size = Vector2(9,9)
+	ability_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	ability_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	ability_icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	ability_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(ability_icon)
+	ability_label = _label(Vector2(20, 33), Vector2(169, 10), 7)
 	ability_label.add_theme_color_override("font_color", Color("c9d7a4"))
 	voice_label = _label(Vector2(190, 37), Vector2(185, 10), 7)
 	voice_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -222,6 +231,17 @@ func set_status(heading: String, detail: String, energy: float) -> void:
 
 
 ## Health bar turns from red to a pulsing deep red when wounded; a hit flashes the edges.
+func update_ability(actor: CampPlayer, text: String) -> void:
+	ability_label.text = text
+	ability_icon.visible = actor.status == CampPlayer.Status.ALIVE
+	if not ability_icon.visible: return
+	var art: String = {"christian":"kit_sample","john":"kit_debt","alex":"kit_return","max":"kit_wallet"}.get(actor.role,"")
+	if actor.role == "max":
+		if actor.kit.get("stake_time",-1.0)>=0: art = "kit_dice"
+		elif actor.kit.get("cash",0)<SurvivorKits.CASH_PRICE: art = "kit_empty_wallet"
+	ability_icon.texture = PixelArt.fit(art,Vector2(9,9))
+
+
 func set_health(value: float, wounded: bool, hurt: float) -> void:
 	health.value = value
 	health_fill.bg_color = Color("8f2a26").lerp(Color("e0574a"), 0.5 + 0.5 * sin(Time.get_ticks_msec() * 0.008)) if wounded else Color("c4544a")

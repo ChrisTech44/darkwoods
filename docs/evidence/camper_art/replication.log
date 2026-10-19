@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"unchanged_replication_keeps_cached_draws","passed":true}
+{"event":"assertion","name":"initial_stacked_pile_title","passed":true}
+{"event":"assertion","name":"changed_kind_invalidates_both_pile_labels","passed":true}
+{"event":"assertion","name":"mixed_pile_title_updates","passed":true}
+{"event":"assertion","name":"moving_item_invalidates_old_and_new_piles","passed":true}
+{"event":"assertion","name":"changed_site_action_redraws_once","passed":true}
+{"event":"assertion","name":"consumed_pickup_disappears","passed":true}
+{"event":"assertion","name":"cached_hook_matches_seeded_lair","passed":true}
+{"checks":8,"event":"test_result","failures":0,"suite":"render_replication"}

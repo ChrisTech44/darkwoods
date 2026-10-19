@@ -42,8 +42,10 @@ func consume() -> void:
 func _draw() -> void:
 	if kind == "cash":
 		if not available: return
-		draw_circle(Vector2.ZERO,5,Color("e8c66a"))
-		draw_circle(Vector2.ZERO,3,Color("80632d"))
+		var art := "cash_small" if cash_amount<8 else ("cash_bundle" if cash_amount<20 else "cash_bag")
+		if not PixelArt.draw_in(self,art,Rect2(-9,-12,18,18)):
+			draw_circle(Vector2.ZERO,5,Color("e8c66a"))
+			draw_circle(Vector2.ZERO,3,Color("80632d"))
 		draw_string(ThemeDB.fallback_font,Vector2(-7,-10),"$%d" % cash_amount,HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("ffe4a1"))
 		return
 	# SpriteCook icons (padlocked crate for caches); procedural fallback below.

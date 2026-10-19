@@ -15,7 +15,10 @@ records establish what the build actually does. Resolve discrepancies explicitly
 Current design request: replace the six generic survivors with Christian, John,
 Max and Alex using the [four-survivor overhaul](docs/four_survivor_overhaul.md).
 The four-role replacement and sample framework now have implementations;
-see the implementation status and acceptance limits in that document. Christian must
+see the implementation status and acceptance limits in that document. The four
+friends now have dedicated camper sprites/portraits matching their requested
+features and clothes, plus money/ability graphics; see the
+[art evidence](docs/evidence/camper_art/README.md). Christian must
 borrow the full range of creature signatures, including moon-dependent Werewolf
 transformation and Paparazzo friendly-fire flashbang/photo consequences. The new
 design supersedes earlier roster proposals; preserve its individual drawbacks.

@@ -11,7 +11,9 @@ func frames(n: int = 5) -> void:
 		await physics_frame
 		await process_frame
 func shot(label: String) -> void:
-	if level != null: level.player.queue_redraw()
+	if level != null:
+		level.player.queue_redraw()
+		level.abilities.queue_redraw() # Frozen fixture still needs current marker/cast art.
 	await frames()
 	RenderingServer.force_draw(true)
 	await process_frame
@@ -29,6 +31,9 @@ func role(id: String) -> void:
 	level.player.hurt_time = 0
 	level.player.flash_time = 0
 	level.player.invulnerability = 0
+	level.player.notice_time = 0
+	level.player.notice = ""
+	level.message_time = 0
 	level.player.sheet = load("res://assets/sprites/survivor_"+SurvivorRoster.art(id)+".png")
 	level.player.ability_cooldown = 0
 func run() -> void:
@@ -87,9 +92,27 @@ func run() -> void:
 	level.player.invulnerability = 0
 	level.player.receive_hit(10)
 	await shot("max_cash_spill")
+	if "--art-audit" in OS.get_cmdline_user_args():
+		role("max")
+		level.player.position = Vector2(140,430)
+		assert(SurvivorKits.safe_point(level.player,level.player.position))
+		level.player.kit.cash = 24
+		for i in range(3):
+			var cash: CampPickup = level.spawn_dropped("cash",level.player.position+Vector2((i-1)*24,-28-12*(i%2)))
+			cash.cash_owner = level.player.kit.owner
+			cash.cash_amount = [2,12,30][i]
+		await shot("money_markers")
+		level.player.kit.cash = 0
+		await shot("max_empty_wallet")
 	role("alex")
 	SurvivorKits.advance(level.player,5.0)
 	level.abilities.use(level.player)
+	if "--art-audit" in OS.get_cmdline_user_args():
+		level.player.position += Vector2(40,0)
+		level.player.facing = Vector2.LEFT
+		await shot("alex_return_marker")
+		level.player.position -= Vector2(40,0)
+		level.player.facing = Vector2.UP
 	level.player.position += Vector2(0,20)
 	level.abilities.use(level.player)
 	await shot("alex_channel")

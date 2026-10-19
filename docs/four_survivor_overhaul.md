@@ -3,15 +3,16 @@
 19 October 2026. **Four-role implementation and maintained design.**
 
 The playable roster now uses Christian, John, Max and Alex in place of Jock,
-Mechanic, Scout, Medic, Quiet and Quartermaster. Existing art is a prototype
-stand-in; it does not claim to depict the real friends. This
+Mechanic, Scout, Medic, Quiet and Quartermaster. Dedicated camper art now
+follows the requested descriptions, with packs/bedrolls, boots and the friends’
+specified clothing/features; these are stylized designs, not photo likenesses. This
 document records the selected direction and the later Christian amendment;
 previous conversation pitches are not additional abilities. The implementation defaults below are executable values; human balance
 acceptance remains pending. Target-only differences are called out explicitly.
 
 ## Implementation status — 19 October
 
-- Four IDs, four selector/lobby choices, prototype art mapping, saved-role
+- Four IDs, four selector/lobby choices, dedicated camper artwork, saved-role
   reselection and common baseline stats replace the old six roles.
 - John: 6s window / 45s cooldown; once-only preparation credit on all five routes.
   Deferred damage uses normal hit grace, effective wound/grab eligibility, and

@@ -11,6 +11,7 @@ config/project_settings_override="user://engine_overrides.cfg"
 
 [autoload]
 Session="*res://scripts/core/session.gd"
+Server="*res://scripts/network/server_runtime.gd"
 AudioManager="*res://scripts/core/audio_manager.gd"
 Net="*res://scripts/network/network_session.gd"
 Voice="*res://scripts/network/voice_chat.gd"

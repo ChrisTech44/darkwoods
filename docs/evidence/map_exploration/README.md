@@ -33,3 +33,17 @@ new-layout reset. No broad suite or Internet-path performance claim. The extra
 snapshot field is optional and backward compatible within rules18; both server
 and clients must update to receive this fix. An older server sends no coverage.
 Dedicated acceptance is recorded on headless-server after merging this increment.
+
+## Dedicated branch
+
+[Four main clients and exported server PCK](dedicated_pack_summary.json):
+84 assertions, clean macOS Godot4.7.2 processes. A non-reference human explores
+while the server's reference human remains in camp; all four clients receive the
+two visited cells and keep unrelated cells hidden. The existing normal seed13
+boat extraction, second night and departure lifecycle also passed. Headless
+replicas hide drawing, AI frozen and authority positions staged. No extra
+microphones, lighting or production server changes. Linux was not rerun for this
+small replication increment; the preceding rules18 package's Linux execution is
+recorded separately in the smoothness evidence. Required merged import/startup
+and exported-package error scans passed. The final bundle is rebuilt after the
+server commit and its runtime hash compared with this tested PCK.

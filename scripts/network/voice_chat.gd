@@ -71,6 +71,9 @@ const PITCH_BUSES := {"VoiceHelium": 1.7, "VoiceFrog": 0.68}
 
 
 func _ready() -> void:
+	if ServerRuntime.requested():
+		set_process(false)
+		return
 	if not ClassDB.class_exists("TwovoipOpusEncoder") and FileAccess.file_exists(EXTENSION):
 		GDExtensionManager.load_extension(EXTENSION)
 	available =ClassDB.class_exists("TwovoipOpusEncoder") and ClassDB.class_exists("AudioStreamOpus")
@@ -272,6 +275,7 @@ func _wants_to_talk(delta: float) -> bool:
 
 @rpc("any_peer", "call_remote", "unreliable_ordered", CHANNEL)
 func _voice_packet(stream: int, seq: int, packet: PackedByteArray) -> void:
+	if ServerRuntime.requested(): return
 	accept_packet(multiplayer.get_remote_sender_id(), stream, seq, packet)
 
 

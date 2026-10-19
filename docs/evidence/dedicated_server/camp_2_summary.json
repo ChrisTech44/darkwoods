@@ -1,0 +1,107 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "side": "server",
+      "index": 0,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 28,
+          "event": "test_result",
+          "failures": 0,
+          "players": 2,
+          "suite": "dedicated_server"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd",
+        "--",
+        "--dedicated-server",
+        "--port",
+        "61958",
+        "--mode",
+        "camp",
+        "--seed",
+        "42",
+        "--min-players",
+        "2",
+        "--start-delay",
+        "1",
+        "--result-delay",
+        "8"
+      ],
+      "log": "artifacts/dedicated/camp_2_1792374541418867000_server_0.log"
+    },
+    {
+      "side": "client",
+      "index": 0,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 7,
+          "event": "test_result",
+          "failures": 0,
+          "players": 2,
+          "suite": "dedicated_client"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/private/tmp/darkwoods-main-client",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+      ],
+      "log": "artifacts/dedicated/camp_2_1792374541418867000_client_0.log"
+    },
+    {
+      "side": "client",
+      "index": 1,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 7,
+          "event": "test_result",
+          "failures": 0,
+          "players": 2,
+          "suite": "dedicated_client"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/private/tmp/darkwoods-main-client",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+      ],
+      "log": "artifacts/dedicated/camp_2_1792374541418867000_client_1.log"
+    }
+  ],
+  "client_path": "/private/tmp/darkwoods-main-client",
+  "portable_pack": false,
+  "graphical_clients": false,
+  "headless_replica_scenery_hidden": true
+}

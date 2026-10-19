@@ -1,5 +1,9 @@
 # Last Night at Camp
 
+**Dedicated server branch:** run a camp without a host survivor. See the
+[server setup and connection guide](docs/dedicated_server.md). Updated `main`
+clients (`lnac-net-17`) can join; the server code remains on this branch.
+
 **Find the parts. Keep your light alive. Get out before the woods get you.**
 
 A top-down pixel-art survival horror game for **1 to 4 players**, made in Godot.

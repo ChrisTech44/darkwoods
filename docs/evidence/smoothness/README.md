@@ -107,3 +107,23 @@ processes clean. A separate assembled server checkout with the final dedicated
 features and protocol also passed [four-main-client source checks](dedicated_source_four.json),
 **69 assertions**; headless logical replicas suppress drawing but retain physics.
 Portable-pack acceptance is recorded on the dedicated branch after merging.
+
+## Dedicated branch/package acceptance
+
+The merged dedicated branch passed [local exported PCK + four main clients](dedicated_pack_four.json),
+69 assertions, plus the four source-launcher Python regressions and required
+import/startup/export/error checks. The same runtime PCK then ran under Linux
+Snap Godot 4.7.2 Mono on Genesect spare UDP28336 with four macOS main source
+clients: [all 69 real-network assertions passed](linux_pack_four.json), no engine
+warnings/errors, server exit0. The external test driver accepts LNAC_TEST_HOST
+(default loopback); it is not included in the exported game. Extraction, results,
+second-round readiness/reset, objective drops and empty-server cleanup passed.
+These lifecycle fixtures stage authority positions, enable all escapes and freeze
+AI; headless clients hide scenery. Use the ordinary graphical run above for
+smoothness evidence, not this staged lifecycle test. Voice/microphones off.
+
+This establishes Linux PCK operation with that installed engine, not a bundled
+Linux executable, Windows, graphical exported clients or long-session acceptance.
+Regular checkout5debe70/UDP27840 was not updated/restarted. Server-only runtime,
+launcher and packaging remain on headless-server; main has gameplay/client changes.
+Update both branches' copies and restart the old server before joining protocol18.

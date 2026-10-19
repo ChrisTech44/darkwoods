@@ -73,6 +73,7 @@ var van_rev_clock := 0.0
 
 
 func _ready() -> void:
+	if ServerRuntime.requested(): hide()
 	add_to_group("round_world")
 	var session: Node = get_node("/root/Session")
 	plan.generate(session.begin_run(), session.mode)
@@ -241,6 +242,22 @@ func _ready() -> void:
 		buttons.get_node("Retry").disabled=not multiplayer.is_server()
 	print(JSON.stringify({"event": "round_ready", "milestone": "M1"}))
 
+
+## Keep the same world/physics scene and reuse its initial actor for the first
+## real client. Presentation is disabled, not the authoritative simulation.
+func configure_server_view() -> void:
+	set_process(false)
+	set_process_unhandled_input(false)
+	hud.process_mode = Node.PROCESS_MODE_DISABLED
+	hud.hide()
+	camp_map.set_process(false)
+	for child in get_children():
+		if child is CanvasLayer:
+			child.process_mode = Node.PROCESS_MODE_DISABLED
+		elif child.get_script() != null and child.get_script().resource_path in ["res://scripts/ui/night_overlay.gd", "res://scripts/ui/woods_visibility.gd", "res://scripts/world/standing_props.gd", "res://scripts/world/calling_cards.gd", "res://scripts/world/blood_trail.gd"]:
+			child.process_mode = Node.PROCESS_MODE_DISABLED
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		actor.get_node("Camera2D").enabled = false
 
 func _process(_delta: float) -> void:
 	var heading := "VAN %d/%d · %s" % [van.installed.size(), plan.required.size(), plan.weather.to_upper() + " NIGHT" if plan.expedition else "SEARCH CAMP"]
@@ -955,7 +972,8 @@ func finish_round(success: bool, detail: String) -> void:
 		score_card = compute_score(success)
 		titles.push_front("SCORE %d · GRADE %s" % [score_card["score"], score_card["grade"]])
 	awards_text = ("\n" + "\n".join(titles)) if not titles.is_empty() else ""
-	hud.show_result(success, detail + "\nNight %d / %s" % [plan.seed_value, plan.weather] + awards_text + record_profile(success))
+	if not get_node("/root/Net").dedicated:
+		hud.show_result(success, detail + "\nNight %d / %s" % [plan.seed_value, plan.weather] + awards_text + record_profile(success))
 	print(JSON.stringify({"event": "round_finished", "won": success, "result": detail}))
 
 

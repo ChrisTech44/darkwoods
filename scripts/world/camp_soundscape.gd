@@ -74,6 +74,9 @@ const MOWER_RANGE := 650.0
 func _ready() -> void:
 	add_to_group("round_audio")
 	mixer = get_node("/root/AudioManager")
+	if ServerRuntime.requested():
+		set_physics_process(false)
+		return
 	rng.seed = level.plan.seed_value + 9051
 	last_position = level.player.global_position
 	var listener := AudioListener2D.new()
@@ -402,6 +405,7 @@ func _events() -> void:
 
 
 func play_cue(cue: String, origin: Vector2, gain_db: float = 0.0, pitch: float = 1.0, source: Node2D = null, length: float = 0.0) -> bool:
+	if ServerRuntime.requested(): return false
 	var monster := cue in CREATURE_CUES.values() or cue.begins_with("screech")
 	var radius: float = LOUD_CUES.get(cue, MONSTER_RANGE if monster else (VOICE_RANGE if cue in ["grunt", "gasp"] else (ENEMY_STEP_RANGE if source is CampKiller else 230.0)))
 	if level.paused or level.finished or not mixer.cues.has(cue) or origin.distance_to(level.player.global_position) >= radius:

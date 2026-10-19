@@ -10,6 +10,8 @@ var quitting := false
 
 
 func _ready() -> void:
+	if ServerRuntime.requested():
+		return
 	theme = CampStyle.make()
 	var online := Button.new()
 	online.name="Online"

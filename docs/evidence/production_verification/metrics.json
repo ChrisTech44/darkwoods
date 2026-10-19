@@ -1,0 +1,407 @@
+{
+  "server_commit": "5debe70",
+  "rules": "lnac-net-17",
+  "server": "Genesect regular source server, UDP 27840",
+  "runs": {
+    "graphical": {
+      "summary": {
+        "enet_packet_loss_scale": 65536,
+        "enet_packet_loss_scaled": 100.0,
+        "event": "network_probe_result",
+        "frame_interval_ms": {
+          "count": 1388,
+          "max": 78.208,
+          "mean": 45.4943494236311,
+          "p50": 49.321,
+          "p95": 52.34,
+          "p99": 53.001
+        },
+        "largest_render_step_pixels": 5.84365844726562,
+        "motion_bytes": {
+          "count": 1308,
+          "max": 60.0,
+          "mean": 60.0,
+          "p50": 60.0,
+          "p95": 60.0,
+          "p99": 60.0
+        },
+        "motion_gap_ms": {
+          "count": 1307,
+          "max": 113.149,
+          "mean": 48.3138156082632,
+          "p50": 49.597,
+          "p95": 52.711,
+          "p99": 60.858
+        },
+        "movement_response_ms": {
+          "count": 60,
+          "max": 298.25,
+          "mean": 205.125683333333,
+          "p50": 208.402,
+          "p95": 249.985,
+          "p99": 275.854
+        },
+        "movement_response_timeouts": 0,
+        "network_tick_ms": {
+          "count": 0
+        },
+        "physics_interval_ms": {
+          "count": 3790,
+          "max": 77.224,
+          "mean": 16.6613836411609,
+          "p50": 0.463,
+          "p95": 49.768,
+          "p99": 52.064
+        },
+        "rtt_ms": {
+          "count": 62,
+          "max": 82.0,
+          "mean": 65.0161290322581,
+          "p50": 63.0,
+          "p95": 76.0,
+          "p99": 79.0
+        },
+        "side": "client",
+        "skipped_snapshot_sequences": 10,
+        "snapshot_bytes": {
+          "count": 1254,
+          "max": 5449.0,
+          "mean": 5162.5677830941,
+          "p50": 5376.0,
+          "p95": 5433.0,
+          "p99": 5442.0
+        },
+        "snapshot_gap_ms": {
+          "count": 1253,
+          "max": 113.149,
+          "mean": 50.3959752593775,
+          "p50": 49.781,
+          "p95": 55.55,
+          "p99": 70.76
+        },
+        "snapshots": 1254
+      },
+      "context": null,
+      "diagnostics": []
+    },
+    "headless": {
+      "summary": {
+        "enet_packet_loss_scale": 65536,
+        "enet_packet_loss_scaled": 45.0,
+        "event": "network_probe_result",
+        "frame_interval_ms": {
+          "count": 4375,
+          "max": 20.255,
+          "mean": 6.90168251428571,
+          "p50": 7.03,
+          "p95": 8.269,
+          "p99": 8.779
+        },
+        "largest_render_step_pixels": 3.61294555664062,
+        "motion_bytes": {
+          "count": 800,
+          "max": 60.0,
+          "mean": 60.0,
+          "p50": 60.0,
+          "p95": 60.0,
+          "p99": 60.0
+        },
+        "motion_gap_ms": {
+          "count": 799,
+          "max": 2118.961,
+          "mean": 37.7660362953692,
+          "p50": 34.482,
+          "p95": 42.717,
+          "p99": 119.194
+        },
+        "movement_response_ms": {
+          "count": 29,
+          "max": 281.01,
+          "mean": 166.394827586207,
+          "p50": 158.077,
+          "p95": 206.524,
+          "p99": 254.22
+        },
+        "movement_response_timeouts": 1,
+        "network_tick_ms": {
+          "count": 0
+        },
+        "physics_interval_ms": {
+          "count": 1811,
+          "max": 28.705,
+          "mean": 16.6655985643291,
+          "p50": 14.063,
+          "p95": 20.924,
+          "p99": 21.475
+        },
+        "rtt_ms": {
+          "count": 31,
+          "max": 564.0,
+          "mean": 120.806451612903,
+          "p50": 62.0,
+          "p95": 396.0,
+          "p99": 501.0
+        },
+        "side": "client",
+        "skipped_snapshot_sequences": 73,
+        "snapshot_bytes": {
+          "count": 532,
+          "max": 4646.0,
+          "mean": 4459.17481203008,
+          "p50": 4473.0,
+          "p95": 4620.0,
+          "p99": 4633.0
+        },
+        "snapshot_gap_ms": {
+          "count": 531,
+          "max": 2151.446,
+          "mean": 56.8268606403013,
+          "p50": 48.342,
+          "p95": 62.143,
+          "p99": 111.028
+        },
+        "snapshots": 532
+      },
+      "context": null,
+      "diagnostics": []
+    },
+    "external_cohort": {
+      "summary": {
+        "enet_packet_loss_scale": 65536,
+        "enet_packet_loss_scaled": 63.0,
+        "event": "network_probe_result",
+        "frame_interval_ms": {
+          "count": 17508,
+          "max": 38.719,
+          "mean": 6.90119082705047,
+          "p50": 6.995,
+          "p95": 8.874,
+          "p99": 9.936
+        },
+        "largest_render_step_pixels": 3.77716064453125,
+        "motion_bytes": {
+          "count": 3431,
+          "max": 112.0,
+          "mean": 112.0,
+          "p50": 112.0,
+          "p95": 112.0,
+          "p99": 112.0
+        },
+        "motion_gap_ms": {
+          "count": 3430,
+          "max": 2129.114,
+          "mean": 35.2222921282798,
+          "p50": 34.327,
+          "p95": 41.318,
+          "p99": 56.365
+        },
+        "movement_response_ms": {
+          "count": 117,
+          "max": 442.062,
+          "mean": 159.616025641026,
+          "p50": 157.149,
+          "p95": 174.202,
+          "p99": 179.315
+        },
+        "movement_response_timeouts": 3,
+        "network_tick_ms": {
+          "count": 0
+        },
+        "physics_interval_ms": {
+          "count": 7249,
+          "max": 39.83,
+          "mean": 16.6671368464616,
+          "p50": 14.457,
+          "p95": 21.299,
+          "p99": 22.389
+        },
+        "rtt_ms": {
+          "count": 121,
+          "max": 584.0,
+          "mean": 91.4876033057851,
+          "p50": 56.0,
+          "p95": 354.0,
+          "p99": 460.0
+        },
+        "side": "client",
+        "skipped_snapshot_sequences": 128,
+        "snapshot_bytes": {
+          "count": 2290,
+          "max": 5573.0,
+          "mean": 5376.93144104803,
+          "p50": 5505.0,
+          "p95": 5551.0,
+          "p99": 5560.0
+        },
+        "snapshot_gap_ms": {
+          "count": 2289,
+          "max": 3506.943,
+          "mean": 52.7649593709044,
+          "p50": 48.368,
+          "p95": 61.793,
+          "p99": 83.74
+        },
+        "snapshots": 2290
+      },
+      "context": {
+        "event": "probe_round_context",
+        "mode": "woods",
+        "name": "Timing external",
+        "seed": 1788400090,
+        "weather": "fog"
+      },
+      "diagnostics": []
+    },
+    "loopback": {
+      "summary": {
+        "enet_packet_loss_scale": 65536,
+        "enet_packet_loss_scaled": 4.0,
+        "event": "network_probe_result",
+        "frame_interval_ms": {
+          "count": 17510,
+          "max": 14.997,
+          "mean": 6.90002615648199,
+          "p50": 6.902,
+          "p95": 8.456,
+          "p99": 8.73
+        },
+        "largest_render_step_pixels": 0.668853759765625,
+        "motion_bytes": {
+          "count": 3626,
+          "max": 112.0,
+          "mean": 112.0,
+          "p50": 112.0,
+          "p95": 112.0,
+          "p99": 112.0
+        },
+        "motion_gap_ms": {
+          "count": 3625,
+          "max": 36.955,
+          "mean": 33.3274811034484,
+          "p50": 34.118,
+          "p95": 35.77,
+          "p99": 36.263
+        },
+        "movement_response_ms": {
+          "count": 120,
+          "max": 130.384,
+          "mean": 113.832133333333,
+          "p50": 115.165,
+          "p95": 124.165,
+          "p99": 124.309
+        },
+        "movement_response_timeouts": 0,
+        "network_tick_ms": {
+          "count": 0
+        },
+        "physics_interval_ms": {
+          "count": 7248,
+          "max": 20.764,
+          "mean": 16.6673841059604,
+          "p50": 13.83,
+          "p95": 20.703,
+          "p99": 20.733
+        },
+        "rtt_ms": {
+          "count": 121,
+          "max": 9.0,
+          "mean": 8.09090909090909,
+          "p50": 8.0,
+          "p95": 9.0,
+          "p99": 9.0
+        },
+        "side": "client",
+        "skipped_snapshot_sequences": 0,
+        "snapshot_bytes": {
+          "count": 2417,
+          "max": 5573.0,
+          "mean": 5380.52792718246,
+          "p50": 5504.0,
+          "p95": 5551.0,
+          "p99": 5560.0
+        },
+        "snapshot_gap_ms": {
+          "count": 2416,
+          "max": 56.632,
+          "mean": 49.991229718543,
+          "p50": 48.523,
+          "p95": 55.005,
+          "p99": 55.657
+        },
+        "snapshots": 2417
+      },
+      "context": {
+        "event": "probe_round_context",
+        "mode": "woods",
+        "name": "Timing loopback",
+        "seed": 1788400090,
+        "weather": "fog"
+      },
+      "diagnostics": []
+    }
+  },
+  "sequence_correlation": {
+    "external_gap": {
+      "event": "probe_motion_gap",
+      "from_sequence": 916,
+      "gap_ms": 2129.114,
+      "to_sequence": 965,
+      "unix_time": 1792377619.43538
+    },
+    "loopback_updates_in_matching_sequence_range": 50,
+    "loopback_max_gap_in_range_ms": 35.727,
+    "loopback_range_duration_ms": 1634.175,
+    "loopback_sequences": [
+      916,
+      917,
+      918,
+      919,
+      920,
+      921,
+      922,
+      923,
+      924,
+      925,
+      926,
+      927,
+      928,
+      929,
+      930,
+      931,
+      932,
+      933,
+      934,
+      935,
+      936,
+      937,
+      938,
+      939,
+      940,
+      941,
+      942,
+      943,
+      944,
+      945,
+      946,
+      947,
+      948,
+      949,
+      950,
+      951,
+      952,
+      953,
+      954,
+      955,
+      956,
+      957,
+      958,
+      959,
+      960,
+      961,
+      962,
+      963,
+      964,
+      965
+    ]
+  }
+}

@@ -16,6 +16,23 @@ and world graphics review. Product code unchanged; no claim of a shipped repair.
 Required import/startup, links and diff checked for the documentation increment;
 no gameplay rerun or broad-suite claim. Server branch receives the diagnosis too.
 
+## 2026-10-18 — Dedicated team-map acceptance
+
+Merged main's verified authoritative team exploration and compact full-state
+replication without altering dedicated roster/loading/lifecycle. Extended the
+external test driver: a non-reference human walks across a trail cell boundary;
+all four main clients receive the accumulated team map and unrelated trails stay
+hidden. Exported server PCK passes84 assertions clean, including existing normal
+seed13 boat escape, second-round reset and disconnect cleanup. macOS Godot4.7.2,
+headless drawing hidden, AI frozen/authority positions staged, voice/mic off.
+Merged import/startup/export/error and diff/link checks clean. The graphical
+listen-client258 and map15/notebook21 evidence is inherited from main. No broad
+suite or new Linux/Internet run claim. Source/PCK fix stays on the dedicated
+branch; gameplay/client changes are on main. Rules18 unchanged, but update both
+copies for shared trails; regular Genesect checkout/server was not touched.
+See [map evidence](evidence/map_exploration/README.md). Rebuild final bundle after
+this commit so metadata names its source; compare tested runtime hash.
+
 
 ## 2026-10-18 — Replicate team trail exploration (main)
 
@@ -39,6 +56,31 @@ Voice/microphones off. No broad suite or Internet claim. See
 [evidence](evidence/map_exploration/README.md). Dedicated branch inherits the fix
 and receives its own all-human acceptance before publication; production server
 is not restarted by local verification.
+
+## 2026-10-18 — Integrate smoothness into dedicated protocol18
+
+Merged main's verified redraw caching, bounded local prediction, applied-input
+acknowledgements, authority discontinuity counters and remote interpolation while
+preserving avatar-free authority, ready/loading barriers and server lifecycle.
+Server guide/brief/package metadata now require lnac-net-18; source Snap engine
+selection and updating both copies/restarting are documented. Test-only external
+host environment option keeps production RPCs unchanged and is excluded from PCK.
+
+Required imports/startup/export and error scans clean. Four launcher Python tests
+pass. Exported PCK + four main clients:69 assertions clean locally. The same PCK
+then ran with Genesect's Linux Snap 4.7.2 Mono and four main Mac clients over the
+real connection:69 assertions, no warnings/errors, server exit0. Checked extraction,
+results, second-round readiness, disconnect drops and empty-server cleanup; staged
+host placements/frozen AI/all escapes, scenery hidden on headless replicas, voice
+and microphone off. This is lifecycle acceptance, not graphical/frame evidence.
+Main's separate normal graphical run establishes ~118FPS and response median26ms.
+Remote diagnostics used only games/darkwoods/artifacts on spare28336; production
+checkout5debe70 and regular27840 unchanged. Ordinary staggered departures clean;
+simultaneous ENet-close issue remains. No Windows/exported-client/voice/load claim.
+See [reports and platform limits](evidence/smoothness/README.md).
+Git history/remote work preserved, Markdown links/diff checked. Final bundle is
+rebuilt after this commit so build.json identifies the published source revision.
+
 
 ## 2026-10-18 — Predict local movement and buffer remote motion (main)
 
@@ -85,6 +127,55 @@ Graphical render fixture 8/8 and real ENet Camp/Woods 379 assertions pass. Requi
 import/startup, error scan and diff checks clean. Temporary copies are ignored.
 See [evidence and limits](evidence/smoothness/README.md). Prediction remains next.
 
+## 2026-10-18 — Verify the user's restarted Genesect server
+
+User confirmed Genesect was updated/running and requested live metrics. SSH found
+clean 5debe70/rules17. Connected to the regular server on 27840, guarded against
+ordinary players, and ran a graphical 60-input check, a 30-input headless check,
+then matched external/loopback 120-input probes in one normal fog round. Remote
+files stayed under games/darkwoods; no production source/configuration edit,
+replacement server or process restart. Voice/microphones off, normal AI/physics,
+no staged parts/teleports; headless replicas hide scenery. Actual graphical capture
+was inspected. Diagnostic clients self-terminated and an unready post-check verified
+that the regular server still accepted a lobby connection.
+
+Graphical RTT median63ms/max82ms, pose p99 61ms/max113ms, but average frame45.5ms
+(~22 FPS) and median >2px movement response208ms. The headless comparator then caught
+2.12s pose/world gaps with normal client frame processing, so verification was
+extended to a simultaneous loopback control. Paired external/loopback pose maxima:
+2129ms/37ms; world maxima3507ms/57ms. During external sequence916→965's 2.13s stall,
+loopback received all50 poses with max36ms spacing. Thus the observed stall was on
+the external connection/transport side; the server continued local delivery.
+Exact Wi-Fi/routing/VPN/OS/per-peer ENet cause remains unknown. Three of120 external
+movement legs timed out, versus zero on loopback. Clean engine exits do not mean
+network-quality acceptance. Client frame pacing and missing local prediction also
+remain; no claim of eliminating skipping.
+
+See [live evidence](evidence/production_verification/README.md) for full metrics,
+method, seed/capture labels, guard-aborted preliminary attempt and limits. This is
+a documentation/evidence increment; no product code change. Required local import/
+startup, Markdown-link and diff checks were run before publication. No broad
+regression rerun is claimed for unchanged gameplay code.
+
+## 2026-10-18 — Integrate rules-17 transport into dedicated branch
+
+Merged the verified main transport increment while preserving the dedicated
+server's avatar-free roster, loading barrier, countdown, timeouts and automatic
+lobby/empty-server lifecycle. Reconciled both branches' brief/log additions without
+removing their history. Server guide, README and package metadata now require
+lnac-net-17 on both clients and server; source Linux Snap execution evidence is
+recorded separately from untested Linux PCK/Windows/voice acceptance. Genesect's
+production checkout/process were not updated or restarted by the diagnostics.
+
+Verification: dedicated branch import/startup and export clean; final exported
+PCK + four updated main clients passed 37 server + 32 client assertions, clean,
+including extraction, second-round reset and disconnect cleanup. Launcher Python
+regressions: four pass. Main's real-peer Camp/Woods 379 assertions and live-network
+one/four-client results are inherited. See [selected evidence](evidence/network_transport/README.md).
+Source/rendering measurements and remaining prediction/client-frame limits are
+explicit; no claim of eliminating all player skipping. Required links/diff checks
+passed. Simultaneous-close ENet diagnostics remain the separately documented issue.
+
 ## 2026-10-18 — Real Genesect delays and independent player transport (main)
 
 Authorized SSH investigation was limited to games/darkwoods. The production
@@ -126,6 +217,75 @@ broad suite claim. See [investigation](network_lag_investigation.md) and
 [selected evidence](evidence/network_transport/README.md). Prediction and graphical
 frame profiling remain next; PCK/Linux-native export, Windows and real voice
 acceptance are separate from the source-server Linux evidence here.
+
+## 2026-10-18 — Prepare fresh server checkouts before launch (headless-server)
+
+Genesect reported missing LakeWater/StalkerTraits/ServerRuntime and cascading
+compile errors, followed by a misleading listening message. Reproduced locally
+using tracked source copied to a fresh temporary directory without `.godot`:
+direct runtime startup printed script errors. The earlier server acceptance used
+an already imported developer checkout and did not cover this installation path.
+
+`tools/run_server.py` now runs headless/Dummy Godot `--import` before every source
+launch, registering global script classes and preparing platform asset imports.
+It checks both exit status and error diagnostics because Godot can exit zero
+when scripts fail compilation. A failed preparation returns 1 and never launches
+the persistent server. Exported PCKs already contain imports and skip preparation.
+The operator guide documents this behavior and a manual recovery command.
+
+Verification: the reproduced cache-free checkout then started cleanly through the
+updated launcher, generated the global script class cache and printed listening
+without warnings/errors. A test-only engine wrapper limited the production runtime
+to 30 frames after normal import so no test daemon was left running. Four Python
+regressions pass: zero-exit script failure, failed import, successful source
+preparation and pack import bypass. Required import/startup, Python compilation,
+Markdown links and diff checks also pass. Raw before/after logs are ignored under
+`artifacts/server_bootstrap/`. This was macOS Godot 4.7.2 verification; Genesect's
+Linux Mono installation still needs its own rerun. No graphical, audio, gameplay
+or protocol change; no SSH session or remote server modification was performed.
+
+## 2026-10-18 — Dedicated authority and portable server edition (headless-server)
+
+The user prioritized a connectable server before broader guest-lag work and
+requested a separate branch. Server-only implementation remains on
+`headless-server`; published main client/gameplay changes are inherited.
+
+Implemented a command-line ServerRuntime and empty lobby scene. ENet supports
+four real survivors without a host avatar or occupied server slot, retains host
+authority and rules `lnac-net-16`, waits for minimum count/all-ready, starts after
+a configurable countdown, and automatically returns results to a fresh lobby.
+The first human reuses the normal scene's initial actor; later peers get one actor
+each. Loaded-world readiness has a separate server sentinel. ENet timeouts match
+the 90s world-loading allowance. Empty rounds reset locally while the UDP listener
+stays up; departure drops gear and reassigns presentation focus to a remaining
+human. A loading timeout resets lobby readiness instead of terminating the daemon.
+
+The launcher forces headless display, disabled render loop and Dummy audio.
+Dedicated paths suppress world/HUD drawing, local input/profile saving, playback,
+voice codec initialization and microphone capture while retaining world simulation
+and sound-event replication. Existing ENet client voice relay is retained; actual
+microphone/listening acceptance is separate. Flags validate port/mode/seed/minimum,
+countdown and result delay. Added an export preset, portable PCK/ZIP packager and
+[player/operator guide](dedicated_server.md); a target-OS Godot 4.7.2 runtime is
+required. No native Linux binary, hosting account or remote deployment is claimed.
+
+Verification: required import/startup, Python compilation, Markdown links and
+`git diff --check`. Source Camp with 2 main clients: 42 assertions clean; exported
+PCK Woods with 4 main clients: 69 clean; normal graphical main client across two
+rounds: 36 clean with inspected captures. Player-hosted Camp regression: 136
+assertions clean. Invalid configurations were rejected with exit 2. Dedicated
+fixtures preserve normal navigation and normal objective selection; enemies,
+parts/positions and departure time are staged. Headless replicas hide scenery;
+graphical acceptance uses real rendering. See [selected evidence](evidence/dedicated_server/README.md).
+
+Known issue: near-simultaneous departures print ENet channel-0 errors. The stress
+run passed all 69 gameplay assertions, freed the world and kept the listener
+active, but the strict harness correctly failed on three engine errors. Normal
+package acceptance staggers departures; this distinction is explicit in evidence.
+No claim of clean stress acceptance, Internet/Linux/Windows/exported-client,
+sustained-load or human voice acceptance. First-frame graphical preparation also
+needed main's separately published scenery fix; prediction/snapshot optimization
+and broader steady-state guest-lag work remain next.
 
 ## 2026-10-18 — Graphical client startup before dedicated-server acceptance (main)
 

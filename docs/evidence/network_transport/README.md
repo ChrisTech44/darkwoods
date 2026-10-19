@@ -34,3 +34,11 @@ are omitted from this selected evidence. The main
 [investigation](../../network_lag_investigation.md) records remaining latency,
 rendering, correction and prediction limits. Source-server Linux execution is
 established on this host; Linux PCK, Windows and real voice listening are not.
+
+On the dedicated branch, the merged rules-17 exported PCK also passed
+[37 server + 4 × 8 client assertions](dedicated_pack_four.json), clean. This checks
+movement, authoritative boat extraction, automatic lobby reset, fresh round and
+staggered disconnect cleanup against updated main clients. As with the earlier
+dedicated fixture, AI/parts/positions/extraction time are staged; this is separate
+from the normal live-AI Genesect timing runs above. Four Python launcher tests
+also passed; final server import/startup and package export were clean.

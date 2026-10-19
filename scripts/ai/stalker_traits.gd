@@ -159,6 +159,7 @@ func strike(actor: CampPlayer) -> bool:
 	if world == null or not world.plan.expedition or not actor.wounded or actor.has_effect("held"):
 		return false
 	body.hold(actor, body.headline.to_upper(), 1.0 / 14.0, GRIP_DECAY)
+	if body.held != actor: return true
 	shake_clock = SHAKE_EVERY
 	body.carrying = true
 	body.attack_remaining = body.hit_cooldown

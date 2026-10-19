@@ -948,6 +948,13 @@
       "edits": "No trim; left channel taken as mono (summing cancelled some stereo files); levelled to about -20 dB mean with peaks at or below -1.4 dBFS; MP3 128 kbps. Originals not committed",
       "format": "MP3 mono; Godot native import",
       "use": "The Conductor's call and his train whisking a survivor away"
+    },
+    "field_whistle": {
+      "path": "res://scripts/ai/camp_song.gd",
+      "bus": "Effects",
+      "gain_db": -4.0,
+      "loop": false,
+      "source": "Synthesized traditional public-domain camp tune; same generator as CampSong."
     }
   }
 }

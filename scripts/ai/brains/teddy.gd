@@ -29,7 +29,7 @@ func physics(delta: float) -> bool:
 	if is_instance_valid(victim):
 		body.velocity = Vector2.ZERO
 		victim.global_position = body.global_position + Vector2(0, 6)
-		victim.health = maxf(0.0, victim.health - SQUEEZE * delta)
+		victim.receive_drain(SQUEEZE * delta)
 		victim.hurt_time = 0.2
 		if victim.health <= 0.0:
 			body.release_held()

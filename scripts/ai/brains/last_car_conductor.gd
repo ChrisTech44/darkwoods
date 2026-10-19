@@ -28,6 +28,7 @@ func physics(delta: float) -> bool:
 
 
 func contact(actor: CampPlayer) -> bool:
+	CreatureSamples.encounter(actor,body)
 	var world: Node = level()
 	if world == null:
 		return true

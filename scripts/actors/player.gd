@@ -18,6 +18,7 @@ var network_sprint := false
 var network_input_sequence := 0
 var network_applied_sequence := 0
 ## Used only around presentation-only shared movement; never set by client RPCs.
+var prediction_kit: Array = []
 var prediction_effect_bits := -1
 var prediction_heavy := -1
 var prediction_pull := Vector2.ZERO
@@ -38,7 +39,8 @@ var expedition: bool = false
 var flashlight_charge: float = 90.0
 var supplies: Dictionary = {"flare": 2, "battery_pack": 1, "rations": 1, "medkit": 0}
 var invulnerability: float = 0.0
-var role: String = "jock"
+var role: String = "christian"
+var kit: Dictionary = {}
 var light_drain: float = 1.0 / 3.0
 var sprint_hearing: float = 1.0
 var belt: Array[String] = ["flare", "battery_pack", "rations", "", "", ""]
@@ -69,7 +71,7 @@ const FLASH_COOLDOWN := 8.0
 ## Derived from health: setting true drops to half health, false heals fully.
 var wounded: bool:
 	get:
-		return health <= WOUNDED_AT
+		return health - float(kit.get("debt",0.0)) <= WOUNDED_AT
 	set(value):
 		health = minf(health, WOUNDED_AT) if value else MAX_HEALTH
 var flash_time: float = 0.0
@@ -86,7 +88,7 @@ const BARRIER_LAYER := 8
 ## Lake water: solid to bodies, but not to sight, light or voice rays (layer 1).
 const WATER_LAYER := 16
 var breath: float = 1.0
-## F6 active ability state (see SurvivorAbilities).
+## X active ability state (see SurvivorAbilities).
 var ability_charges: int = 0
 var ability_cooldown: float = 0.0
 var ability_active: float = 0.0
@@ -119,12 +121,13 @@ const EFFECT_NAMES := {"held": "HELD", "frog": "FROG", "backwards": "BACKWARDS",
 	"slimed": "SLIMED", "piggyback": "HITCHHIKER ON YOUR BACK", "lost": "LOST", "deaf": "DEAFENED", "dark": "CURSED DARK", "rewound": "REWOUND"}
 ## Slime skid: your actual velocity eases toward where you steer (Slug trails).
 var skid := Vector2.ZERO
+var form_motion := Vector2.ZERO
 
 
 func _ready() -> void:
 	apply_role()
 	SurvivorAbilities.setup(self)
-	sheet = load("res://assets/sprites/survivor_" + role + ".png")
+	sheet = load("res://assets/sprites/survivor_" + SurvivorRoster.art(role) + ".png")
 	stamina = config.stamina_max
 	flashlight_charge = config.flashlight_capacity
 	add_to_group("survivors")
@@ -141,10 +144,13 @@ func _physics_process(delta: float) -> void:
 	hurt_time = maxf(0.0, hurt_time - delta)
 	flicker = maxf(0.0, flicker - delta)
 	_tick_effects(delta)
+	if effect_data.get("sample_moth",false):
+		if has_effect("face_moth"): flashlight_charge = maxf(0.0,flashlight_charge-3*delta)
+		else: effect_data.erase("sample_moth")
 	if has_effect("dark"):
 		flashlight_on = false
 	if expedition and CampMap.is_woods(global_position) and flashlight_on and status == Status.ALIVE:
-		flashlight_charge = maxf(0.0, flashlight_charge - delta * light_drain)
+		flashlight_charge = maxf(0.0, flashlight_charge - delta * light_drain * (0.75 if kit_isolated() else 1.0))
 		if flashlight_charge <= 0:
 			flashlight_on = false
 	invulnerability = maxf(0.0, invulnerability - delta)
@@ -189,7 +195,7 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float, presenta
 		return
 	if hidden_spot >= 0:
 		sprinting = false
-		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery)
+		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery * (1.35 if kit_isolated() else 1.0))
 		return
 	if status == Status.DOWNED:
 		# Downed survivors drag themselves slowly toward cover or a teammate.
@@ -208,6 +214,9 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float, presenta
 	if snared > 0.0:
 		sprinting = false
 		return
+	if (kit.get("channel",0.0) if prediction_kit.is_empty() else prediction_kit[0]) > 0.0:
+		sprinting = false
+		return
 	var movement := direction.limit_length(1.0)
 	if movement.length_squared() > 0.0:
 		facing = movement
@@ -221,12 +230,9 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float, presenta
 		if stamina == 0.0:
 			exhausted = true
 	else:
-		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery)
+		stamina = minf(config.stamina_max, stamina + delta * config.stamina_recovery * (1.35 if kit_isolated() else 1.0))
 	velocity = movement * (config.sprint_speed * (WOUNDED_SPRINT if wounded else 1.0) if sprinting else config.walk_speed)
-	if role == "jock" and ability_active > 0.0 and sprinting:
-		velocity *= SurvivorAbilities.SECOND_WIND_SPEED
-	# The Jock hauls heavy objectives alone at full walking pace.
-	if heavy and not motor_assisted and role != "jock":
+	if heavy and not motor_assisted:
 		velocity *= 0.75
 	if hex_remaining > 0:
 		velocity *= 0.6
@@ -250,14 +256,14 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float, presenta
 		velocity = skid
 	else:
 		skid = velocity
+	velocity = CreatureSamples.player_velocity(self, velocity)
 	var previous := position
 	move_and_slide()
 	var distance := position.distance_to(previous)
 	stride += distance
 	if presentation_only: return # No AI hearing, blood, or gameplay outcomes on clients.
-	if wounded and role != "quiet":
+	if wounded:
 		# A short-lived trail: the newest drops show where a wounded survivor went.
-		# The Quiet Kid binds wounds tight and leaves none.
 		blood_distance += distance
 		if blood_distance >= 18.0:
 			blood_distance = 0.0
@@ -273,9 +279,9 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float, presenta
 		noise_clock = 0.0
 
 
-## The Quiet Kid holding their breath makes no footstep noise for monsters.
+## Shared noise hook; the replacement kits do not suppress basic footsteps.
 func silent() -> bool:
-	return role == "quiet" and ability_active > 0.0
+	return false
 
 
 ## Returns true when the hit landed. Every landed hit grants WOUND_GRACE.
@@ -285,6 +291,12 @@ func receive_hit(damage: float = DEFAULT_HIT) -> bool:
 	if status != Status.ALIVE or hidden_spot >= 0:
 		return false
 	var was_wounded := wounded
+	SurvivorKits.hit(self,damage)
+	if role == "john" and ability_active > 0.0:
+		kit["debt"] = float(kit.get("debt",0.0)) + damage
+		invulnerability = WOUND_GRACE
+		last_hit = damage
+		return true
 	health = maxf(0.0, health - damage)
 	last_hit = damage
 	hurt_time = 0.6
@@ -299,6 +311,7 @@ func receive_hit(damage: float = DEFAULT_HIT) -> bool:
 
 
 func heal(amount: float) -> void:
+	if kit.get("debt",0.0) > 0.0: return
 	health = minf(MAX_HEALTH, health + amount)
 	if not wounded:
 		blood.clear()
@@ -337,6 +350,10 @@ func _tick_effects(delta: float) -> void:
 ## The survivor is grabbed by `by` (a creature) until it lets go or they wriggle
 ## free: every E press adds `per_press` of a full escape.
 func grab(by: Node, label: String, per_press: float, decay: float = 0.1) -> void:
+	SurvivorKits.cancel_return(self)
+	if kit.get("debt",0.0) > 0.0:
+		SurvivorKits.settle(self)
+		if status != Status.ALIVE: return
 	holder = by
 	struggle = 0.0
 	struggle_step = per_press
@@ -372,6 +389,7 @@ func wriggle() -> bool:
 
 ## A shove (throws, pounces, charges); collisions stop it at walls.
 func shove(impulse: Vector2) -> void:
+	if role == "john" and ability_active > 0.0: return
 	if status != Status.ALIVE:
 		return
 	if has_effect("held"):
@@ -392,6 +410,10 @@ func set_status(next: Status) -> void:
 	# DEAD is retained only for old serialized/status indices. Downs never become deaths.
 	if next == Status.DEAD: next = Status.DOWNED
 	if status == next: return
+	if next in [Status.BOARDED,Status.ESCAPED]:
+		var was_alive := status == Status.ALIVE
+		SurvivorKits.settle(self)
+		if was_alive and status == Status.DOWNED: return
 	status = next
 	velocity = Vector2.ZERO
 	if status != Status.ALIVE:
@@ -400,6 +422,7 @@ func set_status(next: Status) -> void:
 			release()
 		knock = Vector2.ZERO
 	if status == Status.DOWNED:
+		SurvivorKits.cleanup(self)
 		bleedout = 0
 		get_tree().call_group("round_world", "on_survivor_downed", self)
 	if status == Status.ALIVE:
@@ -419,6 +442,7 @@ func _draw() -> void:
 		draw_rect(Rect2(-3, -8, 2, 1), Color("d9e6c8"))
 		draw_rect(Rect2(1, -8, 2, 1), Color("d9e6c8"))
 		return
+	if status == Status.ALIVE and CreatureSamples.draw_player(self): return
 	if not peer_name.is_empty():
 		draw_string(ThemeDB.fallback_font,name_origin(),peer_name,HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("b9d4b2"))
 	if has_effect("tethered") and effect_data.has("tether_to"):
@@ -481,19 +505,6 @@ func apply_role() -> void:
 	role_applied = true
 	role = SurvivorRoster.valid(role)
 	config = SurvivorRoster.effective(config, role)
-	match role:
-		"mechanic": supplies["battery_pack"] += 1
-		"scout":
-			light_drain *= 0.8
-			supplies["rations"] += 1
-		"medic":
-			supplies["medkit"] += 1
-			supplies["flare"] += 1
-			belt[3] = "medkit"
-		"quiet": sprint_hearing = 0.75
-		"quartermaster":
-			for kind in ["flare", "battery_pack", "rations"]:
-				supplies[kind] += 1
 	for kind in ["noise_tin", "salt_ward", "glow_moss", "garlic", "wolfsbane", "bug_spray", "scissors", "train_ticket", "air_horn", "coffee"]:
 		supplies[kind] = 0
 
@@ -519,3 +530,19 @@ func held_item() -> String:
 
 func name_origin() -> Vector2:
 	return Vector2(-ThemeDB.fallback_font.get_string_size(peer_name,HORIZONTAL_ALIGNMENT_LEFT,-1,7).x * 0.5,-34)
+
+func kit_isolated() -> bool:
+	return bool(kit.get("isolated",false)) if prediction_kit.is_empty() else prediction_kit[1]
+
+func on_released(_actor: CampPlayer) -> void:
+	CreatureSamples.finish_cast(self)
+
+## Holds drain continuously after ending Push Through at grab time; hit grace
+## does not turn a bite/squeeze into one hit every 1.5 seconds.
+func receive_drain(damage: float) -> void:
+	SurvivorKits.settle(self)
+	if status != Status.ALIVE: return
+	SurvivorKits.cancel_return(self)
+	health = maxf(0.0,health-damage)
+	hurt_time = 0.2
+	if health <= 0.0: set_status(Status.DOWNED)

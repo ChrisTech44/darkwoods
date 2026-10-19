@@ -29,7 +29,7 @@ func _frames(count: int) -> void:
 
 func _run() -> void:
 	var previous_role: String = root.get_node("Session").survivor
-	root.get_node("Session").survivor = "jock"
+	root.get_node("Session").survivor = "john"
 	root.get_node("Session").mode = "woods"
 	root.get_node("Session").next_seed = 42
 	RoundPlan.force_modifiers = []
@@ -228,7 +228,7 @@ func _surveyor() -> void:
 	await _frames(2)
 	_check(level.hud.location_label.text.begins_with("LOST"), "lost_hides_location")
 	var friend: CampPlayer = level.PLAYER_SCENE.instantiate()
-	friend.role = "medic"
+	friend.role = "john"
 	friend.local_input = false
 	friend.position = player.global_position + Vector2(20, 0)
 	level.world_objects.add_child(friend)
@@ -250,7 +250,7 @@ func _hitchhiker() -> void:
 	player.apply_intent(Vector2.RIGHT, true, 1.0 / 60.0)
 	_check(not player.sprinting and player.velocity.length() < player.config.walk_speed, "rider_slows_and_stops_sprint")
 	var friend: CampPlayer = level.PLAYER_SCENE.instantiate()
-	friend.role = "medic"
+	friend.role = "john"
 	friend.local_input = false
 	friend.position = player.global_position + Vector2(8, 0)
 	level.world_objects.add_child(friend)

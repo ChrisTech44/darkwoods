@@ -74,7 +74,7 @@ func _run() -> void:
 	_check(rescue.progress == 0, "release_resets_transmit_hold")
 	var teammate: CampPlayer = load("res://scenes/actors/player.tscn").instantiate()
 	teammate.local_input = false
-	teammate.role = "medic"
+	teammate.role = "john"
 	level.world_objects.add_child(teammate)
 	teammate.position = rescue.relay_point + Vector2(12,0)
 	rescue.advance_transmit(player, 3)

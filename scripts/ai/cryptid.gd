@@ -55,6 +55,7 @@ func threat_key() -> String:
 
 
 func _physics_process(delta: float) -> void:
+	if CreatureSamples.tick_enemy(self,delta): return
 	if not enabled:
 		velocity = Vector2.ZERO
 		return
@@ -76,8 +77,12 @@ func _physics_process(delta: float) -> void:
 
 
 func strike(actor: CampPlayer) -> void:
-	if brain != null and brain.contact(actor):
-		return
+	if brain != null:
+		var hp := actor.health
+		var old_effects := actor.effects.duplicate()
+		if brain.contact(actor):
+			if hp != actor.health or old_effects != actor.effects: CreatureSamples.encounter(actor,self)
+			return
 	super.strike(actor)
 
 
@@ -97,6 +102,8 @@ func on_released(actor: CampPlayer) -> void:
 
 
 func can_sense(actor: CampPlayer) -> bool:
+	if CreatureSamples.deceived(self,actor): return false
+	if sample_state.get("timers",{}).has("whiteout") or sample_state.get("timers",{}).has("lost"): return false
 	if home.has_area() and not home.has_point(actor.global_position):
 		return false
 	if brain != null:
@@ -127,6 +134,13 @@ func display_name() -> String:
 
 
 func _draw() -> void:
+	if sample_state.get("timers",{}).has("tethered"):
+		draw_line(Vector2(0,-8),to_local(sample_state.get("anchor",position))+Vector2(0,-8),Color("e8dcc0"),1)
+	if sample_state.get("timers",{}).has("frog"):
+		PixelArt.draw_in(self,"frog",Rect2(-10,-20,20,20))
+		return
+	if sample_state.get("timers",{}).has("asleep"):
+		draw_string(ThemeDB.fallback_font,Vector2(0,-35),"zzz",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("b9d4e8"))
 	if power_tell > 0:
 		var at := to_local(power_aim)
 		draw_arc(at, 23, 0, TAU, 24, Color("f1c27d"), 2)

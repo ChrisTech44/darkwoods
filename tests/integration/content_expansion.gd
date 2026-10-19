@@ -8,7 +8,7 @@ func _initialize() -> void:
 func _run() -> void:
 	capture = "--capture" in OS.get_cmdline_user_args()
 	var previous_role: String = root.get_node("Session").survivor
-	root.get_node("Session").survivor = "jock"
+	root.get_node("Session").survivor = "christian"
 	change_scene_to_file("res://scenes/ui/main_menu.tscn")
 	await _frames(3)
 	var menu := current_scene
@@ -21,7 +21,7 @@ func _run() -> void:
 	_check(menu.get_node("SettingsPanel").visible,"selection_settings_available")
 	menu._hide_settings()
 	_check(menu.get_node("SurvivorSelection").visible,"settings_returns_to_selection")
-	for index in range(6):
+	for index in range(SurvivorRoster.IDS.size()):
 		menu.get_node("SurvivorSelection/"+SurvivorRoster.IDS[index]).pressed.emit()
 		_check(root.get_node("Session").survivor == SurvivorRoster.IDS[index],"card_select_"+SurvivorRoster.IDS[index])
 	menu.get_node("SurvivorSelection/Random").pressed.emit()
@@ -50,20 +50,20 @@ func _run() -> void:
 			actor.position = Vector2(100,400)
 			level.world_objects.add_child(actor)
 			actor.set_physics_process(false)
-			_check(actor.config != base and actor.config.stamina_max == (5 if role=="jock" else 4),"private_stamina_%s_%s"%[role,expedition])
-			_check(actor.config.start_hold_seconds == (1.5 if role=="mechanic" else 2.0),"ignition_stat_"+role)
-			_check(actor.config.revive_seconds == (2.25 if role=="medic" else 3),"revive_stat_"+role)
-			_check(is_equal_approx(actor.light_drain, (0.8 if role=="scout" else 1.0) / 3.0) and actor.sprint_hearing == (0.75 if role=="quiet" else 1.0),"sensing_modifiers_"+role)
+			_check(actor.config != base and actor.config.stamina_max == 4,"private_stamina_%s_%s"%[role,expedition])
+			_check(actor.config.start_hold_seconds == 2.0,"ignition_stat_"+role)
+			_check(actor.config.revive_seconds == 3,"revive_stat_"+role)
+			_check(is_equal_approx(actor.light_drain, 1.0 / 3.0) and actor.sprint_hearing == 1.0,"sensing_modifiers_"+role)
 			actor.position = level.plan.woods.center(Vector2i(18,24))
 			actor._physics_process(1.0)
 			_check(is_equal_approx(actor.flashlight_charge,90.0-(actor.light_drain if expedition else 0.0)),"actual_light_drain_%s_%s"%[role,expedition])
 			var before := actor.supplies.duplicate()
 			actor.apply_role()
 			_check(actor.supplies==before,"role_apply_is_idempotent_"+role)
-			_check(actor.supplies["flare"] == (3 if role in ["medic","quartermaster"] else 2),"starting_flares_"+role)
-			_check(actor.supplies["battery_pack"] == (2 if role in ["mechanic","quartermaster"] else 1),"starting_cells_"+role)
-			_check(actor.supplies["rations"] == (2 if role in ["scout","quartermaster"] else 1),"starting_food_"+role)
-			_check(actor.supplies["medkit"] == (1 if role=="medic" else 0),"starting_medkit_"+role)
+			_check(actor.supplies["flare"] == 2,"starting_flares_"+role)
+			_check(actor.supplies["battery_pack"] == 1,"starting_cells_"+role)
+			_check(actor.supplies["rations"] == 1,"starting_food_"+role)
+			_check(actor.supplies["medkit"] == 0,"starting_medkit_"+role)
 			actor.set_status(CampPlayer.Status.DOWNED)
 			_check(actor.supplies.values().all(func(count): return count==0) and actor.belt.all(func(kind): return kind.is_empty()),"down_drops_all_supplies_"+role)
 			actor.set_status(CampPlayer.Status.ALIVE)
@@ -82,7 +82,7 @@ func _run() -> void:
 			actor.queue_free()
 	await _frames(2)
 	_check(base.stamina_max==4 and base.start_hold_seconds==2 and base.revive_seconds==3,"shared_baseline_unmodified")
-	_check(SurvivorRoster.valid("forged")=="jock","invalid_role_fallback")
+	_check(SurvivorRoster.valid("forged")=="christian","invalid_role_fallback")
 	var player: CampPlayer = level.player
 	player.position = Vector2(100,400)
 	player.pack("noise_tin")

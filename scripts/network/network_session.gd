@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-18"
+const RULES := "lnac-net-19"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -475,6 +475,7 @@ func _accept_action(id: int, generation: int, code: String, slot: int) -> void:
 		"food": world.use_supply(actor,"rations")
 		"pin": world.place_pin(actor,id,actor.peer_name)
 		"ability": world.abilities.use(actor)
+		"ability_release": world.abilities.release(actor)
 		"give": world.abilities.give(actor)
 		"light":
 			if not actor.expedition or actor.flashlight_charge>0: actor.flashlight_on=not actor.flashlight_on
@@ -525,6 +526,9 @@ func handle_input(event: InputEvent) -> void:
 		menu_open=not menu_open
 		world.hud.show_pause(menu_open)
 		get_viewport().set_input_as_handled()
+		return
+	if event is InputEventKey and not event.pressed and event.physical_keycode==KEY_X:
+		action("ability_release")
 		return
 	if menu_open or event.is_echo(): return
 	if event is InputEventKey and event.pressed:

@@ -1,5 +1,8 @@
 class_name CampPickup
 extends Node2D
+var cash_owner := 0
+var cash_amount := 0
+var theft_token := ""
 
 var kind: String = "battery"
 var locked: bool = false
@@ -37,6 +40,12 @@ func consume() -> void:
 
 
 func _draw() -> void:
+	if kind == "cash":
+		if not available: return
+		draw_circle(Vector2.ZERO,5,Color("e8c66a"))
+		draw_circle(Vector2.ZERO,3,Color("80632d"))
+		draw_string(ThemeDB.fallback_font,Vector2(-7,-10),"$%d" % cash_amount,HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("ffe4a1"))
+		return
 	# SpriteCook icons (padlocked crate for caches); procedural fallback below.
 	if locked and PixelArt.draw_in(self, "cache_crate", Rect2(-12, -12, 24, 22)):
 		draw_string(ThemeDB.fallback_font, Vector2(-21, -15), "LOCKED CACHE", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("c4b58e"))

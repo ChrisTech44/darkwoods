@@ -14,7 +14,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var previous_role: String = root.get_node("Session").survivor
-	root.get_node("Session").survivor = "jock"
+	root.get_node("Session").survivor = "john"
 	RoundPlan.force_modifiers = []
 	root.get_node("Session").mode = "woods"
 	root.get_node("Session").next_seed = 42

@@ -2,7 +2,7 @@
 
 **Dedicated server branch:** run a camp without a host survivor. See the
 [server setup and connection guide](docs/dedicated_server.md). Updated `main`
-clients (`lnac-net-17`) can join; the server code remains on this branch.
+clients (`lnac-net-19`) can join; the server code remains on this branch.
 
 **Find the parts. Keep your light alive. Get out before the woods get you.**
 
@@ -190,10 +190,10 @@ editor). Python is optional. More detail:
 1. **Pick a night.** On the title screen choose **WOODS EXPEDITION** (the full
    game) or **QUICK CAMP** (a 5–10 minute taste), then **ENTER THE NIGHT**.
    *Daily Night* gives everyone the same night today.
-2. **Pick a survivor.** Each has a small bonus and one special ability (X).
-   The Scout or First-Aid Kid are friendly first picks. Then **START NIGHT**.
+2. **Pick a survivor.** Choose Christian, John, Max or Alex; each has a
+   different passive, X ability and drawback. John rewards objective preparation. Then **START NIGHT**.
 
-   ![Choosing a survivor](docs/screenshots/survivor_selection.png)
+   ![Choosing a survivor](docs/evidence/four_survivors/select_christian.png)
 
 3. **Read the opening message.** It names where the fuel is, which second
    escape is rumoured to work tonight, tonight's killer and any modifiers.
@@ -323,8 +323,8 @@ the notebook's Log.
 - **Hide early, not late.** Something that *sees* you hide will drag you out.
 - **Use the roads.** The lit ring road is faster and safer than the maze,
   until a blackout turns its lamps off.
-- **Mark things.** Press M to pin a spot for your team; the Scout's X marks a
-  creature or cache everyone can see.
+- **Mark things.** Press M to pin a spot for your team. Pins are shared;
+  Christian's experiments can affect teammates too.
 
 ## Play with friends
 
@@ -523,7 +523,7 @@ when that route is inactive. Whichever escape finishes first ends the round.
    not show the entire maze or undiscovered cache positions.
 3. **Repair the van.** Return to its rear and press **E** to install carried
    components. You can make several trips; all required parts must be installed.
-4. **Hold E for two seconds (1.5s as Grease Monkey)** at the rear to start the repaired van. Letting go
+4. **Hold E for two seconds** at the rear to start the repaired van. Letting go
    or moving out of range resets the start hold.
 5. **Stay aboard.** Starting automatically seats the driver. In Quick Camp the
    van departs after **eight seconds**. On an expedition the engine roar is a
@@ -630,25 +630,38 @@ round. Quick Camp keeps its original van-only rules.
 
 ## Survivors and their abilities
 
-**Planned replacement:** [Christian, John, Max and Alex](docs/four_survivor_overhaul.md)
-have a new four-character design, including creature-sample experiments. It is
-not implemented; the six roles below remain the playable roster.
+Choose **Christian, John, Max or Alex** before starting. The four friends replace
+the old six archetypes. Selection and lobby remember the choice; Random Survivor
+chooses among these four. Existing sprites/portraits are prototype stand-ins,
+not likenesses of the real people.
 
-Choose one of **six survivors** before starting, with exact bonuses, an animated
-preview, saved choice, Random Survivor and Settings. The Jock has 5s stamina;
-Grease Monkey starts the engine in 1.5s; Scout saves light; First-Aid Kid rescues
-faster; Quiet Kid reduces sprint hearing; Overprepared starts with extra supplies.
-
-Every survivor also has one **active ability on X** and a **team bonus**.
-
-| Survivor | Advantage | Ability (X) | Team bonus |
+| Survivor | Passive | X ability | Drawback |
 | --- | --- | --- | --- |
-| **The Jock** | 5s sprint stamina instead of 4s | **Second Wind**: full stamina and +10% sprint for 2s; once per night phase | Hauls the heavy boat motor alone at full walking pace. |
-| **Grease Monkey** | 1.5s engine ignition; +1 spare battery | **Jury-Rig** (2 per night): shut and barricade the nearest cabin door for 8s (nothing can push through), or restart the dead generator silently | |
-| **The Scout** | Light drain 0.8/s; +1 ration | **Mark** (30s cooldown): tag the creature, locked cache or site you are facing and can see, for the whole team, for 6s | Starts the night knowing one extra part's region. |
-| **First-Aid Kid** | Medkit revive 2.25s; +1 medkit, +1 flare | **Patch** (2 per night): heal yourself or an adjacent teammate to full health without a medkit | |
-| **The Quiet Kid** | Sprint hearing reach ×0.75 | **Hold Breath** (45s cooldown): 6s of silent sprinting; breath lasts twice as long while hidden | Leaves no blood trail while wounded. |
-| **Overprepared** | +1 flare, +1 battery, +1 ration | **Unpack** (once per night): drop a stash of flare, battery, rations and medkit for anyone | |
+| **Christian** | Survive a real creature signature to collect one sample | **Field Test:** reproduce its signature; some samples transform you. X again performs a form's secondary action | Friends can be affected. Full slots keep their sample; Werewolf needs the actual full moon |
+| **John** | Completing a new preparation step on any escape refills stamina | **Push Through:** defer accepted damage for 6s, 45s cooldown | Full debt lands afterward. Grabs end the burst; healing waits. Lethal debt cannot be escaped by boarding |
+| **Max** | Optional searches earn $4; first recovery of a creature's stolen loot earns $3 | **Cash Out:** tap X for one ordinary supply ($4); hold then release to gamble $4/$8/$12 | Gamble: 45% bust, otherwise 2/4/6 supplies. Hits spill some cash; teammates can return it to its owner |
+| **Alex** | After 4s isolated from living teammates, light uses 25% less charge and stamina recovers 35% faster | **My Own Way Back:** X places a 75s marker; X again while alone channels a 2s return, then 40s cooldown | Hits interrupt; holds/downing prevent return. Blocked landing or expiry can ruin the plan |
+
+Everyone has the same basic stats and starting supplies. Objective parts, tools,
+revives and all five escape routes stay available to every character. John earns
+preparation credit once per real step, not by collecting or reinstalling items.
+Max cannot purchase components, tools or more money. Alex's return moves his
+current body and gear; it never rewinds injuries or spent resources.
+
+Christian has variants for all 30 creature-brain species. For example, a Werewolf
+sample produces a moon-dependent wolf form/pounce, and a Paparazzo sample winds
+up a flashbang: turn away or take cover. Exposed friends can be blinded and
+photographed for the Stalker; Christian suffers his own brief whiteout. Other
+samples include curses, spores, thread, disguises, slime and sensory effects.
+No creature-selection menu is needed: the sample beside X determines the next
+experiment. The Stalker and Lake Thing special samples remain separate design
+proposals, outside the normal pool. Quick Camp starts Christian with one
+Paparazzo sample and Max with $6 because it has no woods acquisition loop.
+
+Isolation enters beyond 190px, exits within 150px, and ignores downed/escaped
+teammates as proximity anchors. Multiple copies of a character remain allowed.
+Old role saves return to the four-character selection; personal appearance work
+still needs reference images. See the [overhaul and detailed rules](docs/four_survivor_overhaul.md).
 
 **H** hands one of your held supply to a teammate standing right beside you.
 Two survivors at the dead generator restart it quietly; alone it roars.
@@ -716,11 +729,11 @@ rather than memorizing screen coordinates.
 ### Flashlight and survival supplies
 
 Every survivor has a built-in **flashlight**; it is not a pickup or belt item.
-A full charge lasts **270 seconds of ordinary woods use** (337.5 as the Scout).
+A full charge lasts **270 seconds of ordinary woods use** (360 while Alex’s isolation bonus is active).
 The HUD shows remaining beam time; flash bursts and light-eating creatures can
 use charge sooner. Spare batteries still restore 70 charge out of 90.
-Toggle it with **F**. It starts with **90 charge**, drains at 1 charge/second
-while lit in expedition woods (Scout: 0.8/second), and switches off at zero.
+Toggle it with **F**. It starts with **90 charge**, drains at one third charge/second
+while lit in expedition woods (Alex alone: one quarter/second), and switches off at zero.
 Camp use does not drain charge. Teammates see its light too.
 
 **Woods loot** below means seeded supply pickups scattered through forest
@@ -731,10 +744,10 @@ one of noise tin, salt ward or glow moss; the reward depends on its seeded site.
 
 | Supply | Where to find it | What it does / how to use it |
 | --- | --- | --- |
-| **Flare** | Start with 2; Woods loot; 3-flare Maintenance stash; 3-flare chapel rescue stash; Village well; Graveyard crypt. Medic and Overprepared start with +1. | **Q**, or select + **V**, throws it ahead. Lights the area for up to **9s** and repels enemies with clear sight nearby. **E at a rescue signal holder** instead spends one flare on a persistent signal light (no permanent repulsion). Lantern Moths follow it; Candle Grazers can consume it. |
-| **Spare flashlight battery** | Start with 1; Woods loot; extra campsite battery; Village well. Grease Monkey and Overprepared start with +1. | **R**, or select + **V**, restores **70 charge**, capped at 90, and switches the light on. Not consumed if already full. |
-| **Rations** | Start with 1; Woods loot; Village well. Scout and Overprepared start with +1. | **C**, or select + **V**, restores full stamina and clears exhaustion. Not consumed at full stamina. Eating can attract nearby Ration Moths. |
-| **Medkit** | First-Aid Kid starts with 1; Woods loot. | Select + **V** heals 50 health (refused at full health). Carried while you **hold E beside a downed teammate**, it speeds the revive to 3s (2.25s as First-Aid Kid) instead of 6s bare-handed, and is consumed on completion. Interrupted attempts keep it. |
+| **Flare** | Start with 2; Woods loot; 3-flare Maintenance stash; 3-flare chapel rescue stash; Village well; Graveyard crypt. | **Q**, or select + **V**, throws it ahead. Lights the area for up to **9s** and repels enemies with clear sight nearby. **E at a rescue signal holder** instead spends one flare on a persistent signal light (no permanent repulsion). Lantern Moths follow it; Candle Grazers can consume it. |
+| **Spare flashlight battery** | Start with 1; Woods loot; extra campsite battery; Village well. | **R**, or select + **V**, restores **70 charge**, capped at 90, and switches the light on. Not consumed if already full. |
+| **Rations** | Start with 1; Woods loot; Village well. | **C**, or select + **V**, restores full stamina and clears exhaustion. Not consumed at full stamina. Eating can attract nearby Ration Moths. |
+| **Medkit** | Woods loot; Max may buy or win one. | Select + **V** heals 50 health (refused at full health). Carried while you **hold E beside a downed teammate**, it speeds the revive to 3s instead of 6s bare-handed, and is consumed on completion. Interrupted attempts keep it. |
 | **Noise tin** | Woods loot; landmark reward. | Select + **V** places a lure ahead. It rattles at **1.5s, 3.5s and 5.5s**, drawing noise-sensitive enemies within 480 world pixels. Move away before they investigate. |
 | **Salt ward** | Woods loot; landmark reward. | Select + **V** grants **4s of protection from physical hits**. Does not heal or remove hexes. |
 | **Glow moss** | Woods loot; landmark reward. | Select + **V** restores **35 light charge**, capped at 90, and removes the current hex. Use F if your flashlight was switched off. |
@@ -742,8 +755,8 @@ one of noise tin, salt ward or glow moss; the reward depends on its seeded site.
 The extra campsite battery, Maintenance flare stash, forest supply pickups and
 searchable biome rewards are **Woods Expedition sources**. Quick Camp has its
 three objective pickups and survivors' starting supplies; no ground medkits or
-extra supply stashes spawn there. A First-Aid Kid can bring a medkit into Quick
-Camp, and downed/disconnected teammates drop their carried gear in either mode.
+extra supply stashes spawn there. Max may obtain a medkit through Cash Out in Quick Camp. Downed/disconnected
+teammates drop their carried gear in either mode.
 
 The **Village well** gives two flares, one spare battery and one ration; the
 **Graveyard crypt** gives two flares. Both are one-time shared rewards and make
@@ -790,7 +803,7 @@ recover them with E.
   That gives every teammate a flashing HELP marker for 8 s and makes a small noise
   (10 s cooldown).
 - **Reviving:** any living teammate can **hold E** beside you. Bare-handed takes
-  **6 s** (4.5 s for the First-Aid Kid); with a medkit it takes 3 s (2.25 s) and
+  **6 s**; with a medkit it takes 3 s and
   uses the kit. Revived survivors come back with 35 health.
 - **Solo:** if you're the only survivor, you get **20 seconds** after going down to
   **hold E for 8 s** and drag yourself up, once per night, loudly.
@@ -1124,9 +1137,9 @@ normal nights are far darker. Captured by `tools/capture_showcase.gd`.
 | --- | --- |
 | ![The quarry-rim signal pyre blazing during its 45-second hold-out](docs/screenshots/signal_fire.png) | ![The Groundskeeper's mower parked on the trail while he walks off with his rake](docs/screenshots/groundskeeper_parked.png) |
 
-| Scout's Mark | Lost Camper |
+| Historical Scout prototype | Lost Camper |
 | --- | --- |
-| ![The Scout marking a Sasquatch in sight for the team](docs/screenshots/scout_mark.png) | ![A lost camper following the survivor who found them](docs/screenshots/lost_camper.png) |
+| ![Retired Scout marking ability in the earlier prototype](docs/screenshots/scout_mark.png) | ![A lost camper following the survivor who found them](docs/screenshots/lost_camper.png) |
 
 | The Stalker's Gift | Van finale |
 | --- | --- |

@@ -44,7 +44,7 @@ func _process(delta: float) -> void:
 
 
 func near(actor: CampPlayer) -> bool:
-	return actor.status == CampPlayer.Status.ALIVE and actor.global_position.distance_to(pyre) <= level.config.interact_radius * 1.6 and level.clear_path(actor.global_position, pyre)
+	return actor.status == CampPlayer.Status.ALIVE and CreatureSamples.can_interact(actor) and actor.global_position.distance_to(pyre) <= level.config.interact_radius * 1.6 and level.clear_path(actor.global_position, pyre)
 
 
 func prompt(actor: CampPlayer) -> String:
@@ -67,6 +67,7 @@ func interact(actor: CampPlayer) -> bool:
 		if kind in actor.inventory and kind not in installed:
 			actor.inventory.erase(kind)
 			installed.append(kind)
+			SurvivorKits.progress(actor,"pyre:"+kind)
 			count += 1
 	if count > 0:
 		level.announce("Signal pyre readied: %d/3. T shows where the rest are." % installed.size())

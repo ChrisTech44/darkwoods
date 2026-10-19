@@ -1,5 +1,6 @@
 class_name CampKiller
 extends CharacterBody2D
+var sample_state: Dictionary = {}
 ## Authority-only senses and FSM. Destinations come from patrol or sensed memory.
 
 signal state_changed(next: State)
@@ -85,6 +86,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if not self is CampCryptid and CreatureSamples.tick_enemy(self,delta): return
 	if not enabled:
 		velocity = Vector2.ZERO
 		return
@@ -234,10 +236,16 @@ func strike(actor: CampPlayer) -> void:
 
 ## Brains: walk toward `point` on the navmesh at `speed`. True once arrived.
 func steer(point: Vector2, speed: float, delta: float) -> bool:
+	var borrowed: Dictionary = sample_state.get("timers",{})
+	if borrowed.has("slimed") or borrowed.has("drowsy") or borrowed.has("piggyback"): speed *= 0.55
+	if borrowed.has("hypnotized"): point = sample_state.get("anchor",point)
+	if borrowed.has("backwards"): point = position + (position-point).limit_length(50)
+	if borrowed.has("float"): point = position + Vector2(25,0)
 	var map := agent.get_navigation_map()
 	if NavigationServer2D.map_get_iteration_id(map) == 0:
 		velocity = Vector2.ZERO
 		return false
+	if self is CampCryptid: point = constrain_destination(point)
 	if camp_closed:
 		point = outside_camp(point)
 	path_clock -= delta
@@ -265,6 +273,7 @@ func land_hit(actor: CampPlayer, damage: float) -> bool:
 	if not actor.receive_hit(damage):
 		attack_remaining = 0.3
 		return false
+	if self is CampCryptid: CreatureSamples.encounter(actor,self)
 	attack_remaining = hit_cooldown
 	recover_remaining = minf(hit_cooldown * 0.5, 2.0)
 	return true
@@ -284,6 +293,7 @@ func hold(actor: CampPlayer, label: String, per_press: float, decay: float = 0.1
 	actor.grab_counts[label] = times + 1
 	var presses := 1.0 / per_press + mini(GRAB_EXTRA_CAP, GRAB_ESCALATION * times)
 	actor.grab(self, label, 1.0 / presses, decay)
+	if actor.status != CampPlayer.Status.ALIVE: held = null
 
 
 func release_held() -> void:
@@ -343,6 +353,7 @@ func tick_stun(delta: float) -> bool:
 
 
 func sense_visible_target() -> CampPlayer:
+	if sample_state.get("timers",{}).has("whiteout") or sample_state.get("timers",{}).has("lost"): return null
 	var nearest: CampPlayer
 	var distance := config.sight_radius
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
@@ -380,6 +391,8 @@ func nearby_flare() -> Vector2:
 
 
 func has_line_of_sight(point: Vector2) -> bool:
+	if sample_state.get("timers",{}).has("whiteout"): return false
+	if sample_state.get("timers",{}).has("face_moth") and global_position.distance_to(point)>45: return false
 	var query := PhysicsRayQueryParameters2D.create(global_position, point, 1)
 	return get_world_2d().direct_space_state.intersect_ray(query).is_empty()
 
@@ -389,6 +402,7 @@ func hear_noise(origin: Vector2) -> void:
 
 
 func hear_stimulus(origin: Vector2, radius: float) -> void:
+	if sample_state.get("timers",{}).has("deaf"): return
 	if not enabled or state == State.CHASE or global_position.distance_to(origin) > radius:
 		return
 	if camp_closed and in_camp(origin):

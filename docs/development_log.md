@@ -1,5 +1,40 @@
 # Development log
 
+## 2026-10-19 — Four-survivor implementation, first verified slice
+
+Replaced the six generic roles with Christian, John, Max and Alex. The common
+survival baseline, handoffs, revives, objectives and host authority remain. Added
+John's preparation events/deferred-damage ledger, Max's wallet/purchases/gambles/
+recoverable cash spills, Alex's isolation/channel/validated marker return, and
+Christian's 30-source sample framework with explicit AI adapters, finite casts,
+forms and counters. Werewolf uses the actual moon; Paparazzo has friendly/self
+whiteout and photo-to-Stalker consequences. Migrated old role selections and
+prototype art references; no invented likenesses. Protocol advances to lnac-net-19
+for new kit/item/enemy state and bounded prediction fields. Added a synthesized
+camp-song cue to the existing replicated sound-event registry; microphones stay
+off in tests.
+
+Verified narrow increments: four-survivor state/catalogue suite 138 checks and
+movement-prediction suite 81 checks pass. Existing content/selection suite passes
+389 checks. A two-peer ENet run passes Quick Camp/Woods, guest sample use,
+contention, rescue, retries and disconnect lifecycle. The final four-peer Woods ENet run passes authority 265 and clients 33/60/60
+checks after correcting the seven-field movement-kit validator. A fixture now
+allows authoritative movement to arrive and travels beyond the prediction lead
+before releasing input. The broader regression and final dedicated/two-peer
+reruns continue; this entry does not claim those pending gates have passed. Graphical fixture uses
+prototype art, seed42, staged poses, frozen AI/clock, normal light/sight, Dummy
+audio/voice off; diagnostic all-routes only for this fixture. Initial quarry poses were replaced with an asserted traversable camp pose
+(300,400). Actual normal-light inspection also found temporary form textures
+being freed; a retained cache fixes the blank rectangle and preserves proportions.
+[Checked captures and logs](evidence/four_survivors/README.md).
+
+The broad runner now excludes ignored artifacts/builds when discovering scripts;
+a historical copied project under artifacts was incorrectly parsed as source.
+Legacy role fixtures are migrated to the common stats instead of preserving
+retired Medic/Mechanic/Jock bonuses. Documentation records current defaults and
+remaining target-adapter/balance limits rather than claiming all design prose is
+accepted. Required import/startup and diff checks are rerun before publication.
+
 ## 2026-10-19 — Four-friend survivor overhaul specification
 
 Created the [four-survivor overhaul](four_survivor_overhaul.md), replacing the

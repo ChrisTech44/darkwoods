@@ -15,7 +15,7 @@ func _initialize() -> void:
 func _run() -> void:
 	_plan_checks()
 	var previous_role: String = root.get_node("Session").survivor
-	root.get_node("Session").survivor = "jock"
+	root.get_node("Session").survivor = "john"
 	await _load(42, true)
 	await _fire_checks()
 	await _load(42, true)

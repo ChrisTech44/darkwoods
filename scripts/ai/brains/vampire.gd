@@ -77,7 +77,7 @@ func _drain(actor: CampPlayer, delta: float) -> void:
 	body.velocity = Vector2.ZERO
 	body.facing = body.global_position.direction_to(actor.global_position)
 	body.global_position = actor.global_position + Vector2(-10 if body.facing.x > 0 else 10, -2)
-	actor.health = maxf(0.0, actor.health - DRAIN * delta)
+	actor.receive_drain(DRAIN * delta)
 	actor.hurt_time = 0.3
 	if actor.health <= 0.0:
 		body.release_held()

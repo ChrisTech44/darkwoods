@@ -269,6 +269,7 @@ func _show_survivors() -> void:
 	detail.position = Vector2(155, 96)
 	detail.size = Vector2(218, 60)
 	detail.add_theme_font_size_override("font_size", 8)
+	detail.add_theme_constant_override("line_spacing", -2)
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	selection.add_child(detail)
 	var portrait := TextureRect.new()
@@ -283,13 +284,13 @@ func _show_survivors() -> void:
 	preview.size = Vector2(24, 32)
 	preview.scale = Vector2(1.5, 1.5)
 	selection.add_child(preview)
-	for index in range(6):
+	for index in range(SurvivorRoster.IDS.size()):
 		var button := Button.new()
 		button.name = SurvivorRoster.IDS[index]
 		button.text = SurvivorRoster.NAMES[index]
 		selection.add_child(button)
 		button.add_theme_font_size_override("font_size",10)
-		button.position = Vector2(14, 34 + index * 24)
+		button.position = Vector2(14, 34 + index * 34)
 		button.size = Vector2(132, 23)
 		button.add_theme_font_size_override("font_size", 10)
 		button.pressed.connect(_select_survivor.bind(index))
@@ -309,21 +310,23 @@ func _show_survivors() -> void:
 		$Menu.show()
 		$Menu/Settings.show()
 		$Menu/Play.grab_focus())
-	selection.get_node("Random").pressed.connect(func(): _select_survivor(randi_range(0,5)))
-	selection.get_node("Start").pressed.connect(func(): session.load_game())
+	selection.get_node("Random").pressed.connect(func(): _select_survivor(randi_range(0,SurvivorRoster.IDS.size()-1)))
+	selection.get_node("Start").pressed.connect(func():
+		session.select_survivor(session.survivor)
+		session.load_game())
 	selection.get_node("Settings").pressed.connect(func():
 		selection.hide()
 		_show_settings())
-	_select_survivor(SurvivorRoster.IDS.find(session.survivor))
+	_select_survivor(SurvivorRoster.IDS.find(session.survivor),false)
 	selection.get_node(session.survivor).grab_focus()
 
-func _select_survivor(index: int) -> void:
-	session.select_survivor(SurvivorRoster.IDS[index])
+func _select_survivor(index: int, persist: bool = true) -> void:
+	if persist: session.select_survivor(SurvivorRoster.IDS[index])
 	$SurvivorSelection/Detail.text = SurvivorRoster.NAMES[index] + "\n" + SurvivorRoster.DETAILS[index]
-	var face := "res://assets/sprites/sc/portrait_%s.png" % SurvivorRoster.IDS[index]
+	var face := "res://assets/sprites/sc/portrait_%s.png" % SurvivorRoster.art(SurvivorRoster.IDS[index])
 	$SurvivorSelection/Portrait.texture = load(face) if ResourceLoader.exists(face) else null
 	var atlas := AtlasTexture.new()
-	atlas.atlas = load("res://assets/sprites/survivor_" + session.survivor + ".png")
+	atlas.atlas = load("res://assets/sprites/survivor_" + SurvivorRoster.art(session.survivor) + ".png")
 	atlas.region = Rect2(0, 0, 24, 32)
 	$SurvivorSelection/Preview.texture = atlas
 	for id in SurvivorRoster.IDS:

@@ -56,6 +56,7 @@ func contact(actor: CampPlayer) -> bool:
 
 func _deal(actor: CampPlayer) -> void:
 	var world: Node = level()
+	CreatureSamples.encounter(actor,body)
 	var names: Array = CARDS.keys()
 	var card: String = names[randi() % names.size()]
 	last_card = card

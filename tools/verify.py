@@ -22,7 +22,7 @@ def main():
         ("startup", ["--headless", "--path", str(ROOT), "--quit-after", "5"]),
     ]
     for script in sorted(ROOT.rglob("*.gd")):
-        if any(part.startswith(".") for part in script.relative_to(ROOT).parts):
+        if script.relative_to(ROOT).parts[0] in ("artifacts", "builds") or any(part.startswith(".") for part in script.relative_to(ROOT).parts):
             continue
         relative = script.relative_to(ROOT).as_posix()
         commands.append(("parse_" + relative.replace("/", "_"), [

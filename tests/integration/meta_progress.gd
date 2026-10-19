@@ -54,7 +54,7 @@ func _profile_checks(profile: CampProfile) -> void:
 
 
 func _round_checks(session: Node) -> void:
-	session.survivor = "jock"
+	session.survivor = "john"
 	session.mode = "woods"
 	session.daily = false
 	session.next_seed = 42

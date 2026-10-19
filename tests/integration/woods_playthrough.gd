@@ -9,7 +9,7 @@ var detour_stuck: int = 0
 
 func _run() -> void:
 	root.get_node("Session").mode = "woods"
-	root.get_node("Session").survivor = "quartermaster"
+	root.get_node("Session").survivor = "max"
 	root.get_node("Session").next_seed = 42
 	capture = "--capture" in OS.get_cmdline_user_args()
 	change_scene_to_file("res://scenes/world/forest_level.tscn")

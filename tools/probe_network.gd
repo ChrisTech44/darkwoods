@@ -102,7 +102,7 @@ func run() -> void:
 	if not server:
 		change_scene_to_file("res://scenes/ui/network_lobby.tscn")
 		while current_scene == null: await process_frame
-		var error: Error = net.join(OS.get_environment("LNAC_PROBE_HOST"), int(OS.get_environment("LNAC_PROBE_PORT")), "Movement probe", "mechanic")
+		var error: Error = net.join(OS.get_environment("LNAC_PROBE_HOST"), int(OS.get_environment("LNAC_PROBE_PORT")), "Movement probe", "christian")
 		if error != OK:
 			print(JSON.stringify({"event":"probe_error", "error":error}))
 			quit(1)
@@ -112,7 +112,7 @@ func run() -> void:
 	while net.phase != "playing" and Time.get_ticks_msec() < timeout:
 		if not server and net.phase == "lobby" and not ready:
 			ready = true
-			net.choose("mechanic", true)
+			net.choose("christian", true)
 		if not server and not net.active: break
 		await process_frame
 	if net.phase != "playing":

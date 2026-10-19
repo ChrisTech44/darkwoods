@@ -47,7 +47,7 @@ func _stare(victim: CampPlayer, delta: float) -> void:
 	body.velocity = Vector2.ZERO
 	stare += delta
 	victim.facing = victim.global_position.direction_to(body.global_position)
-	victim.health = maxf(0.0, victim.health - DRAIN * delta)
+	victim.receive_drain(DRAIN * delta)
 	victim.hurt_time = 0.2
 	if victim.health <= 0.0:
 		_end(victim)

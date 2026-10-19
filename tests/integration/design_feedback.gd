@@ -17,7 +17,7 @@ func _run() -> void:
 	_encounter_checks()
 	await _lobby_checks()
 	var previous_role: String = root.get_node("Session").survivor
-	root.get_node("Session").survivor = "jock"
+	root.get_node("Session").survivor = "john"
 	root.get_node("Session").mode = "woods"
 	root.get_node("Session").next_seed = 42
 	change_scene_to_file("res://scenes/world/forest_level.tscn")

@@ -29,6 +29,8 @@ func reset() -> void:
 		player.assisting_motor = false
 		player.ability_active = 0
 		player.stride = 0
+		player.form_motion = Vector2.ZERO
+		SurvivorAbilities.setup(player)
 		player.inventory.clear()
 		player.effects.clear()
 		player.effect_data.clear()
@@ -36,7 +38,7 @@ func reset() -> void:
 		player.blood.clear()
 		player.blood_distance = 0
 		player.noise_clock = 0
-		player.role = "mechanic"
+		player.role = "christian"
 func scenario(label: String, setup: Callable, direction: Vector2 = Vector2.RIGHT) -> void:
 	reset()
 	for player in [authority, visual]: setup.call(player)
@@ -64,7 +66,10 @@ func run() -> void:
 	await scenario("diagonal", func(_p): pass, Vector2(1,1))
 	await scenario("heavy", func(p): p.inventory.append("outboard_motor"))
 	await scenario("assisted_motor", func(p): p.inventory.append("outboard_motor"); p.motor_assisted = true)
-	await scenario("jock_wind", func(p): p.role = "jock"; p.ability_active = 3)
+	await scenario("john_active", func(p): p.role = "john"; p.ability_active = 3)
+	await scenario("mower_turn", func(p): p.kit.form = "groundskeeper"; p.form_motion = Vector2(0,70))
+	await scenario("alex_isolated", func(p): p.kit.isolated = true)
+	await scenario("alex_channel", func(p): p.kit.channel = 1.0)
 	await scenario("wounded", func(p): p.health = 40)
 	await scenario("exhausted", func(p): p.stamina = 0; p.exhausted = true)
 	await scenario("knock", func(p): p.knock = Vector2(250,0))
@@ -76,7 +81,7 @@ func run() -> void:
 	await scenario("hex", func(p): p.hex_remaining = 1)
 	for effect: String in ["backwards", "frog", "drowsy", "hypnotized", "float", "piggyback", "slimed", "asleep", "tripped"]:
 		await scenario(effect, func(p): p.effects[effect] = 2; p.effect_data.pull_to = Vector2(100,0); p.effect_data.drift = Vector2.DOWN)
-	await scenario("jock_heavy", func(p): p.role = "jock"; p.inventory.append("outboard_motor"))
+	await scenario("john_heavy_baseline", func(p): p.role = "john"; p.inventory.append("outboard_motor"))
 	await scenario("coffee", func(p): p.effects.drowsy = 2; p.effects.coffee = 2)
 	var wall := StaticBody2D.new()
 	wall.position = Vector2(13,0)
@@ -152,6 +157,7 @@ func run() -> void:
 	net.motion_epochs[authority] = [Vector2.ZERO,Vector2(70,0),Engine.get_physics_frames()-120,1]
 	check(net.motion_epoch(authority) == 1, "authority_accepts_plausible_continuous_travel")
 	net.motion_epochs.clear()
+	check(LocalPrediction.valid(LocalPrediction.capture(authority)), "authority_prediction_state_is_valid")
 	var malformed := LocalPrediction.capture(authority)
 	malformed[2] = Vector2(NAN,0)
 	check(not LocalPrediction.valid(malformed) and not LocalPrediction.valid([]), "invalid_prediction_state_rejected")

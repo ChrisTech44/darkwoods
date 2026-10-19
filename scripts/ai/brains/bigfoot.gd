@@ -44,6 +44,7 @@ func physics(delta: float) -> bool:
 
 
 func _spooked(actor: CampPlayer) -> void:
+	CreatureSamples.encounter(actor,body)
 	fleeing = 6.0
 	flee_from_point = actor.global_position
 	cue("bigfoot_growl", 2.0, 1.25)
@@ -55,6 +56,7 @@ func _spooked(actor: CampPlayer) -> void:
 
 
 func _yeet(actor: CampPlayer) -> void:
+	CreatureSamples.encounter(actor,body)
 	cooldown = 8.0
 	throws += 1
 	var away := body.global_position.direction_to(actor.global_position)

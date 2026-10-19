@@ -16,7 +16,7 @@ func _run() -> void:
 	capture = "--capture" in OS.get_cmdline_user_args()
 	_layout_checks()
 	var previous_role: String = root.get_node("Session").survivor
-	root.get_node("Session").survivor = "jock"
+	root.get_node("Session").survivor = "john"
 	root.get_node("Session").mode = "woods"
 	root.get_node("Session").next_seed = 42
 	change_scene_to_file("res://scenes/world/forest_level.tscn")

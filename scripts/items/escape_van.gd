@@ -42,7 +42,7 @@ func boarding_points() -> Array[Vector2]:
 
 
 func can_board(actor: CampPlayer) -> bool:
-	if not running or actor.status != CampPlayer.Status.ALIVE or not actor.is_in_group("survivors"):
+	if not running or actor.status != CampPlayer.Status.ALIVE or not actor.is_in_group("survivors") or not CreatureSamples.can_interact(actor):
 		return false
 	for point in boarding_points():
 		if actor.global_position.distance_to(point) <= config.boarding_radius:
@@ -55,6 +55,8 @@ func can_board(actor: CampPlayer) -> bool:
 func board(actor: CampPlayer) -> bool:
 	if not can_board(actor) or actor in passengers:
 		return false
+	SurvivorKits.settle(actor)
+	if actor.status != CampPlayer.Status.ALIVE: return false
 	passengers.append(actor)
 	actor.set_status(CampPlayer.Status.BOARDED)
 	actor.global_position = global_position + Vector2(0, 4)
@@ -67,7 +69,7 @@ func interaction_point() -> Vector2:
 
 
 func in_range(actor: CampPlayer) -> bool:
-	return actor.status == CampPlayer.Status.ALIVE and actor.global_position.distance_to(interaction_point()) <= config.interact_radius
+	return actor.status == CampPlayer.Status.ALIVE and CreatureSamples.can_interact(actor) and actor.global_position.distance_to(interaction_point()) <= config.interact_radius
 
 
 func deliver(actor: CampPlayer) -> int:
@@ -78,6 +80,7 @@ func deliver(actor: CampPlayer) -> int:
 		if part in actor.inventory and part not in installed:
 			actor.inventory.erase(part)
 			installed.append(part)
+			SurvivorKits.progress(actor,"van:"+part)
 			delivered += 1
 	queue_redraw()
 	return delivered

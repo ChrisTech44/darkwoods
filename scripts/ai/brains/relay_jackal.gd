@@ -69,7 +69,7 @@ func contact(actor: CampPlayer) -> bool:
 func _stash() -> void:
 	var world: Node = level()
 	if world != null:
-		world.spawn_dropped(loot, den + Vector2(randf_range(-14, 14), randf_range(4, 14)))
+		world.spawn_dropped(loot, den + Vector2(randf_range(-14, 14), randf_range(4, 14))).theft_token = "theft:"+str(body.get_instance_id())
 	loot = ""
 	cooldown = 10.0
 
@@ -80,7 +80,7 @@ func on_stunned() -> void:
 		return
 	var world: Node = level()
 	if world != null:
-		world.spawn_dropped(loot, body.global_position)
+		world.spawn_dropped(loot, body.global_position).theft_token = "theft:"+str(body.get_instance_id())
 		world.announce("The jackal yelps and drops the %s!" % loot.replace("_", " "))
 	loot = ""
 	cooldown = 6.0

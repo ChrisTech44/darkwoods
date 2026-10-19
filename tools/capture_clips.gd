@@ -36,7 +36,7 @@ func _load(headline: String = "stalker", dark: bool = false) -> void:
 	RoundPlan.force_all_escapes = true
 	RoundPlan.force_modifiers = []
 	RoundPlan.force_headline = headline
-	root.get_node("Session").survivor = "jock"
+	root.get_node("Session").survivor = "john"
 	root.get_node("Session").mode = "woods"
 	root.get_node("Session").next_seed = 42
 	var previous := level
@@ -204,7 +204,7 @@ func mimic() -> void:
 	_start(at)
 	var mimic := _spawn("mimic", at, Vector2(170, 0))
 	mimic.brain.masked = true
-	mimic.brain.role = "medic"
+	mimic.brain.role = "john"
 	mimic.brain.mask_name = "SAM"
 	mimic.brain.call_clock = 0.4
 	mimic.enabled = true

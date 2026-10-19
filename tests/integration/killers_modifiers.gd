@@ -15,7 +15,7 @@ func _initialize() -> void:
 func _run() -> void:
 	_plan_checks()
 	var previous_role: String = root.get_node("Session").survivor
-	root.get_node("Session").survivor = "jock"
+	root.get_node("Session").survivor = "john"
 	await _load(42, "groundskeeper", [])
 	_check(level.killer.headline == "stalker", "stalker_is_always_the_headline_killer")
 	await _snare_checks()
@@ -111,7 +111,7 @@ func _snare_checks() -> void:
 	player.apply_intent(Vector2.RIGHT, true, 1.0 / 60.0)
 	_check(player.velocity == Vector2.ZERO, "snared_survivor_cannot_move")
 	var friend: CampPlayer = level.PLAYER_SCENE.instantiate()
-	friend.role = "medic"
+	friend.role = "john"
 	friend.local_input = false
 	friend.position = trail + Vector2(12, 0)
 	level.world_objects.add_child(friend)

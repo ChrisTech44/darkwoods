@@ -16,7 +16,7 @@ func _run() -> void:
 	capture = "--capture" in OS.get_cmdline_user_args()
 	_seed_checks()
 	var session: Node = root.get_node("Session")
-	session.survivor = "jock"
+	session.survivor = "john"
 	session.mode = "woods"
 	session.next_seed = 42
 	session.load_game()

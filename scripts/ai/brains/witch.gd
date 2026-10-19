@@ -106,12 +106,14 @@ func contact(_actor: CampPlayer) -> bool:
 ## `kind` picks a curse (tests); empty draws one at random.
 func curse(actor: CampPlayer, kind: String = "") -> void:
 	if actor.ward_remaining > 0.0:
+		CreatureSamples.encounter(actor,body,kind if not kind.is_empty() else cast_kind)
 		frogged = 10.0
 		announce("Your salt ward bounces the curse back. THE WITCH IS A FROG!", actor)
 		cue("witch_cackle", 2.0, 1.6)
 		return
 	if kind.is_empty():
 		kind = next_curse()
+	CreatureSamples.encounter(actor,body,kind)
 	var world: Node = level()
 	match kind:
 		"frog":

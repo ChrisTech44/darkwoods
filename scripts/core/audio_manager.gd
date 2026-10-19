@@ -100,6 +100,7 @@ func set_muffled(on: bool) -> void:
 
 
 func stream_for(cue: String) -> AudioStream:
+	if cue == "field_whistle": return CampSong.tune()
 	if not cues.has(cue):
 		return null
 	if not streams.has(cue):

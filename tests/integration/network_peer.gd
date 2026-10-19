@@ -53,20 +53,20 @@ func _run() -> void:
 func _host() -> void:
 	current_scene.fields["Name"].text="Test Host"
 	current_scene.fields["Port"].text=str(port)
-	current_scene.fields["Role"].select(3)
+	current_scene.fields["Role"].select(SurvivorRoster.IDS.find("john"))
 	current_scene.fields["Mode"].select(1 if selected_mode=="woods" else 0)
 	current_scene.fields["Seed"].text="42"
 	current_scene.fields["Host"].pressed.emit()
 	_check(net.active and net.phase=="lobby","host_button_binds_udp")
 	if not await _until(func(): return net.roster.size()==peers,15): return
-	net.choose("medic",true)
+	net.choose("john",true)
 	if not await _until(func(): return net.can_start(),10): return
 	_check(net.roster.size()==peers,"real_peers_join_ready_lobby")
 	net.configure_lobby("camp" if selected_mode=="woods" else "woods",42)
 	_check(net.roster.values().all(func(entry): return not entry["ready"]),"changing_rules_clears_ready")
 	net.configure_lobby(selected_mode,42)
 	harness.advance.rpc("ready_check")
-	net.choose("medic",true)
+	net.choose("john",true)
 	if not await _reports(peers-1): return
 	if not await _until(func(): return net.can_start(),5): return
 	if capture:
@@ -90,6 +90,8 @@ func _host() -> void:
 	await _until(func(): return net.actors[1].position.x>135,5)
 	Input.action_release("move_right")
 	if not await _reports(peers-1): return
+	await _until(func(): return net.actors[guest].position.y>410,5)
+	if net.actors[guest].position.y<=410: print(JSON.stringify({"event":"movement_probe","host":str(net.actors[1].position),"guest":str(net.actors[guest].position),"inputs":str(net.inputs)}))
 	_check(net.actors[1].position.x>130 and net.actors[guest].position.y>410,"host_validates_both_players_movement")
 	for report: Dictionary in harness.reports.values():
 		_check(report.get("host_moved",false) and report.get("own_moved",false),"client_sees_remote_and_local_movement")
@@ -127,12 +129,14 @@ func _host() -> void:
 	# F6 ability: a guest's X is a host-validated intent; its charge replicates.
 	var rigger: CampPlayer=net.actors[guest]
 	var rig_spot: Vector2=rigger.position
-	level.night_clock.blackout=true
-	rigger.position=level.night_clock.generator_point()
+	rigger.kit["sample"]="werewolf"
+	level.night_clock.set_moon(true)
 	harness.advance.rpc("ability",{"guest":guest})
 	if not await _reports(peers-1): return
-	_check(not level.night_clock.blackout and rigger.ability_charges==1,"guest_ability_accepted_by_host")
+	_check(rigger.kit.get("form","")=="werewolf" and rigger.kit.get("sample","").is_empty(),"guest_ability_accepted_by_host")
 	for report: Dictionary in harness.reports.values(): _check(report.get("ability",false),"guest_ability_state_replicated")
+	rigger.kit["form"]=""
+	rigger.kit["form_time"]=0.0
 	rigger.position=rig_spot
 	# F7 snares are host state; every client renders the same traps.
 	level.snares.snares.append({"position": Vector2(2000, 2000), "armed": true})
@@ -254,7 +258,7 @@ func _host() -> void:
 	# Forged actions/roles and nonfinite direction cross actual client RPC boundaries.
 	harness.advance.rpc("forgery")
 	if not await _reports(peers-1): return
-	_check(net.actors[guest].role=="mechanic" and net.roster[guest]["role"]=="mechanic","round_role_lock_rejects_forgery")
+	_check(net.actors[guest].role=="christian" and net.roster[guest]["role"]=="christian","round_role_lock_rejects_forgery")
 	_check(not "forged" in net.actors[guest].inventory,"client_cannot_grant_items")
 	# A down releases every objective and supply once, offset from the prone sprite.
 	var before_death: int=level.pickups.size()
@@ -287,7 +291,7 @@ func _host() -> void:
 	_check(level.revive_progress==0,"released_revive_resets")
 	level.player.pack("medkit")
 	Input.action_press("interact")
-	await create_timer(2.6).timeout
+	await create_timer(3.4).timeout
 	Input.action_release("interact")
 	_check(injured.status==CampPlayer.Status.ALIVE and level.player.supplies["medkit"]==0,"timed_host_revive_consumes_one_kit")
 	_check(injured.supplies["battery_pack"]==0,"revive_does_not_refresh_role_supplies")
@@ -353,7 +357,7 @@ func _host() -> void:
 	if not await _reports(peers-1): return
 	_check(old_world.get_ref()==null and get_nodes_in_group("survivors").is_empty() and get_nodes_in_group("hazards").is_empty(),"restart_frees_old_world_and_entities")
 	for report: Dictionary in harness.reports.values(): _check(report.get("clean",false),"clients_return_to_same_clean_lobby")
-	net.choose("medic",true)
+	net.choose("john",true)
 	harness.advance.rpc("ready_again")
 	if not await _until(func(): return net.can_start(),5): return
 	_check(net.start_round(selected_mode,net.seed_value),"synchronized_same_seed_restart")
@@ -383,14 +387,14 @@ func _client() -> void:
 	current_scene.fields["Address"].text="127.0.0.1" # Never inherit a player's saved remote host.
 	current_scene.fields["Name"].text="Guest %d"%index
 	current_scene.fields["Port"].text=str(port)
-	current_scene.fields["Role"].select(1)
+	current_scene.fields["Role"].select(SurvivorRoster.IDS.find("christian"))
 	current_scene.fields["Join"].pressed.emit()
 	_check(net.active,"join_button_starts_connection")
 	if not await _until(func(): return net.phase=="lobby",15): return
-	net.choose("mechanic",true)
+	net.choose("christian",true)
 	if not await _until(func(): return harness.stage=="ready_check",10): return
 	_check(net.mode==selected_mode and net.seed_value==42 and not net.roster[get_multiplayer().get_unique_id()]["ready"],"client_receives_changed_rules_and_unready")
-	net.choose("mechanic",true)
+	net.choose("christian",true)
 	harness.report.rpc_id(1,"ready_check",{})
 	if not await _until(func(): return net.phase=="playing",90): return
 	_check(net.actors.size()==peers and get_nodes_in_group("survivors").size()==peers,"client_receives_exact_roster")
@@ -430,7 +434,7 @@ func _client() -> void:
 					root.get_texture().get_image().save_png("res://artifacts/network/exploration_after_%d.png" % index)
 				net.world.hud.notebook.close()
 				harness.report.rpc_id(1,handled,{"explored":explored,"hidden":hidden})
-			"ready_boat", "ready_gate": net.choose("mechanic",true)
+			"ready_boat", "ready_gate": net.choose("christian",true)
 			"field_boat_fit", "field_boat_start", "field_gate_fit", "field_gate_power", "field_circuit":
 				await create_timer(0.45).timeout
 				if mine==harness.data["guest"]: net.action("interact")
@@ -465,7 +469,7 @@ func _client() -> void:
 				harness.report.rpc_id(1,handled,{"won":net.world.won,"escaped":net.world.player.status==CampPlayer.Status.ESCAPED,"route":net.world.escape_route})
 			"movement":
 				Input.action_press("move_down")
-				await _until(func(): return net.world.player.position.y>415,5)
+				await _until(func(): return net.world.player.position.y>440,5)
 				Input.action_release("move_down")
 				await _until(func(): return net.actors[1].position.x>125 and net.world.player.position.y>410,5)
 				if capture:
@@ -510,8 +514,8 @@ func _client() -> void:
 				harness.report.rpc_id(1,handled,{"snare":net.world.snares.snares.size()==1 and net.world.snares.snares[0]["armed"]})
 			"ability":
 				if mine==harness.data["guest"]: net.action("ability")
-				await _until(func(): return net.actors[harness.data["guest"]].ability_charges==1 and not net.world.night_clock.blackout,5)
-				harness.report.rpc_id(1,handled,{"ability":net.actors[harness.data["guest"]].ability_charges==1 and not net.world.night_clock.blackout})
+				await _until(func(): return net.actors[harness.data["guest"]].kit.get("form","")=="werewolf",5)
+				harness.report.rpc_id(1,handled,{"ability":net.actors[harness.data["guest"]].kit.get("form","")=="werewolf"})
 			"map_pin":
 				if mine==harness.data["guest"]: net.action("pin")
 				await _until(func(): return net.world.pins.size()==1,5)
@@ -650,7 +654,7 @@ func _client() -> void:
 			"lobby":
 				await create_timer(0.2).timeout
 				harness.report.rpc_id(1,handled,{"clean":net.phase=="lobby" and get_nodes_in_group("survivors").is_empty() and net.roster.values().all(func(row): return not row["ready"])})
-			"ready_again": net.choose("mechanic",true)
+			"ready_again": net.choose("christian",true)
 			"guest_leave":
 				if mine==harness.data["departing"]:
 					net.leave()
@@ -663,7 +667,7 @@ func _client() -> void:
 				_check(net.status_text.contains("Host") and get_nodes_in_group("survivors").is_empty(),"host_loss_returns_client_to_clean_menu")
 				return
 func _late() -> void:
-	net.join("127.0.0.1",port,"Late Guest","jock")
+	net.join("127.0.0.1",port,"Late Guest","john")
 	if not await _until(func(): return not net.active,15): return
 	_check(net.status_text.contains("already running") or net.status_text.contains("failed") or net.status_text.contains("timed out"),"late_join_refused")
 func _reports(count: int) -> bool:
@@ -822,7 +826,7 @@ func _field_round(guest: int, route: String) -> void:
 	net.return_lobby(true)
 	if not await _until(func(): return current_scene!=null and current_scene.name=="NetworkLobby",5): return
 	harness.advance.rpc("ready_"+route)
-	net.choose("medic",true)
+	net.choose("john",true)
 	if not await _until(func(): return net.can_start(),8): return
 	_check(net.start_round("woods",42),"fresh_"+route+"_round_starts")
 	if not await _until(func(): return net.phase=="playing",90): return

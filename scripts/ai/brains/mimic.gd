@@ -7,7 +7,7 @@ extends CreatureBrain
 
 const REVEAL_RANGE := 34.0
 const CALL_EVERY := 11.0
-var role := "scout"
+var role := "christian"
 var mask_name := ""
 var mask_peer := 0
 var revealed := 0.0
@@ -120,7 +120,7 @@ func contact(actor: CampPlayer) -> bool:
 
 func _sheet() -> Texture2D:
 	if not sheets.has(role):
-		sheets[role] = load("res://assets/sprites/survivor_%s.png" % SurvivorRoster.valid(role))
+		sheets[role] = load("res://assets/sprites/survivor_%s.png" % SurvivorRoster.art(role))
 	return sheets[role]
 
 

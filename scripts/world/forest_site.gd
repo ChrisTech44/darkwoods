@@ -115,6 +115,8 @@ func interact(actor: CampPlayer) -> bool:
 			action["used"] = true
 			level.loud_noise(action["position"], 550)
 			level.announce("Two flares in the crypt. Something heard the stone move.")
+	if action["kind"] in ["supplies","crypt","relic"]:
+		SurvivorKits.earn(actor,"site:"+str(definition["position"])+":"+action["kind"],4)
 	queue_redraw()
 	return true
 

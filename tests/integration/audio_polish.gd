@@ -16,13 +16,13 @@ func _run() -> void:
 	# Every supplied MP3 is registered, and every registered cue loads.
 	var files := Array(DirAccess.get_files_at("res://assets/audio")).filter(func(name: String) -> bool: return name.ends_with(".mp3"))
 	var paths: Array = mixer.cues.values().map(func(cue: Dictionary) -> String: return cue["path"].get_file())
-	_check(mixer.cues.size() == 67 and files.all(func(name: String) -> bool: return name in paths), "all_sixty_seven_supplied_files_registered")
+	_check(mixer.cues.size() == files.size()+1 and files.all(func(name: String) -> bool: return name in paths), "supplied_recordings_and_synth_registered")
 	_check(mixer.cues.keys().all(func(cue: String) -> bool: return mixer.stream_for(cue) != null), "every_cue_stream_loads")
 	for bus in mixer.BUSES:
 		_check(AudioServer.get_bus_index(bus) >= 0, "bus_" + bus)
 	for cue in mixer.cues:
 		var stream: AudioStream = mixer.stream_for(cue)
-		_check(stream != null and stream.get_length() > 0.4 and stream.loop == mixer.cues[cue]["loop"], "real_import_and_loop_flag_" + cue)
+		_check(stream != null and stream.get_length() > 0.4 and (stream.loop if stream is AudioStreamMP3 else stream.loop_mode != AudioStreamWAV.LOOP_DISABLED) == mixer.cues[cue]["loop"], "real_import_and_loop_flag_" + cue)
 	_check(AudioServer.get_bus_send(AudioServer.get_bus_index("Campfire")) == "Ambience", "fire_compression_respects_ambience_control")
 	_check(mixer.stream_for("missing") == null, "unknown_cues_fail_safely")
 	var previous: Dictionary = mixer.volumes.duplicate()
@@ -37,6 +37,7 @@ func _run() -> void:
 	root.get_node("Session").next_seed = 42
 	change_scene_to_file("res://scenes/world/forest_level.tscn")
 	await _frames(4)
+	while current_scene == null or current_scene.name != "ForestLevel": await process_frame
 	level = current_scene
 	for enemy in get_nodes_in_group("killers"):
 		enemy.enabled = false
@@ -129,6 +130,8 @@ func _run() -> void:
 	await _frames(3)
 	_check(old_sound.get_ref() == null and current_scene.soundscape != null, "retry_frees_round_audio_and_recreates_once")
 	current_scene.return_to_menu()
+	while current_scene == null or current_scene.name != "MainMenu":
+		await process_frame
 	await _frames(3)
 	_check(current_scene.name == "MainMenu" and get_nodes_in_group("survivors").is_empty(), "menu_has_no_round_audio_or_capture")
 	if capture:

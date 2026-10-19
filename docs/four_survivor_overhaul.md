@@ -1,12 +1,47 @@
 # Four-survivor overhaul: Christian, John, Max and Alex
 
-19 October 2026. **Design specification; not implemented.**
+19 October 2026. **Four-role implementation and maintained design.**
 
-This replaces the six generic survivor roles as the target roster. The playable
-build still contains Jock, Mechanic, Scout, Medic, Quiet and Quartermaster. This
+The playable roster now uses Christian, John, Max and Alex in place of Jock,
+Mechanic, Scout, Medic, Quiet and Quartermaster. Existing art is a prototype
+stand-in; it does not claim to depict the real friends. This
 document records the selected direction and the later Christian amendment;
-previous conversation pitches are not additional abilities. Numerical tuning and
-implementation defaults below remain proposals until tested.
+previous conversation pitches are not additional abilities. The implementation defaults below are executable values; human balance
+acceptance remains pending. Target-only differences are called out explicitly.
+
+## Implementation status — 19 October
+
+- Four IDs, four selector/lobby choices, prototype art mapping, saved-role
+  reselection and common baseline stats replace the old six roles.
+- John: 6s window / 45s cooldown; once-only preparation credit on all five routes.
+  Deferred damage uses normal hit grace, effective wound/grab eligibility, and
+  settles before boarding/extraction. Existing downed-team rescue is preserved.
+- Max: starts at $6, cap $100; searches +$4 and per-thieving-creature first
+  recovery +$3; tap buys for $4. Holding raises affordable whole stakes to $8/$12;
+  a gamble has 45% bust, otherwise 2/4/6 ordinary supplies. Hits spill one third
+  of current cash (minimum one when nonzero), recoverable for its owner.
+- Alex: isolation enters beyond 190px after 4s, leaves within 150px; light drain
+  x0.75 and stamina recovery x1.35. Marker 75s, channel 2s, success cooldown 40s,
+  interrupted/blocked retry guard 2s. Channels retain harmful attachments and
+  reject tethers/blocked landings; position changes use authority motion epochs.
+- Christian: one sample; source encounter survival window 3s with a 50s pending
+  limit, one acquisition per actor/source creature per round. Forms last up to
+  10s; secondary pounces have 3s cooldown. Most copied AI statuses cap at 6s;
+  headline sensory disruption caps at 2s, with no frog/hold-lock on the Stalker.
+  Activations have warnings and finite cleanup; sample casts cannot earn samples.
+- Protocol is `lnac-net-19`. Host RNG, cash receipts/spills, sample state and the
+  compact movement projection replicate; clients cannot award these outcomes.
+
+Current implementation differences to assess explicitly: creature slime uses a
+movement modifier rather than the full survivor skid controller; creature Float
+and Backwards alter navigation, rather than applying player input transforms;
+Conductor carries Christian only (no passenger system); copied Owl transport is
+short and needs E consent for a survivor; full per-species tuning/playtesting is
+pending. These are specified target adapters, not universal stun substitutes.
+Mimic fools unalert creatures beyond close-inspection range while preserving
+truthful map identity; it does not override the headline Stalker's recognition.
+
+Implementation evidence: [checks and graphical captures](evidence/four_survivors/README.md).
 
 ## Design intent
 
@@ -84,8 +119,9 @@ watching rule. Source reference: [Paparazzo brain](../scripts/ai/brains/shutter_
 
 ### Creature effect catalogue
 
-All rows below are **proposed Christian variants**, not claims that these
-abilities already work on monsters. The species IDs match current brain files;
+All 30 rows below have activation handlers and source encounter hooks. The
+implementation includes explicit survivor/AI adapters; per-species balance and
+human playtest acceptance remain separate from the scripted activation checks. The species IDs match current brain files;
 they are not additional creature spawns. Acquisition follows the encounter rule
 above, with explicit per-species completion hooks.
 
@@ -304,17 +340,16 @@ Duplicate character selection stays permitted initially, matching current role
 selection; distinct identity locks would be a separate lobby policy change.
 
 Quick Camp has no normal woods encounter/stash economy, so do not pretend the
-Expedition acquisition loops work there. Proposed prototype fallback: Christian
-starts Quick Camp with one labelled safe-to-render sample, Max with a small
-starting bankroll; John can prepare the van and Alex can use isolation/return.
+Expedition acquisition loops work there. Implemented fallback: Christian
+starts Quick Camp with one Paparazzo sample, Max with $6; John can prepare the van and Alex can use isolation/return.
 Final fallback/sample choice and fairness require a Quick Camp test. Do not add
 roaming woods creatures to camp merely to feed abilities.
 
 Normal Expedition remains van plus one seeded secondary. Do not activate all
 routes to showcase kits. Preserve solo recovery, clue discovery, finite shared
-loot, active-route eligibility and host authority. Old roles are replaced only
-when the complete four-person slice is runnable; this document itself changes
-no gameplay and does not claim a shipped roster migration.
+loot, active-route eligibility and host authority. The old role IDs, bonuses and abilities have been replaced. Common interaction
+and migration tests accompany the four-person slice; historical screenshots do
+not establish acceptance of the new character art or balance.
 
 ## Presentation and technical scope
 
@@ -406,6 +441,7 @@ Some historical tuning/status prose is stale; code and execution evidence remain
 the baseline. This design supersedes those documents' **future roster direction**,
 not their implemented-status facts or unrelated co-op acceptance requirements.
 
-Documentation-only verification for this increment is recorded in the
-[development log](development_log.md). No new character, sample effect, cash,
-deferred damage or return mechanic has been executed by writing this document.
+Implementation verification and its limits are recorded in the
+[development log](development_log.md). The original catalogue remains a design
+contract; distinguish individual acceptance cases from the existence of handlers.
+The optional Stalker/Lake Thing special-source proposals remain outside the pool.

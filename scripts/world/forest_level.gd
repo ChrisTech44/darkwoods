@@ -82,12 +82,6 @@ func _ready() -> void:
 		config.extraction_seconds = EXPEDITION_DEPARTURE
 	for kind: String in plan.cache_zone:
 		clues[kind] = 1 if kind == "fuel" else 0
-	# The Scout read the trail maps before dark: one extra part's region is known.
-	if session.survivor == "scout":
-		for kind: String in plan.cache_zone:
-			if clues[kind] == 0:
-				clues[kind] = 1
-				break
 	if plan.expedition:
 		message = "DUSK. Corkboard: fuel is at the %s; notes on the roads name the rest. Rumour: %s might get you out too (T). Camp stays safe until Deep Night." % [plan.region_name("fuel"), plan.rumour_text()]
 		message += " Tonight THE %s hunts." % plan.headline.to_upper()
@@ -289,7 +283,7 @@ func _process(_delta: float) -> void:
 	var energy: float = player.stamina / player.config.stamina_max
 	hud.set_health(player.health if player.status == CampPlayer.Status.ALIVE else 0.0, player.wounded and player.status == CampPlayer.Status.ALIVE, player.hurt_time)
 	if player.wounded and player.status == CampPlayer.Status.ALIVE:
-		hud.threat_label.text = "WOUNDED %d HP · MEDKIT HEALS" % ceili(player.health)
+		hud.threat_label.text = ("OWES %d · AFTER %d HP" % [player.kit["debt"],maxf(0,player.health-player.kit["debt"])]) if player.kit.get("debt",0.0)>0 else "WOUNDED %d HP · MEDKIT HEALS" % ceili(player.health)
 	if player.hidden_spot >= 0:
 		hud.threat_label.text = "HOLD YOUR BREATH" if player.breath < 0.999 else "HIDDEN"
 		energy = player.breath
@@ -401,6 +395,9 @@ func _physics_process(delta: float) -> void:
 func try_interact(actor: CampPlayer) -> bool:
 	if paused or finished or actor.status != CampPlayer.Status.ALIVE or not actor.is_in_group("survivors"):
 		return false
+	if not CreatureSamples.can_interact(actor):
+		announce("Return to human form to interact.",actor)
+		return false
 	# Held by a creature: every press wriggles toward breaking free.
 	if actor.has_effect("held"):
 		var captor: Node = actor.holder
@@ -443,6 +440,13 @@ func try_interact(actor: CampPlayer) -> bool:
 		return true
 	for pickup in pickups:
 		if pickup.available and actor.global_position.distance_to(pickup.global_position) <= config.interact_radius and clear_path(actor.global_position, pickup.global_position):
+			if pickup.kind == "cash":
+				for owner: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+					if owner.kit.get("owner",0) == pickup.cash_owner:
+						owner.kit["cash"] = mini(SurvivorKits.CASH_CAP,int(owner.kit["cash"])+pickup.cash_amount)
+						pickup.consume()
+						return true
+				return false
 			var pried := false
 			if pickup.locked and "boltcutters" not in actor.inventory:
 				if "crowbar" not in actor.inventory:
@@ -467,6 +471,7 @@ func try_interact(actor: CampPlayer) -> bool:
 				furs += 1
 				announce("Bigfoot fur! Proof for the camp journal (+300 score).", actor)
 				return true
+			if not pickup.theft_token.is_empty(): SurvivorKits.earn(actor,pickup.theft_token,3)
 			pickup.consume()
 			if pried:
 				loud_noise(pickup.global_position, 500)
@@ -615,6 +620,11 @@ func use_flash(actor: CampPlayer) -> int:
 				enemy.brain.swat()
 				swatted = true
 				announce("SWAT! The moth tumbles away.", wearer)
+	for other: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if other==actor or (other.position.distance_to(actor.position)<90 and actor.facing.dot(actor.position.direction_to(other.position))>0.5 and clear_path(actor.position,other.position)):
+			other.clear_effect("face_moth")
+			var cast: Dictionary = other.kit.get("cast",{})
+			if cast.get("kind","") in ["owl","teddy","lens_eater","cuckoo"]: CreatureSamples.finish_cast(other)
 	actor.flash_time = 0.18
 	actor.flash_cooldown = CampPlayer.FLASH_COOLDOWN
 	var stunned := 0
@@ -1003,6 +1013,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if get_node("/root/Net").active:
 		get_node("/root/Net").handle_input(event)
 		return
+	if event is InputEventKey and not event.pressed and event.physical_keycode == KEY_X:
+		abilities.release(player)
+		return
 	if not paused and event is InputEventKey and event.pressed and not event.echo and player.status == CampPlayer.Status.ALIVE:
 		var keys := [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6]
 		var pads := [KEY_KP_1, KEY_KP_2, KEY_KP_3, KEY_KP_4, KEY_KP_5, KEY_KP_6]
@@ -1092,7 +1105,10 @@ func retry_round() -> void:
 func use_supply(actor: CampPlayer, kind: String) -> bool:
 	if paused or finished or actor.status != CampPlayer.Status.ALIVE or not actor.is_in_group("survivors") or actor.supplies.get(kind, 0) <= 0:
 		return false
-	if actor.has_effect("held") or actor.has_effect("asleep") or actor.has_effect("tripped"):
+	if actor.has_effect("held") or actor.has_effect("asleep") or actor.has_effect("tripped") or not CreatureSamples.can_interact(actor):
+		return false
+	if actor.kit.get("debt",0.0) > 0.0 and kind in ["medkit","rations"]:
+		announce("Deferred damage must land before healing. Supply kept.",actor)
 		return false
 	if actor.has_effect("frog"):
 		announce("Ribbit. Frogs can't use items.", actor)
@@ -1170,6 +1186,12 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 		announce("Snip! The thread falls away.")
 	elif kind == "wolfsbane":
 		var struck := false
+		for other: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+			if other.kit.get("form","") == "werewolf" and other.position.distance_to(actor.position)<150 and actor.facing.dot(actor.position.direction_to(other.position))>0.5 and clear_path(actor.position,other.position):
+				other.add_effect("wolfsbane",90.0)
+				other.kit["form"] = ""
+				other.kit["dash"] = 0.0
+				struck = true
 		for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
 			var offset := enemy.global_position - actor.global_position
 			if enemy.brain != null and enemy.brain.has_method("repel") and offset.length() < 150.0 and actor.facing.dot(offset.normalized()) > 0.5:
@@ -1363,6 +1385,9 @@ func spawn_dropped(kind: String, at: Vector2) -> CampPickup:
 		pickups.append(pickup)
 		add_child(pickup)
 	pickup.kind=kind
+	pickup.cash_owner=0
+	pickup.cash_amount=0
+	pickup.theft_token=""
 	pickup.z_index=1
 	pickup.position=at
 	pickup.locked=false
@@ -1380,6 +1405,7 @@ func on_survivor_downed(actor: CampPlayer) -> void:
 
 
 func drop_all_items(actor: CampPlayer) -> void:
+	if actor.role == "max": SurvivorKits.spill(actor,int(actor.kit.get("cash",0)))
 	var kinds: Array[String]=[]
 	kinds.assign(actor.inventory)
 	actor.inventory.clear()

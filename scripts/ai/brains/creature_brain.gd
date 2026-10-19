@@ -52,6 +52,8 @@ static func in_beam(actor: CampPlayer, point: Vector2, reach: float = 150.0, con
 
 
 func announce(text: String, recipient: CampPlayer = null) -> void:
+	if recipient != null and not text.begins_with("Something big and soft"):
+		CreatureSamples.encounter(recipient,body)
 	var world: Node = level()
 	if world != null:
 		world.announce(text, recipient)
@@ -59,6 +61,12 @@ func announce(text: String, recipient: CampPlayer = null) -> void:
 
 ## Host-side: every peer hears it once (see CampSoundscape.broadcast).
 func cue(name: String, volume: float = 0.0, pitch: float = 1.0, length: float = 0.0) -> void:
+	# Complete, observable source windups count as surviving an encounter, even
+	# when the survivor correctly dodges. No hidden-source bestiary polling.
+	if body.species in ["werewolf","stoneback_ram","shutter_wraith","ration_moth","bramble_seamstress","banshee"]:
+		for actor in survivors():
+			if actor.global_position.distance_to(body.global_position)<210 and body.has_line_of_sight(actor.global_position):
+				CreatureSamples.encounter(actor,body)
 	var world: Node = level()
 	if world != null and world.soundscape != null:
 		world.soundscape.broadcast(name, body.global_position, volume, pitch, length)

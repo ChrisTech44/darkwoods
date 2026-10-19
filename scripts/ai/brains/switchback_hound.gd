@@ -65,6 +65,7 @@ func physics(delta: float) -> bool:
 
 
 func _bark(at: CampPlayer) -> void:
+	CreatureSamples.encounter(at,body)
 	bark_cooldown = 7.0
 	barking = 1.2
 	cue("dog_bark", 4.0)

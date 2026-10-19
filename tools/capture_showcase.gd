@@ -14,7 +14,7 @@ func _run() -> void:
 	RoundPlan.force_all_escapes = true
 	RoundPlan.force_modifiers = ["blood_moon"]
 	RoundPlan.force_headline = "groundskeeper"
-	root.get_node("Session").survivor = "scout"
+	root.get_node("Session").survivor = "alex"
 	root.get_node("Session").mode = "woods"
 	root.get_node("Session").next_seed = 42
 	change_scene_to_file("res://scenes/world/forest_level.tscn")

@@ -1,8 +1,8 @@
 class_name WorldSync
 extends RefCounted
 ## Host snapshots contain plain data only. Clients render, never simulate outcomes.
-const PLAYER_FIELDS := ["notice","notice_time","velocity","status","stamina","exhausted","sprinting","flashlight_on","flashlight_charge","bleedout","invulnerability","hex_remaining","ward_remaining","selected_slot","facing","stride","health","last_hit","hurt_time","effects","effect_data","struggle","flash_time","flash_cooldown","self_recovery_used","help_cooldown","hidden_spot","breath","vault_time","motor_assisted","assisting_motor","ability_charges","ability_cooldown","ability_active","snared","flicker"]
-const ENEMY_FIELDS := ["enabled","velocity","facing","stride","state","stun_remaining","faded","frenzy","carrying"]
+const PLAYER_FIELDS := ["notice","notice_time","velocity","status","stamina","exhausted","sprinting","flashlight_on","flashlight_charge","bleedout","invulnerability","hex_remaining","ward_remaining","selected_slot","facing","stride","health","last_hit","hurt_time","effects","effect_data","struggle","flash_time","flash_cooldown","self_recovery_used","help_cooldown","hidden_spot","breath","vault_time","motor_assisted","assisting_motor","ability_charges","ability_cooldown","ability_active","snared","flicker","kit","form_motion"]
+const ENEMY_FIELDS := ["enabled","velocity","facing","stride","state","stun_remaining","faded","frenzy","carrying","sample_state"]
 const CRYPTID_FIELDS := ["power_tell","power_aim","dash_remaining","casting","cast_remaining","cast_aim","hunt_clock","brain_state"]
 
 static func capture(net: Node) -> Dictionary:
@@ -25,7 +25,7 @@ static func capture(net: Node) -> Dictionary:
 		enemies.append(row)
 	var items := []
 	for pickup: CampPickup in level.pickups:
-		items.append([pickup.kind,pickup.position,pickup.available,pickup.locked])
+		items.append([pickup.kind,pickup.position,pickup.available,pickup.locked,pickup.cash_owner,pickup.cash_amount,pickup.theft_token])
 	var sites := []
 	for site: ForestSite in level.camp_map.sites:
 		var used := []
@@ -104,6 +104,9 @@ static func apply(net: Node, state: Dictionary) -> void:
 		var pickup: CampPickup=level.pickups[index]
 		pickup.z_index=1 if index>=level.plan.loot.size() else 0
 		pickup.restore_network(row[0], row[1], row[2], row[3])
+		pickup.cash_owner=row[4]
+		pickup.cash_amount=row[5]
+		pickup.theft_token=row[6]
 	for index in range(level.camp_map.sites.size()):
 		var site: ForestSite=level.camp_map.sites[index]
 		var changed := false

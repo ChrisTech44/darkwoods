@@ -1,24 +1,22 @@
 class_name SurvivorRoster
 extends RefCounted
 
-const IDS: Array[String] = ["jock", "mechanic", "scout", "medic", "quiet", "quartermaster"]
-const NAMES := ["THE JOCK", "GREASE MONKEY", "THE SCOUT", "FIRST-AID KID", "THE QUIET KID", "OVERPREPARED"]
+const IDS: Array[String] = ["christian", "john", "max", "alex"]
+const NAMES := ["CHRISTIAN", "JOHN", "MAX", "ALEX"]
 const DETAILS := [
-	"5s sprint stamina (baseline 4s).\nX SECOND WIND: full stamina + faster\nsprint, once each night phase.",
-	"Engine start 1.5s, +1 spare battery.\nX JURY-RIG (2/night): barricade a door\n8s or restart dead power quietly.",
-	"Light drain 0.8/s, +1 ration.\nX MARK: tag a creature, cache or site\nyou can see for the team (30s).",
-	"Medkit revive 2.25s, +1 medkit/flare.\nX PATCH (2/night): heal a wound on\nyou or a teammate, no medkit.",
-	"Sprint hearing reach x0.75.\nX HOLD BREATH: 6s silent steps and\nslow breath when hidden (45s).",
-	"+1 flare, +1 battery, +1 ration.\nX UNPACK (1/night): drop a stash of\nfour supplies for the team."
+	"BAD RESEARCH: survive encounters\nto bottle creature powers.\nX FIELD TEST: use the sample.\nExperiments can hit friends too.",
+	"MAKING PROGRESS: preparing an\nescape refills stamina.\nX PUSH THROUGH: defer damage 6s.\nThe full damage lands afterward.",
+	"FINDER'S FEE: searches and stolen\ngear recoveries earn cash.\nTap X: buy. Hold X: gamble more.\nGetting hit spills your money.",
+	"TRAVEL ALONE: save light and\nrecover stamina while isolated.\nX: mark; X again: channel return.\nHits interrupt. Grabs prevent it."
 ]
+## Existing artwork is a prototype stand-in, not a likeness of the four friends.
+const ART := {"christian":"mechanic", "john":"jock", "max":"quartermaster", "alex":"quiet"}
 
 static func valid(id: String) -> String:
-	return id if id in IDS else "jock"
+	return id if id in IDS else "christian"
 
-static func effective(base: CampConfig, id: String) -> CampConfig:
-	var result := base.duplicate() as CampConfig
-	match valid(id):
-		"jock": result.stamina_max = 5
-		"mechanic": result.start_hold_seconds = 1.5
-		"medic": result.revive_seconds = 2.25
-	return result
+static func art(id: String) -> String:
+	return ART[valid(id)]
+
+static func effective(base: CampConfig, _id: String) -> CampConfig:
+	return base.duplicate() as CampConfig

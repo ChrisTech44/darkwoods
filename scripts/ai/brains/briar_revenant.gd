@@ -42,6 +42,8 @@ func is_watched() -> bool:
 func physics(delta: float) -> bool:
 	watched = is_watched()
 	if watched:
+		for actor in survivors():
+			if in_beam(actor,body.position) and body.has_line_of_sight(actor.position): CreatureSamples.encounter(actor,body)
 		body.velocity = Vector2.ZERO
 		return true
 	rustle -= delta

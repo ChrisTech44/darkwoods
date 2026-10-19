@@ -5,7 +5,7 @@ extends RefCounted
 ## round reads directly. Rules here must match the implementation (see
 ## docs/graphics_readability_plan.md, defect G07).
 
-const TOPICS: Array[String] = ["CONTROLS", "SURVIVAL", "THE KILLER", "ESCAPES", "CREATURES"]
+const TOPICS: Array[String] = ["CONTROLS", "SURVIVAL", "THE KILLER", "ESCAPES", "SURVIVORS", "CREATURES"]
 
 
 ## Display name of the first key bound to an action, e.g. "E" or "Tab".
@@ -61,6 +61,15 @@ static func lines(topic: String, level: Node = null) -> Array[String]:
 			out.append("Ranger notes, regions you walk into and the phase radio")
 			out.append("reveal where parts are. Locked caches need boltcutters")
 			out.append("(Maintenance or a woods toolbox) or a loud crowbar.")
+		"SURVIVORS":
+			out.append("CHRISTIAN: survive signatures to collect one sample.")
+			out.append("X experiments can transform you or hit friends. Wolf needs moon.")
+			out.append("JOHN: preparing escapes refills stamina. X defers damage 6s.")
+			out.append("Debt lands afterward; grabs end the burst. Healing waits.")
+			out.append("MAX: optional searches/stolen gear earn cash; hits spill it.")
+			out.append("Tap X buys for $4. Hold X, release to gamble $4/$8/$12.")
+			out.append("ALEX: after 4s alone, save light and recover stamina faster.")
+			out.append("X marks for 75s; X alone channels 2s back. Hits interrupt.")
 		"CREATURES":
 			var seen: Array = []
 			if level != null:

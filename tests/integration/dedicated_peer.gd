@@ -138,7 +138,7 @@ func server() -> void:
 	if not await until(func(): return net.round_id == 2 and net.phase == "playing"): return
 	for enemy in get_nodes_in_group("killers"): enemy.enabled = false
 	check(net.actors.size() == humans and not net.actors.has(1), "second_round_has_only_humans")
-	check(net.actors.values().all(func(actor): return actor.inventory.is_empty() and actor.supplies.battery_pack == 2), "second_round_resets_inventory_and_role_once")
+	check(net.actors.values().all(func(actor): return actor.inventory.is_empty() and actor.supplies.battery_pack == 1), "second_round_resets_inventory_and_role_once")
 	if humans > 1:
 		stage("leave_focus", {"peer":guest})
 		if not await until(func(): return not net.actors.has(guest)): return
@@ -162,9 +162,9 @@ func client() -> void:
 	root.get_node("Voice").mode = "off" # In-memory only; never alter player preferences.
 	var address := OS.get_environment("LNAC_TEST_HOST")
 	if address.is_empty(): address = "127.0.0.1"
-	check(net.join(address, port, "Server guest %d" % index, "mechanic") == OK, "client_connects")
+	check(net.join(address, port, "Server guest %d" % index, "christian") == OK, "client_connects")
 	if not await until(func(): return net.phase == "lobby"): return
-	net.choose("mechanic", true)
+	net.choose("christian", true)
 	if not await until(func(): return net.phase == "playing"): return
 	check(net.actors.size() == humans and not net.actors.has(1), "main_client_accepts_server_without_host_avatar")
 	await capture("joined")
@@ -206,7 +206,7 @@ func client() -> void:
 			"result":
 				await until(func(): return net.phase == "results", 10)
 				probe.report.rpc_id(1, handled, {"won":net.world.won})
-			"ready_again": net.choose("mechanic", true)
+			"ready_again": net.choose("christian", true)
 			"leave_focus":
 				if own == probe.data.peer:
 					net.leave()

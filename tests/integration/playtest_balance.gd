@@ -53,10 +53,10 @@ func _run() -> void:
 		actor.position = level.escapes.boat_point
 		actor.facing = Vector2.UP
 		actor.flashlight_on = true
-		check(is_equal_approx(actor.flashlight_charge / actor.light_drain, 270.0) or actor.role == "scout", "full_light_lasts_270_seconds")
+		check(is_equal_approx(actor.flashlight_charge / actor.light_drain, 270.0) or actor.role == "alex", "full_light_lasts_270_seconds")
 		var at := actor.position
 		actor._physics_process(3.0)
-		check(is_equal_approx(actor.flashlight_charge, 89.0) or actor.role == "scout", "three_seconds_cost_one_charge")
+		check(is_equal_approx(actor.flashlight_charge, 89.0) or actor.role == "alex", "three_seconds_cost_one_charge")
 		actor.position = at
 		actor.inventory.append("outboard_motor")
 		for pickup in level.pickups:

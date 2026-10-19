@@ -14,7 +14,8 @@ records establish what the build actually does. Resolve discrepancies explicitly
 
 Current design request: replace the six generic survivors with Christian, John,
 Max and Alex using the [four-survivor overhaul](docs/four_survivor_overhaul.md).
-This is a documented target, not implemented roster replacement. Christian must
+The four-role replacement and sample framework now have implementations;
+see the implementation status and acceptance limits in that document. Christian must
 borrow the full range of creature signatures, including moon-dependent Werewolf
 transformation and Paparazzo friendly-fire flashbang/photo consequences. The new
 design supersedes earlier roster proposals; preserve its individual drawbacks.
@@ -51,7 +52,8 @@ These are code-backed facts, not a substitute for human acceptance testing.
 - Godot project uses a 384×216 game viewport, nearest-neighbor filtering and
   integer scaling; the default window is 1152×648. Current audit engine: 4.7.2.
 - Quick Camp and Woods Expedition; fresh random nights by default, explicit
-  fixed seeds/retries and Daily Night. Six survivor roles, a six-slot supply belt,
+  fixed seeds/retries and Daily Night. Four survivors (Christian, John, Max, Alex),
+  a six-slot supply belt,
   separate objectives/tools, health, wounds, downing, teammate rescue and a
   bounded solo recovery mechanism. Consult current code for tuning values.
 - Woods have a central camp, ring/spoke roads, thickets, regions, shortcuts,
@@ -82,7 +84,7 @@ These are code-backed facts, not a substitute for human acceptance testing.
   0.1 progress. Vampire gaze breaks/bite releases start a 6s pull/bite cooldown.
   Witch curses use shuffled bags without adjacent repeats, with replicated cast
   tells/bolt types. Flashlight passive drain is one third charge per second:
-  full beam 270s, Scout 337.5s; other consumers retain their existing charge cost.
+  full beam 270s, isolated Alex 360s; other consumers retain their existing charge cost.
 - Boat parts install at the marked Lakeshore dock repair pad, with individual
   completion labels. Permanent substation/relay, logging, lakeshore and ranger
   scenery, the boat hull and unlit pyre remain visible independently of tonight’s escapes. Inactive
@@ -107,7 +109,7 @@ render loop and Dummy audio; server paths skip voice codec/capture/playback.
 Source launch first imports assets/registers script classes and refuses to start
 after import errors, including when Godot exits zero. Exported packs skip import.
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
-cleanup are implemented. The game protocol is `lnac-net-18`, compatible with
+cleanup are implemented. The game protocol is `lnac-net-19`, compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
 See [server guide](docs/dedicated_server.md); execution/OS limits remain separate
 acceptance gates. This branch is not merged into main. It includes main's measured redraw caching,
@@ -115,7 +117,7 @@ bounded prediction/reconciliation and buffered remote motion; see evidence below
 
 ## Movement transport
 
-Rules are `lnac-net-18`: authority-only 30Hz player packets include applied-input
+Rules are `lnac-net-19`: authority-only 30Hz player packets include applied-input
 acknowledgements, bounded owner movement state and server-detected discontinuity
 counters. The owner predicts shared collision/movement immediately, with no AI
 hearing, blood or gameplay outcomes; authoritative fields are restored after each

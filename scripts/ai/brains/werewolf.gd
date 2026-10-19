@@ -57,6 +57,7 @@ func contact(actor: CampPlayer) -> bool:
 	if not wolf:
 		return true
 	if body.land_hit(actor, POUNCE):
+		CreatureSamples.encounter(actor,body)
 		actor.shove(body.global_position.direction_to(actor.global_position) * 430.0)
 		cue("werewolf_howl", 2.0, 1.3)
 	return true

@@ -2,8 +2,8 @@
 
 **19 October 2026 roster direction:** the
 [four-survivor overhaul](four_survivor_overhaul.md) replaces this document’s future
-six-archetype roster with Christian, John, Max and Alex. That replacement is
-design only; the six roles remain implemented. Retain unrelated selection/co-op
+six-archetype roster with Christian, John, Max and Alex. The four-role implementation now replaces the old roster. The six-role
+descriptions below are historical; see the new document for current mechanics. Retain unrelated selection/co-op
 acceptance requirements. Historical numbers/status below may be superseded by
 current code and the maintained brief.
 

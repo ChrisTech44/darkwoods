@@ -53,6 +53,7 @@ func _stitch(target: CampPlayer) -> void:
 	for other in survivors():
 		if other != target and other.global_position.distance_to(target.global_position) < 400.0 and (partner == null or other.global_position.distance_to(target.global_position) < partner.global_position.distance_to(target.global_position)):
 			partner = other
+	CreatureSamples.encounter(target,body)
 	target.add_effect("tethered", STITCH)
 	if partner != null:
 		partner.add_effect("tethered", STITCH)

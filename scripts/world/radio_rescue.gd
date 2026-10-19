@@ -64,7 +64,7 @@ func authority() -> bool:
 
 
 func near(actor: CampPlayer, point: Vector2) -> bool:
-	return active and actor.is_in_group("survivors") and actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and actor.global_position.distance_to(point) <= actor.config.interact_radius and level.clear_path(actor.global_position, point)
+	return active and CreatureSamples.can_interact(actor) and actor.is_in_group("survivors") and actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and actor.global_position.distance_to(point) <= actor.config.interact_radius and level.clear_path(actor.global_position, point)
 
 
 func prompt(actor: CampPlayer) -> String:
@@ -99,6 +99,7 @@ func interact(actor: CampPlayer) -> bool:
 			return false
 		actor.inventory.erase("rescue_fuse")
 		powered = true
+		SurvivorKits.progress(actor,"substation:power")
 		level.loud_noise(power_point, 750)
 		level.announce("Rescue circuit restored. Transmit from the East Relay Station and light three chapel signals." if relay_enabled else "Substation restored. The Ranger Gate breaker can now power its floodlights.")
 		return true
@@ -117,6 +118,7 @@ func interact(actor: CampPlayer) -> bool:
 			actor.supplies["flare"] -= 1
 			actor.tidy_belt()
 			signals[index] = true
+			SurvivorKits.progress(actor,"signal:"+str(index))
 			level.loud_noise(landing + SOCKET_OFFSETS[index], 600)
 			level.announce("Rescue signal %d/3 lit. Signals burn until rescue; Q throws an ordinary short-lived flare." % signals.count(true))
 			return true
@@ -175,11 +177,14 @@ func advance_transmit(actor: CampPlayer, delta: float) -> void:
 	progress = minf(TRANSMIT_SECONDS, progress + delta)
 	if progress >= TRANSMIT_SECONDS:
 		transmitted = true
+		SurvivorKits.progress(actor,"radio:transmit")
 		level.loud_noise(relay_point, 950)
 		level.announce("Distress call received. Light all three signal holders south of the Drowned Chapel, then hold the landing zone.")
 
 
 func _extract() -> void:
+	for survivor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		SurvivorKits.settle(survivor)
 	var rescued := 0
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and actor.global_position.distance_to(landing) <= ZONE_RADIUS and level.clear_path(actor.global_position, landing):

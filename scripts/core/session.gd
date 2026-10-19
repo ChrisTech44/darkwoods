@@ -2,7 +2,8 @@ extends Node
 ## Run selection persists across scene changes; the round owns all gameplay state.
 
 var notice := ""
-var survivor: String = "jock"
+var survivor: String = "christian"
+var needs_survivor_selection := false
 ## F8: local meta progress and whether this run is today's Daily Night.
 var profile := CampProfile.new()
 var daily := false
@@ -16,10 +17,14 @@ func _ready() -> void:
 			RoundPlan.force_headline = argument.get_slice("=", 1)
 	var saved := ConfigFile.new()
 	if saved.load("user://survivor.cfg") == OK:
-		survivor = SurvivorRoster.valid(str(saved.get_value("player", "role", "jock")))
+		var previous := str(saved.get_value("player", "role", "christian"))
+		needs_survivor_selection = previous not in SurvivorRoster.IDS
+		survivor = SurvivorRoster.valid(previous)
+		if needs_survivor_selection: notice = "New four-survivor roster: choose your character."
 
 func select_survivor(id: String) -> void:
 	survivor = SurvivorRoster.valid(id)
+	needs_survivor_selection = false
 	var saved := ConfigFile.new()
 	saved.set_value("player", "role", survivor)
 	saved.save("user://survivor.cfg")

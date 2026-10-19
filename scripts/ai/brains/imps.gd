@@ -71,7 +71,7 @@ func contact(actor: CampPlayer) -> bool:
 func _hide() -> void:
 	var world: Node = level()
 	if world != null:
-		world.spawn_dropped(loot, hide_at)
+		world.spawn_dropped(loot, hide_at).theft_token = "theft:"+str(body.get_instance_id())
 		var near: CampPlayer
 		for actor in survivors():
 			if near == null or actor.global_position.distance_to(hide_at) < near.global_position.distance_to(hide_at):
@@ -91,7 +91,7 @@ static func _compass(direction: Vector2) -> String:
 func on_stunned() -> void:
 	var world: Node = level()
 	if not loot.is_empty() and world != null:
-		world.spawn_dropped(loot, body.global_position)
+		world.spawn_dropped(loot, body.global_position).theft_token = "theft:"+str(body.get_instance_id())
 		world.announce("POOF! The imps vanish and drop the %s." % loot.replace("_", " "))
 	loot = ""
 	poofed = 25.0

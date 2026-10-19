@@ -82,7 +82,7 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 func near(actor: CampPlayer, point: Vector2) -> bool:
-	return active and actor.is_in_group("survivors") and actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and actor.global_position.distance_to(point) <= actor.config.interact_radius and level.clear_path(actor.global_position, point)
+	return active and CreatureSamples.can_interact(actor) and actor.is_in_group("survivors") and actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and actor.global_position.distance_to(point) <= actor.config.interact_radius and level.clear_path(actor.global_position, point)
 
 func prompt(actor: CampPlayer) -> String:
 	if not active:
@@ -138,6 +138,7 @@ func interact(actor: CampPlayer) -> bool:
 			level.announce("Fit the mill emergency fuse at the north Power Substation first.",actor)
 			return false
 		gate_powered = true
+		SurvivorKits.progress(actor,"gate:power")
 		# The alarm is an explicit sensed location, never a player-position reveal.
 		level.loud_noise(gate_point,1000)
 		level.killer.hear_stimulus(gate_point,6000)
@@ -155,6 +156,7 @@ func _install(actor: CampPlayer, parts: Array[String], installed: Array[String])
 		if kind in actor.inventory and kind not in installed:
 			actor.inventory.erase(kind)
 			installed.append(kind)
+			SurvivorKits.progress(actor,"field:"+kind)
 			count += 1
 	return count
 
@@ -250,6 +252,8 @@ func _lake(delta: float) -> void:
 		level.announce("LAKE THING: glowing ripples on the dock. Step outside the marked circle, or throw a flare nearby.")
 
 func _extract(route: String, point: Vector2, radius: float) -> void:
+	for survivor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		SurvivorKits.settle(survivor)
 	var rescued := 0
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 		if actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and actor.global_position.distance_to(point) <= radius and level.clear_path(actor.global_position,point):

@@ -24,7 +24,7 @@ func _run() -> void:
 	var voice: Node = root.get_node("Voice")
 	voice.test_input = true
 	voice.mode = "push"
-	var error: Error = net.host(port, "VoiceHost", "jock") if side == "host" else net.join("127.0.0.1", port, "VoiceGuest", "medic")
+	var error: Error = net.host(port, "VoiceHost", "john") if side == "host" else net.join("127.0.0.1", port, "VoiceGuest", "john")
 	_check(error == OK, side + "_session_started")
 	var joined := Time.get_ticks_msec()
 	while net.roster.size() < 2 and Time.get_ticks_msec() - joined < 15000:
@@ -76,7 +76,7 @@ func _run() -> void:
 
 ## In a real Quick Camp round: positional voice, range cut-off and ghost routing.
 func _round_checks(net: Node, voice: Node, other: int) -> void:
-	net.choose("jock" if side == "host" else "medic", true)
+	net.choose("john" if side == "host" else "john", true)
 	var waited := Time.get_ticks_msec()
 	if side == "host":
 		while not net.can_start() and Time.get_ticks_msec() - waited < 10000:

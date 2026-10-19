@@ -69,6 +69,7 @@ func _fare(actor: CampPlayer) -> String:
 
 
 func interact(actor: CampPlayer) -> bool:
+	CreatureSamples.encounter(actor,body)
 	var fare := _fare(actor)
 	if fare.is_empty():
 		actor.invulnerability = 0.0

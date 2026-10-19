@@ -1,5 +1,34 @@
 # Development log
 
+## 2026-10-19 — Permanent objective scenery on inactive nights
+
+Fixed the diagnosed route-dependent substation artwork omission. Expedition now
+creates its permanent substation/relay and field structure layers independently
+of active escape selection. Logging machinery, lakeshore/ranger structures, the
+boat hull and unlit pyre persist too. Inactive gates are raised without introducing
+barrier collision. Painted E labels, boat repair/status, power/lighting and escape
+interactions remain route-gated; a gate-only circuit no longer lights the inactive
+relay. No route selection, loot, collision footprint, clue or host authority change.
+
+Related repair: north-facing cabinet visibility/flashlight brightness can use its
+exposed north face, and continuously redrawn machinery layers clear their cached
+StandingProps when no anchors remain visible. Added a normal-route scenery suite
+to the broad runner. Corrected an obsolete clue-test expectation (also reproduced
+on isolated unchanged HEAD 237e0de): unspawned caches have no skyline part marker;
+revealed known caches do. Production clue behavior was not changed.
+
+Verification: clean Godot 4.7.2 import/startup; objective_scenery 33, playtest_balance
+23, radio_rescue 34, field_escapes 58, signal_fire 31 and rotation_clues 15 checks,
+all passing. Actual graphical normal-route fixture: 97 checks, zero failures,
+32 views visually inspected, selected captures and logs in
+[repair evidence](evidence/objective_scenery/README.md). Frozen AI/clock, staged
+poses/camera framing, normal light/sight/weather, no forced all-escape fixture,
+voice off/Dummy audio/no microphone. Radio/field integration suites separately use
+the diagnostic all-escape option. Initial sandbox log/settings/certificate errors
+were resolved by rerunning checks with access. Markdown links and diff checked;
+full broad runner, other OS exports and cross-machine acceptance not claimed.
+Updated player README, brief and world review; original diagnosis retained.
+
 ## 2026-10-18 — Diagnose black substation center object
 
 User asked what the north site's black box should be and why it casts black

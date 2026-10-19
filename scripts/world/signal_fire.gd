@@ -24,9 +24,11 @@ func _ready() -> void:
 	set_meta("stand_in_world", true)
 	z_index = 1
 	active = level.plan.expedition and level.plan.has_escape("signal")
-	if not active:
+	if not level.plan.expedition:
 		return
 	pyre = level.plan.woods.zones[7]["position"] + Vector2(0, -150)
+	if not active:
+		return
 	glow = CampLights.lamp(self, pyre + Vector2(0, -10), 260, Color("ff9a52"), 2.4)
 	glow.enabled = false
 
@@ -126,7 +128,7 @@ func restore(state: Dictionary) -> void:
 
 
 func _draw() -> void:
-	if not active:
+	if not level.plan.expedition:
 		return
 	var fuelled := installed.size()
 	if not PixelArt.draw_standing(self, "pyre_lit" if started else "pyre", pyre + Vector2(0, 14), 46):
@@ -140,6 +142,8 @@ func _draw() -> void:
 			for flame in range(7):
 				var lift := fmod(pulse * 30.0 + flame * 9.0, 34.0)
 				draw_circle(pyre + Vector2(sin(pulse * 5 + flame) * 7, -6 - lift), 6.0 - lift * 0.15, Color(1.0, 0.55 + flame * 0.04, 0.2, 1.0 - lift / 34.0))
+	if not active:
+		return
 	if fuelled > 0 and not started:
 		draw_arc(pyre, 20, -PI * 0.5, -PI * 0.5 + TAU * fuelled / 3.0, 24, Color("e0b06a"), 2)
 	if started:

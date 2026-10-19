@@ -1,7 +1,8 @@
 # North substation black-box diagnosis
 
 18 October 2026; main code f7ba74c, macOS Godot4.7.2, actual 1152×648 window.
-Investigation only: product code is unchanged.
+Historical investigation only: product code was unchanged in this increment.
+The [19 October repair](../objective_scenery/README.md) supersedes its open status.
 
 The center prop is the emergency fuse/breaker cabinet, asset
 [f5_breaker.png](../../../assets/sprites/sc/f5_breaker.png), with an open door,

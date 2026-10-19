@@ -1,0 +1,71 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"event":"assert","name":"four_seeds_unique_separate_escape_items_and_rotating_codes","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assert","name":"unique_available_outboard_motor","passed":true}
+{"event":"assert","name":"native_route_to_outboard_motor","passed":true}
+{"event":"assert","name":"production_pickup_outboard_motor","passed":true}
+{"event":"assert","name":"unique_available_boat_fuel","passed":true}
+{"event":"assert","name":"native_route_to_boat_fuel","passed":true}
+{"event":"assert","name":"production_pickup_boat_fuel","passed":true}
+{"event":"assert","name":"unique_available_drain_plug","passed":true}
+{"event":"assert","name":"native_route_to_drain_plug","passed":true}
+{"event":"assert","name":"production_pickup_drain_plug","passed":true}
+{"event":"assert","name":"boat_parts_use_no_belt_slots","passed":true}
+{"event":"assert","name":"heavy_motor_blocks_sprint_and_uses_75_percent_walk","passed":true}
+{"event":"assert","name":"G_drops_motor_before_selected_supply","passed":true}
+{"event":"assert","name":"dropping_motor_restores_sprint","passed":true}
+{"event":"assert","name":"unique_available_outboard_motor","passed":true}
+{"event":"assert","name":"native_route_to_outboard_motor","passed":true}
+{"event":"assert","name":"production_pickup_outboard_motor","passed":true}
+{"event":"assert","name":"adjacent_held_helper_restores_full_walk_without_sprint","passed":true}
+{"event":"assert","name":"releasing_helper_resets_assistance","passed":true}
+{"event":"assert","name":"native_boat_dock_reachable","passed":true}
+{"event":"assert","name":"all_three_parts_install_authoritatively","passed":true}
+{"event":"night_phase","phase":"NIGHTFALL","revealed":["fuel"],"time":0}
+{"event":"night_phase","phase":"DEEP NIGHT","revealed":["fuse"],"time":0}
+{"event":"night_phase","phase":"WITCHING HOUR","revealed":["spark_plug"],"time":0}
+{"event":"assert","name":"ready_boat_brings_witching_hour","passed":true}
+{"event":"assert","name":"ready_player_starts_25_second_launch","passed":true}
+{"event":"assert","name":"lake_attack_has_two_second_visible_tell","passed":true}
+{"event":"assert","name":"lake_never_hits_before_tell_finishes","passed":true}
+{"event":"assert","name":"standing_in_finished_tell_wounds_survivor","passed":true}
+{"event":"assert","name":"sidestep_dodges_next_lake_strike","passed":true}
+{"event":"assert","name":"nearby_flare_interrupts_lake_attack","passed":true}
+{"event":"assert","name":"snapshot_restores_boat_and_hazard","passed":true}
+{"event":"assert","name":"boat_countdown_cannot_finish_early","passed":true}
+{"event":"round_finished","result":"BOAT evacuation: 2 survivor(s) recovered. You: escaped.","won":true}
+{"event":"assert","name":"boat_extracts_dock_and_rescues_downed_teammate","passed":true}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assert","name":"fresh_round_clears_both_escapes","passed":true}
+{"event":"assert","name":"walking_around_closed_gate_cannot_trigger_evacuation","passed":true}
+{"event":"assert","name":"unique_available_gate_code_1","passed":true}
+{"event":"assert","name":"native_route_to_gate_code_1","passed":true}
+{"event":"assert","name":"production_pickup_gate_code_1","passed":true}
+{"event":"assert","name":"unique_available_gate_code_2","passed":true}
+{"event":"assert","name":"native_route_to_gate_code_2","passed":true}
+{"event":"assert","name":"production_pickup_gate_code_2","passed":true}
+{"event":"assert","name":"unique_available_gate_code_3","passed":true}
+{"event":"assert","name":"native_route_to_gate_code_3","passed":true}
+{"event":"assert","name":"production_pickup_gate_code_3","passed":true}
+{"event":"assert","name":"gate_fragments_span_three_regions","passed":true}
+{"event":"assert","name":"floodlights_require_rescue_circuit","passed":true}
+{"event":"assert","name":"unique_available_rescue_fuse","passed":true}
+{"event":"assert","name":"native_route_to_rescue_fuse","passed":true}
+{"event":"assert","name":"production_pickup_rescue_fuse","passed":true}
+{"event":"assert","name":"shared_fuse_restores_north_substation","passed":true}
+{"event":"assert","name":"gate_breaker_powers_floodlights","passed":true}
+{"event":"assert","name":"code_fragments_install_once","passed":true}
+{"event":"assert","name":"gate_hold_starts_without_clock_floor","passed":true}
+{"event":"assert","name":"gate_release_resets_hold","passed":true}
+{"event":"night_phase","phase":"NIGHTFALL","revealed":["fuel"],"time":0}
+{"event":"night_phase","phase":"DEEP NIGHT","revealed":["fuse"],"time":0}
+{"event":"night_phase","phase":"WITCHING HOUR","revealed":["spark_plug"],"time":0}
+{"event":"assert","name":"real_gate_hold_opens_physical_arm","passed":true}
+{"event":"assert","name":"opened_arm_allows_road_crossing","passed":true}
+{"event":"assert","name":"native_bridge_run_is_reachable","passed":true}
+{"event":"assert","name":"gate_alarm_investigates_real_location_without_teleport","passed":true}
+{"event":"assert","name":"first_arrival_starts_eight_second_team_window","passed":true}
+{"event":"round_finished","result":"RANGER GATE evacuation: 1 survivor(s) recovered. You: escaped.","won":true}
+{"event":"assert","name":"bridge_run_completes_ranger_escape","passed":true}
+{"checks":58,"event":"test_result","failures":0,"suite":"field_escapes"}

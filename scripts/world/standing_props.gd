@@ -22,6 +22,12 @@ static func for_canvas(canvas: CanvasItem) -> StandingProps:
 	return level.get_node("StandingProps")
 
 
+static func begin_draw(canvas: CanvasItem) -> void:
+	var layer := for_canvas(canvas)
+	if layer != null:
+		layer.drawn[canvas.get_instance_id()] = Engine.get_process_frames()
+
+
 func place(canvas: CanvasItem, name: String, texture: Texture2D, base: Vector2, modulate_color: Color) -> void:
 	var at: Vector2 = canvas.global_transform * base
 	var key := "%d:%d:%d" % [canvas.get_instance_id(), roundi(at.x), roundi(at.y)]

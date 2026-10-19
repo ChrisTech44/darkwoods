@@ -7,7 +7,7 @@ const ZONE_RADIUS := 96.0
 const SOCKET_OFFSETS: Array[Vector2] = [Vector2(-65, 32), Vector2(65, 32), Vector2(0, -65)]
 var level: Node2D
 var active := false
-## Relay/landing only on radio nights; the substation also powers the Ranger Gate.
+## Relay interaction/landing only on radio nights; scenery exists every Expedition.
 var relay_enabled := false
 var powered := false
 var transmitted := false
@@ -29,7 +29,7 @@ func _ready() -> void:
 	set_meta("stand_in_world", true)
 	relay_enabled = level.plan.expedition and level.plan.has_escape("radio")
 	active = level.plan.expedition and (relay_enabled or level.plan.has_escape("gate"))
-	if not active:
+	if not level.plan.expedition:
 		return
 	power_point = level.plan.woods.zones[9]["position"] + Vector2(0, 48)
 	relay_point = level.plan.woods.zones[10]["position"] + Vector2(0, 56)
@@ -37,6 +37,8 @@ func _ready() -> void:
 	var structures := preload("res://scripts/world/rescue_structures.gd").new()
 	structures.rescue = self
 	add_child(structures)
+	if not active:
+		return
 	for offset in SOCKET_OFFSETS:
 		var lamp := CampLights.lamp(self, landing + offset, 150, Color("ff9c66"), 2.0)
 		lamp.enabled = false
@@ -52,7 +54,7 @@ func _process(delta: float) -> void:
 	for index in range(3):
 		lamps[index].enabled = signals[index]
 	lamps[3].enabled = powered
-	lamps[4].enabled = powered
+	lamps[4].enabled = powered and relay_enabled
 	queue_redraw()
 
 

@@ -509,8 +509,10 @@ the seed and announced in the Dusk message and the notebook.
 **Each Woods Expedition night offers two ways out: the camp van, plus one
 rumoured escape** (Radio Rescue, the Boat, the Ranger Gate or the Signal Fire),
 chosen by the night's seed. The Dusk message names the rumour, and **T** cycles
-through tonight's plans only; parts for other escapes do not appear. Whichever
-escape finishes first ends the round.
+through tonight's plans only; parts for other escapes do not appear. Permanent
+machinery, buildings, the boat hull and the unlit pyre remain scenery on other
+nights; their escape actions are unavailable. The ranger barrier stays raised
+when that route is inactive. Whichever escape finishes first ends the round.
 
 1. **Prepare in camp.** Check **Tab** for component clues. In Woods Expedition,
    find reusable **boltcutters** (Maintenance, or a second pair in a woods

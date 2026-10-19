@@ -100,11 +100,12 @@ func _clue_checks() -> void:
 	await physics_frame
 	_check(level.clues[late] == 1, "entering_sealed_region_names_it")
 	var beacon := {"kind": zone["kind"], "label": WoodsLayout.SIGN_NAMES[zone["kind"]], "position": zone["position"]}
-	_check(Skyline.beacon_label(level, beacon).contains(late.replace("_", " ").to_upper()), "skyline_marker_shows_known_part")
+	_check(not Skyline.beacon_label(level, beacon).contains(late.replace("_", " ").to_upper()), "skyline_hides_unspawned_part")
 	level.night_clock.force_phase(3)
 	await physics_frame
 	await physics_frame
 	_check(level.clues[late] == 2, "revealed_cache_marked_when_standing_in_region")
+	_check(Skyline.beacon_label(level, beacon).contains(late.replace("_", " ").to_upper()), "skyline_marks_spawned_known_part")
 	await _frames(2)
 	_check(level.hud.inventory_label.text.contains("(CACHE MAPPED)"), "pack_marks_mapped_cache")
 	if capture:

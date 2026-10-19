@@ -79,8 +79,10 @@ These are code-backed facts, not a substitute for human acceptance testing.
   tells/bolt types. Flashlight passive drain is one third charge per second:
   full beam 270s, Scout 337.5s; other consumers retain their existing charge cost.
 - Boat parts install at the marked Lakeshore dock repair pad, with individual
-  completion labels. Inactive gate barriers/structures and radio-only relay
-  presentation are omitted. Geography remains visible independently of escapes.
+  completion labels. Permanent substation/relay, logging, lakeshore and ranger
+  scenery, the boat hull and unlit pyre remain visible independently of tonight’s escapes. Inactive
+  gates are raised with no barrier collision; route prompts, parts, power and
+  extraction remain limited to tonight’s routes.
 - Story events, phase weather, van sabotage and a generator power cut exist.
   Scheduled events can be skipped when their phase is passed before their delay.
   The generator is outside the Maintenance workshop door.

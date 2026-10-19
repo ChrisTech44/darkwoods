@@ -12,13 +12,12 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	queue_redraw()
 func _draw() -> void:
+	StandingProps.begin_draw(self)
 	var level: Node2D = escapes.level
 	if level.sight == null:
 		return
 	var player: CampPlayer = level.player
 	for index in [11,12,13]:
-		if (index in [11,12] and not escapes.boat_enabled) or (index == 13 and not escapes.gate_enabled):
-			continue
 		var zone: Dictionary = level.plan.woods.zones[index]
 		var anchor: Vector2 = zone["position"] + Vector2(0,42)
 		if index==12: anchor = zone["position"] + Vector2(0,84)
@@ -31,4 +30,4 @@ func _draw() -> void:
 				brightness = maxf(brightness,0.9)
 		self_modulate = Color(brightness,brightness,brightness)
 		var motor_waiting: bool = index == 11 and escapes.boat_enabled and level.pickups.any(func(pickup: CampPickup) -> bool: return pickup.available and pickup.kind == "outboard_motor" and zone["bounds"].has_point(pickup.global_position))
-		FieldEscapeArt.draw_structure(self,zone,escapes.gate_powered,escapes.gate_open,escapes.pulse,motor_waiting)
+		FieldEscapeArt.draw_structure(self,zone,escapes.gate_powered,escapes.gate_open or not escapes.gate_enabled,escapes.pulse,motor_waiting)

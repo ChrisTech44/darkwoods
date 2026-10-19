@@ -90,6 +90,7 @@ def main():
     commands.append(("night_events", ["--headless", "--audio-driver", "Dummy", *story]))
     roles = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/roles_abilities.gd"]
     commands.append(("roles_abilities", ["--headless", *roles]))
+    commands.append(("objective_scenery", ["--headless", "--path", str(ROOT), "--audio-driver", "Dummy", "--script", "res://tests/integration/objective_scenery.gd"]))
     rescue = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/radio_rescue.gd", "--", "--all-escapes"]
     commands.append(("radio_rescue", ["--headless", *rescue]))
     field_escapes = ["--path", str(ROOT), "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/field_escapes.gd", "--", "--all-escapes"]

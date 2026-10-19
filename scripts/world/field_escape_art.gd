@@ -118,9 +118,11 @@ static func draw_structure(canvas: Node2D, zone: Dictionary, powered: bool, open
 					canvas.draw_line(point,point+(end-start).normalized()*7,Color("9a5d44"),5)
 			canvas.draw_string(ThemeDB.fallback_font,at+Vector2(-45,64),"RANGER ROAD / NORTH",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("e3c993"))
 
-static func draw_boat(canvas: Node2D, at: Vector2, installed: Array[String], started: bool, pulse: float) -> void:
+static func draw_boat(canvas: Node2D, at: Vector2, installed: Array[String], started: bool, pulse: float, actionable: bool = true) -> void:
 	var hull := at+Vector2(0,-78 + sin(pulse*1.8)*1.5)
 	PixelArt.draw_standing(canvas,"f5_boat" if "outboard_motor" in installed else "canoe",hull,86)
+	if not actionable:
+		return
 	# The physical interaction point is the repair pad, at the boat's feet.
 	canvas.draw_rect(Rect2(at + Vector2(-42, -35), Vector2(84, 34)), Color("172924"))
 	canvas.draw_rect(Rect2(at + Vector2(-42, -35), Vector2(84, 34)), Color("dbbf7e"), false)

@@ -32,15 +32,17 @@ static func draw_site(canvas: Node2D, definition: Dictionary) -> void:
 	# Elevated machinery is drawn by rescue_structures above the floor sight mask.
 
 
-static func draw_substation(canvas: Node2D, center: Vector2) -> void:
+static func draw_substation(canvas: Node2D, center: Vector2, actionable: bool = true) -> void:
 	for x in [-112,112]:
 		PixelArt.draw_standing(canvas,"f5_transformer",center+Vector2(x,12),72)
 		canvas.draw_line(center+Vector2(x,-55),center+Vector2(0,-110),Color("3f5042"),2)
 	PixelArt.draw_standing(canvas,"f5_breaker",center+Vector2(0,32),46)
-	canvas.draw_string(ThemeDB.fallback_font,center+Vector2(-51,84),"E / EMERGENCY POWER",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("dfc99b"))
+	if actionable:
+		canvas.draw_string(ThemeDB.fallback_font,center+Vector2(-51,84),"E / EMERGENCY POWER",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("dfc99b"))
 
 
-static func draw_relay(canvas: Node2D, center: Vector2) -> void:
+static func draw_relay(canvas: Node2D, center: Vector2, actionable: bool = true) -> void:
 	PixelArt.draw_standing(canvas,"f5_relay",center+Vector2(0,34),76,218)
 	PixelArt.draw_standing(canvas,"f5_breaker",center+Vector2(0,40),30)
-	canvas.draw_string(ThemeDB.fallback_font,center+Vector2(-55,92),"E / CLIMB AND TRANSMIT",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("dfc99b"))
+	if actionable:
+		canvas.draw_string(ThemeDB.fallback_font,center+Vector2(-55,92),"E / CLIMB AND TRANSMIT",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("dfc99b"))

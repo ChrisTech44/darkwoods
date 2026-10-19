@@ -40,7 +40,7 @@ func _ready() -> void:
 	boat_enabled = level.plan.expedition and level.plan.has_escape("boat")
 	gate_enabled = level.plan.expedition and level.plan.has_escape("gate")
 	active = boat_enabled or gate_enabled
-	if not active:
+	if not level.plan.expedition:
 		return
 	boat_point = level.plan.woods.zones[12]["position"] + Vector2(0,-95)
 	gate_point = level.plan.woods.zones[13]["position"] + Vector2(0,500)
@@ -324,10 +324,11 @@ func restore(state: Dictionary) -> void:
 		gate_body.get_child(0).set_deferred("disabled",gate_open)
 
 func _draw() -> void:
+	if level.plan.expedition:
+		FieldEscapeArt.draw_boat(self,boat_point,boat_installed,boat_started,pulse,boat_enabled)
 	if not active:
 		return
 	if boat_enabled:
-		FieldEscapeArt.draw_boat(self,boat_point,boat_installed,boat_started,pulse)
 		draw_arc(boat_point,80,0,TAU,48,Color("b6c6a0"),1)
 	if lake_tell > 0 or lake_flash > 0:
 		var tint := Color("c2e0b1") if lake_tell > 0 else Color("edc08b")

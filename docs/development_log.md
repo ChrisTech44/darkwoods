@@ -1,5 +1,48 @@
 # Development log
 
+## 2026-10-18 — Dedicated authority and portable server edition (headless-server)
+
+The user prioritized a connectable server before broader guest-lag work and
+requested a separate branch. Server-only implementation remains on
+`headless-server`; published main client/gameplay changes are inherited.
+
+Implemented a command-line ServerRuntime and empty lobby scene. ENet supports
+four real survivors without a host avatar or occupied server slot, retains host
+authority and rules `lnac-net-16`, waits for minimum count/all-ready, starts after
+a configurable countdown, and automatically returns results to a fresh lobby.
+The first human reuses the normal scene's initial actor; later peers get one actor
+each. Loaded-world readiness has a separate server sentinel. ENet timeouts match
+the 90s world-loading allowance. Empty rounds reset locally while the UDP listener
+stays up; departure drops gear and reassigns presentation focus to a remaining
+human. A loading timeout resets lobby readiness instead of terminating the daemon.
+
+The launcher forces headless display, disabled render loop and Dummy audio.
+Dedicated paths suppress world/HUD drawing, local input/profile saving, playback,
+voice codec initialization and microphone capture while retaining world simulation
+and sound-event replication. Existing ENet client voice relay is retained; actual
+microphone/listening acceptance is separate. Flags validate port/mode/seed/minimum,
+countdown and result delay. Added an export preset, portable PCK/ZIP packager and
+[player/operator guide](dedicated_server.md); a target-OS Godot 4.7.2 runtime is
+required. No native Linux binary, hosting account or remote deployment is claimed.
+
+Verification: required import/startup, Python compilation, Markdown links and
+`git diff --check`. Source Camp with 2 main clients: 42 assertions clean; exported
+PCK Woods with 4 main clients: 69 clean; normal graphical main client across two
+rounds: 36 clean with inspected captures. Player-hosted Camp regression: 136
+assertions clean. Invalid configurations were rejected with exit 2. Dedicated
+fixtures preserve normal navigation and normal objective selection; enemies,
+parts/positions and departure time are staged. Headless replicas hide scenery;
+graphical acceptance uses real rendering. See [selected evidence](evidence/dedicated_server/README.md).
+
+Known issue: near-simultaneous departures print ENet channel-0 errors. The stress
+run passed all 69 gameplay assertions, freed the world and kept the listener
+active, but the strict harness correctly failed on three engine errors. Normal
+package acceptance staggers departures; this distinction is explicit in evidence.
+No claim of clean stress acceptance, Internet/Linux/Windows/exported-client,
+sustained-load or human voice acceptance. First-frame graphical preparation also
+needed main's separately published scenery fix; prediction/snapshot optimization
+and broader steady-state guest-lag work remain next.
+
 ## 2026-10-18 — Graphical client startup before dedicated-server acceptance (main)
 
 A real graphical client initially disconnected while preparing its first forest

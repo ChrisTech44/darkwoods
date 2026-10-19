@@ -10,6 +10,7 @@ var snapshot_parts := {}
 var assembling_sequence := 0
 var expected_parts := 0
 var largest_snapshot_payload := 0
+var dedicated := false
 var active := false
 var phase := "offline"
 var status_text := "Host a camp or join a host address."
@@ -44,6 +45,20 @@ func _ready() -> void:
 	multiplayer.connected_to_server.connect(_connected)
 	multiplayer.connection_failed.connect(func(): leave("Connection failed. Check host address, UDP port and firewall."))
 	multiplayer.server_disconnected.connect(func(): leave("Host disconnected. The camp session ended."))
+
+func host_dedicated(port: int) -> Error:
+	if active or port < 1 or port > 65535: return ERR_INVALID_PARAMETER
+	var peer := ENetMultiplayerPeer.new()
+	var error := peer.create_server(port, MAX_PLAYERS, 3)
+	if error != OK: return error
+	multiplayer.multiplayer_peer = peer
+	dedicated = true
+	active = true
+	phase = "lobby"
+	roster.clear()
+	status_text = "Dedicated camp listening on UDP %d." % port
+	changed.emit()
+	return OK
 
 func host(port: int, player_name: String, role: String) -> Error:
 	if active or port<1 or port>65535: return ERR_INVALID_PARAMETER
@@ -84,6 +99,10 @@ func _connected() -> void:
 	_register.rpc_id(1,RULES,local_name,get_node("/root/Session").survivor)
 
 func _peer_connected(id: int) -> void:
+	if dedicated:
+		# Match the world-loading allowance; ENet otherwise drops a client while
+		# its first graphical frame prepares scenery before it can poll again.
+		multiplayer.multiplayer_peer.get_peer(id).set_timeout(32, 90000, 90000)
 	if multiplayer.is_server(): pending[id]=Time.get_ticks_msec()+5000
 
 @rpc("any_peer","call_remote","reliable",0)
@@ -128,7 +147,8 @@ func _accept_choice(id: int, role: String, ready: bool) -> void:
 	_broadcast_roster()
 
 func _broadcast_roster() -> void:
-	_lobby.rpc(roster,mode,seed_value)
+	if dedicated: get_node("/root/Server").ready_since = -1.0
+	if not dedicated or not roster.is_empty(): _lobby.rpc(roster,mode,seed_value)
 	changed.emit()
 
 @rpc("authority","call_remote","reliable",0)
@@ -194,7 +214,7 @@ func _begin(chosen_mode: String, value: int, peers: Dictionary, generation: int)
 	var session: Node=get_node("/root/Session")
 	session.mode=mode
 	session.next_seed=seed_value
-	session.survivor=participants[multiplayer.get_unique_id()]["role"]
+	session.survivor=participants[participants.keys()[0] if dedicated else multiplayer.get_unique_id()]["role"]
 	session.load_game()
 	changed.emit()
 
@@ -206,8 +226,9 @@ func attach_world(level: Node2D) -> void:
 	ids.sort()
 	for index in range(ids.size()):
 		var id: int=ids[index]
-		var actor: CampPlayer=level.player if id==local_id else level.PLAYER_SCENE.instantiate()
-		if id!=local_id:
+		var reuse_player := id == local_id or (dedicated and index == 0)
+		var actor: CampPlayer=level.player if reuse_player else level.PLAYER_SCENE.instantiate()
+		if not reuse_player:
 			actor.config=level.config
 			actor.role=participants[id]["role"]
 			actor.expedition=level.plan.expedition
@@ -218,7 +239,7 @@ func attach_world(level: Node2D) -> void:
 		actor.net_controlled=true
 		actor.controls_enabled=false
 		actors[id]=actor
-		if id!=local_id:
+		if not reuse_player:
 			actor.noise_emitted.connect(func(origin: Vector2):
 				if multiplayer.is_server(): level._on_noise(origin))
 			actor.sprint_noise_emitted.connect(func(origin: Vector2):
@@ -241,7 +262,12 @@ func _announce_world_loaded(reference: WeakRef, generation: int) -> void:
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	if not active or generation != round_id or world != reference.get_ref() or phase != "loading": return
-	if multiplayer.is_server(): _accept_loaded(multiplayer.get_unique_id(), round_id)
+	if dedicated:
+		world.configure_server_view()
+		loaded[1] = true # Server world readiness, not a survivor.
+		print(JSON.stringify({"event":"server_world_loaded", "round":round_id}))
+		if loaded.size() == participants.size() + 1: _go.rpc(round_id)
+	elif multiplayer.is_server(): _accept_loaded(multiplayer.get_unique_id(), round_id)
 	else: _world_loaded.rpc_id(1, round_id)
 
 @rpc("any_peer","call_remote","reliable",0)
@@ -251,7 +277,8 @@ func _world_loaded(generation: int) -> void:
 func _accept_loaded(id: int, generation: int) -> void:
 	if phase!="loading" or generation!=round_id or not participants.has(id): return
 	loaded[id]=true
-	if loaded.size()==participants.size(): _go.rpc(round_id)
+	if dedicated: print(JSON.stringify({"event":"server_peer_loaded", "peer":id, "round":round_id}))
+	if world != null and loaded.size() == participants.size() + int(dedicated): _go.rpc(round_id)
 
 @rpc("authority","call_local","reliable",0)
 func _go(generation: int) -> void:
@@ -264,6 +291,7 @@ func _go(generation: int) -> void:
 	if multiplayer.is_server():
 		for enemy: CampKiller in get_tree().get_nodes_in_group("killers"): enemy.enabled=true
 	status_text="Night %d / %d survivors" % [seed_value,actors.size()]
+	if dedicated: print(JSON.stringify({"event":"server_round_started", "round":round_id, "players":actors.size()}))
 	changed.emit()
 
 func _physics_process(delta: float) -> void:
@@ -275,10 +303,13 @@ func _physics_process(delta: float) -> void:
 				pending.erase(id)
 				if id in multiplayer.get_peers(): multiplayer.multiplayer_peer.disconnect_peer(id)
 	if phase in ["connecting","loading"] and now>deadline:
-		leave("Connection/loading timed out. Check host, UDP port and firewall.")
+		if dedicated:
+			print(JSON.stringify({"event": "server_loading_timeout", "loaded": loaded.size(), "players": participants.size()}))
+			return_lobby(false)
+		else: leave("Connection/loading timed out. Check host, UDP port and firewall.")
 		return
 	if world==null or waiting or phase not in ["playing","results"]: return
-	if phase=="playing":
+	if phase=="playing" and not dedicated:
 		var direction := Vector2.ZERO if menu_open else Input.get_vector("move_left","move_right","move_up","move_down")
 		var sprint := not menu_open and Input.is_action_pressed("sprint")
 		var hold := not menu_open and Input.is_action_pressed("interact")
@@ -416,11 +447,17 @@ func handle_input(event: InputEvent) -> void:
 		if event.is_action_pressed(binding): action(bindings[binding])
 
 func return_lobby(retry: bool) -> void:
-	if active and multiplayer.is_server(): _return_lobby.rpc(seed_value if retry else 0)
+	if not active or not multiplayer.is_server(): return
+	# During the last disconnect callback ENet can still expose closing peers.
+	# There are no survivors to notify; reset locally instead of broadcasting.
+	if dedicated and participants.is_empty(): _return_lobby(0)
+	else: _return_lobby.rpc(seed_value if retry else 0)
 
 @rpc("authority","call_local","reliable",0)
 func _return_lobby(retry_seed: int) -> void:
 	if not active: return
+	loaded.clear()
+	command_budgets.clear()
 	world=null
 	actors.clear()
 	inputs.clear()
@@ -429,14 +466,18 @@ func _return_lobby(retry_seed: int) -> void:
 	snapshot_parts.clear()
 	participants.clear()
 	for entry in roster.values(): entry["ready"]=false
-	seed_value=retry_seed
+	seed_value=get_node("/root/Server").configured_seed if dedicated else retry_seed
 	phase="lobby"
 	waiting=false
 	menu_open=false
-	get_tree().change_scene_to_file("res://scenes/ui/network_lobby.tscn")
+	if dedicated:
+		get_node("/root/Server").show_lobby()
+		_broadcast_roster()
+	else: get_tree().change_scene_to_file("res://scenes/ui/network_lobby.tscn")
 	changed.emit()
 
 func _peer_disconnected(id: int) -> void:
+	if dedicated: print(JSON.stringify({"event":"server_peer_left", "peer":id}))
 	pending.erase(id)
 	if not active or not multiplayer.is_server(): return
 	roster.erase(id)
@@ -450,9 +491,16 @@ func _peer_disconnected(id: int) -> void:
 			_drop_objectives(actor)
 			world.van.passengers.erase(actor)
 		actors.erase(id)
+		if dedicated and world != null and not actors.is_empty():
+			world.player = actors.values()[0]
+			world.camp_map.focus = world.player
+			world.sight.player = world.player
 		actor.queue_free()
+	if dedicated and participants.is_empty() and phase in ["loading", "playing", "results"]:
+		return_lobby(false)
+		return
 	if phase=="lobby": _broadcast_roster()
-	elif phase=="loading" and world!=null and loaded.size()>=participants.size(): _go.rpc(round_id)
+	elif phase=="loading" and world!=null and loaded.size()>=participants.size() + int(dedicated): _go.rpc(round_id)
 
 func _drop_objectives(actor: CampPlayer) -> void:
 	if world==null: return
@@ -477,7 +525,10 @@ func leave(reason: String = "Left the camp.") -> void:
 	assembling_sequence=0
 	status_text=reason
 	get_node("/root/Session").notice=reason
-	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	if dedicated:
+		print(JSON.stringify({"event": "server_stopped", "reason": reason}))
+		get_tree().quit(1)
+	else: get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 	changed.emit()
 
 func _clean_name(value: String) -> String:

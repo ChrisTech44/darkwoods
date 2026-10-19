@@ -19,6 +19,8 @@ func _ready() -> void:
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/audio/manifest.json"))
 	if parsed is Dictionary:
 		cues = parsed["cues"]
+	if ServerRuntime.requested():
+		return
 	for bus in BUSES:
 		if AudioServer.get_bus_index(bus) < 0:
 			AudioServer.add_bus()

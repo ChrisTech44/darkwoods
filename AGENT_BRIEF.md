@@ -90,6 +90,18 @@ These are code-backed facts, not a substitute for human acceptance testing.
   platform permissions retain their own acceptance limits; implementation alone
   does not satisfy them. Do not capture microphones or enable voice for audits.
 
+## Dedicated server branch
+
+`headless-server` adds an opt-in command-line authority for 1–4 human clients,
+with no server survivor. `tools/run_server.py` forces headless display, disabled
+render loop and Dummy audio; server paths skip voice codec/capture/playback.
+Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
+cleanup are implemented. The game protocol remains `lnac-net-16`, compatible with
+updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
+See [server guide](docs/dedicated_server.md); execution/OS limits remain separate
+acceptance gates. This branch is not merged into main. Guest-lag optimization is
+still deferred until after the server edition.
+
 ## Interface and graphics direction
 
 The [audit plan](docs/graphics_readability_plan.md) defines the next work slices.

@@ -14,6 +14,9 @@ var clock := 6.0
 
 
 func _ready() -> void:
+	if ServerRuntime.requested():
+		set_process(false)
+		return
 	stream = tune()
 	bus = "Effects"
 	max_distance = 1100.0

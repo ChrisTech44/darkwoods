@@ -17,6 +17,8 @@ var walls: Array[Rect2] = []
 var landmarks: Array[Dictionary] = []
 var zones: Array[Dictionary] = []
 var visited: Dictionary = {}
+var received_exploration := PackedByteArray()
+const EXPLORATION_BYTES := (SIZE.x * SIZE.y + 7) / 8
 var landmark_distances: Dictionary = {}
 var open_tiles: Dictionary = {}
 var signposts: Array[Dictionary] = []
@@ -55,6 +57,7 @@ func generate(seed_value: int) -> void:
 	landmarks.clear()
 	zones.clear()
 	visited.clear()
+	received_exploration.clear()
 	open_tiles.clear()
 	signposts.clear()
 	roads.clear()
@@ -557,3 +560,29 @@ func signature() -> String:
 			for d in DIRECTIONS:
 				result += "1" if cell+d in links[cell] else "0"
 	return result
+
+
+## Full team coverage costs at most 307 bytes before normal snapshot compression.
+func exploration_snapshot() -> PackedByteArray:
+	var bits := PackedByteArray()
+	bits.resize(EXPLORATION_BYTES)
+	for cell: Vector2i in visited:
+		if not valid(cell): continue
+		var index := cell.y * SIZE.x + cell.x
+		bits[index >> 3] |= 1 << (index & 7)
+	return bits
+
+
+## Complete authority snapshots recover missed visits without a reliable stream.
+func restore_exploration(bits: PackedByteArray) -> void:
+	if bits.size() != EXPLORATION_BYTES or bits == received_exploration: return
+	var accepted := {}
+	for byte in range(bits.size()):
+		if bits[byte] == 0: continue
+		for bit in range(8):
+			if (bits[byte] & (1 << bit)) == 0: continue
+			var index := byte * 8 + bit
+			var cell := Vector2i(index % SIZE.x, index / SIZE.x)
+			if valid(cell): accepted[cell] = true
+	visited = accepted
+	received_exploration = bits.duplicate()

@@ -1,5 +1,28 @@
 # Development log
 
+## 2026-10-18 — Replicate team trail exploration (main)
+
+User reported the client map did not develop while walking trails. Reproduced:
+ForestLevel marked only its reference player, and WorldSync omitted visited cells.
+Clients correctly skip authoritative level physics, so their maps stayed blank;
+dedicated authority also ignored other humans' travel. Fixed at the authority by
+recording every living/downed survivor's occupied cell. Snapshots include a fixed
+307-byte bitmap before compression, with cached decode, bounded/valid cell checks,
+full-state recovery and new-layout cache reset. No client discovery/position RPC;
+existing clue/cache hiding and host authority retained. Existing snare eligibility
+now includes all teammates' accepted travel. Additive optional field, rules18 stays.
+
+Before/after execution proves the defect and fix. Real graphical ENet Woods test
+258 assertions clean, including guest-only actual walk across two cells, map
+replication and unknown-cell concealment. Inspected before/after client notebook
+captures, normal lighting/local zoom; seed42/all escapes/AI frozen/staged host
+positions explicitly labelled. Map15 and notebook21 assertions pass. Required
+import/startup/error scans, Python syntax, diff and changed Markdown links checked.
+Voice/microphones off. No broad suite or Internet claim. See
+[evidence](evidence/map_exploration/README.md). Dedicated branch inherits the fix
+and receives its own all-human acceptance before publication; production server
+is not restarted by local verification.
+
 ## 2026-10-18 — Predict local movement and buffer remote motion (main)
 
 Rules lnac-net-18 adds 30Hz owner applied-input acknowledgements and bounded

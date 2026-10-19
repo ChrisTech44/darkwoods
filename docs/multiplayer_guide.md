@@ -31,6 +31,16 @@ without fixing the underlying network path. Unchanged item/site art also stays
 cached to avoid costly repeated drawing. See [measured smoothness improvements](evidence/smoothness/README.md)
 for graphical Genesect timings, tests and acceptance limits.
 
+## Shared trail map
+
+Walking the woods develops the team's map on every client, including when using
+a dedicated server. The server records actual travel by living/downed survivors
+and sends explored cells with world state; unexplored trails remain concealed.
+Printed roads/region outlines are still available from the start. Coverage resets
+for each night and recovers after a missed update. Update both client and server
+for this fix (rules18 remains compatible; old servers do not send exploration).
+[Replication checks and actual client captures](evidence/map_exploration/README.md).
+
 ## Radio Rescue (expedition)
 
 All peers must use rules `lnac-net-18` (the same build). The host owns the fuse,

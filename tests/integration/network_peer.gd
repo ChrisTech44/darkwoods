@@ -97,6 +97,21 @@ func _host() -> void:
 		await process_frame
 		RenderingServer.force_draw(true)
 		root.get_texture().get_image().save_png("res://artifacts/network/host_%s_%d.png"%[selected_mode,peers])
+	if selected_mode == "woods":
+		var entry := WoodsLayout.ENTRY
+		var next := entry + Vector2i.LEFT
+		for actor: CampPlayer in net.actors.values(): actor.position = Vector2(120,400)
+		net.actors[guest].position = level.plan.woods.center(entry) + Vector2.LEFT * 70
+		harness.advance.rpc("explore_ready",{"entry":entry,"next":next,"guest":guest})
+		if not await _reports(peers-1): return
+		_check(level.plan.woods.visited.has(entry) and not level.plan.woods.visited.has(next),"guest_position_discovers_only_occupied_trail_cell")
+		harness.advance.rpc("explore_walk",{"entry":entry,"next":next,"guest":guest})
+		if not await _reports(peers-1): return
+		_check(level.plan.woods.visited.has(next),"guest_walk_extends_authoritative_team_map")
+		for report: Dictionary in harness.reports.values():
+			_check(report.get("explored",false),"client_map_receives_guest_trail_progress")
+			_check(report.get("hidden",false),"unvisited_trails_stay_hidden_on_client")
+		for actor: CampPlayer in net.actors.values(): actor.position = Vector2(140,430)
 	# Empty interaction feedback belongs to the acting peer, never the shared banner.
 	for actor: CampPlayer in net.actors.values(): actor.notice_time=0
 	var shared_before: String=level.message
@@ -393,6 +408,28 @@ func _client() -> void:
 			harness.report.rpc_id(1,handled,{"taken":harness.data["kind"] in net.actors[harness.data["guest"]].inventory})
 			continue
 		match handled:
+			"explore_ready":
+				await _until(func(): return net.world.plan.woods.visited.has(harness.data.entry),5)
+				net.world.hud.notebook.open_view("map")
+				if capture:
+					await create_timer(0.15).timeout
+					RenderingServer.force_draw(true)
+					root.get_texture().get_image().save_png("res://artifacts/network/exploration_before_%d.png" % index)
+				harness.report.rpc_id(1,handled,{})
+			"explore_walk":
+				if mine == harness.data.guest:
+					Input.action_press("move_left")
+					await create_timer(0.85).timeout
+					Input.action_release("move_left")
+				await _until(func(): return net.world.plan.woods.visited.has(harness.data.next),5)
+				var explored: bool = net.world.hud.chart.plan.woods.visited.has(harness.data.entry) and net.world.hud.chart.plan.woods.visited.has(harness.data.next)
+				var hidden: bool = not net.world.plan.woods.visited.has(Vector2i.ZERO)
+				if capture:
+					await create_timer(0.15).timeout
+					RenderingServer.force_draw(true)
+					root.get_texture().get_image().save_png("res://artifacts/network/exploration_after_%d.png" % index)
+				net.world.hud.notebook.close()
+				harness.report.rpc_id(1,handled,{"explored":explored,"hidden":hidden})
 			"ready_boat", "ready_gate": net.choose("mechanic",true)
 			"field_boat_fit", "field_boat_start", "field_gate_fit", "field_gate_power", "field_circuit":
 				await create_timer(0.45).timeout

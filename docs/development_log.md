@@ -1,5 +1,35 @@
 # Development log
 
+## 2026-10-18 — Verify the user's restarted Genesect server
+
+User confirmed Genesect was updated/running and requested live metrics. SSH found
+clean 5debe70/rules17. Connected to the regular server on 27840, guarded against
+ordinary players, and ran a graphical 60-input check, a 30-input headless check,
+then matched external/loopback 120-input probes in one normal fog round. Remote
+files stayed under games/darkwoods; no production source/configuration edit,
+replacement server or process restart. Voice/microphones off, normal AI/physics,
+no staged parts/teleports; headless replicas hide scenery. Actual graphical capture
+was inspected. Diagnostic clients self-terminated and an unready post-check verified
+that the regular server still accepted a lobby connection.
+
+Graphical RTT median63ms/max82ms, pose p99 61ms/max113ms, but average frame45.5ms
+(~22 FPS) and median >2px movement response208ms. The headless comparator then caught
+2.12s pose/world gaps with normal client frame processing, so verification was
+extended to a simultaneous loopback control. Paired external/loopback pose maxima:
+2129ms/37ms; world maxima3507ms/57ms. During external sequence916→965's 2.13s stall,
+loopback received all50 poses with max36ms spacing. Thus the observed stall was on
+the external connection/transport side; the server continued local delivery.
+Exact Wi-Fi/routing/VPN/OS/per-peer ENet cause remains unknown. Three of120 external
+movement legs timed out, versus zero on loopback. Clean engine exits do not mean
+network-quality acceptance. Client frame pacing and missing local prediction also
+remain; no claim of eliminating skipping.
+
+See [live evidence](evidence/production_verification/README.md) for full metrics,
+method, seed/capture labels, guard-aborted preliminary attempt and limits. This is
+a documentation/evidence increment; no product code change. Required local import/
+startup, Markdown-link and diff checks were run before publication. No broad
+regression rerun is claimed for unchanged gameplay code.
+
 ## 2026-10-18 — Integrate rules-17 transport into dedicated branch
 
 Merged the verified main transport increment while preserving the dedicated

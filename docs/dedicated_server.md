@@ -109,8 +109,10 @@ See the development log for exact executed checks. A Linux Snap Godot 4.7.2 Mono
 source server on Genesect was tested across the real network with one/four macOS
 source clients, including normal graphical rendering. This does not establish
 Linux PCK operation, Windows, exported clients, general Internet routing,
-sustained load or human listening acceptance. The existing production process
-was left unchanged; diagnostics used a separate project-local copy and spare port.
+sustained load or human listening acceptance. Implementation diagnostics used a separate project-local copy and spare port.
+A subsequent [post-restart verification](evidence/production_verification/README.md)
+measured the regular server, including matched external/loopback clients; external
+multi-second stalls remained while loopback delivery stayed steady.
 No hosting account was provisioned. See the
 [network investigation](network_lag_investigation.md) for timings and limits.
 An observed diagnostic issue remains when several clients disconnect nearly

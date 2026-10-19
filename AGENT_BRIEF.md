@@ -92,13 +92,19 @@ These are code-backed facts, not a substitute for human acceptance testing.
 
 ## Movement transport
 
-Rules are `lnac-net-17`: authority-only player poses use small 30 Hz packets,
-independent of 20 Hz world snapshots. World fragments accept out-of-order delivery;
-old world state cannot overwrite newer player poses. Clients still render accepted
-server movement; local prediction/reconciliation is not implemented. Clients and
-listen/dedicated servers must update together. See the
-[real-network investigation](docs/network_lag_investigation.md) for executed
-Genesect timings and limits.
+Rules are `lnac-net-18`: authority-only 30Hz player packets include applied-input
+acknowledgements, bounded owner movement state and server-detected discontinuity
+counters. The owner predicts shared collision/movement immediately, with no AI
+hearing, blood or gameplay outcomes; authoritative fields are restored after each
+presentation step. Recent input history and prediction freshness are bounded to 250ms, corrections ease at up to
+180px/s, and genuine server relocations reset presentation. Other survivors and
+enemies use an 80ms interpolation buffer, at most 50ms extrapolation and bounded
+recovery steps. Full world snapshots remain independent at 20Hz with unordered
+fragments; stale world state cannot overwrite newer player poses. Pickup/site
+art remains cached until replicated state changes. Clients and listen/dedicated
+servers must update together. See [smoothness evidence](docs/evidence/smoothness/README.md)
+and [network investigation](docs/network_lag_investigation.md) for executed
+measurements and limits; no complete cure for multi-second link loss is claimed.
 
 ## Interface and graphics direction
 

@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-17"
+const RULES := "lnac-net-18"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -40,6 +40,9 @@ var last_motion_sequence := 0
 var latest_motion_bytes := 0
 var latest_snapshot_bytes := 0
 var motion_targets := {}
+var prediction := LocalPrediction.new()
+var remote_motion := {}
+var motion_epochs := {}
 var replicas := {}
 var next_entity_id := 0
 var local_name := "Camper"
@@ -184,6 +187,9 @@ func _begin(chosen_mode: String, value: int, peers: Dictionary, generation: int)
 	loaded.clear()
 	replicas.clear()
 	motion_targets.clear()
+	remote_motion.clear()
+	motion_epochs.clear()
+	prediction.bind(null)
 	command_budgets.clear()
 	world=null
 	input_sequence=0
@@ -296,11 +302,19 @@ func _physics_process(delta: float) -> void:
 		var hold := not menu_open and Input.is_action_pressed("interact")
 		input_sequence+=1
 		if multiplayer.is_server(): _accept_input(1,round_id,input_sequence,direction,sprint,hold)
-		else: _input_packet.rpc_id(1,round_id,input_sequence,direction,sprint,hold)
+		else:
+			_input_packet.rpc_id(1,round_id,input_sequence,direction,sprint,hold)
+			var player: CampPlayer = actors.get(multiplayer.get_unique_id())
+			if player != null:
+				if prediction.actor != player: prediction.bind(player)
+				prediction.step(input_sequence, direction, sprint, delta, Time.get_ticks_usec() / 1000000.0)
+	elif not multiplayer.is_server() and is_instance_valid(prediction.actor):
+		prediction.step(input_sequence, Vector2.ZERO, false, delta, Time.get_ticks_usec() / 1000000.0)
 	if multiplayer.is_server():
 		for id: int in actors:
 			var intent: Dictionary=inputs.get(id,{})
 			var fresh: bool=now-intent.get("time",0)<400
+			actors[id].network_input_sequence = intent.get("seq", 0)
 			actors[id].network_direction=intent.get("direction",Vector2.ZERO) if fresh else Vector2.ZERO
 			actors[id].network_sprint=intent.get("sprint",false) if fresh else false
 			if not fresh and inputs.has(id): inputs[id]["hold"]=false
@@ -312,11 +326,14 @@ func _physics_process(delta: float) -> void:
 			var poses := []
 			for id: int in actors:
 				var actor: CampPlayer = actors[id]
-				poses.append([id, actor.position, actor.velocity, actor.facing])
-			var payload := var_to_bytes(poses)
-			if payload.size() <= MAX_MOTION_BYTES:
-				latest_motion_bytes = payload.size()
-				_motion_packet.rpc(round_id, motion_sequence, payload)
+				poses.append([id, actor.position, actor.velocity, actor.facing, motion_epoch(actor)])
+			for id: int in actors:
+				if id == 1: continue # The listen host already runs authoritative movement.
+				var owner: CampPlayer = actors[id]
+				var payload := var_to_bytes([poses, owner.network_applied_sequence, LocalPrediction.capture(owner), Engine.get_physics_frames()])
+				if payload.size() <= MAX_MOTION_BYTES:
+					latest_motion_bytes = payload.size()
+					_motion_packet.rpc_id(id, round_id, motion_sequence, payload)
 		snapshot_clock-=delta
 		if snapshot_clock<=0.000001:
 			snapshot_clock=maxf(0.0, snapshot_clock + WORLD_INTERVAL)
@@ -339,20 +356,46 @@ func _physics_process(delta: float) -> void:
 func _motion_packet(generation: int, sequence: int, payload: PackedByteArray) -> void:
 	if not active or multiplayer.is_server() or generation != round_id or sequence <= last_motion_sequence or world == null: return
 	if payload.is_empty() or payload.size() > MAX_MOTION_BYTES: return
-	var poses: Variant = bytes_to_var(payload)
+	var packet: Variant = bytes_to_var(payload)
+	if not packet is Array or packet.size() != 4: return
+	if not packet[1] is int or not LocalPrediction.valid(packet[2]) or not packet[3] is int: return
+	var poses: Variant = packet[0]
 	if not poses is Array or poses.size() > MAX_PLAYERS: return
 	for row: Variant in poses:
-		if not row is Array or row.size() != 4: return
-		if not row[0] is int or not row[1] is Vector2 or not row[2] is Vector2 or not row[3] is Vector2: return
+		if not row is Array or row.size() != 5: return
+		if not row[0] is int or not row[1] is Vector2 or not row[2] is Vector2 or not row[3] is Vector2 or not row[4] is int: return
 		if not row[1].is_finite() or not row[2].is_finite() or not row[3].is_finite(): return
 	last_motion_sequence = sequence
 	latest_motion_bytes = payload.size()
+	var now := Time.get_ticks_usec() / 1000000.0
 	for row: Array in poses:
 		if not actors.has(row[0]): continue
 		var actor: CampPlayer = actors[row[0]]
-		motion_targets[actor] = row[1]
-		actor.velocity = row[2]
-		actor.facing = row[3]
+		motion_targets.erase(actor)
+		if row[0] == multiplayer.get_unique_id():
+			if prediction.actor != actor: prediction.bind(actor)
+			prediction.receive(row[1], row[2], row[3], packet[1], packet[2], packet[3], now, row[4])
+		else:
+			buffer_motion(actor, row[1], row[2], packet[3], now, row[4])
+			actor.velocity = row[2]
+			actor.facing = row[3]
+
+## Detect discontinuities at the authority, before packet loss can hide the path.
+func motion_epoch(node: Node2D) -> int:
+	var tick := Engine.get_physics_frames()
+	var previous: Array = motion_epochs.get(node, [node.position, node.velocity, tick, 0])
+	var elapsed: float = maxf(0.0, tick - previous[2]) / Engine.physics_ticks_per_second
+	var speed: float = maxf(node.velocity.length(), previous[1].length())
+	var epoch: int = previous[3]
+	if node.position.distance_to(previous[0]) > maxf(96.0, speed * elapsed * 2.0 + 32.0): epoch += 1
+	motion_epochs[node] = [node.position, node.velocity, tick, epoch]
+	return epoch
+
+func buffer_motion(node: Node2D, position: Vector2, velocity: Vector2, tick: int, now: float, epoch: int = 0) -> void:
+	if not remote_motion.has(node): remote_motion[node] = RemoteMotion.new()
+	var buffer: RemoteMotion = remote_motion[node]
+	if buffer.push(position, velocity, tick, now, epoch): node.position = position
+	motion_targets.erase(node)
 
 @rpc("any_peer","call_remote","unreliable_ordered",2)
 func _input_packet(generation: int, sequence: int, direction: Vector2, sprint: bool, hold: bool) -> void:
@@ -432,6 +475,13 @@ func _snapshot_piece(generation: int, sequence: int, part: int, count: int, byte
 
 func _process(delta: float) -> void:
 	if not active or multiplayer.is_server(): return
+	prediction.render(delta)
+	var now := Time.get_ticks_usec() / 1000000.0
+	for node: Node2D in remote_motion.keys():
+		if not is_instance_valid(node):
+			remote_motion.erase(node)
+			continue
+		remote_motion[node].render(node, now, delta)
 	for node: Node2D in motion_targets.keys():
 		if not is_instance_valid(node):
 			motion_targets.erase(node)
@@ -470,6 +520,9 @@ func _return_lobby(retry_seed: int) -> void:
 	actors.clear()
 	inputs.clear()
 	motion_targets.clear()
+	remote_motion.clear()
+	motion_epochs.clear()
+	prediction.bind(null)
 	replicas.clear()
 	snapshot_parts.clear()
 	participants.clear()
@@ -515,6 +568,9 @@ func leave(reason: String = "Left the camp.") -> void:
 	inputs.clear()
 	pending.clear()
 	motion_targets.clear()
+	remote_motion.clear()
+	motion_epochs.clear()
+	prediction.bind(null)
 	replicas.clear()
 	menu_open=false
 	waiting=false

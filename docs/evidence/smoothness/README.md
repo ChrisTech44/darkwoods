@@ -37,3 +37,73 @@ Checks: graphical render_replication 8/8; real ENet Camp/Woods two-player suites
 render fixture freezes enemies and stages two pickups to test pile invalidation;
 it is not the performance run or screenshot. No broad-suite, Windows or microphone
 acceptance claim.
+
+## Prediction and interpolation increment (rules lnac-net-18)
+
+Final actual graphical Mac client → Genesect Linux Snap Mono 4.7.2 source server,
+24 one-second input legs (~24s measured), normal Woods seed 1788400090/fog,
+live AI and ordinary up/down walking. No profile wrappers, forced parts/escape,
+teleports, frozen enemies or lighting changes. Voice/microphones off. Server ran
+on spare UDP 28335 in games/darkwoods/artifacts/smoothness18, imported first and
+self-terminated; production checkout 5debe70 and regular UDP 27840 were unchanged.
+
+| Measurement | Final run |
+| --- | ---: |
+| Mean frame interval / average FPS | 8.49ms / 117.7 |
+| 99th percentile / maximum frame | 13.66ms / 31.88ms |
+| Visible >2px input response median / maximum | 26.38ms / 32.27ms |
+| Response timeouts | 0/24 |
+| RTT median / mean / maximum | 66ms / 92.88ms / 259ms |
+| Player packet gap median / 99th / maximum | 33.33ms / 50.00ms / 123.24ms |
+| Largest visible player frame step | 1.49px |
+| Largest reconciliation anchor error | 7.00px |
+| Server mean / maximum physics interval | 16.67ms / 41.09ms |
+| Server maximum measured Net tick | 2.24ms |
+
+[Raw final client/server metrics](prediction_metrics.json),
+[inspected graphical capture](prediction.png). Input response includes the time
+needed to travel two pixels; it is not physical-keyboard/monitor latency. RTT did
+not vanish: local presentation responds before it. Earlier separate production
+playback reported ~22 FPS and ~208ms median response; these are different runs,
+not a controlled same-time network comparison. The matched rendering comparison
+above establishes that improvement independently. An initial prediction trial
+also measured 119.4 FPS and 30.35ms median response, but final values above include
+predicted animation and authoritative discontinuity counters.
+
+The owner reuses authoritative collision/movement code in physics frames with a
+shadow state; it never sends positions or simulates outcomes. The authority sends
+only applied-input acknowledgements. At most 250ms of recent inputs replay; stale
+prediction freezes rather than inventing seconds of travel. Ordinary corrections
+ease with a 180px/s limit. Server-side discontinuity counters preserve real warps
+without mistaking normal travel hidden by a network gap for one. Small relocations
+below the authority detector's 96px threshold ease as corrections. Status/effect
+expiry still comes from the authority; prediction does not guess releases.
+Other players/enemies interpolate 80ms behind server time, extrapolate at most
+50ms, then hold. Recovery rendering is capped at max(240px/s, 1.5×latest speed).
+This trades a short remote presentation delay for steadier motion. Interactions,
+damage and clue discovery remain host-owned and can still wait for the network.
+Multi-second external stalls are not repaired by these changes.
+
+Physics fixture: 74 assertions covering shared sprint/diagonal/collision slides,
+heavy/assisted/Jock/wounded/exhausted, knock, hold/vault/hide/down/curses,
+no gameplay-state/noise/blood mutations, immediate movement/animation,
+acknowledgement trimming, bounded outages/history, correction limits, real warps,
+remote jitter/order/extrapolation/recovery, packet size and invalid state.
+Real-peer Camp/Woods tests additionally pause BOTH authority streams for two
+seconds while directions continue, verify bounded freeze/recovery and force the
+world-before-motion arrival race. Ordinary authority, forgery, pickup, extraction,
+restart and departure checks remain in the same suites. These fixtures freeze AI,
+stage host positions and enable all escape routes; performance captures do not.
+
+Offline authoritative regressions: chase toolkit 29, chase props 46, survivor
+abilities 33, monster effects 147, field escapes 58, graphical redraw fixture 8;
+all clean. Linux source server and Mac graphical client imports/startup/error
+scans clean. No broad suite, Windows, exported-client, real voice or long-session
+Internet acceptance claim. The known simultaneous ENet-close error is separate;
+ordinary dedicated tests stagger departures.
+
+Final [listen-peer report](listen_peer_summary.json): **393 assertions**, all
+processes clean. A separate assembled server checkout with the final dedicated
+features and protocol also passed [four-main-client source checks](dedicated_source_four.json),
+**69 assertions**; headless logical replicas suppress drawing but retain physics.
+Portable-pack acceptance is recorded on the dedicated branch after merging.

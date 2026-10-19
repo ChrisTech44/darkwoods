@@ -330,6 +330,11 @@ for the next night and the next launch. Default port: **UDP 27840**. Everyone ma
 the host chooses mode/seed and starts. LAN/Wi-Fi uses the host's local IP;
 Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
 
+Update clients and server together to **lnac-net-18**. Your survivor now responds
+locally, with server corrections smoothed; other survivors use a short movement
+buffer. A long connection interruption can still pause movement. See
+[measured smoothness improvements](docs/evidence/smoothness/README.md).
+
 **[Connection setup, co-op rules and screenshots](docs/multiplayer_guide.md)**
 explains routing, joining, revives, shared escape and replay. New joins are
 lobby-only. **Esc opens a local menu without pausing the shared world.**

@@ -6,8 +6,10 @@ source clients: macOS Godot 4.7.2. Remote commands/files were confined to
 left unchanged. A separate, self-terminating server used UDP 27841 and an isolated
 source copy under `artifacts/lag_probe/checkout`.
 
-Latest follow-up: [rendering measurements and regression evidence](evidence/smoothness/README.md).
-The historical transport results below precede the rendering increment.
+Latest follow-up: rules **lnac-net-18** adds bounded local prediction, acknowledged
+reconciliation and buffered remote movement. See [rendering and movement evidence](evidence/smoothness/README.md).
+The historical protocol-17 transport results below precede those increments;
+statements about missing prediction and the old 80px snap describe that baseline.
 
 ## Findings and implemented increment
 

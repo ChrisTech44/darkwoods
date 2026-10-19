@@ -1,5 +1,38 @@
 # Development log
 
+## 2026-10-18 — Predict local movement and buffer remote motion (main)
+
+Rules lnac-net-18 adds 30Hz owner applied-input acknowledgements and bounded
+movement state. CampPlayer shares collision/movement with a presentation-only
+path; a shadow restores gameplay fields and bypasses blood/AI hearing. No client
+positions or outcomes are accepted. Recent history/prediction freshness cap at
+250ms; ordinary reconciliation eases at up to 180px/s. Authority detects real
+position discontinuities before transmission and sends an epoch, preventing long
+lost travel from triggering a false teleport. Other survivors/enemies use an
+80ms sample buffer, 50ms maximum extrapolation and bounded recovery speed.
+Prediction/buffers/epochs clear on new round/lobby/leave; results still reconcile.
+An arrival-order regression ensures legacy world targets cannot drag the owner.
+Status/effect expiry stays authoritative; prediction never guesses releases.
+
+Final graphical Mac→Genesect Linux Snap 4.7.2 Mono probe: Woods fog seed1788400090,
+live AI/normal lighting, 24 input legs, no staged escapes/teleports or microphones.
+Mean frame8.49ms (~117.7FPS), response median26.38/max32.27ms, no timeouts; RTT
+mean92.88/max259ms. Max visible step1.49px, anchor correction7px. Server physics
+mean16.67/max41.09ms, measured Net tick max2.24ms. These are short real-network
+measurements, not a guarantee against multi-second link interruption. Diagnostic
+source only in games/darkwoods/artifacts/smoothness18 on spare28335; production
+checkout5debe70 and regular27840 unchanged; diagnostic server exited normally.
+
+Checks: physics74; final real ENet Camp/Woods393 including two-second omission of
+both state streams with live inputs, bounded freeze/recovery, real authority,
+forgery/extraction/restart/lifecycle. Offline authoritative checks: chase29,
+props46, roles33, monsters147, field escapes58; graphical redraw8. Four main
+clients against an isolated assembled dedicated source69. All clean. Required
+import/startup, Python syntax, diff and changed Markdown link checks pass; actual
+final capture inspected. No broad-suite/Windows/real-mic/long-session claim.
+See [metrics, captures, reports and limits](evidence/smoothness/README.md).
+Dedicated edition/package must merge and publish matching protocol18 separately.
+
 ## 2026-10-18 — Preserve cached world drawings (main)
 
 Removed unconditional pickup/site redraws on 20Hz snapshots; state changes still

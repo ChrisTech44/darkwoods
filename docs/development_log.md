@@ -1,5 +1,31 @@
 # Development log
 
+## 2026-10-18 — Prepare fresh server checkouts before launch (headless-server)
+
+Genesect reported missing LakeWater/StalkerTraits/ServerRuntime and cascading
+compile errors, followed by a misleading listening message. Reproduced locally
+using tracked source copied to a fresh temporary directory without `.godot`:
+direct runtime startup printed script errors. The earlier server acceptance used
+an already imported developer checkout and did not cover this installation path.
+
+`tools/run_server.py` now runs headless/Dummy Godot `--import` before every source
+launch, registering global script classes and preparing platform asset imports.
+It checks both exit status and error diagnostics because Godot can exit zero
+when scripts fail compilation. A failed preparation returns 1 and never launches
+the persistent server. Exported PCKs already contain imports and skip preparation.
+The operator guide documents this behavior and a manual recovery command.
+
+Verification: the reproduced cache-free checkout then started cleanly through the
+updated launcher, generated the global script class cache and printed listening
+without warnings/errors. A test-only engine wrapper limited the production runtime
+to 30 frames after normal import so no test daemon was left running. Four Python
+regressions pass: zero-exit script failure, failed import, successful source
+preparation and pack import bypass. Required import/startup, Python compilation,
+Markdown links and diff checks also pass. Raw before/after logs are ignored under
+`artifacts/server_bootstrap/`. This was macOS Godot 4.7.2 verification; Genesect's
+Linux Mono installation still needs its own rerun. No graphical, audio, gameplay
+or protocol change; no SSH session or remote server modification was performed.
+
 ## 2026-10-18 — Dedicated authority and portable server edition (headless-server)
 
 The user prioritized a connectable server before broader guest-lag work and

@@ -95,6 +95,8 @@ These are code-backed facts, not a substitute for human acceptance testing.
 `headless-server` adds an opt-in command-line authority for 1–4 human clients,
 with no server survivor. `tools/run_server.py` forces headless display, disabled
 render loop and Dummy audio; server paths skip voice codec/capture/playback.
+Source launch first imports assets/registers script classes and refuses to start
+after import errors, including when Godot exits zero. Exported packs skip import.
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
 cleanup are implemented. The game protocol remains `lnac-net-16`, compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.

@@ -14,6 +14,23 @@ Use Godot **4.7.2** and Python 3. From this branch:
 python3 tools/run_server.py --mode woods --port 27840 --min-players 2
 ```
 
+The source launcher first runs Godot's headless import step to generate asset
+imports and register script classes. A fresh clone has no `.godot` cache; starting
+the game directly before importing can produce missing `LakeWater`, `StalkerTraits`
+and `ServerRuntime` errors. Preparation runs on each source launch so updates are
+rescanned. If import reports script errors, the launcher exits before starting the
+server. The exported `--pack` path already contains imports and skips this step.
+
+If using Godot directly rather than the launcher, prepare the checkout first:
+
+```sh
+godot --headless --audio-driver Dummy --path . --import
+```
+
+Stop any process that printed script errors even if it later printed
+`server_listening`: that message confirms the UDP socket, not successful gameplay
+compilation. Keep the complete import output if preparation still fails.
+
 For four friends use `--min-players 4`; for solo testing use `--min-players 1`.
 A `server_listening` JSON line confirms binding. The server listens on available
 interfaces. No graphical window, microphone capture, speaker playback or native

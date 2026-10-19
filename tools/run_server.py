@@ -1,5 +1,6 @@
 """Start a dedicated camp; no display, speaker or microphone devices."""
 import argparse
+import sys
 import subprocess
 from pathlib import Path
 from godot_cli import ROOT, godot_binary
@@ -14,6 +15,25 @@ def integer(low, high):
     return parse
 
 
+def prepare_source(engine):
+    """Build imports/class registration even in a checkout with no .godot cache.
+
+    Godot can return zero after printing script compilation errors, so inspect
+    the diagnostic stream before allowing a persistent server to bind.
+    """
+    print("Preparing Godot source imports and script classes...", flush=True)
+    result = subprocess.run(
+        [engine, "--headless", "--audio-driver", "Dummy", "--path", str(ROOT), "--import"],
+        cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+    )
+    if result.returncode or "ERROR:" in result.stdout:
+        print(result.stdout, end="", flush=True)
+        print("Source preparation failed; server was not started.", file=sys.stderr)
+        return False
+    print("Source preparation complete.", flush=True)
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=integer(1, 65535), default=27840)
@@ -24,12 +44,18 @@ def main():
     parser.add_argument("--result-delay", type=integer(3, 300), default=15)
     parser.add_argument("--pack", type=Path, help="Run a packaged server PCK instead of the source project")
     args = parser.parse_args()
-    cmd = [godot_binary(), "--headless", "--disable-render-loop", "--audio-driver", "Dummy"]
+    engine = godot_binary()
+    cmd = [engine, "--headless", "--disable-render-loop", "--audio-driver", "Dummy"]
     if args.pack:
         if not args.pack.is_file():
             parser.error(f"Pack does not exist: {args.pack}")
         cmd += ["--main-pack", str(args.pack.resolve())]
     else:
+        try:
+            if not prepare_source(engine):
+                return 1
+        except KeyboardInterrupt:
+            return 130
         cmd += ["--path", str(ROOT)]
     cmd += ["--", "--dedicated-server"]
     for name in ["port", "mode", "seed", "min_players", "start_delay", "result_delay"]:

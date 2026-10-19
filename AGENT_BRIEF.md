@@ -90,6 +90,16 @@ These are code-backed facts, not a substitute for human acceptance testing.
   platform permissions retain their own acceptance limits; implementation alone
   does not satisfy them. Do not capture microphones or enable voice for audits.
 
+## Movement transport
+
+Rules are `lnac-net-17`: authority-only player poses use small 30 Hz packets,
+independent of 20 Hz world snapshots. World fragments accept out-of-order delivery;
+old world state cannot overwrite newer player poses. Clients still render accepted
+server movement; local prediction/reconciliation is not implemented. Clients and
+listen/dedicated servers must update together. See the
+[real-network investigation](docs/network_lag_investigation.md) for executed
+Genesect timings and limits.
+
 ## Interface and graphics direction
 
 The [audit plan](docs/graphics_readability_plan.md) defines the next work slices.

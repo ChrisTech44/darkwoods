@@ -1,5 +1,47 @@
 # Development log
 
+## 2026-10-18 — Real Genesect delays and independent player transport (main)
+
+Authorized SSH investigation was limited to games/darkwoods. The production
+checkout was clean at 957ebeb and left unchanged, as was its regular server.
+Resolved Snap engine /snap/bin/godot-4 (Linux Mono 4.7.2). A separate server on UDP
+27841 used an isolated source copy under artifacts/lag_probe; each diagnostic
+process self-terminated. Source clients ran on macOS. Normal seed-13 van/boat,
+live AI, ordinary walk inputs, no forced parts/teleports or altered lighting;
+headless logical replicas suppress scenery only, normal navigation retained,
+voice/microphones off. Four-client checks included an inspected graphical capture.
+
+Measured old complete-world update gaps up to 669ms and 184ms median visible
+movement response despite average 58ms RTT. Server physics remained near 60Hz,
+max 33ms in that run; Net tick max 2.3ms. A whole snapshot used about five packets,
+so loss/reordering of an unreliable ordered piece stalled all player poses too.
+The old float countdown could also make intended 20Hz snapshots send at 15Hz.
+
+Implemented lnac-net-17: 30Hz authority-only single-packet player poses, bounded
+at 900 bytes (measured 60 bytes for one player/216 for four), separate from world
+fragments. Full world snapshots retain intended 20Hz with a period accumulator;
+fragments use unordered unreliable reception and existing sequence/part assembly.
+Delayed bulk state cannot overwrite a newer player pose. Host gameplay authority
+and voice transport are retained. Both clients and listen/dedicated servers must
+update together. Local prediction/reconciliation is still not implemented.
+
+Final one-client real-network player gap median/p99/max: 34/70/135ms versus old
+69/332/669ms. World sequence skips 13 versus 79 in roughly 24s. Movement median
+171ms versus 184ms, but maximum 346ms versus 261ms: input latency is not resolved.
+An intermediate 10Hz world trial is explicitly excluded from final claims; final
+world rate is 20Hz. Four-client graphical rendering averaged 47ms frames and RTT
+rose substantially compared with its headless peers; client rendering/scheduling
+needs separate profiling. Do not claim a complete cure for player skipping.
+
+Verification: final imports/startup clean, real-network one/four clients and server
+clean (staggered departures), required diff/link checks, and final local real-peer
+Camp/Woods suites 379 assertions clean, including continued movement during a
+missing world fragment, recovery, authority/forgery, extraction and reset. No full
+broad suite claim. See [investigation](network_lag_investigation.md) and
+[selected evidence](evidence/network_transport/README.md). Prediction and graphical
+frame profiling remain next; PCK/Linux-native export, Windows and real voice
+acceptance are separate from the source-server Linux evidence here.
+
 ## 2026-10-18 — Graphical client startup before dedicated-server acceptance (main)
 
 A real graphical client initially disconnected while preparing its first forest

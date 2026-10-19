@@ -193,14 +193,17 @@ func _host() -> void:
 	net.snapshot_sequence+=1
 	var gap: int=net.snapshot_sequence
 	var incomplete: PackedByteArray=var_to_bytes(WorldSync.capture(net)).compress(FileAccess.COMPRESSION_DEFLATE)
-	harness.advance.rpc("packet_gap",{"sequence":gap})
+	level.player.position += Vector2(32, 0)
+	harness.advance.rpc("packet_gap",{"sequence":gap, "position":level.player.position})
 	# This channel is intentionally lossy: retry the same incomplete piece until observed.
 	var gap_deadline := Time.get_ticks_msec()+4000
 	while harness.reports.size()<peers-1 and Time.get_ticks_msec()<gap_deadline:
 		net._snapshot_piece.rpc(net.round_id,gap,0,2,incomplete.slice(0,mini(900,incomplete.size()/2)))
 		await create_timer(0.1).timeout
 	if not await _reports(peers-1): return
-	for report: Dictionary in harness.reports.values(): _check(report.get("partial_rejected",false),"partial_snapshot_never_applied")
+	for report: Dictionary in harness.reports.values():
+		_check(report.get("partial_rejected",false),"partial_snapshot_never_applied")
+		_check(report.get("motion_live",false),"player_motion_continues_without_complete_world_snapshot")
 	net.snapshot_clock=0
 	harness.advance.rpc("packet_recovery",{"sequence":gap})
 	if not await _reports(peers-1): return
@@ -491,8 +494,11 @@ func _client() -> void:
 				if capture: light_dark=await _light_image()
 				harness.report.rpc_id(1,handled,{})
 			"packet_gap":
+				var first_motion: int = net.last_motion_sequence
 				await _until(func(): return net.assembling_sequence>=harness.data["sequence"],5)
-				harness.report.rpc_id(1,handled,{"partial_rejected":net.last_snapshot<harness.data["sequence"]})
+				var live := func() -> bool: return net.last_motion_sequence > first_motion + 2 and net.actors[1].position.distance_to(harness.data["position"]) < 3.0
+				await _until(live, 5)
+				harness.report.rpc_id(1,handled,{"partial_rejected":net.last_snapshot<harness.data["sequence"], "motion_live":live.call()})
 			"packet_recovery":
 				await _until(func(): return net.last_snapshot>harness.data["sequence"],5)
 				harness.report.rpc_id(1,handled,{"recovered":net.last_snapshot>harness.data["sequence"]})

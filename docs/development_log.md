@@ -1,5 +1,21 @@
 # Development log
 
+## 2026-10-19 — Survivor follow-up: real observers and final network gates
+
+Aligned Christian’s Scarecrow form with the source creature: a living, unhidden
+friend watches through a beam out to 270px or by facing within 90px. Distant
+unlit friends and downed bodies no longer freeze him. Added six direct checks;
+the survivor suite now passes 144 checks and movement prediction remains 81/81.
+A typed-expression compile error caught during this follow-up was corrected
+before publication; the complete regression is rerunning against stable source.
+
+Final real ENet checks pass Quick Camp/Woods with two peers and Woods with four.
+Production dedicated Woods runs pass with two humans (authority 36, clients
+10/10 checks) and four humans (authority 44, each client 10), including a normal
+Boat night, second round and disconnect cleanup. All use loopback/Dummy audio;
+no microphone, listening, Internet or packaged-platform acceptance follows.
+[Evidence](evidence/four_survivors/README.md).
+
 ## 2026-10-19 — Four-survivor implementation, first verified slice
 
 Replaced the six generic roles with Christian, John, Max and Alex. The common

@@ -139,4 +139,10 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 {"event":"assertion","name":"shared_handoff_preserved","passed":true}
 {"event":"assertion","name":"kit_snapshot_restores_without_outcomes","passed":true}
 {"event":"assertion","name":"kit_movement_payload_valid","passed":true}
-{"checks":138,"event":"test_result","failures":0,"suite":"four_survivors"}
+{"event":"assertion","name":"scarecrow_observer_fixture_clear_path","passed":true}
+{"event":"assertion","name":"scarecrow_far_unlit_friend_does_not_watch","passed":true}
+{"event":"assertion","name":"scarecrow_beam_counts_as_watching","passed":true}
+{"event":"assertion","name":"scarecrow_downed_observer_does_not_watch","passed":true}
+{"event":"assertion","name":"scarecrow_close_facing_without_light_watches","passed":true}
+{"event":"assertion","name":"scarecrow_turn_away_frees_form","passed":true}
+{"checks":144,"event":"test_result","failures":0,"suite":"four_survivors"}

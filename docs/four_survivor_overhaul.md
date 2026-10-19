@@ -342,7 +342,7 @@ selection; distinct identity locks would be a separate lobby policy change.
 Quick Camp has no normal woods encounter/stash economy, so do not pretend the
 Expedition acquisition loops work there. Implemented fallback: Christian
 starts Quick Camp with one Paparazzo sample, Max with $6; John can prepare the van and Alex can use isolation/return.
-Final fallback/sample choice and fairness require a Quick Camp test. Do not add
+Quick Camp scripted/network checks pass; fallback fairness still needs human play. Do not add
 roaming woods creatures to camp merely to feed abilities.
 
 Normal Expedition remains van plus one seeded secondary. Do not activate all
@@ -434,9 +434,10 @@ permission to drop the specified strengths or personality drawbacks.
 
 ## Source baseline and document precedence
 
-Current implementations were inspected on main after scenery commit `d68b86a`.
-The current [README survivor guide](../README.md#survivors-and-their-abilities)
-and [legacy survivor plan](survivor_multiplayer_plan.md) describe the old roster.
+The original design inspected main after scenery commit `d68b86a`.
+The [README survivor guide](../README.md#survivors-and-their-abilities) now
+describes the four playable kits; the [legacy survivor plan](survivor_multiplayer_plan.md)
+preserves the older roster history.
 Some historical tuning/status prose is stale; code and execution evidence remain
 the baseline. This design supersedes those documents' **future roster direction**,
 not their implemented-status facts or unrelated co-op acceptance requirements.

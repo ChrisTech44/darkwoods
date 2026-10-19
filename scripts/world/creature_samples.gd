@@ -489,7 +489,13 @@ static func motion(actor: CampPlayer) -> Array:
 		for observer: Node2D in actor.get_tree().get_nodes_in_group("survivors")+actor.get_tree().get_nodes_in_group("killers"):
 			if observer == actor: continue
 			if observer is CampKiller and (not observer.enabled or (observer.sample_state.get("timers",{}).has("whiteout") or observer.sample_state.get("timers",{}).has("asleep") or observer.sample_state.get("timers",{}).has("frog"))): continue
-			if observer.position.distance_to(actor.position)<200 and observer.facing.dot(observer.position.direction_to(actor.position))>0.5 and SurvivorKits.world(actor).clear_path(observer.position,actor.position): watched = true
+			if not SurvivorKits.world(actor).clear_path(observer.position,actor.position): continue
+			var distance := observer.position.distance_to(actor.position)
+			var facing_toward: float = observer.facing.dot(observer.position.direction_to(actor.position))
+			if observer is CampPlayer:
+				if observer.status != CampPlayer.Status.ALIVE or observer.hidden_spot >= 0: continue
+				if CreatureBrain.in_beam(observer,actor.position,270,0.6) or (distance<90 and facing_toward>0.3): watched = true
+			elif observer is CampKiller and distance<200 and facing_toward>0.5 and observer.can_sense(actor): watched = true
 	var dir: Vector2 = actor.kit.get("dash_dir",Vector2.RIGHT) if actor.kit.get("dash",0.0)>0 else Vector2.RIGHT
 	return [float(actor.kit.get("channel",0.0)),bool(actor.kit.get("isolated",false)),form == "briar_revenant",watched,float(actor.kit.get("dash",0.0)),dir,form == "groundskeeper"]
 

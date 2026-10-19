@@ -56,6 +56,7 @@ func run() -> void:
 	await sample_checks()
 	await catalogue_checks()
 	await sharing_checks()
+	watching_checks()
 	print(JSON.stringify({"event":"test_result","suite":"four_survivors","checks":checks,"failures":failures}))
 	await root.get_node("AudioManager").prepare_shutdown()
 	quit(1 if failures else 0)
@@ -299,3 +300,27 @@ func catalogue_checks() -> void:
 	CreatureSamples.finish_cast(christian)
 	christian.kit.form = ""
 	for body in bodies: body.queue_free()
+
+func watching_checks() -> void:
+	var christian: CampPlayer = friends.christian
+	var observer: CampPlayer = friends.john
+	for other: CampPlayer in get_nodes_in_group("survivors"): other.position = Vector2(700,700)
+	christian.position = Vector2(120,400)
+	christian.kit.form = "briar_revenant"
+	observer.position = Vector2(240,400)
+	observer.facing = Vector2.LEFT
+	observer.status = CampPlayer.Status.ALIVE
+	observer.hidden_spot = -1
+	observer.flashlight_on = false
+	check(level.clear_path(observer.position,christian.position),"scarecrow_observer_fixture_clear_path")
+	check(not CreatureSamples.motion(christian)[3],"scarecrow_far_unlit_friend_does_not_watch")
+	observer.flashlight_on = true
+	check(CreatureSamples.motion(christian)[3],"scarecrow_beam_counts_as_watching")
+	observer.status = CampPlayer.Status.DOWNED
+	check(not CreatureSamples.motion(christian)[3],"scarecrow_downed_observer_does_not_watch")
+	observer.status = CampPlayer.Status.ALIVE
+	observer.flashlight_on = false
+	observer.position = Vector2(170,400)
+	check(CreatureSamples.motion(christian)[3],"scarecrow_close_facing_without_light_watches")
+	observer.facing = Vector2.RIGHT
+	check(not CreatureSamples.motion(christian)[3],"scarecrow_turn_away_frees_form")

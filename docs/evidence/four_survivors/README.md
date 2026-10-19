@@ -6,14 +6,19 @@ human balance/playability acceptance or likeness artwork delivery.
 
 ## State and movement
 
-- [Kit/catalogue results](kits.log): 138 checks, zero failures; four unique
+- [Kit/catalogue results](kits.log): 144 checks, zero failures; four unique
   systems, all 30 sample activations, specific counters/adapters, source receipts,
-  settlement and handoffs. Frozen AI and forced all routes expose every objective.
+  settlement, handoffs and light/facing/standing Scarecrow observers. Frozen AI and forced all routes expose every objective.
 - [Prediction results](prediction.log): 81 checks, zero failures; shared movement,
   isolated/channel/mower states, valid authority packets and four-player size cap.
 - [Four-player real ENet run](network_four.json): authority 265 checks, clients
   33/60/60 checks, zero failures; missing-world-fragment movement, guest samples,
   extraction, rescue, retries and disconnect cleanup. Loopback, headless, no voice.
+- [Two-player ENet](network_two.json): both Quick Camp and Woods, including
+  late-join rejection and guest abilities, pass with no engine errors.
+- Dedicated authority: [two humans](dedicated_two.json) and
+  [four humans](dedicated_four.json) pass movement, normal Boat-night extraction,
+  result/lobby/second-round and disconnect checks. No server survivor or capture.
 - [Import](import.log) and [five-frame startup](startup.log): clean.
 
 ## Graphics

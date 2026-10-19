@@ -1,0 +1,37 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"active":true,"event":"probe_net_state","phase":"connecting","side":"client","status":"Connecting to 127.0.0.1:63498..."}
+{"event":"assertion","name":"client_connects","passed":true}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"event":"assertion","name":"wait_client_","passed":true}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"active":true,"event":"probe_net_state","phase":"loading","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"event":"loading_started"}
+{"event":"round_ready","milestone":"M1"}
+{"active":true,"event":"probe_net_state","phase":"playing","side":"client","status":"Night 13 / 4 survivors"}
+{"event":"assertion","name":"wait_client_explore_ready","passed":true}
+{"event":"assertion","name":"main_client_accepts_server_without_host_avatar","passed":true}
+{"event":"assertion","name":"wait_client_explore_ready","passed":true}
+{"event":"assertion","name":"wait_client_explore_walk","passed":true}
+{"event":"assertion","name":"wait_client_move","passed":true}
+{"event":"assertion","name":"wait_client_fit","passed":true}
+{"event":"assertion","name":"wait_client_launch","passed":true}
+{"event":"assertion","name":"wait_client_result","passed":true}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Night 13 / 4 survivors"}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"active":true,"event":"probe_net_state","phase":"loading","side":"client","status":"Connected. Choose your survivor and mark Ready."}
+{"event":"loading_started"}
+{"event":"round_ready","milestone":"M1"}
+{"active":true,"event":"probe_net_state","phase":"playing","side":"client","status":"Night 13 / 4 survivors"}
+{"active":false,"event":"probe_net_state","phase":"offline","side":"client","status":"Left the camp."}
+{"checks":10,"event":"test_result","failures":0,"players":4,"suite":"dedicated_client"}
+{"event":"menu_ready","milestone":"M1"}

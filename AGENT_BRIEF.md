@@ -214,3 +214,6 @@ An empty dedicated round pauses until return/expiry; intentional Leave relinquis
 recovery. Tokens are memory-only; no restart persistence or host migration.
 Protocol is lnac-net-22. [Investigation, Max UI/economy proposals and new monster
 concepts](docs/playtest_followup.md) distinguish implemented fixes from design.
+The [new monster plan](docs/new_monster_plan.md) proposes six unimplemented
+creatures (Lifeguard, Night-Light Kid, Vulture, Huntmaster, Magician, Nobody)
+built from existing hooks, with a sound wish list.

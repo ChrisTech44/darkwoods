@@ -1,5 +1,20 @@
 # Development log
 
+## 2026-10-20 — New monster plan (proposal only)
+
+Added the [new monster plan](new_monster_plan.md) at the user's request: five
+habit-breaking creatures (Lifeguard, Night-Light Kid, Vulture, Huntmaster, Shell
+Game Magician) and an invisible one (the Nobody). An earlier draft relied on
+systems the game lacks (lake entry, invisible collision, spreading fire), and the
+user rejected it, so each design is now mapped to existing hooks
+(`receive_hit`, stamina/exhaustion, flashlight state, revive progress,
+`loud_noise`, direct repositioning as the Conductor does, `draw`/`draw_over`,
+`in_beam`). The plan includes Christian sample drafts, build order, acceptance
+gates, open decisions and a fifteen-cue sound wish list. Source check: the
+`field_whistle` cue is the Stalker's synthesized camp tune and `hunt_horn` is the
+"Hunt Begins" horn, so neither is reused as a new creature's identity sound.
+No code, assets or gameplay changed.
+
 ## 2026-10-20 — Friends-playtest recovery, John and Alex
 
 Implemented five-minute reconnect reservations and automatic two-second retry for

@@ -478,8 +478,8 @@ func _client() -> void:
 				await _until(func(): return net.actors[harness.data["guest"]].motor_assisted,5)
 				harness.report.rpc_id(1,handled,{"assisted":net.actors[harness.data["guest"]].motor_assisted and net.actors[1].assisting_motor})
 			"field_lake":
-				await _until(func(): return net.world.escapes.lake_tell>0,5)
-				harness.report.rpc_id(1,handled,{"tell":net.world.escapes.lake_tell>0,"wave":net.world.escapes.lake_wave})
+				await _until(func(): return not net.world.escapes.barrage.shots.is_empty(),5)
+				harness.report.rpc_id(1,handled,{"shots":net.world.escapes.barrage.shots.size(),"sequence":net.world.escapes.barrage.sequence,"occupied":net.world.escapes.boat_occupied})
 			"field_bridge":
 				await _until(func(): return net.world.escapes.bridge_started,5)
 				harness.report.rpc_id(1,handled,{"bridge":net.world.escapes.bridge_started})
@@ -885,10 +885,11 @@ func _field_round(guest: int, route: String) -> void:
 		harness.advance.rpc("field_boat_start",{"guest":guest})
 		if not await _reports(net.actors.size()-1): return
 		_check(field.boat_started and field.boat_remaining>23,"remote_starts_full_boat_countdown")
-		field.advance(5.1)
+		field.barrage.clock=0
+		field.advance(.01)
 		harness.advance.rpc("field_lake")
 		if not await _reports(net.actors.size()-1): return
-		for report: Dictionary in harness.reports.values(): _check(report.get("tell",false) and report.get("wave",0)==1,"client_receives_telegraphed_lake_attack")
+		for report: Dictionary in harness.reports.values(): _check(report.get("shots",0)>0 and report.get("sequence",0)>0 and report.get("occupied",false),"client_receives_lake_projectiles_and_circle_occupancy")
 	else:
 		operator.position=level.rescue.power_point
 		harness.advance.rpc("field_circuit",{"guest":guest})

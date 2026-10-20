@@ -2,21 +2,21 @@
 
 This checkout includes a dedicated authority for **1–4 human
 survivors**. The server has no survivor and consumes no player slot. Use the
-updated `main` client with rules **lnac-net-32**, with the same protocol.
-Older clients must update. Rules32 preserves the outer regions/five distinct regional van parts and
-redistributes roaming starts: fourteen around the region circuit and fifteen
-through the interior. Restart existing sessions after updating. The server owns AI, movement validation, damage,
+updated `main` client with rules **lnac-net-33**, with the same protocol.
+Older clients must update. Rules33 replicates boat projectiles/crew occupancy
+and preserves outer regions, five distinct regional van parts, fourteen roaming
+starts around the region circuit and fifteen through the interior. Restart existing sessions after updating. The server owns AI, movement validation, damage,
 inventory, clues, objectives and extraction, using the same gameplay scene.
 
 Woods now contains **38 creatures plus the Stalker**, including every roaming
 and regional type on every seed, also during Blood Moon. Enemy replication uses
-the seeded roster order, so update **both server and every client** to rules32;
+the seeded roster order, so update **both server and every client** to rules33;
 older clients must not join with a smaller/different roster. Restart the server
-after updating and confirm its `server_listening` line says `lnac-net-32`.
+after updating and confirm its `server_listening` line says `lnac-net-33`.
 
 Trail exploration is shared by the whole team, including travel by humans other
 than the server's reference survivor. Earlier rules-18 builds had an incomplete
-coverage path; current server and clients both require lnac-net-32.
+coverage path; current server and clients both require lnac-net-33.
 [Map replication checks](evidence/map_exploration/README.md).
 
 ## Run from source
@@ -31,7 +31,7 @@ On Genesect's Snap installation, prefix the command with
 `GODOT_BIN=/snap/bin/godot-4` so noninteractive shells find the engine. After
 friends finish the current night, stop the old process, pull the current branch,
 update every player's `main` copy and relaunch with your usual options. Client
-and server protocol must match lnac-net-32; older rules-17/18/19/20 clients cannot
+and server protocol must match lnac-net-33; older rules-17/18/19/20 clients cannot
 join it. Diagnostics for this update did not restart the regular server.
 
 The source launcher first runs Godot's headless import step to generate asset
@@ -119,7 +119,7 @@ commit `787e98b` and passed all 153 dedicated/four-client checks, including the 
 roster; [current metadata and hashes](evidence/full_roster/package.json).
 The earlier rules20 package was built from clean runtime commit `4e5d119`;
 its [metadata and hashes](evidence/server_review/package_build.json) are historical.
-Rebuild with the command above for the current full-roster rules32 server. **It requires Godot 4.7.2 installed on the target
+Rebuild with the command above for the current full-roster rules33 server. **It requires Godot 4.7.2 installed on the target
 OS**; it does not bundle an untested native engine binary. On Linux, unpack it,
 make the launcher executable if necessary, and run:
 
@@ -165,14 +165,14 @@ extend the earlier Linux/network results to the new build. See the
 [server review and execution evidence](server_review.md).
 
 Player poses now use an independent 30Hz stream; full world state uses 20Hz
-unordered fragments. Both clients and server must update to rules lnac-net-32 and
+unordered fragments. Both clients and server must update to rules lnac-net-33 and
 the server must restart before updated clients join. Bounded local prediction, acknowledged reconciliation and buffered remote motion
 are implemented; the client also avoids unchanged pickup/site redraws. See the
 [smoothness measurements](evidence/smoothness/README.md). The main client also
 includes the first-frame scenery preparation fix. These changes do not establish
 generally improved Internet latency or eliminate all player corrections.
 
-[20 October reconnect/watchdog investigation and acceptance](playtest_followup.md#disconnect-investigation-and-implemented-recovery). Update clients and authority together to rules32.
+[20 October reconnect/watchdog investigation and acceptance](playtest_followup.md#disconnect-investigation-and-implemented-recovery). Update clients and authority together to rules33.
 
-The rules32 layout requires a fresh source launch or rebuilt package; this increment
+The rules33 layout requires a fresh source launch or rebuilt package; this increment
 does not replace the earlier local rules30 ZIP/PCK or deploy a running server.

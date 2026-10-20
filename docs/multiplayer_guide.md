@@ -14,9 +14,10 @@ the same checkbox is in main-menu Settings. Dedicated servers use
 
 ## Player movement updates
 
-All players and the server must update together to **lnac-net-32**. This version
-changes the shared seed recipe: outer regions, five separate region-based van
-parts, 14 roaming starts around the region circuit and 15 across its interior. Older clients use a different seed recipe; update all peers together. Player poses
+All players and the server must update together to **lnac-net-33**. This version adds authoritative boat projectiles and dock-circle progress.
+The shared seed recipe keeps: outer regions, five separate region-based van
+parts, 14 roaming starts around the region circuit and 15 across its interior.
+Earlier builds may differ in world generation or snapshot fields. Player poses
 (position, velocity and facing) now use bounded, single-packet authority updates
 at 30 Hz on channel 2, independent of fragmented world state. Input uses channel 2
 in the opposite direction. Full world snapshots retain their intended 20 Hz rate;
@@ -51,7 +52,7 @@ for this fix (rules18 remains compatible; old servers do not send exploration).
 
 ## Radio Rescue (expedition)
 
-All peers must use rules `lnac-net-32` (the same build). The host owns the fuse,
+All peers must use rules `lnac-net-33` (the same build). The host owns the fuse,
 substation, six-second relay hold, persistent signal lights, countdown and
 extraction results. Clients send the usual E/hold intents. **T** switches only
 that player's objective page. A remote operator can complete the whole chain;
@@ -111,7 +112,7 @@ and shares them with everyone. The host also owns the progress-paced night (phas
 Flash-stuns (Space) and help calls are host-validated intents.
 Hiding, doors and knock-overs use the normal E intent; the host owns breath,
 door breaking and blocking. The road network changes the generated woods, so
-both copies must run rules version `lnac-net-32`. Vaults and gate openings are
+both copies must run rules version `lnac-net-33`. Vaults and gate openings are
 host-validated E actions. Clue knowledge (ranger notes,
 regions visited) is shared by the whole team.
 Nearby teammates show their names; each survivor keeps their own flashlight,

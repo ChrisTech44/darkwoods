@@ -72,15 +72,20 @@ func run() -> void:
 		check(site.interact(actor) and count("village_bell")==before+1,"accepted_village_bell_tolls_once")
 		check(not site.interact(actor) and count("village_bell")==before+1,"bell_cooldown_does_not_replay")
 	actor.position=Vector2(112,440)
-	level.escapes.lake_target=actor.position;level.escapes.lake_tell=.1
+	level.escapes.boat_started=true
+	level.escapes.barrage.clock=100
+	var barrage: LakeBarrage=level.escapes.barrage
+	barrage.stop();barrage.launch(actor.position-Vector2(20,0),actor.position)
+	barrage.shots[0].tell=0;actor.invulnerability=0
 	before=count("water_splash")
-	level.escapes._lake(.2)
-	check(count("water_splash")==before+1,"lake_impact_splashes_once")
-	level.escapes.lake_tell=.1
+	barrage.advance(.2)
+	check(count("water_splash")==before+1,"lake_projectile_impact_splashes_once")
+	barrage.launch(actor.position-Vector2(20,0),actor.position);barrage.shots[0].tell=0
 	var counter: Node2D=load("res://scripts/items/flare.gd").new();counter.position=actor.position
 	level.world_objects.add_child(counter);counter.set_physics_process(false)
-	level.escapes._lake(.2)
-	check(level.escapes.lake_tell==0 and count("water_splash")==before+1,"flare_cancelled_lake_attack_has_no_impact_splash")
+	barrage.advance(.2)
+	check(barrage.shots.is_empty() and count("water_splash")==before+1,"flare_blocked_projectile_has_no_impact_splash")
+	level.escapes.boat_started=false
 	counter.queue_free();await frames()
 	actor.health=100;actor.invulnerability=0;actor.effects.clear()
 	actor.kit.sample="lifeguard";actor.ability_cooldown=0

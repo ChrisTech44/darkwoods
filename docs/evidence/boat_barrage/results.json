@@ -1,0 +1,35 @@
+{
+  "platform": "macOS arm64, Godot 4.7.2",
+  "suites": {
+    "boat_barrage_native": {
+      "checks": 32,
+      "failures": 0
+    },
+    "field_escapes": {
+      "checks": 57,
+      "failures": 0
+    },
+    "october_audio": {
+      "checks": 35,
+      "failures": 0
+    },
+    "listen_host_client": {
+      "checks": 261,
+      "failures": 0
+    },
+    "dedicated_four_clients": {
+      "checks": 153,
+      "failures": 0
+    },
+    "boat_barrage_headless": {
+      "checks": 30,
+      "failures": 0
+    }
+  },
+  "limits": [
+    "Staged boat and player poses; frozen AI/director for native capture; normal Witching Hour lighting; ordinary two-route seed 13, not forced all escapes.",
+    "Listen-host regression uses its existing forced all-escape fixture.",
+    "Initial dedicated synthetic voice relay timed out; one retry passed. No microphone capture.",
+    "No human balance/listening, Internet, cross-machine, exports or Windows/Linux acceptance."
+  ]
+}

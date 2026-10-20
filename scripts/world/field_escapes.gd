@@ -6,7 +6,7 @@ const GATE_CODES: Array[String] = ["gate_code_1", "gate_code_2", "gate_code_3"]
 const BOAT_SECONDS := 25.0
 const BRIDGE_SECONDS := 8.0
 const OPEN_SECONDS := 4.0
-const LAKE_TIMES: Array[float] = [20.0, 12.0, 4.0]
+const BOAT_RADIUS := 80.0
 var level: Node2D
 var active := false
 ## Tonight's field escapes (see RoundPlan.escape_options).
@@ -26,15 +26,16 @@ var gate_progress := 0.0
 var gate_actor: CampPlayer
 var bridge_started := false
 var bridge_remaining := BRIDGE_SECONDS
-var lake_wave := 0
-var lake_tell := 0.0
-var lake_target := Vector2.ZERO
-var lake_flash := 0.0
+var boat_occupied := false
+var barrage: LakeBarrage
 var gate_body: StaticBody2D
 var floodlights: Array[PointLight2D] = []
 var art: Node2D
 var pulse := 0.0
 var alarm_clock := 0.0
+var launch_camera: Camera2D
+var previous_zoom := Vector2.ONE
+var previous_offset := Vector2.ZERO
 
 func _ready() -> void:
 	boat_enabled = level.plan.expedition and level.plan.has_escape("boat")
@@ -51,6 +52,9 @@ func _ready() -> void:
 	art = preload("res://scripts/world/field_escape_structures.gd").new()
 	art.escapes = self
 	add_child(art)
+	barrage=LakeBarrage.new()
+	barrage.escapes=self
+	add_child(barrage)
 
 func _build_gate() -> void:
 	gate_body = StaticBody2D.new()
@@ -77,9 +81,25 @@ func _process(delta: float) -> void:
 	if not active:
 		return
 	pulse += delta
+	_frame_launch(delta)
 	for lamp in floodlights:
 		lamp.enabled = gate_powered
 	queue_redraw()
+
+## Keep the compact dodge arena visible around the HUD, on the local view only.
+func _frame_launch(delta: float) -> void:
+	if ServerRuntime.requested() or not is_instance_valid(level.player):return
+	var actor: CampPlayer=level.player
+	var framing: bool=boat_started and not level.finished and actor.status==CampPlayer.Status.ALIVE and actor.position.distance_to(boat_point)<=BOAT_RADIUS+20
+	if framing:
+		var camera: Camera2D=actor.get_node("Camera2D")
+		if not is_instance_valid(launch_camera) or launch_camera!=camera:
+			launch_camera=camera;previous_zoom=camera.zoom;previous_offset=camera.offset
+		camera.zoom=camera.zoom.lerp(Vector2.ONE*.65,minf(1,delta*8))
+		var target:=boat_point-camera.global_position+Vector2(0,20)
+		camera.offset=camera.offset.lerp(target,minf(1,delta*8))
+	elif is_instance_valid(launch_camera):
+		launch_camera.zoom=previous_zoom;launch_camera.offset=previous_offset;launch_camera=null
 
 func near(actor: CampPlayer, point: Vector2) -> bool:
 	return active and CreatureSamples.can_interact(actor) and actor.is_in_group("survivors") and actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and actor.global_position.distance_to(point) <= actor.config.interact_radius and level.clear_path(actor.global_position, point)
@@ -89,13 +109,13 @@ func prompt(actor: CampPlayer) -> String:
 		return ""
 	if boat_enabled and near(actor, boat_point):
 		if boat_started:
-			return "BOAT %.1fs · STAY ON DOCK / DODGE RIPPLE CIRCLES" % boat_remaining
+			return "BOAT %.1fs · CIRCLE ADVANCES / DODGE SHOTS" % boat_remaining
 		if boat_installed.size() < 3:
 			for kind in BOAT_PARTS:
 				if kind in actor.inventory and kind not in boat_installed:
 					return "E · INSTALL %s (%d/3)" % [part_name(kind), boat_installed.size()]
 			return "BOAT REPAIR · NEED %s (%d/3)" % [part_name(next_boat_part()), boat_installed.size()]
-		return "E · START 25s LAUNCH / GATHER TEAM"
+		return "E · START / HOLD DOCK CIRCLE FOR 25s"
 	if not gate_enabled:
 		return ""
 	if near(actor, breaker_point):
@@ -125,7 +145,7 @@ func interact(actor: CampPlayer) -> bool:
 		if boat_installed.size() == 3:
 			boat_started = true
 			level.loud_noise(boat_point,1100)
-			level.announce("BOAT LAUNCH IN 25s. Everyone standing: reach the dock. Dodge glowing ripples or interrupt them with a flare!")
+			level.announce("BOAT: hold the dock circle for 25s of progress. Leaving pauses it. Dodge the Lake Thing's water shots; flares block nearby shots!")
 			return true
 		level.announce(prompt(actor), actor)
 		return false
@@ -179,10 +199,12 @@ func advance(delta: float) -> void:
 			alarm_clock = 12.0
 			level.killer.hear_stimulus(gate_point,6000)
 	if boat_started:
-		boat_remaining = maxf(0.0,boat_remaining-delta)
-		_lake(delta)
+		barrage.advance(delta)
+		boat_occupied = not boat_crew().is_empty()
+		if boat_occupied:boat_remaining = maxf(0.0,boat_remaining-delta)
 		if boat_remaining <= 0:
-			_extract("BOAT",boat_point,80)
+			barrage.stop()
+			_extract("BOAT",boat_point,BOAT_RADIUS)
 			return
 	if gate_open and not bridge_started:
 		for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
@@ -231,26 +253,12 @@ func advance_gate(actor: CampPlayer, delta: float) -> void:
 		level.killer.hear_stimulus(gate_point,6000)
 		level.announce("RANGER GATE OPEN. Follow the floodlit road NORTH to the bridge. The stalker follows the alarm, not hidden player positions.")
 
-func _lake(delta: float) -> void:
-	lake_flash = maxf(0.0,lake_flash-delta)
-	if lake_tell > 0:
-		for flare: Node2D in get_tree().get_nodes_in_group("flares"):
-			if flare.global_position.distance_to(lake_target) <= 100 and level.clear_path(flare.global_position,lake_target):
-				lake_tell = 0
-				lake_flash = 0.4
-				return
-		lake_tell = maxf(0.0,lake_tell-delta)
-		if lake_tell <= 0:
-			lake_flash = 0.5
-			level.soundscape.broadcast("water_splash",lake_target)
-			for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
-				if actor.status == CampPlayer.Status.ALIVE and actor.global_position.distance_to(lake_target) < 26 and level.clear_path(lake_target,actor.global_position):
-					actor.receive_hit()
-	elif lake_wave < LAKE_TIMES.size() and boat_remaining <= LAKE_TIMES[lake_wave]:
-		lake_target = boat_point + [Vector2(-26,0),Vector2(26,0),Vector2(0,38)][lake_wave]
-		lake_wave += 1
-		lake_tell = 2.0
-		level.announce("LAKE THING: glowing ripples on the dock. Step outside the marked circle, or throw a flare nearby.")
+## At least one standing, visible, unheld survivor advances the shared launch.
+func boat_crew() -> Array[CampPlayer]:
+	var crew: Array[CampPlayer]=[]
+	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if actor.status==CampPlayer.Status.ALIVE and actor.hidden_spot<0 and not actor.has_effect("held") and not actor.has_effect("asleep") and actor.position.distance_to(boat_point)<=BOAT_RADIUS and level.clear_path(actor.position,boat_point):crew.append(actor)
+	return crew
 
 func _extract(route: String, point: Vector2, radius: float) -> void:
 	for survivor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
@@ -274,7 +282,7 @@ func heading() -> String:
 	if level.van.running: other = level.van.remaining
 	if level.rescue.started: other = minf(other,level.rescue.remaining)
 	if boat_started and boat_remaining <= other and (not bridge_started or boat_remaining <= bridge_remaining):
-		return "BOAT LAUNCH %.1fs · DODGE DOCK RIPPLES" % boat_remaining
+		return "BOAT %.1fs · %s" % [boat_remaining,"DODGE / STAY IN CIRCLE" if boat_occupied else "PAUSED / ENTER DOCK CIRCLE"]
 	if bridge_started and bridge_remaining <= other:
 		return "BRIDGE EVACUATION %.1fs · NORTH RANGER ROAD" % bridge_remaining
 	if gate_open and other == INF and not boat_started and not bridge_started:
@@ -311,20 +319,21 @@ func pack_text(page: String) -> String:
 		var text := "BOAT · LAKESHORE DOCK (SOUTHEAST)\n"
 		for kind in BOAT_PARTS:
 			text += boat_step(kind) + "\n"
-		return text + "FIT ALL PARTS: MARKED REPAIR PAD ON DOCK\nMOTOR: 75% WALK; TEAMMATE HOLDS E TO HELP\nE AGAIN WHEN READY: START 25s LAUNCH"
+		return text + "FIT ALL PARTS: MARKED REPAIR PAD ON DOCK\nMOTOR: 75% WALK; TEAMMATE HOLDS E TO HELP\nE: START / STAY IN CIRCLE TO ADVANCE 25s\nDODGE WATER SHOTS; LEAVING PAUSES PROGRESS"
 	var text := "RANGER GATE · NORTH ROAD → BRIDGE\n"
 	for kind in GATE_CODES:
 		text += ("✓ " if kind in gate_installed else "· ") + kind.replace("_"," ").to_upper() + " / " + WoodsLayout.short_name(level.plan.woods.zones[level.plan.gate_regions[kind]]) + "\n"
 	return text + ("✓ " if gate_powered else "· ") + "FLOODLIGHTS / SUBSTATION + GATE BREAKER\nHOLD E 4s / RUN NORTH\nFIRST AT BRIDGE STARTS 8s TEAM EVACUATION"
 
 func snapshot() -> Dictionary:
-	return {"boat_installed":boat_installed.duplicate(),"gate_installed":gate_installed.duplicate(),"boat_started":boat_started,"boat_remaining":boat_remaining,"gate_powered":gate_powered,"gate_open":gate_open,"gate_progress":gate_progress,"bridge_started":bridge_started,"bridge_remaining":bridge_remaining,"lake_wave":lake_wave,"lake_tell":lake_tell,"lake_target":lake_target,"lake_flash":lake_flash}
+	return {"boat_installed":boat_installed.duplicate(),"gate_installed":gate_installed.duplicate(),"boat_started":boat_started,"boat_remaining":boat_remaining,"gate_powered":gate_powered,"gate_open":gate_open,"gate_progress":gate_progress,"bridge_started":bridge_started,"bridge_remaining":bridge_remaining,"boat_occupied":boat_occupied,"barrage":barrage.snapshot() if barrage!=null else {}}
 
 func restore(state: Dictionary) -> void:
 	boat_installed.assign(state["boat_installed"])
 	gate_installed.assign(state["gate_installed"])
-	for field in ["boat_started","boat_remaining","gate_powered","gate_open","gate_progress","bridge_started","bridge_remaining","lake_wave","lake_tell","lake_target","lake_flash"]:
+	for field in ["boat_started","boat_remaining","gate_powered","gate_open","gate_progress","bridge_started","bridge_remaining","boat_occupied"]:
 		set(field,state[field])
+	if barrage!=null:barrage.restore(state.get("barrage",{}))
 	if gate_enabled:
 		gate_body.get_child(0).set_deferred("disabled",gate_open)
 
@@ -333,13 +342,5 @@ func _draw() -> void:
 		FieldEscapeArt.draw_boat(self,boat_point,boat_installed,boat_started,pulse,boat_enabled)
 	if not active:
 		return
-	if boat_enabled:
-		draw_arc(boat_point,80,0,TAU,48,Color("b6c6a0"),1)
-	if lake_tell > 0 or lake_flash > 0:
-		var tint := Color("c2e0b1") if lake_tell > 0 else Color("edc08b")
-		if not PixelArt.draw_in(self,"fx_ripple",Rect2(lake_target-Vector2(28,20),Vector2(56,40)),Color(tint,0.9)):
-			draw_arc(lake_target,18,0,TAU,24,Color("689c93"),2)
-		draw_arc(lake_target,26+sin(pulse*10)*2,0,TAU,32,tint,2)
-		FieldEscapeArt.draw_lake_thing(self,lake_target + Vector2(0,-10),lake_flash>0)
 	if gate_enabled:
 		draw_arc(bridge,64,0,TAU,40,Color("bfd5b9"),2)

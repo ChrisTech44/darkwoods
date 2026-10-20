@@ -2,7 +2,7 @@
 
 **Dedicated server:** run a camp without a host survivor. See the
 [server setup and connection guide](docs/dedicated_server.md). Updated `main`
-clients (`lnac-net-32`) can join; the server code is available in this checkout.
+clients (`lnac-net-33`) can join; the server code is available in this checkout.
 
 **Find the parts. Keep your light alive. Get out before the woods get you.**
 
@@ -334,7 +334,7 @@ for the next night and the next launch. Default port: **UDP 27840**. Everyone ma
 the host chooses mode/seed and starts. LAN/Wi-Fi uses the host's local IP;
 Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
 
-Update clients and server together to **lnac-net-32**. Your survivor now responds
+Update clients and server together to **lnac-net-33**. Your survivor now responds
 locally, with server corrections smoothed; other survivors use a short movement
 buffer. A long connection interruption can still pause movement. See
 [measured smoothness improvements](docs/evidence/smoothness/README.md).
@@ -603,11 +603,19 @@ southeast of camp. This is separate from the Camp Boathouse. Stand on the pad
 and press E to fit the parts you carry; MOTOR / FUEL / PLUG each show OK when
 fitted. The notebook names the carrier and directs them to the dock.
 
-Once all three parts are fitted, E again at the pad starts a **25-second launch**. Stay on the
-wooden dock within **80 px** of the boat point. The **Lake Thing** marks three
-fixed dock positions with glowing ripple circles, each warning for **2 seconds**
-before striking. Step outside a circle or throw a flare within 100 px with clear
-sight to interrupt that attack. Signals at the chapel do not repel the Lake Thing.
+Once all three parts are fitted, E again starts the launch. Earn **25 seconds
+inside the 80px dock circle**: at least one living, unhidden, unheld and awake
+survivor must remain inside with clear access to the repair point. Everyone
+leaving pauses progress without resetting it; more people do not speed it up.
+
+The **Lake Thing** fires a water projectile every **0.5s**. A **0.35s** aiming tell
+locks each shot toward the target's old position; shots then travel at **170px/s**
+and deal **18 damage** through ordinary damage/grace/ward rules. Dodge within the
+circle. Walls stop shots; active flares block shots passing within **32px**, rather
+than cancelling the whole barrage. The launch camera pulls back to frame the
+arena, and returns to normal after leaving or finishing. Signals at the chapel
+do not repel her. Standing survivors must be on the dock when progress completes;
+the existing downed-teammate evacuation rule remains.
 
 **Ranger Gate:** the T plan names three regions holding tonight's distinct
 **gate-code fragments**. Carry them to the gate on the north road and E to fit
@@ -984,7 +992,7 @@ Scarecrow 60, the werewolf's pounce 35, the Ram's charge 30, the Mimic 25,
 Bigfoot's throw and the Night Owl's drop 10. Holds drain over time: the Vampire
 6/s, Bear Hug 5/s, the Peeper 4/s. After a hit the creature pauses for half its
 cooldown (at most 2 s), and you get 1.5 s in which nothing can hit you. The lake
-thing's telegraphed strike at the boat dock hits for 50.
+thing's rapid, telegraphed water projectiles at the boat dock hit for 18 each.
 
 **Listen, don't read.** Nothing on screen names a nearby monster or says whether it
 is hunting you. Instead your **heartbeat** tells you: a slow, quiet beat means

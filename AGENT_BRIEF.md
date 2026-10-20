@@ -77,6 +77,14 @@ These are code-backed facts, not a substitute for human acceptance testing.
 - Five implemented escape routes: Van, Radio Rescue, Lakeshore Boat, Ranger
   Gate, Signal Fire. Normal Expedition: van plus one seeded secondary. Quick
   Camp: van only. `--all-escapes` is a diagnostic override, not the normal rules.
+- Boat finale: 25s earned while at least one living, unhidden, unheld, awake
+  survivor occupies the 80px dock circle with clear access; empty circle pauses,
+  retaining progress. Lake Thing fires aimed 18-damage water shots every 0.5s
+  after a 0.35s tell, at 170px/s. Sweep checks respect walls, hit grace/wards and
+  John's deferral. Flares locally block shots within 32px; they do not silence
+  the barrage. Shot state/occupancy are authoritative and replicated. Camera
+  framing temporarily pulls back near the active arena; repair labels disappear
+  during launch. [Evidence](docs/evidence/boat_barrage/README.md).
 - Night phases: Dusk → Nightfall at 20% → Deep Night at 50% → Witching Hour at
   80% of the best prepared escape. Twelve minutes within a phase advances stalled
   teams only as far as Deep Night. Phase timers reset on transition; no dawn
@@ -129,7 +137,7 @@ render loop and Dummy audio; server paths skip voice codec/capture/playback.
 Source launch first imports assets/registers script classes and refuses to start
 after import errors, including when Godot exits zero. Exported packs skip import.
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
-cleanup are implemented. The game protocol is `lnac-net-32` (region-circuit/interior roaming recipe), compatible with
+cleanup are implemented. The game protocol is `lnac-net-33` (projectile/circle boat-finale snapshot), compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
 The October 19 [server review](docs/server_review.md) fixes mixed-role assignment,
 batched-disconnect packet sends and stale package metadata. Actual four-client
@@ -140,7 +148,7 @@ bounded prediction/reconciliation and buffered remote motion; see evidence below
 
 ## Movement transport
 
-Rules are `lnac-net-32`: authority-only 30Hz player packets include applied-input
+Rules are `lnac-net-33`: authority-only 30Hz player packets include applied-input
 acknowledgements, bounded owner movement state and server-detected discontinuity
 counters. The owner predicts shared collision/movement immediately, with no AI
 hearing, blood or gameplay outcomes; authoritative fields are restored after each
@@ -232,7 +240,7 @@ not player inactivity), loading (90s) and reservation (5m) are separate clocks.
 Detached actors have tethers, holds, casts, riders, targets and vaults cleaned up.
 An empty dedicated round pauses until return/expiry; intentional Leave relinquishes
 recovery. Tokens are memory-only; no restart persistence or host migration.
-Protocol is lnac-net-32. [Investigation and superseded proposals](docs/playtest_followup.md)
+Protocol is lnac-net-33. [Investigation and superseded proposals](docs/playtest_followup.md)
 retain the playtest history. The [new monster plan](docs/new_monster_plan.md)
 now has implemented Lifeguard, Night-Light Kid, Vulture, Huntmaster, Magician,
 Nobody, plus the agreed Shade. All have host brains, journal entries, copied

@@ -25,18 +25,25 @@ with a clear path between them, to assist. The carrier walks at full speed;
 neither can sprint while assisting. Release E, separate, hide or become downed
 and assistance stops. Solo players can carry the same motor slowly with every role.
 
-Once fitted, E starts the **25-second launch**. Stay on the wooden
-dock within **80 px of the boat point**, with a clear path to it. Survivors remain
-vulnerable and can move/use supplies. Solid lake banks keep walking on shore and
-dock; there is no swimming. Ordinary seeded supplies are moved off solid water.
+Once fitted, E starts the launch. Earn **25 seconds** with at least one living,
+unhidden, awake, unheld survivor inside the **80px dock circle**, with clear
+access to its center. Everyone stepping out pauses progress without resetting it;
+multiple teammates do not speed it up. No need to keep holding E. Survivors can
+move and use supplies. Solid lake banks keep walking on shore and dock; there is
+no swimming. Ordinary seeded supplies are moved off solid water.
 
-The **Lake Thing** is a bounded launch encounter, not another roaming cryptid.
-At 20, 12 and 4 seconds remaining, it marks one of three fixed dock positions.
-Each glowing circle warns for **two seconds**, then hits standing survivors
-within **26 px**, following ordinary wound/grace/protection rules. Sidestep the
-circle or throw a normal flare within **100 px** and clear sight to cancel that
-strike. It never reads hidden player positions, seals the dock or teleports a
-roaming monster. Chapel signal holders are separate and do not interrupt it.
+The **Lake Thing** fires from the lake every **0.5s**, switching sides every six
+shots. Each **0.35s tell** locks the aim before a water projectile travels at
+**170px/s**, dealing **18 damage** through normal wound/grace/protection rules.
+Dodge inside the circle to keep progress moving. Walls stop shots; an active
+flare within **32px** of a shot's path and clear sight cancels that shot.
+Shots expire after three seconds. It does not aim at hidden survivors or
+Christian's Nobody form, although existing shots can hit Nobody. Chapel signal
+holders do not interrupt it. The local camera pulls back during the encounter
+and restores normal framing on exit or completion.
+
+[Current barrage capture and verification](evidence/boat_barrage/README.md).
+The older art screenshots below show the previous ripple encounter/objective text.
 
 | Logging Camp | Motorboat launch |
 | --- | --- |
@@ -110,7 +117,8 @@ the in-game map still reveals only explored trails.
 ![Seed 42 atlas with fourteen regions](screenshots/full_map.png)
 
 Host authority covers parts, assistance, attacks, gates, holds, countdowns and
-results under `lnac-net-12` (now `lnac-net-13`). See [execution evidence](evidence/boat_gate/README.md)
+results. Current boat shots/occupancy require `lnac-net-33`; the original art
+evidence below used earlier protocols. See [execution evidence](evidence/boat_gate/README.md)
 and [multiplayer setup](multiplayer_guide.md). Automated fixtures use placements
 and accelerated clock/countdown tails. They do not prove normal-speed human
 balance, real cross-machine Internet or Windows/Linux/export behavior. No

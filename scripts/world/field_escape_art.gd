@@ -123,6 +123,10 @@ static func draw_boat(canvas: Node2D, at: Vector2, installed: Array[String], sta
 	PixelArt.draw_standing(canvas,"f5_boat" if "outboard_motor" in installed else "canoe",hull,86)
 	if not actionable:
 		return
+	if started:
+		for index in range(5):
+			canvas.draw_arc(hull+Vector2(0,18),12+fmod(pulse*18+index*8,40),0,PI,20,Color("749f96"))
+		return # Clear the repair labels out of the dodge arena once fitted.
 	# The physical interaction point is the repair pad, at the boat's feet.
 	canvas.draw_rect(Rect2(at + Vector2(-42, -35), Vector2(84, 34)), Color("172924"))
 	canvas.draw_rect(Rect2(at + Vector2(-42, -35), Vector2(84, 34)), Color("dbbf7e"), false)
@@ -133,9 +137,6 @@ static func draw_boat(canvas: Node2D, at: Vector2, installed: Array[String], sta
 		var x := -40 + index * 27
 		canvas.draw_string(ThemeDB.fallback_font, at + Vector2(x, -15), label, HORIZONTAL_ALIGNMENT_CENTER, 27, 7, Color("e5d8ac"))
 		canvas.draw_string(ThemeDB.fallback_font, at + Vector2(x, -6), "OK" if done else "--", HORIZONTAL_ALIGNMENT_CENTER, 27, 7, Color("b7de98") if done else Color("b7a891"))
-	if started:
-		for index in range(5):
-			canvas.draw_arc(hull+Vector2(0,18),12+fmod(pulse*18+index*8,40),0,PI,20,Color("749f96"))
 
 static func draw_lake_thing(canvas: Node2D, at: Vector2, striking: bool) -> void:
 	PixelArt.draw_standing(canvas,"f5_lake_thing",at+Vector2(0,20),58 if striking else 48)

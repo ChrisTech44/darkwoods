@@ -37,6 +37,10 @@ impact are wired. [Edits, levels and execution evidence](evidence/audio_pack_202
 The tables below retain the original audit baseline; delivered entries are
 superseded by this update and the earlier supplied-pack amendments.
 
+**20 October boat barrage:** the supplied water splash now plays once per
+projectile body/wall impact; flares cancel shots silently. No new AI hearing
+stimulus was added. [Routing and graphical evidence](evidence/boat_barrage/README.md).
+
 Remaining requests: recorded Stalker camp whistle, thread snap, battery swap/empty
 click, flash burst, pickup/part-install completion, revive completion, spray hiss,
 phase stingers and other location/extraction accents. New-monster polish still

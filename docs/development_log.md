@@ -1,5 +1,35 @@
 # Development log
 
+## 2026-10-20 — dodge projectiles while launching the boat
+
+Replaced the Lake Thing's three timed ripples with a half-second projectile
+barrage: 0.35s fixed-aim tells, 170px/s swept shots, 18 damage, three-second life.
+Shots alternate lake sides every six launches. Walls and nearby active flares
+block them. The supplied water-splash cue plays once on body/wall impact;
+flare cancellation stays silent, with no new AI hearing stimulus.
+
+Boat progress now requires a living, unhidden, awake, unheld teammate inside
+its 80px circle with clear access. Leaving pauses the 25 earned seconds without
+resetting; multiple teammates do not accelerate it. Normal extraction and downed
+teammate rescue remain. The local launch camera pulls back to show the dodge
+circle above the HUD, then restores framing. Repair labels clear during launch.
+Authority owns shots, hits and occupancy; protocol is **lnac-net-33**, requiring
+matching clients/server. No deployment or package refresh was performed.
+
+Verification on macOS arm64/Godot 4.7.2: native mechanics/camera **32/32**, field
+escapes **57/57**, audio routing **35/35**, actual ENet listen host/client
+**261/261**, four-client dedicated **153/153**. An initial dedicated synthetic
+voice relay timed out; one retry passed. Import/startup and whitespace checks
+pass. Native screenshot inspected under normal Witching Hour lighting, staged
+components/positions, frozen enemies/director, ordinary Boat/Van seed (not forced
+all escapes). Network regression retains its forced all-escape fixture. Microphone
+capture stayed off. No human difficulty/listening, Internet, cross-machine,
+exports or Windows/Linux acceptance is claimed.
+An ignored interactive fixture was also launched and inspected paused at the
+fully repaired boat, seed 13, Christian, normal AI enabled and microphone off;
+Esc resumes and E starts the new encounter. No completed human trial is claimed.
+[Implementation and graphical evidence](evidence/boat_barrage/README.md).
+
 ## 2026-10-20 — cover the region loop and evenly fill its interior
 
 Replaced the inward-only/spoke-based roaming starts with fourteen starts targeting

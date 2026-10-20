@@ -99,29 +99,26 @@ func _boat_checks() -> void:
 		level.hud.notebook.open_view("plan")
 		await _snapshot("boat_plan",goal,Vector2.ZERO,1)
 		level.hud.notebook.close()
-	field.advance(5.01)
-	_check(field.lake_tell>1.9 and not player.wounded,"lake_attack_has_two_second_visible_tell")
-	if capture:
-		await _snapshot("lake_thing",goal+Vector2(0,20),Vector2(0,-32),1.0)
-	player.position=field.lake_target
-	field._lake(1)
-	_check(not player.wounded,"lake_never_hits_before_tell_finishes")
-	field._lake(1.1)
-	_check(player.wounded,"standing_in_finished_tell_wounds_survivor")
-	player.invulnerability=0
-	field.boat_remaining=12
-	field._lake(0.01)
-	player.position=field.lake_target+Vector2(-48,0)
-	field._lake(2.1)
-	_check(player.status==CampPlayer.Status.ALIVE,"sidestep_dodges_next_lake_strike")
-	field.boat_remaining=4
-	field._lake(0.01)
-	player.position=goal
-	player.pack("flare")
-	player.facing=Vector2.DOWN
-	level.use_supply(player,"flare")
-	field._lake(0.1)
-	_check(field.lake_tell==0,"nearby_flare_interrupts_lake_attack")
+	field.barrage.clock=100
+	var remaining:=field.boat_remaining
+	player.position=goal+Vector2(0,100)
+	field.advance(1)
+	_check(field.boat_remaining==remaining and not field.boat_occupied,"boat_progress_pauses_outside_circle")
+	player.position=goal+Vector2(0,20)
+	field.advance(1)
+	_check(field.boat_remaining==remaining-1 and field.boat_occupied,"boat_progress_resumes_inside_circle")
+	field.barrage.clock=0
+	field.advance(.01)
+	_check(field.barrage.shots.size()==1 and field.barrage.shots[0].tell==LakeBarrage.TELL,"lake_shot_has_aimed_visible_windup")
+	if capture: await _snapshot("lake_thing",goal+Vector2(0,20),Vector2(0,-32),1.0)
+	field.barrage.stop();field.barrage.clock=100
+	player.position=goal;player.invulnerability=0
+	var health:=player.health
+	field.barrage.launch(goal-Vector2(20,0),goal)
+	field.barrage.shots[0].tell=0
+	field.barrage.advance(.2)
+	_check(player.health==health-LakeBarrage.DAMAGE,"water_shot_hits_through_normal_damage_rules")
+	field.barrage.stop()
 	var state: Dictionary=field.snapshot()
 	field.boat_installed.clear()
 	field.restore(state)

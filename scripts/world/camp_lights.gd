@@ -37,6 +37,7 @@ static func lamp(parent: Node, at: Vector2, radius: float, tint: Color, energy: 
 	light.shadow_enabled = true
 	light.shadow_filter = Light2D.SHADOW_FILTER_PCF5
 	parent.add_child(light)
+	light.add_to_group("shadow_lamps")
 	return light
 
 

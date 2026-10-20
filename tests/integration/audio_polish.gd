@@ -22,7 +22,7 @@ func _run() -> void:
 		_check(AudioServer.get_bus_index(bus) >= 0, "bus_" + bus)
 	for cue in mixer.cues:
 		var stream: AudioStream = mixer.stream_for(cue)
-		_check(stream != null and stream.get_length() > 0.4 and (stream.loop if stream is AudioStreamMP3 else stream.loop_mode != AudioStreamWAV.LOOP_DISABLED) == mixer.cues[cue]["loop"], "real_import_and_loop_flag_" + cue)
+		_check(stream != null and stream.get_length() > (0.1 if cue=="vulture_peck" else 0.4) and (stream.loop if stream is AudioStreamMP3 else stream.loop_mode != AudioStreamWAV.LOOP_DISABLED) == mixer.cues[cue]["loop"], "real_import_and_loop_flag_" + cue)
 	_check(AudioServer.get_bus_send(AudioServer.get_bus_index("Campfire")) == "Ambience", "fire_compression_respects_ambience_control")
 	_check(mixer.stream_for("missing") == null, "unknown_cues_fail_safely")
 	var previous: Dictionary = mixer.volumes.duplicate()
@@ -98,6 +98,9 @@ func _run() -> void:
 		var count: int = sound.played_counts.get(cue, 0)
 		sound._enemy_state(CampKiller.State.CHASE, enemy)
 		sound._spell_started(enemy)
+		if species in NewCreatureSamples.SOURCES:
+			_check(sound.played_counts.get(cue,0)==count,"signature_cue_not_faked_by_chase_"+species)
+			sound.broadcast(cue,enemy.position)
 		_check(sound.played_counts.get(cue, 0) == count + 1, "species_cue_once_with_cooldown_" + species)
 		enemy.free()
 	level.paused = true

@@ -24,6 +24,7 @@ const BADGES := {
 ## One practical tip per creature, revealed in the journal after a sighting
 ## (docs/monster_revamp.md). Keys are species ids; NAMES are what players see.
 const TIPS := {
+	"shade":"Keep it in your beam for a second, or use a flare. Its eyes open two seconds before a half-health strike. Lit ground blocks it.",
 	"magician":"Leave the glowing ring before the drumroll ends. Flash interrupts the swap; someone else arrives where you stood.",
 	"huntmaster":"Its horn hastens creatures. Flash during the raised-horn warning; leave the crowd if it sounds.",
 	"nobody":"Its breathing and prints betray it. Sweep your beam for a shimmer; flash reveals it briefly.",
@@ -62,7 +63,7 @@ const TIPS := {
 	"echo": "It whistles the stalker's tune from the wrong place. Harmless; your light bursts it up close.",
 	"fortune_teller": "She turns a tarot card when she reaches you: three help, four hurt. Walk away to decline.",
 }
-const NAMES := {"magician":"THE SHELL GAME MAGICIAN", "huntmaster":"THE HUNTMASTER", "nobody":"NOBODY", "vulture":"THE VULTURE", "nightlight_kid":"THE NIGHT-LIGHT KID", "lifeguard":"THE LIFEGUARD", "stalker": "THE STALKER", "groundskeeper": "THE GROUNDSKEEPER", "vampire": "THE VAMPIRE", "werewolf": "THE WEREWOLF", "bigfoot": "BIGFOOT",
+const NAMES := {"shade":"THE SHADE", "magician":"THE SHELL GAME MAGICIAN", "huntmaster":"THE HUNTMASTER", "nobody":"NOBODY", "vulture":"THE VULTURE", "nightlight_kid":"THE NIGHT-LIGHT KID", "lifeguard":"THE LIFEGUARD", "stalker": "THE STALKER", "groundskeeper": "THE GROUNDSKEEPER", "vampire": "THE VAMPIRE", "werewolf": "THE WEREWOLF", "bigfoot": "BIGFOOT",
 	"witch": "THE WITCH", "lantern_moth": "THE LANTERN MOTH", "ration_moth": "THE PUFFBALL", "briar_revenant": "THE SCARECROW",
 	"switchback_hound": "BUSTER, THE STALKER'S HOUND", "relay_jackal": "TRASH JACKALS", "lens_eater": "THE PEEPER", "shutter_wraith": "THE PAPARAZZO",
 	"last_car_conductor": "THE CONDUCTOR", "stoneback_ram": "THE RAM", "candle_grazer": "THE SNUFFER", "bramble_seamstress": "THE SEAMSTRESS",

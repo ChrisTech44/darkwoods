@@ -1,9 +1,18 @@
 class_name NewCreatureSamples
 extends RefCounted
-const SOURCES := ["lifeguard","nightlight_kid","vulture","nobody","huntmaster","magician"]
+const SOURCES := ["lifeguard","nightlight_kid","vulture","nobody","huntmaster","magician","shade"]
 static func fire(actor: CampPlayer, kind: String) -> void:
 	var level: Node=SurvivorKits.world(actor)
 	match kind:
+		"shade":
+			var at: Vector2=actor.kit.get("cast",{}).get("at",actor.position)
+			if ShadowLight.lit(level,at): return
+			for victim in CreatureSamples.targets(actor,80,-1,at,true):
+				if not ShadowLight.dark_path(level,at,victim.position): continue
+				if victim is CampPlayer: victim.receive_hit(50)
+				else: victim.stun(2)
+				level.soundscape.broadcast("shade_strike",at)
+				break
 		"magician":
 			var partner: Node2D=CreatureSwap.friend(actor)
 			var choices:=CreatureSwap.creatures(actor)
@@ -15,7 +24,10 @@ static func fire(actor: CampPlayer, kind: String) -> void:
 			for friend: CampPlayer in actor.get_tree().get_nodes_in_group("survivors"):
 				if friend.status==CampPlayer.Status.ALIVE and friend.position.distance_to(actor.position)<=300: friend.add_effect("rally",10)
 			for enemy: CampKiller in actor.get_tree().get_nodes_in_group("killers"):
-				if enemy.enabled and enemy.position.distance_to(actor.position)<=400: enemy.haste_remaining=maxf(enemy.haste_remaining,15)
+				if enemy.enabled and enemy.position.distance_to(actor.position)<=400:
+					var timers: Dictionary=enemy.sample_state.get("timers",{})
+					timers["rally"]=maxf(timers.get("rally",0.0),10)
+					enemy.sample_state["timers"]=timers
 		"vulture":
 			var friend:=downed_friend(actor)
 			if friend!=null:

@@ -1,0 +1,352 @@
+{
+  "platform": "macOS Apple M2 / Godot 4.7.2; source checkout",
+  "protocol": "lnac-net-30",
+  "suites": [
+    {
+      "checks": 97,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "wheel_monsters"
+    },
+    {
+      "checks": 208,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "four_survivors"
+    },
+    {
+      "checks": 81,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "movement_prediction"
+    },
+    {
+      "checks": 36,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "new_creatures"
+    },
+    {
+      "checks": 34,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "killers_modifiers"
+    },
+    {
+      "checks": 147,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "monster_revamp"
+    },
+    {
+      "checks": 16,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "habit_audio"
+    },
+    {
+      "audio_driver": "Dummy",
+      "checks": 155,
+      "display": "headless",
+      "event": "test_result",
+      "failures": 0,
+      "output_enabled": false,
+      "suite": "audio_polish"
+    },
+    {
+      "checks": 30,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "sound_feedback"
+    }
+  ],
+  "habit_network": {
+    "passed": true,
+    "results": [
+      {
+        "passed": true,
+        "result": [
+          {
+            "checks": 45,
+            "event": "test_result",
+            "failures": 0,
+            "suite": "habit_peer_host"
+          }
+        ],
+        "errors": [],
+        "log": "artifacts/wheel_monsters/habit_host.log"
+      },
+      {
+        "passed": true,
+        "result": [
+          {
+            "checks": 16,
+            "event": "test_result",
+            "failures": 0,
+            "suite": "habit_peer_client"
+          }
+        ],
+        "errors": [],
+        "log": "artifacts/wheel_monsters/habit_client.log"
+      }
+    ]
+  },
+  "dedicated_four_clients": [
+    {
+      "side": "server",
+      "index": 0,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 79,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_server"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd",
+        "--",
+        "--dedicated-server",
+        "--port",
+        "52471",
+        "--mode",
+        "woods",
+        "--seed",
+        "13",
+        "--min-players",
+        "4",
+        "--start-delay",
+        "1",
+        "--result-delay",
+        "8"
+      ],
+      "log": "artifacts/dedicated/woods_4_1792477175958923000_server_0.log"
+    },
+    {
+      "side": "client",
+      "index": 0,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 18,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+      ],
+      "log": "artifacts/dedicated/woods_4_1792477175958923000_client_0.log"
+    },
+    {
+      "side": "client",
+      "index": 1,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 18,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+      ],
+      "log": "artifacts/dedicated/woods_4_1792477175958923000_client_1.log"
+    },
+    {
+      "side": "client",
+      "index": 2,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 20,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+      ],
+      "log": "artifacts/dedicated/woods_4_1792477175958923000_client_2.log"
+    },
+    {
+      "side": "client",
+      "index": 3,
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "checks": 18,
+          "event": "test_result",
+          "failures": 0,
+          "players": 4,
+          "suite": "dedicated_client"
+        }
+      ],
+      "command": [
+        "/opt/homebrew/bin/godot",
+        "--headless",
+        "--disable-render-loop",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/Users/christianfranklin/games/darkwoods",
+        "--script",
+        "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+      ],
+      "log": "artifacts/dedicated/woods_4_1792477175958923000_client_3.log"
+    }
+  ],
+  "native_pcm": [
+    {
+      "cue": "lifeguard_whistle",
+      "event": "audio_pcm",
+      "frames": 32768,
+      "peak": 0.106546498835087
+    },
+    {
+      "cue": "nightlight_whimper",
+      "event": "audio_pcm",
+      "frames": 28672,
+      "peak": 0.0398156307637691
+    },
+    {
+      "cue": "nightlight_scream",
+      "event": "audio_pcm",
+      "frames": 28672,
+      "peak": 0.122759930789471
+    },
+    {
+      "cue": "vulture_squawk",
+      "event": "audio_pcm",
+      "frames": 32768,
+      "peak": 0.117395795881748
+    },
+    {
+      "cue": "vulture_peck",
+      "event": "audio_pcm",
+      "frames": 32768,
+      "peak": 0.0557133927941322
+    },
+    {
+      "cue": "vulture_wings",
+      "event": "audio_pcm",
+      "frames": 32768,
+      "peak": 0.406959533691406
+    },
+    {
+      "cue": "huntmaster_horn",
+      "event": "audio_pcm",
+      "frames": 32768,
+      "peak": 0.0982387885451317
+    },
+    {
+      "cue": "huntmaster_inhale",
+      "event": "audio_pcm",
+      "frames": 28672,
+      "peak": 0.226729854941368
+    },
+    {
+      "cue": "magician_drumroll",
+      "event": "audio_pcm",
+      "frames": 32768,
+      "peak": 0.177217751741409
+    },
+    {
+      "cue": "magician_tada",
+      "event": "audio_pcm",
+      "frames": 28672,
+      "peak": 0.186113521456718
+    },
+    {
+      "cue": "nobody_breathing",
+      "event": "audio_pcm",
+      "frames": 32768,
+      "peak": 0.0539506785571575
+    },
+    {
+      "cue": "nobody_exhale",
+      "event": "audio_pcm",
+      "frames": 32768,
+      "peak": 0.17308634519577
+    },
+    {
+      "cue": "shade_inhale",
+      "event": "audio_pcm",
+      "frames": 28672,
+      "peak": 0.172955214977264
+    },
+    {
+      "cue": "shade_strike",
+      "event": "audio_pcm",
+      "frames": 32768,
+      "peak": 0.0282628834247589
+    }
+  ],
+  "required_import_startup": "passed; no errors or warnings",
+  "docs_links": {
+    "checked": 359,
+    "missing": 0
+  },
+  "spritecook": {
+    "credits_spent": 12,
+    "balance_before": 308,
+    "balance_after": 296
+  },
+  "limits": [
+    "Frozen AI/director and staged poses in visual fixtures; normal seeded routes, no all-escape override in wheel/monster captures. Phase forced to Deep Night for swaps and Shade. Four-survivor regression uses its explicitly forced all-route fixture.",
+    "Front sprite designs with procedural bob/lean, not generated directional animations.",
+    "Headless routing, native PCM and local ENet are not human listening, balance, Internet endurance or other-platform/package acceptance.",
+    "No microphone capture or production deployment. Existing packaged server bundle must be rebuilt for rules30."
+  ]
+}

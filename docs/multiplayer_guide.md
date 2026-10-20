@@ -14,7 +14,7 @@ the same checkbox is in main-menu Settings. Dedicated servers use
 
 ## Player movement updates
 
-All players and the server must update together to **lnac-net-29**. Player poses
+All players and the server must update together to **lnac-net-30**. Player poses
 (position, velocity and facing) now use bounded, single-packet authority updates
 at 30 Hz on channel 2, independent of fragmented world state. Input uses channel 2
 in the opposite direction. Full world snapshots retain their intended 20 Hz rate;
@@ -49,7 +49,7 @@ for this fix (rules18 remains compatible; old servers do not send exploration).
 
 ## Radio Rescue (expedition)
 
-All peers must use rules `lnac-net-29` (the same build). The host owns the fuse,
+All peers must use rules `lnac-net-30` (the same build). The host owns the fuse,
 substation, six-second relay hold, persistent signal lights, countdown and
 extraction results. Clients send the usual E/hold intents. **T** switches only
 that player's objective page. A remote operator can complete the whole chain;
@@ -109,7 +109,7 @@ and shares them with everyone. The host also owns the progress-paced night (phas
 Flash-stuns (Space) and help calls are host-validated intents.
 Hiding, doors and knock-overs use the normal E intent; the host owns breath,
 door breaking and blocking. The road network changes the generated woods, so
-both copies must run rules version `lnac-net-29`. Vaults and gate openings are
+both copies must run rules version `lnac-net-30`. Vaults and gate openings are
 host-validated E actions. Clue knowledge (ranger notes,
 regions visited) is shared by the whole team.
 Nearby teammates show their names; each survivor keeps their own flashlight,
@@ -259,10 +259,8 @@ permission dialog, and cross-machine Internet latency was not measured.
 An unexpected disconnect reserves your survivor for **five minutes**. The running
 client retries the same address every two seconds. Your character returns to the
 same night with its health/life state, light charge and ability state preserved;
-no new starting items are granted. All carried supplies, tools, objectives and
-Max's cash drop immediately for recovery. Gear already taken by teammates stays
-with them. Max's dropped cash retains its owner tag and can be returned after he
-reconnects. Grabs, tethers and committed casts end when the body leaves play.
+no new starting items are granted. All carried supplies, tools and objectives drop immediately for recovery.
+Gear already taken by teammates stays with them. Grabs, tethers and committed casts end when the body leaves play.
 Standing still is safe: idle clients continuously send zero-direction input.
 The server removes a silent client after fifteen seconds without those packets,
 then starts its reservation. Initial loading retains a separate 90s allowance.
@@ -275,6 +273,7 @@ tickets are in memory only, so restarting the client or server loses them. This
 adds no host migration or save-game persistence. New players still wait for the lobby.
 
 John now halves numeric damage during Push Through before deferring its reduced
-bill; Alex's return marker is visible to teammates. Max's smaller help panel and
-new income sources are [proposals](playtest_followup.md), pending selection.
+bill; Alex's return marker is visible to teammates. Max now spins a names-only wheel every 60 seconds, replacing his cash economy
+and large permanent help panel. The seven new creatures and their counters are
+recorded in the [implemented monster plan](new_monster_plan.md).
 [Local reconnect evidence and limits](evidence/playtest_recovery/README.md).

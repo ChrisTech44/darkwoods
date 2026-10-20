@@ -62,7 +62,7 @@ func _plan_checks() -> void:
 		var plan := RoundPlan.new()
 		plan.generate(seed_value, "woods")
 		var species: Array=plan.encounters.map(func(row: Dictionary) -> String: return row["species"])
-		complete_rosters = complete_rosters and plan.encounters.size()==31 and species.count("relay_jackal")==2
+		complete_rosters = complete_rosters and plan.encounters.size()==RoundPlan.CRYPTID_COUNT and species.count("relay_jackal")==2
 		for kind: String in CampProfile.TIPS:
 			if kind!="stalker": complete_rosters=complete_rosters and kind in species
 		headlines[plan.headline] = true

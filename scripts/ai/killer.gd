@@ -265,6 +265,9 @@ func steer(point: Vector2, speed: float, delta: float) -> bool:
 	if camp_closed and not in_camp(global_position) and in_camp(global_position + direction * 12.0):
 		velocity = Vector2.ZERO
 		return true
+	if self is CampCryptid and get("species")=="shade" and not ShadowLight.dark_path(get_tree().get_first_node_in_group("round_world"),position,position+velocity*delta):
+		velocity=Vector2.ZERO
+		return false
 	var previous := position
 	move_and_slide()
 	stride += position.distance_to(previous)
@@ -471,5 +474,5 @@ func _draw() -> void:
 	# No "!"/"?" markers: whether it is hunting you is told by your heartbeat.
 
 func motion_speed(speed: float) -> float:
-	var result:=speed*(1.3 if haste_remaining>0 else 1.0)
+	var result:=speed*(1.3 if haste_remaining>0 else (1.2 if sample_state.get("timers",{}).has("rally") else 1.0))
 	return minf(result,StalkerTraits.MAX_SPEED) if traits!=null else result

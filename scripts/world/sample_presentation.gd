@@ -2,6 +2,9 @@ class_name SamplePresentation
 extends RefCounted
 ## Every copy has an explicit delivery shape. Guides never discover targets.
 const SHAPES := {
+	"lifeguard":["area",200.0,0.0], "nightlight_kid":["area",150.0,0.0],
+	"vulture":["area",150.0,0.0], "huntmaster":["area",400.0,0.0],
+	"magician":["area",240.0,0.0], "nobody":["self",0.0,0.0], "shade":["area",80.0,0.0],
 	"witch":["shot",272.0,10.0], "ration_moth":["lob",90.0,78.0],
 	"bramble_seamstress":["shot",150.0,80.0], "lantern_moth":["shot",150.0,10.0],
 	"hitchhiker":["shot",150.0,10.0], "shutter_wraith":["area",210.0,0.0],
@@ -44,6 +47,10 @@ static func art(kind: String, subtype: String = "frog") -> String:
 	return "sample_"+ART[kind] if ART.has(kind) else ""
 
 static func sprite(canvas: CanvasItem, kind: String, at: Vector2, subtype: String = "frog", size: float = 24.0, alpha: float = 1.0) -> void:
+	if kind in NewCreatureSamples.SOURCES:
+		if not CreatureSamples.form_sheets.has(kind): CreatureSamples.form_sheets[kind]=load("res://assets/sprites/"+kind+".png")
+		canvas.draw_texture_rect_region(CreatureSamples.form_sheets[kind],Rect2(at-Vector2.ONE*size*0.5,Vector2.ONE*size),Rect2(0,0,64,64),Color(1,1,1,alpha))
+		return
 	var name := art(kind,subtype)
 	if not name.is_empty(): PixelArt.draw_in(canvas,name,Rect2(at-Vector2.ONE*size*0.5,Vector2.ONE*size),Color(1,1,1,alpha))
 
@@ -60,7 +67,7 @@ static func guide(canvas: Node2D, level: Node, actor: CampPlayer) -> void:
 	var spec: Array=SHAPES[kind]
 	var shape: String=spec[0]
 	var reach: float=spec[1]
-	var at: Vector2=actor.position
+	var at: Vector2=cast.get("at",actor.position) if kind=="shade" else actor.position
 	var direction: Vector2=cast.get("direction",actor.facing)
 	var faint := Color(0.8,0.92,0.77,0.24)
 	if shape in ["shot","lob","patch","charge"]:

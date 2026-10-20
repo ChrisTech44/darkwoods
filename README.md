@@ -2,7 +2,7 @@
 
 **Dedicated server:** run a camp without a host survivor. See the
 [server setup and connection guide](docs/dedicated_server.md). Updated `main`
-clients (`lnac-net-22`) can join; the server code is available in this checkout.
+clients (`lnac-net-30`) can join; the server code is available in this checkout.
 
 **Find the parts. Keep your light alive. Get out before the woods get you.**
 
@@ -334,7 +334,7 @@ for the next night and the next launch. Default port: **UDP 27840**. Everyone ma
 the host chooses mode/seed and starts. LAN/Wi-Fi uses the host's local IP;
 Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
 
-Update clients and server together to **lnac-net-22**. Your survivor now responds
+Update clients and server together to **lnac-net-30**. Your survivor now responds
 locally, with server corrections smoothed; other survivors use a short movement
 buffer. A long connection interruption can still pause movement. See
 [measured smoothness improvements](docs/evidence/smoothness/README.md).
@@ -768,7 +768,7 @@ one of noise tin, salt ward or glow moss; the reward depends on its seeded site.
 | **Flare** | Start with 2; Woods loot; 3-flare Maintenance stash; 3-flare chapel rescue stash; Village well; Graveyard crypt. | **Q**, or select + **V**, throws it ahead. Lights the area for up to **9s** and repels enemies with clear sight nearby. **E at a rescue signal holder** instead spends one flare on a persistent signal light (no permanent repulsion). Lantern Moths follow it; Candle Grazers can consume it. |
 | **Spare flashlight battery** | Start with 1; Woods loot; extra campsite battery; Village well. | **R**, or select + **V**, restores **70 charge**, capped at 90, and switches the light on. Not consumed if already full. |
 | **Rations** | Start with 1; Woods loot; Village well. | **C**, or select + **V**, restores full stamina and clears exhaustion. Not consumed at full stamina. Eating can attract nearby Ration Moths. |
-| **Medkit** | Woods loot; Max may buy or win one. | Select + **V** heals 50 health (refused at full health). Carried while you **hold E beside a downed teammate**, it speeds the revive to 3s instead of 6s bare-handed, and is consumed on completion. Interrupted attempts keep it. |
+| **Medkit** | Woods loot; Max may duplicate an owned one. | Select + **V** heals 50 health (refused at full health). Carried while you **hold E beside a downed teammate**, it speeds the revive to 3s instead of 6s bare-handed, and is consumed on completion. Interrupted attempts keep it. |
 | **Noise tin** | Woods loot; landmark reward. | Select + **V** places a lure ahead. It rattles at **1.5s, 3.5s and 5.5s**, drawing noise-sensitive enemies within 480 world pixels. Move away before they investigate. |
 | **Salt ward** | Woods loot; landmark reward. | Select + **V** grants **4s of protection from physical hits**. Does not heal or remove hexes. |
 | **Glow moss** | Woods loot; landmark reward. | Select + **V** restores **35 light charge**, capped at 90, and removes the current hex. Use F if your flashlight was switched off. |
@@ -776,7 +776,7 @@ one of noise tin, salt ward or glow moss; the reward depends on its seeded site.
 The extra campsite battery, Maintenance flare stash, forest supply pickups and
 searchable biome rewards are **Woods Expedition sources**. Quick Camp has its
 three objective pickups and survivors' starting supplies; no ground medkits or
-extra supply stashes spawn there. Max may obtain a medkit through Cash Out in Quick Camp. Downed/disconnected
+extra supply stashes spawn there. Max may duplicate an owned medkit with his wheel. Downed/disconnected
 teammates drop their carried gear in either mode.
 
 The **Village well** gives two flares, one spare battery and one ration; the
@@ -946,13 +946,19 @@ reliable way out.
 Rations double as **bait** (Buster, jackals), the **salt ward** reflects witch
 curses, and **glow moss** also makes you glow for 60 s (nothing can snuff it).
 
-Each expedition includes every woods creature type: **31 creatures plus the
-Stalker (32 enemies)**. The Vampire and Witch live in their regions; the six
-regional guardians include a pair of jackals. **All 22 roaming types** are spread
+Each expedition includes every woods creature type: **38 creatures plus the
+Stalker (39 enemies)**. The Vampire and Witch live in their regions; the six
+regional guardians include a pair of jackals. **All 29 roaming types** are spread
 across the forest, starting at least 1,100 px from camp. No type sits out; the seed
 varies their placement and order. Blood Moon keeps the complete roster too.
 Roamers follow trail circuits and investigate sensed activity. There's a
 three-flare stash in Maintenance for when they come.
+
+The new arrivals are the Lifeguard, Night-Light Kid, Vulture, Huntmaster,
+Shell Game Magician, Nobody and Shade. Learn their counters through encounters
+and the field guide. The Shade stays in dark ground, opens its eyes for two
+seconds before a 50-health strike, and disperses under a steady beam or flare.
+Your faint body glow only helps you see your character; it does not repel it.
 
 **Camp is a refuge until Deep Night.** For the first half of the night no
 creature (the stalker included) enters camp, sees into it or hears noise from

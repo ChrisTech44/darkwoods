@@ -1,8 +1,10 @@
 # Friends playtest follow-up — 20 October 2026
 
-The reported problems led to implemented John/reconnect/marker fixes and the
-proposals below. Max's economy and large help panel remain unchanged while a
-replacement is selected. Monster concepts are proposals, not shipped creatures.
+The reported problems led to implemented John/reconnect/marker fixes. Max now
+uses the names-only wheel described in the [maintained character design](four_survivor_overhaul.md).
+The [new monster plan](new_monster_plan.md) records seven implemented additions.
+The Max economy/UI alternatives and four monster pitches below are historical,
+superseded proposals; source descriptions there describe the old baseline.
 
 ## Max: confirmed problem and interface choices
 
@@ -72,11 +74,11 @@ Source-backed faults and corrections:
   reserves the same authoritative survivor for **five minutes** after an unexpected
   departure. The token stays in the running client process, is tied to its endpoint,
   and is never logged. Name/role alone cannot reclaim a slot. New players still
-  cannot join a running round. Update server and clients together to `lnac-net-22`.
-- All carried supplies, tools, objectives and Max's wallet cash drop immediately
+  cannot join a running round. Update server and clients together to `lnac-net-30`.
+- All carried supplies, tools and objectives drop immediately
   through the existing authoritative drop path. The reserved body has empty gear;
-  reconnect and expiry cannot duplicate what teammates recovered. Cash retains its
-  existing owner tag and can be returned once its Max is present again.
+  reconnect and expiry cannot duplicate what teammates recovered. The wheel
+  has replaced Max's wallet; no current cash recovery is needed.
 - Reliable departure messages remove the body and release tethers even without
   a complete world snapshot. Snapshots captured before that departure are rejected,
   so delayed packets cannot resurrect the character or its broken tether.

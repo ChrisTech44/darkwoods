@@ -22,6 +22,8 @@ func _ready() -> void:
 func _lights_for(actor: CampPlayer) -> Array:
 	if survivor_lights.has(actor): return survivor_lights[actor]
 	var glow := CampLights.lamp(actor,Vector2(0,-10),38,Color("b3bfba"),0.6)
+	# Readability glow is not a gameplay light source for the Shade.
+	glow.remove_from_group("shadow_lamps")
 	var beam := PointLight2D.new()
 	beam.texture=CampLights.texture(true)
 	beam.energy=1.6

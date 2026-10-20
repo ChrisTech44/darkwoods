@@ -75,11 +75,11 @@ These are code-backed facts, not a substitute for human acceptance testing.
   `StalkerTraits` and `CampSong` give the Row, Row, Row Your Boat whistle,
   shadowing, calling cards, grab/hook, hiding memory, rage and bear traps. The
   Groundskeeper is now a woods creature (ride-on mower, rake, spark-plug
-  sabotage), one of 31 creatures plus the Stalker each night. All 22 roaming types and all
+  sabotage), one of 38 creatures plus the Stalker each night. All 29 roaming types and all
   regional types now appear every Woods night; no type sits out. Blood Moon keeps
   every type instead of replacing pranksters with werewolves. Its frequent moon
   and faster Stalker remain. Quick Camp retains its single headline killer.
-  [Full-roster source/PCK verification](docs/evidence/full_roster/README.md).
+  [Earlier full-roster source/PCK evidence](docs/evidence/full_roster/README.md).
 - Stalker shadowing: Expedition, Nightfall onward, chosen living survivor in
   eligible woods; nearby clear-sight time before lunging is 90–130s. Ordinary
   SEARCH sightings beyond 40px return to stalking. Deliberate investigations and
@@ -116,7 +116,7 @@ render loop and Dummy audio; server paths skip voice codec/capture/playback.
 Source launch first imports assets/registers script classes and refuses to start
 after import errors, including when Godot exits zero. Exported packs skip import.
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
-cleanup are implemented. The game protocol is `lnac-net-29`, compatible with
+cleanup are implemented. The game protocol is `lnac-net-30`, compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
 The October 19 [server review](docs/server_review.md) fixes mixed-role assignment,
 batched-disconnect packet sends and stale package metadata. Actual four-client
@@ -127,7 +127,7 @@ bounded prediction/reconciliation and buffered remote motion; see evidence below
 
 ## Movement transport
 
-Rules are `lnac-net-29`: authority-only 30Hz player packets include applied-input
+Rules are `lnac-net-30`: authority-only 30Hz player packets include applied-input
 acknowledgements, bounded owner movement state and server-detected discontinuity
 counters. The owner predicts shared collision/movement immediately, with no AI
 hearing, blood or gameplay outcomes; authoritative fields are restored after each
@@ -206,19 +206,27 @@ blockers. Keep specifications and plans in Markdown only.
 John now halves numeric damage during Push Through before deferring the reduced
 bill. Alex's return marker draws for teammates. Unexpected ENet drops reserve the
 same server-owned survivor for five minutes and automatically retry from the
-running client. All supplies, tools, objectives and Max cash drop immediately;
+running client. All supplies, tools and objectives drop immediately;
 returning actors receive no duplicated or refreshed gear. Input silence (15s,
 not player inactivity), loading (90s) and reservation (5m) are separate clocks.
 Detached actors have tethers, holds, casts, riders, targets and vaults cleaned up.
 An empty dedicated round pauses until return/expiry; intentional Leave relinquishes
 recovery. Tokens are memory-only; no restart persistence or host migration.
-Protocol is lnac-net-29. [Investigation, Max UI/economy proposals and new monster
-concepts](docs/playtest_followup.md) distinguish implemented fixes from design.
-The [new monster plan](docs/new_monster_plan.md) proposes six unimplemented
-creatures (Lifeguard, Night-Light Kid, Vulture, Huntmaster, Magician, Nobody)
-built from existing hooks, with a sound wish list.
+Protocol is lnac-net-30. [Investigation and superseded proposals](docs/playtest_followup.md)
+retain the playtest history. The [new monster plan](docs/new_monster_plan.md)
+now has implemented Lifeguard, Night-Light Kid, Vulture, Huntmaster, Magician,
+Nobody, plus the agreed Shade. All have host brains, journal entries, copied
+signatures and online state/cue checks. Original synthesized cues are implemented;
+recorded voice performances and human balance/listening acceptance remain open.
 
 20 October wheel amendment: Max now spins a names-only weighted wheel every 60s,
 replacing cash and purchases. Shared prediction includes wheel movement effects.
 One 12-credit SpriteCook sheet provides the wheel and seven new creature designs;
-creature mechanics are being delivered in separate verified increments below.
+creature mechanics have been delivered in separate verified increments.
+There are 38 cryptids (including the regional jackal pair) plus the Stalker.
+Native captures use frozen AI/director and staged interactions. The Shade uses
+host light-source/line-of-sight thresholds, not GPU shadow readback: charged
+beams and bright lamp interiors block it; the cosmetic player glow does not.
+Christian copies its stationary two-second dark ambush, which can hit him for
+50 health; creatures receive a two-second stun because they have no health.
+[Executed evidence and remaining limits](docs/evidence/wheel_monsters/README.md).

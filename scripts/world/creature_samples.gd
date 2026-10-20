@@ -1,7 +1,7 @@
 class_name CreatureSamples
 extends RefCounted
 ## Borrowed signatures have explicit adapters, never generic player-state casts.
-const SOURCES := ["witch","werewolf","shutter_wraith","ration_moth","bramble_seamstress","vampire","bigfoot","briar_revenant","lantern_moth","candle_grazer","switchback_hound","lens_eater","last_car_conductor","mimic","owl","bog_hands","imps","teddy","groundskeeper","cuckoo","banshee","slug","surveyor","hitchhiker","tollkeeper","echo","fortune_teller","boiler_saint","relay_jackal","stoneback_ram", "lifeguard", "nightlight_kid", "vulture", "nobody", "huntmaster", "magician"]
+const SOURCES := ["witch","werewolf","shutter_wraith","ration_moth","bramble_seamstress","vampire","bigfoot","briar_revenant","lantern_moth","candle_grazer","switchback_hound","lens_eater","last_car_conductor","mimic","owl","bog_hands","imps","teddy","groundskeeper","cuckoo","banshee","slug","surveyor","hitchhiker","tollkeeper","echo","fortune_teller","boiler_saint","relay_jackal","stoneback_ram", "lifeguard", "nightlight_kid", "vulture", "nobody", "huntmaster", "magician", "shade"]
 const FORMS := ["werewolf","briar_revenant","groundskeeper","mimic","nobody"]
 const NAMES := {"shutter_wraith":"PAPARAZZO", "ration_moth":"PUFFBALL", "bramble_seamstress":"SEAMSTRESS", "briar_revenant":"SCARECROW", "candle_grazer":"SNUFFER", "switchback_hound":"BUSTER", "lens_eater":"PEEPER", "last_car_conductor":"CONDUCTOR", "relay_jackal":"JACKAL", "stoneback_ram":"RAM", "boiler_saint":"LULLABY SAINT", "teddy":"BEAR HUG"}
 static var form_sheets: Dictionary = {}
@@ -74,6 +74,7 @@ static func use(actor: CampPlayer) -> bool:
 		if disguise == null:
 			level.announce("Mimic needs another living player in this round. Sample kept.",actor)
 			return false
+	if kind=="shade" and ShadowLight.lit(level,actor.position): return false
 	if kind=="magician" and CreatureSwap.friend(actor)==null and CreatureSwap.creatures(actor).is_empty(): return false
 	if kind=="vulture" and NewCreatureSamples.downed_friend(actor)==null: return false
 	if kind not in SOURCES: return false
@@ -105,6 +106,9 @@ static func use(actor: CampPlayer) -> bool:
 	if kind=="magician":
 		delay=1.5
 		level.soundscape.broadcast("magician_drumroll",actor.position)
+	if kind=="shade":
+		delay=2
+		level.soundscape.broadcast("shade_inhale",actor.position)
 	var at := actor.position
 	if kind in ["witch","ration_moth","bramble_seamstress","bog_hands","echo","tollkeeper"]:
 		var ahead := actor.position + actor.facing * 90
@@ -665,6 +669,10 @@ static func visuals(level: Node) -> Array:
 	return rows
 
 static func draw_world(canvas: Node2D, level: Node) -> void:
+	for shade: CampCryptid in canvas.get_tree().get_nodes_in_group("cryptids"):
+		if shade.species=="shade" and shade.brain!=null and shade.brain.tell>0 and (level.sight==null or level.sight.can_see(shade.position)):
+			canvas.draw_circle(shade.position+Vector2(-4,-17),2,Color("e8d6ff"))
+			canvas.draw_circle(shade.position+Vector2(4,-17),2,Color("e8d6ff"))
 	# Prints stay readable with muted/deafened audio and obey actual sight.
 	for enemy: CampCryptid in canvas.get_tree().get_nodes_in_group("cryptids"):
 		if enemy.species!="nobody" or enemy.brain==null: continue

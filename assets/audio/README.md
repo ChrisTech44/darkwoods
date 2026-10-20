@@ -174,3 +174,14 @@ now −1 dB (source bytes/hash unchanged). This is a measured headroom correctio
 not human mix/listening acceptance. Radio/stinger shutdown now releases all
 native streams and blocks delayed radio callbacks after stop. See the
 [executed server/audio review](../../docs/server_review.md).
+
+
+## 20 October 2026 original creature cues
+
+Fourteen new MP3 cues were synthesized by `tools/generate_habit_sounds.py` using
+deterministic oscillators/noise and encoded with ffmpeg. These are project-generated
+audio, separate from the user-supplied recordings and their provenance limits.
+The manifest records each hash, duration and bus. The [new monster plan](../../docs/new_monster_plan.md)
+retains the desired voice/recording targets. Native decoding and bus capture,
+signature routing and exactly-once ENet playback are checked separately from
+human listening/mix and Internet/platform acceptance.

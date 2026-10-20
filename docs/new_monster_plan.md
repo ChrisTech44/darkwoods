@@ -1,6 +1,6 @@
 # New monster plan: five habit-breakers and an invisible hunter
 
-20 October 2026. **Status: implementation in progress.** Executed increments are listed below;
+20 October 2026. **Status: source implementation complete; human acceptance pending.** Executed increments are listed below;
 the detailed tables retain their approved design targets and open acceptance
 limits. This plan covers six woods creatures and their sounds. Each creature is built from hooks that already exist in the code
 (listed per creature) so that no new terrain, water, physics, collision, item or
@@ -14,6 +14,7 @@ shared 12-credit design sheet.
 
 ## Delivered increments
 
+- **shade**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (97 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/shade_results.json).
 - **magician**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (84 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/magician_results.json).
 - **huntmaster**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (73 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/huntmaster_results.json).
 - **nobody**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (64 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/nobody_results.json).
@@ -44,7 +45,7 @@ Each creature follows the existing brain recipe:
 1. `scripts/ai/brains/<species>.gd` extending `CreatureBrain` (host-only logic;
    `snapshot()`/`restore()` for client drawing).
 2. A spawn entry so it joins the full Woods roster. This takes the roster from
-   31 creatures plus the Stalker to 37 (see open decisions).
+   31 creatures plus the Stalker to 38 plus the Stalker with the additional Shade.
 3. Field-guide name and one tip (`CreatureBrain` journal fields).
 4. A `CreatureSamples` signature so Christian can borrow it (required by the
    [four-survivor overhaul](four_survivor_overhaul.md)); call
@@ -57,8 +58,8 @@ Each creature follows the existing brain recipe:
 7. An integration test in `tests/integration/` covering the trigger, the
    punishment, the counter and online replication.
 
-None of the six adds a movement-blocking status, so `LocalPrediction.EFFECTS`
-does not change. Any later change that alters movement must add it there.
+The copied Huntmaster adds `rally` to `LocalPrediction.EFFECTS`; the wheel also
+projects its two speed outcomes. All use the shared movement path.
 
 ---
 
@@ -227,7 +228,49 @@ entry, Christian sample, integration test, then the log and push.
 - Playback and AI stimulus checked separately where both apply.
 - Christian's sample works and keeps its drawback.
 
-## Open decisions for the user
+## 7. The Shade: agreed follow-up
+
+The Shade hides in dark pockets rather than a player-shaped shadow. Players have
+a cosmetic body glow, not a directional shadow system. It creeps at 45 px/s,
+cannot cross illuminated ground, and opens two glowing eyes for a 2s windup
+within 80 px. Walking beyond 100 px, breaking sight or entering light cancels the
+strike. A landed strike deals 50 health through normal grace, wards and John's
+reduced/deferred damage; it then rests 8s. A steady beam for 1s or flash disperses
+it for 8s. Flares and world lamps also stop the windup.
+
+Host rules sample paths every 6 px and use charged beams with wall line of sight
+and the inner 70% radius of native lamps. This is a gameplay light threshold,
+not exact GPU pixel/shadow readback. The cosmetic player glow is excluded.
+Christian's copy leaves a stationary 2s ambush at the original dark patch. It
+strikes the nearest body within 80 px, including its caster; creatures receive a
+2s stun because they have no health. Lit ground rejects an uncast sample; light
+arriving during the windup cancels its strike. No AI noise stimulus is added.
+
+## Implementation decisions and remaining acceptance
+
+The defaults below are resolved for this source version:
+
+- Every type appears every night: 38 cryptids plus the Stalker, 29 roaming types.
+- Native Huntmaster haste is 30%/15s; copied haste is 20%/10s for both teams.
+  Stronger haste wins; the Stalker remains capped at 90 px/s.
+- Magician skips held bodies, closed camp, van boarding space, blocked landings
+  and guards whose territory would be violated. It avoids consecutive targets
+  when another eligible survivor exists; solo survivors can be targeted again.
+- Vulture uses the existing flying-body collision pattern (mask/layer zero),
+  instead of the proposal's draw-only flight. No terrain collision is changed.
+- Night-Light Kid and Nobody spawn outside all regions. The Kid also ignores
+  survivors in the Snuffer's territory, avoiding contradictory light demands.
+- Footprints draw on the unshaded ability canvas with sight checks, so their
+  visual warning remains readable without sound.
+- One shared 12-credit SpriteCook sheet provides front designs, with procedural
+  bob/lean in the atlases. Directional animation and human art acceptance remain
+  open; no extra generation or paid animation was purchased.
+- Fourteen original synthesized cues are wired and routed, replacing prototype
+  placeholders. The wish list below remains the recording/polish target;
+  intelligible spoken lines, real-device listening and other-platform/Internet
+  endurance acceptance are not claimed.
+
+### Superseded open questions (retained design history)
 
 - **Roster size.** Every type currently spawns every Woods night. Adding six takes
   it to 37 creatures plus the Stalker. Keep "everyone, every night", or rotate

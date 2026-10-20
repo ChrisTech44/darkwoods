@@ -22,6 +22,13 @@ stop. Wet footsteps' runtime gain drops from +4 to −1 dB for measured peak
 headroom, preserving the source MP3. No listening/microphone acceptance is added.
 [Server/audio findings and evidence](server_review.md).
 
+**20 October creatures:** fourteen original synthesized cues now cover the seven
+new creatures. Their signature events replicate once; loops follow the Kid and
+Nobody. Lifeguard/Kid AI noise remains separate from playback. These are original
+procedural textures, not recorded spoken performances. The [monster plan](new_monster_plan.md)
+retains recording targets; [executed evidence](evidence/wheel_monsters/README.md)
+distinguishes decode/routing checks from human listening acceptance.
+
 ## Reviewer's assessment
 
 The atmosphere already has substantial coverage: woods/bog beds, campfire, rain,

@@ -114,6 +114,7 @@ func creature_checks() -> void:
 	if "nobody" in RoundPlan.ROAMER_SPECIES: await nobody_checks()
 	if "huntmaster" in RoundPlan.ROAMER_SPECIES: await huntmaster_checks()
 	if "magician" in RoundPlan.ROAMER_SPECIES: await magician_checks()
+	if "shade" in RoundPlan.ROAMER_SPECIES: await shade_checks()
 
 func specimen(kind: String, at: Vector2) -> CampCryptid:
 	var enemy: CampCryptid=load("res://scenes/actors/cryptid.tscn").instantiate()
@@ -321,11 +322,12 @@ func huntmaster_checks() -> void:
 	horn.stun(1)
 	check(horn.brain.tell==0,"flash_interrupts_support_horn")
 	actor.role="christian"
+	friend.haste_remaining=0
 	actor.kit.sample="huntmaster"
 	actor.ability_cooldown=0
 	check(CreatureSamples.use(actor),"huntmaster_sample_accepted")
 	CreatureSamples.advance(actor,1)
-	check(actor.has_effect("rally") and friend.haste_remaining==15,"copied_horn_buffs_both_friends_and_creatures")
+	check(actor.has_effect("rally") and friend.sample_state.timers.rally==10 and is_equal_approx(friend.motion_speed(100),120),"copied_horn_buffs_both_friends_and_creatures")
 	check(LocalPrediction.valid(LocalPrediction.capture(actor)),"rally_has_valid_owner_movement_projection")
 	actor.effects.clear()
 	actor.role="max"
@@ -374,3 +376,81 @@ func magician_checks() -> void:
 	actor.role="max"
 	mage.queue_free()
 	other.queue_free()
+
+func shade_checks() -> void:
+	CreatureSamples.finish_cast(actor)
+	actor.effects.clear()
+	actor.flashlight_on=false
+	actor.kit.form=""
+	actor.hidden_spot=-1
+	for encounter: Dictionary in level.plan.encounters:
+		var at: Vector2=encounter.position
+		if SurvivorKits.safe_point(actor,at) and SurvivorKits.safe_point(actor,at+Vector2(40,0)) and ShadowLight.dark_path(level,at,at+Vector2(40,0)) and level.clear_path(at,at+Vector2(40,0)):
+			actor.position=at
+			break
+	actor.health=100
+	actor.hurt_time=0
+	actor.invulnerability=0
+	actor.ward_remaining=0
+	actor.ability_active=0
+	actor.role="max"
+	var shade:=specimen("shade",actor.position+Vector2(40,0))
+	await frames()
+	check(not ShadowLight.lit(level,shade.position),"shade_fixture_uses_actual_dark_ground")
+	shade.brain.physics(0.01)
+	check(shade.brain.tell==2,"shade_telegraphs_half_health_strike_for_two_seconds")
+	level.hud.broadcast.hide()
+	actor.notice_time=0
+	level.message_time=0
+	await shot("shade_eyes")
+	shade.brain.physics(2.1)
+	check(actor.health==50 and shade.brain.rest==8,"shade_half_health_hit_has_eight_second_recovery")
+	actor.health=100
+	actor.invulnerability=0
+	actor.role="john"
+	actor.ability_active=3
+	shade.brain.rest=0
+	shade.brain.physics(0.01)
+	shade.brain.physics(2.1)
+	check(actor.health==100 and actor.kit.debt==25,"john_halves_and_defers_shade_damage_during_ability")
+	actor.kit.debt=0
+	actor.role="max"
+	actor.ability_active=0
+	actor.flashlight_on=true
+	actor.flashlight_charge=50
+	actor.facing=actor.position.direction_to(shade.position)
+	shade.brain.rest=0
+	shade.brain.tell=2
+	shade.brain.physics(1.1)
+	check(shade.brain.tell==0 and shade.brain.rest==8,"steady_beam_cancels_windup_and_disperses_shade")
+	check(not ShadowLight.dark_path(level,shade.position,actor.position),"lit_ground_blocks_shade_movement_path")
+	actor.flashlight_charge=0
+	check(not ShadowLight.lit(level,shade.position),"empty_flashlight_cannot_counter_shade")
+	actor.flashlight_on=false
+	var flare: Node2D=load("res://scripts/items/flare.gd").new()
+	flare.position=shade.position
+	level.world_objects.add_child(flare)
+	check(ShadowLight.lit(level,shade.position),"native_flare_counts_as_shade_counter")
+	flare.queue_free()
+	await frames()
+	actor.role="christian"
+	actor.hurt_time=0
+	actor.kit.sample="shade"
+	actor.ability_cooldown=0
+	actor.health=100
+	actor.invulnerability=0
+	check(CreatureSamples.use(actor),"shade_sample_accepts_dark_ground")
+	await shot("shade_sample")
+	CreatureSamples.advance(actor,2.1)
+	check(actor.health==50 and actor.kit.sample.is_empty(),"copied_ambush_can_hit_caster_and_consumes_once")
+	actor.kit.sample="shade"
+	actor.ability_cooldown=0
+	actor.flashlight_charge=50
+	actor.flashlight_on=true
+	actor.facing=Vector2.RIGHT
+	# A nearby native radial lamp proves the lit-ground rejection independently of beam angle.
+	var lamp:=CampLights.lamp(level.world_objects,actor.position,60,Color.WHITE)
+	check(not CreatureSamples.use(actor) and actor.kit.sample=="shade","lit_ground_preserves_uncast_shade_sample")
+	lamp.queue_free()
+	actor.role="max"
+	shade.queue_free()

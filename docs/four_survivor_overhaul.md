@@ -28,7 +28,7 @@ acceptance remains pending. Target-only differences are called out explicitly.
   10s; secondary pounces have 3s cooldown. Most copied AI statuses cap at 6s;
   headline sensory disruption caps at 2s, with no frog/hold-lock on the Stalker.
   Activations have warnings and finite cleanup; sample casts cannot earn samples.
-- Protocol is `lnac-net-22`. Host RNG, cash receipts/spills, sample state and the
+- Protocol is `lnac-net-30`. Host RNG, wheel outcomes, sample state and the
   compact movement projection replicate; clients cannot award these outcomes.
 
 Current implementation differences to assess explicitly: creature slime uses a
@@ -430,4 +430,13 @@ Implementation verification and its limits are recorded in the
 contract; distinguish individual acceptance cases from the existence of handlers.
 The optional Stalker/Lake Thing special-source proposals remain outside the pool.
 
-20 October amendment: [playtest fixes and unimplemented Max/monster proposals](playtest_followup.md).
+20 October amendment: [playtest fixes and superseded Max/monster proposals](playtest_followup.md).
+
+
+20 October monster amendment: all seven new creature signatures are implemented.
+The copied Huntmaster gives nearby survivors and creatures +20% speed for 10s;
+the real horn gives creatures +30% for 15s. Stronger haste takes precedence,
+without multiplying the two. The Stalker keeps its final 90 px/s cap.
+The copied Shade winds up for 2s on the original dark patch and can strike its
+caster. Light cancels its strike; creatures take a 2s stun rather than damage.
+The [monster plan](new_monster_plan.md) records mechanics and acceptance limits.

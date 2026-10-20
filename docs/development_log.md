@@ -1,5 +1,46 @@
 # Development log
 
+## 2026-10-20 — completed wheel/creature regression and maintained specification
+
+All seven planned/agreed additions now have host-owned brains, replicated tells,
+SpriteCook designs, field-guide tips, counters, cue routing and Christian copies.
+Corrected the copied Huntmaster to the plan's +20%/10s for both teams, while the
+native horn stays +30%/15s; stronger haste wins and the Stalker stays capped.
+Added copied-signature area guides using the existing creature designs. No extra
+paid generation or animation: total SpriteCook spend remains 12 credits (296 left).
+
+The Shade's light query excludes cosmetic body glow, uses actual lamp interiors,
+charged beams/fog range and line-of-sight, and prevents crossing lit path samples.
+It uses no GPU readback or new directional player-shadow system. Native captured
+eyes and copied-ambush guides were inspected; frozen AI/director, staged poses and
+forced Deep Night are documented. Native MP3 capture verifies all fourteen new
+cues emit nonzero PCM and both loops wrap; it does not establish human mix quality.
+
+Updated stale roster constants in dedicated/seed tests and supplied legitimate
+prerequisites for Vulture/Shade catalogue checks. Existing ambient-cue tests now
+check signature cues are not faked by chase transitions. Current guides replace
+Max's wallet claims and document 38 cryptids plus the Stalker / rules30. Historical
+package metadata remains historical; no server deployment or package rebuild.
+
+Required import/startup, applicable gameplay/audio/ENet/dedicated regressions,
+359 changed-document local links and diff whitespace checks pass.
+[Executed results, screenshots and acceptance limits](evidence/wheel_monsters/final_results.json).
+
+
+## 2026-10-20 — shade: verified creature increment
+
+Implemented shade from the monster plan, including its full-roster spawn,
+SpriteCook design, journal tip, host-owned mechanics, counters, replicated tell
+and Christian signature. Source gameplay/capture gate passes 97
+cumulative assertions; real two-process ENet verifies matching brain state and
+exactly-once accepted cue replay. Audio is original deterministic synthesis from
+`tools/generate_habit_sounds.py`; playback routing and the AI noise path are
+separate. Required import/startup and diff checks pass. Normal-light captures use
+frozen enemies/director, staged poses and dismissed transient title banners;
+no microphones or listening-quality/Internet/platform acceptance is claimed.
+[Results and limitations](evidence/wheel_monsters/shade_results.json).
+Current protocol: lnac-net-30. No further SpriteCook credits used.
+
 ## 2026-10-20 — magician: verified creature increment
 
 Implemented magician from the monster plan, including its full-roster spawn,

@@ -278,12 +278,22 @@ func catalogue_checks() -> void:
 			CreatureSamples.history[bodies[i].get_instance_id()] = [bodies[i].position-Vector2(15,0)]
 		for role in ["john","max","alex"]:
 			friends[role].position = Vector2(96,384)
+		if kind=="vulture":
+			friends.john.position=origin+Vector2(0,40)
+			friends.john.status=CampPlayer.Status.DOWNED
+		if kind=="shade":
+			christian.flashlight_on=false
+			for encounter: Dictionary in level.plan.encounters:
+				if not ShadowLight.lit(level,encounter.position):
+					christian.position=encounter.position
+					break
 		check(level.abilities.use(christian),"catalogue_cast_"+kind)
 		check(christian.kit.sample.is_empty(),"catalogue_single_consumption_"+kind)
 		if kind in CreatureSamples.FORMS:
 			check(christian.kit.form==kind,"catalogue_distinct_form_"+kind)
 			continue
 		CreatureSamples.advance(christian,3.1)
+		friends.john.status=CampPlayer.Status.ALIVE
 		# Real Witch projectiles advance along their swept segment, not a point AoE.
 		if kind in SamplePresentation.SHOTS:
 			check(not bodies[0].sample_state.get("timers",{}).has("face_moth"),"shot_has_real_travel_before_impact_"+kind)

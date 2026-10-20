@@ -92,7 +92,7 @@ func server() -> void:
 	if level.plan.expedition:
 		var cryptids: Array=get_nodes_in_group("cryptids")
 		var species: Array=cryptids.map(func(enemy: CampCryptid) -> String: return enemy.species)
-		check(cryptids.size()==31 and get_nodes_in_group("killers").size()==32,"dedicated_spawns_full_32_enemy_roster")
+		check(cryptids.size()==RoundPlan.CRYPTID_COUNT and get_nodes_in_group("killers").size()==RoundPlan.CRYPTID_COUNT+1,"dedicated_spawns_full_enemy_roster")
 		var complete := true
 		for kind: String in CampProfile.TIPS:
 			if kind!="stalker": complete=complete and kind in species
@@ -207,7 +207,7 @@ func client() -> void:
 		var complete := true
 		for kind: String in CampProfile.TIPS:
 			if kind!="stalker": complete=complete and kind in species
-		check(species.size()==31 and get_nodes_in_group("killers").size()==32 and complete,"client_builds_every_authoritative_creature_type")
+		check(species.size()==RoundPlan.CRYPTID_COUNT and get_nodes_in_group("killers").size()==RoundPlan.CRYPTID_COUNT+1 and complete,"client_builds_every_authoritative_creature_type")
 	var handled := ""
 	while net.active:
 		await process_frame

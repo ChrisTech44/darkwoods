@@ -96,6 +96,7 @@ func interact(actor: CampPlayer) -> bool:
 		"bell":
 			cooldown = 12
 			level.loud_noise(action["position"], 1100)
+			level.soundscape.broadcast("village_bell",action["position"])
 			level.announce("The village bell rings. Footsteps turn toward the square!")
 		"supplies":
 			action["used"] = true

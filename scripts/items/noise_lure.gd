@@ -9,6 +9,7 @@ func _physics_process(delta: float) -> void:
 	elapsed += delta
 	if elapsed >= 1.5 + pulses * 2.0:
 		level.loud_noise(global_position, 480)
+		level.soundscape.broadcast("noise_tin_rattle",global_position)
 		pulses += 1
 		queue_redraw()
 	if pulses >= 3:

@@ -158,8 +158,8 @@ or self-recorded MP3s; drop them in this folder and they can be wired into
 | --- | --- | --- |
 | A man whistling *Row, Row, Row Your Boat* slowly (and a faster take) | The stalker's camp song | Still the synthesised whistle (`scripts/ai/camp_song.gd`) |
 | Thread whip / snap | The Seamstress | Still `monster_7` pitched |
-| A snore | Lullaby Saint sleepers | None (AI noise only) |
-| Noise-tin rattle, flashlight click, pickup / part-installed, flare ignition | Items and light | None yet ([review](../../docs/sound_gap_review.md)) |
+| A snore | Lullaby Saint sleepers | Delivered 20 October; follows replicated sleep state |
+| Pickup / part-installed, battery swap / empty click, flash burst | Items and light | Still wanted ([review](../../docs/sound_gap_review.md)); tin, light toggles and flare supplied 20 October |
 
 Delivered on 18 October (see the table above): dog bark/whine, sneeze, giggle,
 camera shutter/charge, train, squeaky toy, mud gurgle, lullaby, frog croak,
@@ -185,3 +185,24 @@ The manifest records each hash, duration and bus. The [new monster plan](../../d
 retains the desired voice/recording targets. Native decoding and bus capture,
 signature routing and exactly-once ENet playback are checked separately from
 human listening/mix and Internet/platform acceptance.
+
+
+## 20 October 2026 supplied recording pack
+
+Twelve new user recordings now provide fifteen runtime cues. The original files
+are preserved under `art_sources/audio/2026-10-20`; six synthetic cues are replaced
+(Kid scream, Nobody breathing, Vulture squawk, Magician drumroll/ending and
+Huntmaster horn), and nine dedicated cues are added. **The Huntmaster uses the
+user's mega horn**, including Christian's copy. Eight other creature synth cues
+remain. Generator safeguards preserve the supplied replacements.
+
+New feedback: Lifeguard shout, three native tin-pulse rattles, village bell,
+flashlight on/off clicks, flare ignition/following hiss, sleep snoring and lake
+impact. Loops stop with their source state or round. Host cues replay once;
+no extra AI noise or gameplay timers are added. Flashlight toggles use a shared
+accepted-action path, respecting empty/dark/forced-on locks.
+
+Mono exports, fades, crossfades, levels and post-encode hashes are documented in
+the [processing/evidence report](../../docs/evidence/audio_pack_20261020/README.md)
+and [manifest](manifest.json). Measured headroom/native PCM is verified; human
+mix/listening and other-platform/Internet acceptance remain open.

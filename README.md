@@ -1095,6 +1095,9 @@ replaying creates fresh emitters. Muting does not change monster hearing.
 Voice chat is optional (see [Play with friends](#play-with-friends)); voice
 audio is never recorded or saved. Local sound follows replicated world movement; synchronized
 audio event/listening acceptance remains pending. See the [cue manifest and provenance notes](assets/audio/README.md).
+The 20 October supplied pack adds recorded monster voices and the Huntmaster
+mega horn, plus tin rattles, flashlight clicks, flare ignition/hiss, snoring,
+village bell and lake impact. See the [audio pack report](docs/evidence/audio_pack_20261020/README.md).
 Final listening/balance and Windows/Linux/exported audio remain unverified.
 
 ![Pause menu with saved Master, Effects, Ambience and Music controls](docs/screenshots/audio_pause_mixer.png)

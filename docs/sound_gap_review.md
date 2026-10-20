@@ -29,6 +29,20 @@ procedural textures, not recorded spoken performances. The [monster plan](new_mo
 retains recording targets; [executed evidence](evidence/wheel_monsters/README.md)
 distinguishes decode/routing checks from human listening acceptance.
 
+**20 October supplied-pack update:** twelve uploads now supply fifteen trimmed,
+levelled mono cues, including the user's mega horn for Huntmaster. Lifeguard
+speech, Kid scream, Nobody breathing, Vulture squawk, both Magician sections,
+noise-tin pulses, bell, flashlight clicks, flare ignition/hiss, snoring and lake
+impact are wired. [Edits, levels and execution evidence](evidence/audio_pack_20261020/README.md).
+The tables below retain the original audit baseline; delivered entries are
+superseded by this update and the earlier supplied-pack amendments.
+
+Remaining requests: recorded Stalker camp whistle, thread snap, battery swap/empty
+click, flash burst, pickup/part-install completion, revive completion, spray hiss,
+phase stingers and other location/extraction accents. New-monster polish still
+includes recorded Kid whimper, Vulture peck/wings, Huntmaster inhale, Nobody
+exhale/steps, Lifeguard chair creaks and Magician poof. Shade still uses synthesis.
+
 ## Reviewer's assessment
 
 The atmosphere already has substantial coverage: woods/bog beds, campfire, rain,

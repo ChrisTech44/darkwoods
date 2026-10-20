@@ -216,8 +216,13 @@ Protocol is lnac-net-30. [Investigation and superseded proposals](docs/playtest_
 retain the playtest history. The [new monster plan](docs/new_monster_plan.md)
 now has implemented Lifeguard, Night-Light Kid, Vulture, Huntmaster, Magician,
 Nobody, plus the agreed Shade. All have host brains, journal entries, copied
-signatures and online state/cue checks. Original synthesized cues are implemented;
-recorded voice performances and human balance/listening acceptance remain open.
+signatures and online state/cue checks. The 20 October user pack adds recorded
+Lifeguard/Kid speech and replaces six synth cues, including the Huntmaster's mega
+horn. Tin pulses, accepted flashlight toggles, flare ignition/following hiss,
+sleep snoring, village bell and lake impact now have supplied playback. Fifteen
+processed cues from twelve uploads retain originals, edits/hashes and measured
+headroom. [Audio pack execution and limits](docs/evidence/audio_pack_20261020/README.md).
+Human balance/listening and platform/Internet acceptance remain open.
 
 20 October wheel amendment: Max now spins a names-only weighted wheel every 60s,
 replacing cash and purchases. Shared prediction includes wheel movement effects.

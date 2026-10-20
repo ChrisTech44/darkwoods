@@ -1076,12 +1076,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif not paused and event.is_action_pressed("eat"):
 		use_supply(player, "rations")
 	elif not paused and event.is_action_pressed("flashlight"):
-		if player.has_effect("dark"):
-			announce("The card's curse: your flashlight won't light.", player)
-		elif not player.expedition or player.flashlight_charge > 0:
-			player.flashlight_on = not player.flashlight_on
-		else:
-			announce("Flashlight empty. R uses a spare battery.")
+		toggle_flashlight(player)
 		get_viewport().set_input_as_handled()
 
 
@@ -1108,6 +1103,20 @@ func retry_round() -> void:
 	get_node("/root/Session").load_game(true)
 
 
+func toggle_flashlight(actor: CampPlayer) -> bool:
+	if paused or finished or actor.status!=CampPlayer.Status.ALIVE or not actor.is_in_group("survivors"): return false
+	if actor.has_effect("nightlight"): return false
+	if actor.has_effect("dark"):
+		announce("The card's curse: your flashlight won't light.",actor)
+		return false
+	if actor.expedition and actor.flashlight_charge<=0:
+		announce("Flashlight empty. R uses a spare battery.",actor)
+		return false
+	actor.flashlight_on=not actor.flashlight_on
+	soundscape.broadcast("flashlight_on" if actor.flashlight_on else "flashlight_off",actor.global_position)
+	return true
+
+
 func use_supply(actor: CampPlayer, kind: String) -> bool:
 	if paused or finished or actor.status != CampPlayer.Status.ALIVE or not actor.is_in_group("survivors") or actor.supplies.get(kind, 0) <= 0:
 		return false
@@ -1125,6 +1134,7 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 		var target := actor.global_position + actor.facing * 28
 		flare.position = target if clear_path(actor.global_position, target) else actor.global_position
 		world_objects.add_child(flare)
+		soundscape.broadcast("flare_ignite",flare.global_position)
 		actor.noise_emitted.emit(flare.global_position)
 		announce("Flare out! Teeth hate it. Wings don't.",actor)
 	elif kind == "battery_pack":

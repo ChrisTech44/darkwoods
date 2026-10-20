@@ -242,6 +242,7 @@ func _lake(delta: float) -> void:
 		lake_tell = maxf(0.0,lake_tell-delta)
 		if lake_tell <= 0:
 			lake_flash = 0.5
+			level.soundscape.broadcast("water_splash",lake_target)
 			for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
 				if actor.status == CampPlayer.Status.ALIVE and actor.global_position.distance_to(lake_target) < 26 and level.clear_path(lake_target,actor.global_position):
 					actor.receive_hit()

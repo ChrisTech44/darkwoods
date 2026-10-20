@@ -57,7 +57,7 @@ const WORLD_LOOPS := ["generator", "fire_loop", "boat_engine", "helicopter"]
 ## (it is hunting you) brings a fast, loud one.
 const NEAR_RANGE := 300.0
 var near_gain := 0.0
-const LOUD_CUES := {"field_whistle":900.0,"car_alarm": 1400.0, "air_horn": 1500.0, "bells": 1000.0, "car_start": 700.0, "dog_bark": 700.0, "train": 650.0, "fire_whoosh": 600.0, "thunder": 600.0,
+const LOUD_CUES := {"lifeguard_shout":700.0,"noise_tin_rattle":500.0,"village_bell":1200.0,"field_whistle":900.0,"car_alarm": 1400.0, "air_horn": 1500.0, "bells": 1000.0, "car_start": 700.0, "dog_bark": 700.0, "train": 650.0, "fire_whoosh": 600.0, "thunder": 600.0,
 	"metal_clang": 400.0, "chain_rattle": 400.0, "bear_trap": 450.0, "camera_charge": 420.0, "camera_shutter": 420.0, "sneeze": 320.0}
 ## Survivor voices (hurt/held/down) carry a little past the screen edge.
 const VOICE_RANGE := 300.0
@@ -510,7 +510,11 @@ func _follow_loops() -> void:
 		# The Groundskeeper's mower engine: always audible from well off-screen.
 		elif enemy.species == "groundskeeper" and enemy.enabled and enemy.brain != null and enemy.brain.riding and enemy.global_position.distance_to(listener) < MOWER_RANGE + 60.0:
 			wanted[enemy.get_instance_id()] = ["boat_engine", enemy]
+	for flare: Node2D in get_tree().get_nodes_in_group("flares"):
+		if flare.remaining>0: wanted["flare:%d" % flare.get_instance_id()]=["flare_hiss",flare]
 	for actor: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if actor.status == CampPlayer.Status.ALIVE and actor.has_effect("asleep"):
+			wanted["snore:%d" % actor.get_instance_id()]=["snore",actor]
 		if actor.status == CampPlayer.Status.ALIVE and actor.has_effect("frog"):
 			wanted[actor.get_instance_id()] = ["frog_croak", actor]
 		if actor.status != CampPlayer.Status.ALIVE: continue

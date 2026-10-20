@@ -42,6 +42,7 @@ static func fire(actor: CampPlayer, kind: String) -> void:
 				if friend.status==CampPlayer.Status.ALIVE and friend.flashlight_charge>0 and friend.position.distance_to(actor.position)<=150 and level.clear_path(actor.position,friend.position): friend.add_effect("nightlight",15);friend.flashlight_on=true
 		"lifeguard":
 			level.soundscape.broadcast("lifeguard_whistle",actor.position)
+			level.soundscape.broadcast("lifeguard_shout",actor.position)
 			level.loud_noise(actor.position,700)
 			for friend: CampPlayer in actor.get_tree().get_nodes_in_group("survivors"):
 				if friend.status==CampPlayer.Status.ALIVE and friend.position.distance_to(actor.position)<=200 and level.clear_path(actor.position,friend.position): friend.stamina=0; friend.exhausted=true

@@ -1,4 +1,4 @@
-"""Two-process real ENet brain-state/cue checks; synthetic playback, no microphones."""
+"""Two-process real ENet brain-state/cue checks; accepted playback, no microphones."""
 import json,os,re,socket,subprocess,time
 from godot_cli import ROOT,godot_binary
 

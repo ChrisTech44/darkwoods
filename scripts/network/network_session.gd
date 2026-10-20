@@ -551,8 +551,7 @@ func _accept_action(id: int, generation: int, code: String, slot: int) -> void:
 		"ability_release": world.abilities.release(actor)
 		"ability_cancel": SurvivorKits.cancel_stake(actor)
 		"give": world.abilities.give(actor)
-		"light":
-			if not actor.has_effect("nightlight") and (not actor.expedition or actor.flashlight_charge>0): actor.flashlight_on=not actor.flashlight_on
+		"light": world.toggle_flashlight(actor)
 
 @rpc("authority","call_remote","unreliable",1)
 func _snapshot_piece(generation: int, sequence: int, part: int, count: int, bytes: PackedByteArray) -> void:

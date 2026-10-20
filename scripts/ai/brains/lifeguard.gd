@@ -24,6 +24,7 @@ func physics(delta: float) -> bool:
 			punished[target.get_instance_id()]=12.0 if level().night_clock.phase>=3 else 20.0
 			level().loud_noise(target.position,700)
 			cue("lifeguard_whistle")
+			cue("lifeguard_shout")
 			announce("NO RUNNING!",target)
 			flash=1.0
 			target=null

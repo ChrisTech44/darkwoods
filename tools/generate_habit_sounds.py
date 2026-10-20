@@ -13,6 +13,8 @@ CUES={
 def main():
  manifest=ROOT/'assets/audio/manifest.json';data=json.loads(manifest.read_text())
  for cue,(length,kind,loop) in CUES.items():
+  # Preserve user recordings that have replaced these prototypes.
+  if cue in data["cues"] and data["cues"][cue].get("creator")!="Project procedural audio":continue
   rng=random.Random(cue);rate=24000;count=int(rate*length);buf=[];smooth=0.0
   for i in range(count):
    t=i/rate;u=t/length;env=math.sin(math.pi*u)**2;noise=rng.uniform(-1,1);smooth=.88*smooth+.12*noise
@@ -31,6 +33,6 @@ def main():
    raw=Path(folder)/'cue.wav'
    with wave.open(str(raw),'wb') as out:out.setnchannels(1);out.setsampwidth(2);out.setframerate(rate);out.writeframes(b''.join(buf))
    subprocess.run(['ffmpeg','-loglevel','error','-y','-i',str(raw),'-codec:a','libmp3lame','-q:a','4',str(target)],check=True)
-  data['cues'][cue]={'path':f'res://assets/audio/{cue}.mp3','bus':'Effects','loop':loop,'gain_db':-2,'duration_seconds':length,'sha256':hashlib.sha256(target.read_bytes()).hexdigest(),'source':'tools/generate_habit_sounds.py, deterministic original synthesis','creator':'Project procedural audio','license':'Original project-generated asset','edits':'Mono synthesized PCM encoded MP3; no sampled recordings','format':'MP3; native Godot import','limit':'Bounded positional voices or round-owned following loop'}
+  data['cues'][cue]={'path':f'res://assets/audio/{cue}.mp3','bus':'Effects','loop':loop,'gain_db':(-10 if cue=='lifeguard_whistle' and 'lifeguard_shout' in data['cues'] else -2),'duration_seconds':length,'sha256':hashlib.sha256(target.read_bytes()).hexdigest(),'source':'tools/generate_habit_sounds.py, deterministic original synthesis','creator':'Project procedural audio','license':'Original project-generated asset','edits':'Mono synthesized PCM encoded MP3; no sampled recordings','format':'MP3; native Godot import','limit':'Bounded positional voices or round-owned following loop'}
  manifest.write_text(json.dumps(data,indent=2)+'\n')
 if __name__=='__main__':main()

@@ -960,7 +960,7 @@
       "path": "res://assets/audio/lifeguard_whistle.mp3",
       "bus": "Effects",
       "loop": false,
-      "gain_db": -2,
+      "gain_db": -10,
       "duration_seconds": 1.2,
       "sha256": "e26a6f2e1cffaacd15e50195f9b5109aeb5a4b902fd88ca2a5279f61db297fce",
       "source": "tools/generate_habit_sounds.py, deterministic original synthesis",
@@ -989,28 +989,40 @@
       "bus": "Effects",
       "loop": false,
       "gain_db": -2,
-      "duration_seconds": 1.0,
-      "sha256": "3ba9e963414ed3ad49e2fbc462849da55e6a28ce3161191889cade0eef2c56f7",
-      "source": "tools/generate_habit_sounds.py, deterministic original synthesis",
-      "creator": "Project procedural audio",
-      "license": "Original project-generated asset",
-      "edits": "Mono synthesized PCM encoded MP3; no sampled recordings",
-      "format": "MP3; native Godot import",
-      "limit": "Bounded positional voices or round-owned following loop"
+      "duration_seconds": 1.355,
+      "sha256": "a3105bb44f765f42897f2d2705d9a27e8e4e3cb2f4597fc7a4fcc96b6fdd2515",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/LEAVE_IT_ON.mp3",
+      "original_sha256": "d38abae8f1ca4fc0eddd4cca6e73dd553613f2b529a7151373e806c6294c9f9b",
+      "edits": "Channel 0 retained as mono; trim 0.045\u20131.4s; gain -4.959dB; 5ms attack / up to 25ms tail fades",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -8.369646956400077,
+        "mean_db": -22.446463089122844
+      }
     },
     "vulture_squawk": {
       "path": "res://assets/audio/vulture_squawk.mp3",
       "bus": "Effects",
       "loop": false,
       "gain_db": -2,
-      "duration_seconds": 0.8,
-      "sha256": "d2a30252f0ac740ad9153e34d3f8ee514552adac8a515cda1a98a6db250ef222",
-      "source": "tools/generate_habit_sounds.py, deterministic original synthesis",
-      "creator": "Project procedural audio",
-      "license": "Original project-generated asset",
-      "edits": "Mono synthesized PCM encoded MP3; no sampled recordings",
-      "format": "MP3; native Godot import",
-      "limit": "Bounded positional voices or round-owned following loop"
+      "duration_seconds": 1.192,
+      "sha256": "afa3c7644aa940360c7ee1a4dd6646507223e480f23cd17dbb2fce412124689f",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/vulture_noises.mp3",
+      "original_sha256": "c5233e6770b99b5aa44b173352c27dfb5acb1a90eb95524c2ad7f1b3688dc95b",
+      "edits": "Channel 0 retained as mono; trim 0.035\u20131.227s; gain -1.915dB; 5ms attack / up to 25ms tail fades",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -10.870547674107545,
+        "mean_db": -23.44132783907858
+      }
     },
     "vulture_peck": {
       "path": "res://assets/audio/vulture_peck.mp3",
@@ -1045,14 +1057,20 @@
       "bus": "Effects",
       "loop": false,
       "gain_db": -2,
-      "duration_seconds": 1.4,
-      "sha256": "162132b460acb659f1de2a3f681c92ac2e1a9305df6abb8af59a1d106d44c2cf",
-      "source": "tools/generate_habit_sounds.py, deterministic original synthesis",
-      "creator": "Project procedural audio",
-      "license": "Original project-generated asset",
-      "edits": "Mono synthesized PCM encoded MP3; no sampled recordings",
-      "format": "MP3; native Godot import",
-      "limit": "Bounded positional voices or round-owned following loop"
+      "duration_seconds": 4.22,
+      "sha256": "d35a69ff12a92fce6700e065198b2201f4dcfd84c9623cfebfb5be6bec878971",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/mega_horn.mp3",
+      "original_sha256": "4705b06a94ed4e6700cdcddffdb61983c99cb3a5258befd3d0469274e58e1bf7",
+      "edits": "Channel 0 retained as mono; trim 0\u20134.22s; gain -14.364dB; 5ms attack / up to 25ms tail fades",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -14.554698544960857,
+        "mean_db": -23.447469553057594
+      }
     },
     "huntmaster_inhale": {
       "path": "res://assets/audio/huntmaster_inhale.mp3",
@@ -1074,41 +1092,59 @@
       "loop": false,
       "gain_db": -2,
       "duration_seconds": 1.5,
-      "sha256": "a5f3866cebd0fe0dc39c6e67b3641cd621d37dc05e285c34f27b433430169657",
-      "source": "tools/generate_habit_sounds.py, deterministic original synthesis",
-      "creator": "Project procedural audio",
-      "license": "Original project-generated asset",
-      "edits": "Mono synthesized PCM encoded MP3; no sampled recordings",
-      "format": "MP3; native Godot import",
-      "limit": "Bounded positional voices or round-owned following loop"
+      "sha256": "6cf9aef825c84c1311f75b88ba9c56adec0e84672cde0a5fdc426238739380f5",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/drumroll_with_tada.mp3",
+      "original_sha256": "572f2ec44b43acca3f3a1a54a63e99b2d3dcddc33f8c36e3c9aa76994741efda",
+      "edits": "Channel 0 retained as mono; trim 0.065\u20132.015s; gain -0.464dB; 5ms attack / up to 25ms tail fades; pitch-preserving tempo fit to 1.5s windup",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -8.319651680839035,
+        "mean_db": -24.440512176609438
+      }
     },
     "magician_tada": {
       "path": "res://assets/audio/magician_tada.mp3",
       "bus": "Effects",
       "loop": false,
       "gain_db": -2,
-      "duration_seconds": 0.8,
-      "sha256": "7e9acee949589077211660231629a177be25cbff7c7492bdd55067a849205cf3",
-      "source": "tools/generate_habit_sounds.py, deterministic original synthesis",
-      "creator": "Project procedural audio",
-      "license": "Original project-generated asset",
-      "edits": "Mono synthesized PCM encoded MP3; no sampled recordings",
-      "format": "MP3; native Godot import",
-      "limit": "Bounded positional voices or round-owned following loop"
+      "duration_seconds": 2.535,
+      "sha256": "5c27ca43aa420575db04a23e49294ec5739c7c2171d93a28a75bb99cce73bcf4",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/drumroll_with_tada.mp3",
+      "original_sha256": "572f2ec44b43acca3f3a1a54a63e99b2d3dcddc33f8c36e3c9aa76994741efda",
+      "edits": "Channel 0 retained as mono; trim 2.015\u20134.55s; gain -4.578dB; 5ms attack / up to 25ms tail fades",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -6.540136676844558,
+        "mean_db": -25.91640818860697
+      }
     },
     "nobody_breathing": {
       "path": "res://assets/audio/nobody_breathing.mp3",
       "bus": "Effects",
       "loop": true,
       "gain_db": -2,
-      "duration_seconds": 4.0,
-      "sha256": "4e8d5485c61c8163b9db5ba309ccdd79b211c8acff1c9a8fff085ba91b9ee9bf",
-      "source": "tools/generate_habit_sounds.py, deterministic original synthesis",
-      "creator": "Project procedural audio",
-      "license": "Original project-generated asset",
-      "edits": "Mono synthesized PCM encoded MP3; no sampled recordings",
-      "format": "MP3; native Godot import",
-      "limit": "Bounded positional voices or round-owned following loop"
+      "duration_seconds": 10.5,
+      "sha256": "8c639552ce0d3f91322633d0ecff0c272652c1761b722023b7fafdb3c98ff1cc",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/slow_breathing_loop.mp3",
+      "original_sha256": "921a060b5de5e4d70433d16319e0d24f2d3e48e69a2866e11a13dcf8cd8a2864",
+      "edits": "Channel 0 retained as mono; trim 2.65\u201313.25s; gain 22.010dB; 100ms circular loop crossfade",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "Round-owned following loop",
+      "measured": {
+        "peak_db": -8.444025648542345,
+        "mean_db": -29.405213658365295
+      }
     },
     "nobody_exhale": {
       "path": "res://assets/audio/nobody_exhale.mp3",
@@ -1151,6 +1187,186 @@
       "edits": "Mono synthesized PCM encoded MP3; no sampled recordings",
       "format": "MP3; native Godot import",
       "limit": "Bounded positional voices or round-owned following loop"
+    },
+    "lifeguard_shout": {
+      "path": "res://assets/audio/lifeguard_shout.mp3",
+      "bus": "Effects",
+      "loop": false,
+      "gain_db": -2,
+      "duration_seconds": 1.78,
+      "sha256": "d6a7a8d1e7e24aa8564c97fbf4d50cd6a066def8e14be1f0ca4cc841f6005a40",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/NO_RUNNING.mp3",
+      "original_sha256": "cb100f0f9a189d989831a1b8f2b0892994d88ff42266a728e5e096b1eda1d00b",
+      "edits": "Channel 0 retained as mono; trim 0\u20131.78s; gain -3.407dB; 5ms attack / up to 25ms tail fades",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -6.392327263670659,
+        "mean_db": -25.738052007978652
+      }
+    },
+    "noise_tin_rattle": {
+      "path": "res://assets/audio/noise_tin_rattle.mp3",
+      "bus": "Effects",
+      "loop": false,
+      "gain_db": -2,
+      "duration_seconds": 1.79,
+      "sha256": "d5ed076237500db54bee4ef85915385b662af84901ba34b85a5da6413ed6d029",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/can_rattling.mp3",
+      "original_sha256": "9a4bf3f5d9538e9fb5bcf7a4a81b553198f735761fc35f64362ce301db8c7e4f",
+      "edits": "Channel 1 retained as mono; trim 0.36\u20132.15s; gain 2.689dB; 5ms attack / up to 25ms tail fades",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -6.446555668670479,
+        "mean_db": -33.141568317188046
+      }
+    },
+    "village_bell": {
+      "path": "res://assets/audio/village_bell.mp3",
+      "bus": "Effects",
+      "loop": false,
+      "gain_db": -2,
+      "duration_seconds": 3.095,
+      "sha256": "ae2f7f03946fb33acb2c3d9c3a204882759aebfd0093db3e4680dbfb118eb98d",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/church_bell_single_toll.mp3",
+      "original_sha256": "ca915605815f338b3849633d62415e2fa42a24ae9bba4c3ccf70fa854717c8d3",
+      "edits": "Channel 1 retained as mono; trim 0.055\u20133.15s; gain -0.785dB; 5ms attack / up to 25ms tail fades",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -6.443604743053237,
+        "mean_db": -28.37995681106182
+      }
+    },
+    "flare_ignite": {
+      "path": "res://assets/audio/flare_ignite.mp3",
+      "bus": "Effects",
+      "loop": false,
+      "gain_db": -2,
+      "duration_seconds": 2.47,
+      "sha256": "95f6ee9127b8da5cb42487c66753e82579763fc7074b9ea41fb37b6824fc634f",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/flare_noise_need_analyze.mp3",
+      "original_sha256": "10421e03d36e392f1c998ce876990775bf9e5e0551aef6ed81326017e098e5af",
+      "edits": "Channel 0 retained as mono; trim 0.18\u20132.65s; gain -2.485dB; 5ms attack / up to 25ms tail fades",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -6.441341668844073,
+        "mean_db": -36.69002755281409
+      }
+    },
+    "flare_hiss": {
+      "path": "res://assets/audio/flare_hiss.mp3",
+      "bus": "Effects",
+      "loop": true,
+      "gain_db": -4,
+      "duration_seconds": 7.9,
+      "sha256": "563cbb49bac1db90d3a7bc66484e9522d836dff5de62156a2f78df0ef0f69f23",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/flare_noise_need_analyze.mp3",
+      "original_sha256": "10421e03d36e392f1c998ce876990775bf9e5e0551aef6ed81326017e098e5af",
+      "edits": "Channel 0 retained as mono; trim 2.75\u201310.75s; gain 12.632dB; 100ms circular loop crossfade",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "Round-owned following loop",
+      "measured": {
+        "peak_db": -12.662611102942826,
+        "mean_db": -28.44369753157296
+      }
+    },
+    "flashlight_on": {
+      "path": "res://assets/audio/flashlight_on.mp3",
+      "bus": "Effects",
+      "loop": false,
+      "gain_db": -2,
+      "duration_seconds": 0.165,
+      "sha256": "084be872c271af67ab5efd6dde5f671ee21124d51b0f806fe043b84d583f4f56",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/flashlight_click.mp3",
+      "original_sha256": "821217e763af22ff77265c75faf17b3dc2f0e37b359e7f1c6d3a379937342bf7",
+      "edits": "Channel 0 retained as mono; trim 0.08\u20130.245s; gain 6.533dB; 5ms attack / up to 25ms tail fades",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -6.504393613911028,
+        "mean_db": -37.36193573494242
+      }
+    },
+    "flashlight_off": {
+      "path": "res://assets/audio/flashlight_off.mp3",
+      "bus": "Effects",
+      "loop": false,
+      "gain_db": -2,
+      "duration_seconds": 0.16,
+      "sha256": "acd1ebe9e46c6153893d652d2f55a9827286c9405b59dce7872a96ac7ad02b08",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/flashlight_click.mp3",
+      "original_sha256": "821217e763af22ff77265c75faf17b3dc2f0e37b359e7f1c6d3a379937342bf7",
+      "edits": "Channel 0 retained as mono; trim 0.33\u20130.49s; gain 5.868dB; 5ms attack / up to 25ms tail fades",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -6.442697051213353,
+        "mean_db": -38.27829471975872
+      }
+    },
+    "snore": {
+      "path": "res://assets/audio/snore.mp3",
+      "bus": "Effects",
+      "loop": true,
+      "gain_db": -4,
+      "duration_seconds": 1.4,
+      "sha256": "d06e918a5385c68db11b5676d6a7cadaff481b314824be42c66c51eb0ad5d723",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/snore.mp3",
+      "original_sha256": "1d010ca1c47fb3b2f78e4e2803cd0781a6ce0dfb74ddcb17e180c508d198acd5",
+      "edits": "Channel 0 retained as mono; trim 0.14\u20131.64s; gain -4.367dB; 100ms circular loop crossfade",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "Round-owned following loop",
+      "measured": {
+        "peak_db": -16.40447829439892,
+        "mean_db": -27.443677804458112
+      }
+    },
+    "water_splash": {
+      "path": "res://assets/audio/water_splash.mp3",
+      "bus": "Effects",
+      "loop": false,
+      "gain_db": -2,
+      "duration_seconds": 0.89,
+      "sha256": "2a827bac66f1b2ad9cc766a487c07b96ce67ef337079ffb97ee79463273dbc50",
+      "source": "User supplied, 20 October 2026",
+      "creator": "Not supplied",
+      "license": "Redistribution provenance pending user documentation",
+      "original_path": "art_sources/audio/2026-10-20/water_splash.mp3",
+      "original_sha256": "de20197edd7aec007b8a3d2e45e6add57163b6878c446e71501e4b51f531980e",
+      "edits": "Channel 0 retained as mono; trim 0\u20130.89s; gain -4.590dB; 5ms attack / up to 25ms tail fades",
+      "format": "MP3 mono 48kHz / 128kbps; native Godot import",
+      "limit": "One authoritative accepted event; bounded positional voice",
+      "measured": {
+        "peak_db": -6.534032421490037,
+        "mean_db": -32.71869281685124
+      }
     }
   }
 }

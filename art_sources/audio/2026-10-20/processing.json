@@ -1,0 +1,242 @@
+[
+  {
+    "cue": "lifeguard_shout",
+    "original": "NO_RUNNING.mp3",
+    "original_sha256": "cb100f0f9a189d989831a1b8f2b0892994d88ff42266a728e5e096b1eda1d00b",
+    "channel": 0,
+    "trim_seconds": [
+      0,
+      1.78
+    ],
+    "gain_db": -3.407,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": null,
+    "duration_seconds": 1.78,
+    "peak_db": -6.392327263670659,
+    "mean_db": -25.738052007978652
+  },
+  {
+    "cue": "nightlight_scream",
+    "original": "LEAVE_IT_ON.mp3",
+    "original_sha256": "d38abae8f1ca4fc0eddd4cca6e73dd553613f2b529a7151373e806c6294c9f9b",
+    "channel": 0,
+    "trim_seconds": [
+      0.045,
+      1.4
+    ],
+    "gain_db": -4.959,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": null,
+    "duration_seconds": 1.355,
+    "peak_db": -8.369646956400077,
+    "mean_db": -22.446463089122844
+  },
+  {
+    "cue": "nobody_breathing",
+    "original": "slow_breathing_loop.mp3",
+    "original_sha256": "921a060b5de5e4d70433d16319e0d24f2d3e48e69a2866e11a13dcf8cd8a2864",
+    "channel": 0,
+    "trim_seconds": [
+      2.65,
+      13.25
+    ],
+    "gain_db": 22.01,
+    "loop_crossfade_ms": 100,
+    "exact_seconds": null,
+    "duration_seconds": 10.5,
+    "peak_db": -8.444025648542345,
+    "mean_db": -29.405213658365295
+  },
+  {
+    "cue": "vulture_squawk",
+    "original": "vulture_noises.mp3",
+    "original_sha256": "c5233e6770b99b5aa44b173352c27dfb5acb1a90eb95524c2ad7f1b3688dc95b",
+    "channel": 0,
+    "trim_seconds": [
+      0.035,
+      1.227
+    ],
+    "gain_db": -1.915,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": null,
+    "duration_seconds": 1.192,
+    "peak_db": -10.870547674107545,
+    "mean_db": -23.44132783907858
+  },
+  {
+    "cue": "magician_drumroll",
+    "original": "drumroll_with_tada.mp3",
+    "original_sha256": "572f2ec44b43acca3f3a1a54a63e99b2d3dcddc33f8c36e3c9aa76994741efda",
+    "channel": 0,
+    "trim_seconds": [
+      0.065,
+      2.015
+    ],
+    "gain_db": -0.464,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": 1.5,
+    "duration_seconds": 1.5,
+    "peak_db": -8.319651680839035,
+    "mean_db": -24.440512176609438
+  },
+  {
+    "cue": "magician_tada",
+    "original": "drumroll_with_tada.mp3",
+    "original_sha256": "572f2ec44b43acca3f3a1a54a63e99b2d3dcddc33f8c36e3c9aa76994741efda",
+    "channel": 0,
+    "trim_seconds": [
+      2.015,
+      4.55
+    ],
+    "gain_db": -4.578,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": null,
+    "duration_seconds": 2.535,
+    "peak_db": -6.540136676844558,
+    "mean_db": -25.91640818860697
+  },
+  {
+    "cue": "noise_tin_rattle",
+    "original": "can_rattling.mp3",
+    "original_sha256": "9a4bf3f5d9538e9fb5bcf7a4a81b553198f735761fc35f64362ce301db8c7e4f",
+    "channel": 1,
+    "trim_seconds": [
+      0.36,
+      2.15
+    ],
+    "gain_db": 2.689,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": null,
+    "duration_seconds": 1.79,
+    "peak_db": -6.446555668670479,
+    "mean_db": -33.141568317188046
+  },
+  {
+    "cue": "village_bell",
+    "original": "church_bell_single_toll.mp3",
+    "original_sha256": "ca915605815f338b3849633d62415e2fa42a24ae9bba4c3ccf70fa854717c8d3",
+    "channel": 1,
+    "trim_seconds": [
+      0.055,
+      3.15
+    ],
+    "gain_db": -0.785,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": null,
+    "duration_seconds": 3.095,
+    "peak_db": -6.443604743053237,
+    "mean_db": -28.37995681106182
+  },
+  {
+    "cue": "flare_ignite",
+    "original": "flare_noise_need_analyze.mp3",
+    "original_sha256": "10421e03d36e392f1c998ce876990775bf9e5e0551aef6ed81326017e098e5af",
+    "channel": 0,
+    "trim_seconds": [
+      0.18,
+      2.65
+    ],
+    "gain_db": -2.485,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": null,
+    "duration_seconds": 2.47,
+    "peak_db": -6.441341668844073,
+    "mean_db": -36.69002755281409
+  },
+  {
+    "cue": "flare_hiss",
+    "original": "flare_noise_need_analyze.mp3",
+    "original_sha256": "10421e03d36e392f1c998ce876990775bf9e5e0551aef6ed81326017e098e5af",
+    "channel": 0,
+    "trim_seconds": [
+      2.75,
+      10.75
+    ],
+    "gain_db": 12.632,
+    "loop_crossfade_ms": 100,
+    "exact_seconds": null,
+    "duration_seconds": 7.9,
+    "peak_db": -12.662611102942826,
+    "mean_db": -28.44369753157296
+  },
+  {
+    "cue": "flashlight_on",
+    "original": "flashlight_click.mp3",
+    "original_sha256": "821217e763af22ff77265c75faf17b3dc2f0e37b359e7f1c6d3a379937342bf7",
+    "channel": 0,
+    "trim_seconds": [
+      0.08,
+      0.245
+    ],
+    "gain_db": 6.533,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": null,
+    "duration_seconds": 0.165,
+    "peak_db": -6.504393613911028,
+    "mean_db": -37.36193573494242
+  },
+  {
+    "cue": "flashlight_off",
+    "original": "flashlight_click.mp3",
+    "original_sha256": "821217e763af22ff77265c75faf17b3dc2f0e37b359e7f1c6d3a379937342bf7",
+    "channel": 0,
+    "trim_seconds": [
+      0.33,
+      0.49
+    ],
+    "gain_db": 5.868,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": null,
+    "duration_seconds": 0.16,
+    "peak_db": -6.442697051213353,
+    "mean_db": -38.27829471975872
+  },
+  {
+    "cue": "snore",
+    "original": "snore.mp3",
+    "original_sha256": "1d010ca1c47fb3b2f78e4e2803cd0781a6ce0dfb74ddcb17e180c508d198acd5",
+    "channel": 0,
+    "trim_seconds": [
+      0.14,
+      1.64
+    ],
+    "gain_db": -4.367,
+    "loop_crossfade_ms": 100,
+    "exact_seconds": null,
+    "duration_seconds": 1.4,
+    "peak_db": -16.40447829439892,
+    "mean_db": -27.443677804458112
+  },
+  {
+    "cue": "water_splash",
+    "original": "water_splash.mp3",
+    "original_sha256": "de20197edd7aec007b8a3d2e45e6add57163b6878c446e71501e4b51f531980e",
+    "channel": 0,
+    "trim_seconds": [
+      0,
+      0.89
+    ],
+    "gain_db": -4.59,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": null,
+    "duration_seconds": 0.89,
+    "peak_db": -6.534032421490037,
+    "mean_db": -32.71869281685124
+  },
+  {
+    "cue": "huntmaster_horn",
+    "original": "mega_horn.mp3",
+    "original_sha256": "4705b06a94ed4e6700cdcddffdb61983c99cb3a5258befd3d0469274e58e1bf7",
+    "channel": 0,
+    "trim_seconds": [
+      0,
+      4.22
+    ],
+    "gain_db": -14.364,
+    "loop_crossfade_ms": 0,
+    "exact_seconds": null,
+    "duration_seconds": 4.22,
+    "peak_db": -14.554698544960857,
+    "mean_db": -23.447469553057594
+  }
+]

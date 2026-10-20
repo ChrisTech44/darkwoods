@@ -79,6 +79,35 @@ func host_checks() -> void:
 		if not await until(func(): return bridge.reports.size()==1): return
 		check(bridge.reports.values()[0].once,"client_hears_"+kind+"_cue_once")
 		enemy.enabled=false
+	# Recorded one-shots use the same host log and deduplication as brain cues.
+	for cue: String in preload("res://tests/integration/october_audio.gd").CUES:
+		if root.get_node("AudioManager").cues[cue].loop: continue
+		bridge.stage.rpc({"stage":"cue_pack_"+cue,"cue":cue})
+		if not await until(func(): return bridge.reports.size()==1): return
+		bridge.stage.rpc({"stage":"heard_pack_"+cue,"cue":cue,"before":bridge.reports.values()[0].before})
+		level.soundscape.broadcast(cue,Vector2(112,440))
+		if not await until(func(): return bridge.reports.size()==1): return
+		check(bridge.reports.values()[0].once,"recorded_client_hears_once_"+cue)
+	var guest: CampPlayer
+	for id: int in net.actors:
+		if id!=1: guest=net.actors[id]
+	guest.add_effect("asleep",20)
+	bridge.stage.rpc({"stage":"loop_sleep_on"})
+	if not await until(func(): return bridge.reports.size()==1): return
+	check(bridge.reports.values()[0].valid,"replicated_sleep_starts_one_client_snore_loop")
+	guest.clear_effect("asleep")
+	bridge.stage.rpc({"stage":"loop_sleep_off"})
+	if not await until(func(): return bridge.reports.size()==1): return
+	check(bridge.reports.values()[0].valid,"replicated_wake_stops_client_snore")
+	guest.supplies.flare=1
+	check(level.use_supply(guest,"flare"),"host_uses_flare_for_replication")
+	bridge.stage.rpc({"stage":"loop_flare_on"})
+	if not await until(func(): return bridge.reports.size()==1): return
+	check(bridge.reports.values()[0].valid,"replicated_flare_starts_one_client_hiss")
+	for flare in get_nodes_in_group("flares"):flare.queue_free()
+	bridge.stage.rpc({"stage":"loop_flare_off"})
+	if not await until(func(): return bridge.reports.size()==1): return
+	check(bridge.reports.values()[0].valid,"removed_flare_stops_client_hiss")
 	bridge.stage.rpc({"stage":"done"})
 	await create_timer(0.4).timeout
 func client_checks() -> void:
@@ -92,6 +121,20 @@ func client_checks() -> void:
 			var enemy: CampCryptid=get_nodes_in_group("cryptids")[bridge.data.index]
 			if not await until(func(): return enemy.brain.snapshot()==bridge.data.state): return
 			bridge.report.rpc_id(1,{"same":enemy.species==bridge.data.kind and enemy.brain.snapshot()==bridge.data.state})
+		elif previous.begins_with("loop_"):
+			var own: CampPlayer=net.actors[get_multiplayer().get_unique_id()]
+			if previous.begins_with("loop_sleep"):
+				var wanted: bool=previous.ends_with("on")
+				if not await until(func(): return own.has_effect("asleep")==wanted):return
+				net.world.soundscape._follow_loops()
+				var key:="snore:%d" % own.get_instance_id()
+				bridge.report.rpc_id(1,{"valid":net.world.soundscape.follow_loops.has(key)==wanted})
+			else:
+				var wanted: bool=previous.ends_with("on")
+				if not await until(func(): return (get_nodes_in_group("flares").size()>0)==wanted):return
+				net.world.soundscape._follow_loops()
+				var keys: Array=net.world.soundscape.follow_loops.keys().filter(func(k):return str(k).begins_with("flare:"))
+				bridge.report.rpc_id(1,{"valid":keys.size()==(1 if wanted else 0)})
 		elif previous.begins_with("cue_"):
 			bridge.report.rpc_id(1,{"before":net.world.soundscape.played_counts.get(bridge.data.cue,0)})
 		elif previous.begins_with("heard_"):

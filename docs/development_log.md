@@ -1,5 +1,31 @@
 # Development log
 
+## 2026-10-20 — supplied audio pack, mega horn and accepted-event integration
+
+Processed twelve user uploads into fifteen mono runtime cues; preserved original
+bytes/hashes under `art_sources/audio/2026-10-20`. Inspected waveforms, silence,
+channel levels and post-encode peaks. Trimmed/padded windup to 1.5s using pitch-
+preserving tempo; split drumroll/ending, flashlight on/off and flare onset/hiss.
+Added circular loop crossfades, gain/headroom and full provenance/edit metadata.
+Nobody breathing raised ~22dB; user's mega horn reduced ~14.4dB and replaces
+Huntmaster's synthesis, including Christian's copy. Other synthesis remains where
+no recording was supplied. The synthesis generator protects recorded replacements.
+
+Host accepted events now route Lifeguard speech, tin's three pulse rattles,
+village bell, lake impact and successful flashlight toggles. Offline/network
+light paths share validation, including the existing forced-on lock. Replicated
+sleep/flare states own snore/hiss loops and cleanup. No AI noise events, ability
+windups or damage/buff tuning changed. Interrupted lake tells do not splash.
+
+Executed 35 accepted-event/loop assertions; 18 native decode/PCM/loop assertions;
+122 real two-process ENet checks, including recorded cues once and remote loop
+start/stop; 153 dedicated/four-client checks. Existing audio rules (164), sound
+feedback (30), wheel/creatures (86 headless) and survivors (208) pass. Required
+import/startup and whitespace checks are clean. No microphones, human listening,
+Internet/platform/package or source-distortion restoration acceptance claimed.
+[Processing, waveforms, measurements and executed results](evidence/audio_pack_20261020/README.md).
+
+
 ## 2026-10-20 — Christian copies of the seven new creatures: local MP4s
 
 Added nine 14-second H.264 MP4s with stereo AAC native game audio to the existing

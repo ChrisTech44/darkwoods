@@ -7,8 +7,9 @@ limits. This plan covers six woods creatures and their sounds. Each creature is 
 map system is required.
 
 Implementation defaults: preserve every type every night; keep the Stalker
-movement cap; allow its Magician swap only in Witching Hour. New audio is original
-procedural synthesis, not recorded character performances. The agreed Shade is
+movement cap; allow its Magician swap only in Witching Hour. Audio began as original
+procedural synthesis; the later supplied pack replaces six cues and adds the
+Lifeguard voice. [Current recording integration](evidence/audio_pack_20261020/README.md). The agreed Shade is
 an additional seventh creature. No extra SpriteCook generations beyond the
 shared 12-credit design sheet.
 
@@ -265,10 +266,10 @@ The defaults below are resolved for this source version:
 - One shared 12-credit SpriteCook sheet provides front designs, with procedural
   bob/lean in the atlases. Directional animation and human art acceptance remain
   open; no extra generation or paid animation was purchased.
-- Fourteen original synthesized cues are wired and routed, replacing prototype
-  placeholders. The wish list below remains the recording/polish target;
-  intelligible spoken lines, real-device listening and other-platform/Internet
-  endurance acceptance are not claimed.
+- Fourteen original synthesized cues established the first implementation. The
+  supplied pack now replaces six and adds Lifeguard speech; eight synthesized
+  cues remain. The wishlist is a historical recording/polish target. Real-device
+  listening and other-platform/Internet endurance acceptance remain open.
 
 ### Superseded open questions (retained design history)
 

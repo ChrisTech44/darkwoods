@@ -22,7 +22,7 @@ func _run() -> void:
 		_check(AudioServer.get_bus_index(bus) >= 0, "bus_" + bus)
 	for cue in mixer.cues:
 		var stream: AudioStream = mixer.stream_for(cue)
-		_check(stream != null and stream.get_length() > (0.1 if cue=="vulture_peck" else 0.4) and (stream.loop if stream is AudioStreamMP3 else stream.loop_mode != AudioStreamWAV.LOOP_DISABLED) == mixer.cues[cue]["loop"], "real_import_and_loop_flag_" + cue)
+		_check(stream != null and stream.get_length() > 0.05 and absf(stream.get_length()-float(mixer.cues[cue].get("duration_seconds",stream.get_length())))<0.1 and (stream.loop if stream is AudioStreamMP3 else stream.loop_mode != AudioStreamWAV.LOOP_DISABLED) == mixer.cues[cue]["loop"], "real_import_and_loop_flag_" + cue)
 	_check(AudioServer.get_bus_send(AudioServer.get_bus_index("Campfire")) == "Ambience", "fire_compression_respects_ambience_control")
 	_check(mixer.stream_for("missing") == null, "unknown_cues_fail_safely")
 	var previous: Dictionary = mixer.volumes.duplicate()

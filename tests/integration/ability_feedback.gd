@@ -28,6 +28,12 @@ func shot(label: String) -> void:
 	check(root.get_texture().get_image().save_png(OUT+label+".png")==OK,"capture_"+label)
 func reset(kind: String, role: String = "christian") -> void:
 	CreatureSamples.finish_cast(actor)
+	# Isolated casts must not exhaust the native voice pool with earlier fixtures.
+	for voice: AudioStreamPlayer2D in level.soundscape.voices:
+		voice.stop()
+		voice.stream=null
+		voice.queue_free()
+	level.soundscape.voices.clear()
 	actor.role=role
 	SurvivorAbilities.setup(actor)
 	actor.position=Vector2(900,520)
@@ -96,9 +102,10 @@ func run() -> void:
 	for curse in ["frog","backwards","float","swap"]:
 		reset("witch")
 		actor.kit.subtype=curse
+		var extra: CampPlayer
 		if curse=="swap":
 			# A second living target is required by the actual preflight.
-			var extra: CampPlayer=load("res://scenes/actors/player.tscn").instantiate()
+			extra=load("res://scenes/actors/player.tscn").instantiate()
 			extra.position=actor.position+Vector2(115,15)
 			extra.local_input=false
 			level.world_objects.add_child(extra)
@@ -111,6 +118,9 @@ func run() -> void:
 		CreatureSamples.advance(actor,0.5)
 		if curse!="swap": check(friend.has_effect(curse),"curse_swept_hit_"+curse)
 		await shot("impact_"+curse)
+		if is_instance_valid(extra):
+			extra.queue_free()
+			await frames()
 	for kind in ["ration_moth","bramble_seamstress","lantern_moth","hitchhiker"]:
 		reset(kind)
 		check(level.abilities.use(actor),"launch_copy_"+kind)
@@ -121,6 +131,23 @@ func run() -> void:
 		CreatureSamples.advance(actor,0.5)
 		var effect: String={"ration_moth":"sneezy","bramble_seamstress":"tethered","lantern_moth":"face_moth","hitchhiker":"piggyback"}[kind]
 		check(friend.has_effect(effect),"copy_projectile_hits_"+kind)
+	# Actual near-edge delivery: wider straight shots hit at 19px, miss at 21px.
+	for kind in ["witch","bramble_seamstress","lantern_moth","hitchhiker"]:
+		for offset in [19,21]:
+			reset(kind)
+			actor.kit.subtype="frog"
+			friend.position=actor.position+Vector2(55,offset)
+			check(level.abilities.use(actor),"launch_wide_%s_%d"%[kind,offset])
+			CreatureSamples.advance(actor,.81)
+			CreatureSamples.advance(actor,.6)
+			var effect: String={"witch":"frog","bramble_seamstress":"tethered","lantern_moth":"face_moth","hitchhiker":"piggyback"}[kind]
+			check(friend.has_effect(effect)==(offset==19),"wide_shot_boundary_%s_%d"%[kind,offset])
+	reset("ration_moth")
+	friend.position=actor.position+Vector2(55,19)
+	check(level.abilities.use(actor),"launch_unchanged_spore_lob")
+	CreatureSamples.advance(actor,.81)
+	CreatureSamples.advance(actor,.6)
+	check(actor.kit.cast.get("projectile",false) and not friend.has_effect("sneezy"),"spore_lob_keeps_original_hit_width")
 	# A real physics wall blocks both the shot and its local direction guide.
 	reset("witch")
 	var wall := StaticBody2D.new()
@@ -154,6 +181,8 @@ func run() -> void:
 	CreatureSamples.history[friend.get_instance_id()]=[friend.position-Vector2(20,0)]
 	level.abilities.use(actor)
 	for i in range(181): CreatureSamples.advance(actor,1.0/60)
+	if level.soundscape.played_counts.get("squeak",0)!=3 or level.soundscape.played_counts.get("bells",0)!=1:
+		print(JSON.stringify({"event":"cuckoo_cue_probe","counts":level.soundscape.played_counts}))
 	check(level.soundscape.played_counts.get("squeak",0)==3 and level.soundscape.played_counts.get("bells",0)==1,"cuckoo_three_calls_then_rewind_bell")
 	check(friend.has_effect("rewound") and friend.has_effect("whiteout"),"cuckoo_native_rewind_screen_effects")
 	# Continuous singing follows the copied Saint, ends on cancellation, and is reusable.

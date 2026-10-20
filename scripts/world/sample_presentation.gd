@@ -22,6 +22,10 @@ const SHAPES := {
 	"briar_revenant":["self",0.0,0.0], "mimic":["self",0.0,0.0]
 }
 const SHOTS := ["witch","ration_moth","bramble_seamstress","lantern_moth","hitchhiker"]
+## Straight shots have double-sized sprites and swept hit width; lob areas keep theirs.
+static func projectile_scale(kind: String) -> float:
+	return 2.0 if SHAPES.has(kind) and SHAPES[kind][0]=="shot" else 1.0
+
 const ART := {"bramble_seamstress":"thread","ration_moth":"spore","lantern_moth":"moth","hitchhiker":"passenger","slug":"slime","bog_hands":"mud","tollkeeper":"toll","echo":"echo","cuckoo":"clock","boiler_saint":"song","vampire":"gaze","fortune_teller":"tarot"}
 ## Authored creature interaction cues, not AI hearing stimuli.
 const CUES := {
@@ -78,7 +82,7 @@ static func guide(canvas: Node2D, level: Node, actor: CampPlayer) -> void:
 			if not cast.is_empty() and not cast.get("projectile",false): end=cast["at"]
 			canvas.draw_arc(end,spec[2],0,TAU,48,faint,1)
 		else:
-			var side := direction.orthogonal()*minf(float(spec[2]),10)
+			var side := direction.orthogonal()*minf(float(spec[2]),10)*projectile_scale(kind)
 			canvas.draw_line(at+side,end+side,Color(faint,0.1),1)
 			canvas.draw_line(at-side,end-side,Color(faint,0.1),1)
 			canvas.draw_line(end-side,end+side,faint,1)

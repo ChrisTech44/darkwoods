@@ -681,8 +681,11 @@ Max's wheel appears briefly beside him, with a pointer and weighted slices.
 Results show names only. He can move while it spins; interruption does not
 refund the cooldown. The old permanent help paragraph and cash economy are gone.
 
-Christian's five ranged copy families launch distinct travelling shots; faint
-paths/cones/area guides show how his equipped sample applies. Transformations
+Christian's five ranged copy families launch distinct travelling shots. The
+straight Witch, Seamstress, Lantern Moth and Hitchhiker shots have doubled visual
+size (36px in flight) and a 20px swept hit radius; Puffball's spore lob keeps
+its original size and burst. Faint paths/cones/area guides show how his equipped
+sample applies. Transformations
 show a timer and special-action status. Mimic copies the appearance and overhead
 name of a living player actually present; solo use keeps the sample. Copied
 Cuckoo calls/rewind bells, Lullaby singing and mower engines use existing audio.

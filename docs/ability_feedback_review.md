@@ -22,6 +22,15 @@ standing still avoids its spores. The Witch's salt-ward reflection remains.
 Physical grabs, throws, gaze, camera flashes and sound effects retain their
 specific delivery instead of acquiring an unrelated missile or generic bubble.
 
+**20 October size update:** Christian’s straight Witch, Seamstress, Lantern Moth
+and Hitchhiker projectiles now draw at 36px in flight (previously 18px) and
+hit within 20px of their swept path (previously 10px). Windup sprites grow from
+12px to 24px, and the local width guide grows with the hit width. Broad-phase
+target selection includes the wider edge; reflected Witch shots clear the
+reflector by the enlarged radius before returning. Puffball’s lob/burst, impact
+art, movement speed, range and effects keep their existing sizes/values.
+[Updated execution and native captures](evidence/wide_samples/README.md).
+
 ## Interaction-by-interaction audit
 
 Distances are world pixels. Short copied durations and AI/headline adapters in

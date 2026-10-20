@@ -1,0 +1,18 @@
+{
+  "platform": "macOS arm64; Godot 4.7.2",
+  "results": {
+    "native": {
+      "checks": 135,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "ability_feedback"
+    },
+    "headless": {
+      "checks": 114,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "ability_feedback"
+    }
+  },
+  "limits": "Staged poses/samples, frozen enemies/clock, normal Dusk lighting/sight, microphone off. No new multiplayer/human balance/listening/Internet/export/cross-platform acceptance."
+}

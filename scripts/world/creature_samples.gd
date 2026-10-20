@@ -527,12 +527,13 @@ static func projectile(actor: CampPlayer, cast: Dictionary, delta: float) -> voi
 	if not level.clear_path(start,end):
 		cast["life"] = 0.0
 		return
-	for body in targets(actor,step+16,-1.0,start,cast.get("reflected",false)):
-		if Geometry2D.get_closest_point_to_segment(body.position,start,end).distance_to(body.position)>10: continue
+	var hit_radius:=10.0*SamplePresentation.projectile_scale(cast["kind"])
+	for body in targets(actor,step+maxf(16.0,hit_radius),-1.0,start,cast.get("reflected",false)):
+		if Geometry2D.get_closest_point_to_segment(body.position,start,end).distance_to(body.position)>hit_radius: continue
 		if cast["kind"]=="witch" and body is CampPlayer and body.ward_remaining>0 and not cast.get("reflected",false):
 			cast["direction"] = -cast["direction"]
 			cast["reflected"] = true
-			cast["at"] = body.position+cast["direction"]*14
+			cast["at"] = body.position+cast["direction"]*(hit_radius+4.0)
 			return
 		cast["at"]=body.position
 		impact(actor,cast,body)
@@ -697,9 +698,9 @@ static func draw_world(canvas: Node2D, level: Node) -> void:
 		if level.sight != null and not level.sight.can_see(at): continue
 		var kind: String=cast["kind"]
 		if not cast["fired"] and kind in SamplePresentation.SHOTS:
-			SamplePresentation.sprite(canvas,kind,actor.position+cast["direction"]*12,cast["subtype"],12)
+			SamplePresentation.sprite(canvas,kind,actor.position+cast["direction"]*12,cast["subtype"],12*SamplePresentation.projectile_scale(kind))
 		elif cast.get("projectile",false):
-			SamplePresentation.sprite(canvas,kind,at,cast["subtype"],18)
+			SamplePresentation.sprite(canvas,kind,at,cast["subtype"],18*SamplePresentation.projectile_scale(kind))
 		elif kind=="slug":
 			for patch: Vector2 in cast.get("patches",[]):
 				if level.sight==null or level.sight.can_see(patch): SamplePresentation.sprite(canvas,kind,patch,"",32,0.65)

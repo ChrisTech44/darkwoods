@@ -77,6 +77,10 @@ These are code-backed facts, not a substitute for human acceptance testing.
 - Five implemented escape routes: Van, Radio Rescue, Lakeshore Boat, Ranger
   Gate, Signal Fire. Normal Expedition: van plus one seeded secondary. Quick
   Camp: van only. `--all-escapes` is a diagnostic override, not the normal rules.
+- Christian’s four straight projectile copies (Witch, Seamstress, Lantern Moth,
+  Hitchhiker) use 36px flight sprites and a 20px swept hit radius, double their
+  previous sizes. Their windup previews/guides scale with them. Puffball’s lob
+  and burst retain their sizes; shot speed/range/effects are unchanged.
 - Online ignition/revive holds retain the eligible current operator when other
   players join or release E. Work advances once per authority tick; a genuine
   operator change resets the incomplete hold.

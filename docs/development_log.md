@@ -1,5 +1,25 @@
 # Development log
 
+## 2026-10-20 — double Christian’s straight-shot visuals and hit width
+
+Witch, Seamstress, Lantern Moth and Hitchhiker copied projectiles now have 36px
+flight sprites (was 18), 24px windup previews (was 12), and a 20px swept hit
+radius (was 10). Local width guides and broad-phase target queries include the
+new width. Reflected Witch shots now clear the enlarged reflector radius before
+returning; early tests caught immediate re-hits without this adjustment.
+Puffball’s lob/burst, native monster shots, effect areas, ranges and speeds retain
+their values. No network schema change or paid asset generation.
+
+Extended checks prove 19px hits/21px misses across all four families, original
+lob width, cover and reflection. The fixture frees its extra swap target and
+releases preceding native one-shot streams between casts to avoid interference
+and exhausting the voice pool. Final headless **114/114**, native **135/135**;
+required import/startup, Markdown file links and whitespace checks pass. Actual
+five-family screenshots inspected: staged seed42, frozen enemies/clock, normal
+Dusk light/sight, microphone off. No new human balance/listening, multiplayer or
+Internet/cross-machine, exports or Windows/Linux acceptance.
+[Captures and execution evidence](evidence/wide_samples/README.md).
+
 ## 2026-10-20 — remove Lake Thing trajectory guides
 
 Removed the pre-launch aiming line at the user’s request. Source flashes,

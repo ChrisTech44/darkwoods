@@ -2,7 +2,7 @@
 
 **Dedicated server:** run a camp without a host survivor. See the
 [server setup and connection guide](docs/dedicated_server.md). Updated `main`
-clients (`lnac-net-31`) can join; the server code is available in this checkout.
+clients (`lnac-net-32`) can join; the server code is available in this checkout.
 
 **Find the parts. Keep your light alive. Get out before the woods get you.**
 
@@ -334,7 +334,7 @@ for the next night and the next launch. Default port: **UDP 27840**. Everyone ma
 the host chooses mode/seed and starts. LAN/Wi-Fi uses the host's local IP;
 Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
 
-Update clients and server together to **lnac-net-31**. Your survivor now responds
+Update clients and server together to **lnac-net-32**. Your survivor now responds
 locally, with server corrections smoothed; other survivors use a short movement
 buffer. A long connection interruption can still pause movement. See
 [measured smoothness improvements](docs/evidence/smoothness/README.md).
@@ -749,9 +749,10 @@ three locked caches and phase unlocks. The corkboard names fuel's region; ranger
 notes and regional exploration identify the other four. Camp retains cutters,
 crowbar and preparation supplies; Quick Camp keeps its original camp-based parts.
 
-All fourteen destinations sit near the map's outskirts. Roaming starts are now
-in the intervening woods, with starts near each region approach and the existing
-1100px quiet buffer around camp center. Guardians remain at their regions.
+All fourteen destinations sit near the map's outskirts. Roaming starts cover both journeys:
+**14** are spaced around the circuit linking the regions and **15** fill the
+interior, preserving the 1100px quiet buffer around camp center. This circuit
+guides placement; it does not add a road. Guardians remain at their regions.
 Patrols and pursuit can leave their starting areas; these are not hard territories.
 
 ### Flashlight and survival supplies
@@ -1158,14 +1159,16 @@ Both modes vary building positions and surrounding trees within reserved camp
 lots. Bunk cabins can trade places, as can the bathhouse and first aid building. Door paths, loot and field-map markers move together. Roof footprints
 and main trails stay separate. Retrying a seed reproduces the camp too.
 
-![Three current seeded layouts with outer regions, five van-part labels and inward roaming starts](docs/evidence/outskirts_layout/sample_distributions.png)
+![Three current seeded layouts with outer regions, five van-part labels and circuit/interior roaming starts](docs/evidence/roamer_coverage/sample_distributions.png)
 
 **Current layout — seeds 13, 42 and 2026.** Gold labels identify five van parts in
 five separate outer regions; numbered circles identify the 29 roaming starts.
-Gray diamonds identify regional creatures. Colored hulls show three assigned
+Extra halos mark the 14 circuit starts; plain circles mark the 15 interior starts.
+The dashed circuit is a placement guide, not a new road. Gray diamonds identify
+regional creatures. Colored hulls show three assigned
 patrol footprints, not chase limits. The Stalker is separate. This diagnostic
 reveals all starts; the in-game field map preserves ordinary clue discovery.
-[Rules, source data and execution limits](docs/evidence/outskirts_layout/README.md).
+[Rules, source data and execution limits](docs/evidence/roamer_coverage/README.md).
 
 ## Screenshots
 

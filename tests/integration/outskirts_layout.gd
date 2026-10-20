@@ -35,21 +35,42 @@ func run() -> void:
 		check(part_regions.size()==5,"seed_%d_five_van_parts_in_five_distinct_regions"%value)
 		var roamers:=plan.encounters.filter(func(e): return e.species in RoundPlan.ROAMER_SPECIES)
 		check(roamers.size()==29,"seed_%d_all_twenty_nine_roamers"%value)
-		check(roamers.all(func(e): return fraction(e.position)<=RoundPlan.ROAMER_INNER_FRACTION and e.position.distance_to(CampMap.CAMP_BOUNDS.get_center())>=RoundPlan.SAFE_RADIUS and plan.woods.zone_at(e.position).is_empty()),"seed_%d_roamers_inner_transit_with_camp_buffer"%value)
+		check(roamers.all(func(e): return e.position.distance_to(CampMap.CAMP_BOUNDS.get_center())>=RoundPlan.SAFE_RADIUS and plan.woods.zone_at(e.position).is_empty()),"seed_%d_roamers_keep_camp_buffer_and_region_space"%value)
 		var unique:={}
 		for e in roamers: unique[e.cell]=true
 		check(unique.size()==29,"seed_%d_no_stacked_roaming_starts"%value)
-		var coverage:=[]
-		for approach: Dictionary in plan.woods.approaches:
-			var near:=0
-			for enemy in roamers:
-				if approach.cells.any(func(cell): return (Vector2(cell-enemy.cell)).length()<=sqrt(2.0)+0.01): near+=1
-			coverage.append(near)
-			check(near>0,"seed_%d_approach_%d_has_nearby_roamer"%[value,approach.zone])
+		var circuit:=plan.roaming_circuit()
+		var rim:=roamers.slice(0,RoundPlan.PERIMETER_ROAMERS)
+		var interior:=roamers.slice(RoundPlan.PERIMETER_ROAMERS)
+		check(rim.size()==14 and rim.all(func(e): return RoundPlan.circuit_distance(e.position,circuit)<=384),"seed_%d_fourteen_on_region_circuit"%value)
+		check(interior.size()==15 and interior.all(func(e): return Geometry2D.is_point_in_polygon(e.position,circuit) and RoundPlan.circuit_distance(e.position,circuit)>384),"seed_%d_fifteen_fill_enclosed_interior"%value)
+		var closest:=INF
+		for a in roamers:
+			for b in plan.encounters:
+				if a!=b: closest=minf(closest,a.position.distance_to(b.position))
+		check(closest>=600,"seed_%d_roamers_separated_from_each_other_and_guardians"%value)
+		var outer_hole:=0.0
+		for index in range(circuit.size()):
+			var a: Vector2=circuit[index]
+			var b: Vector2=circuit[(index+1)%circuit.size()]
+			for step in range(ceili(a.distance_to(b)/96)+1):
+				var at:=a.lerp(b,float(step)/ceili(a.distance_to(b)/96))
+				var gap:=INF
+				for enemy in roamers:gap=minf(gap,at.distance_to(enemy.position))
+				outer_hole=maxf(outer_hole,gap)
+		check(outer_hole<=1600,"seed_%d_no_large_empty_region_loop_arc"%value)
+		var inner_hole:=0.0
+		for cell: Vector2i in plan.woods.links:
+			var at:=plan.woods.center(cell)
+			if at.distance_to(CampMap.CAMP_BOUNDS.get_center())<1100 or not plan.woods.zone_at(at).is_empty() or not Geometry2D.is_point_in_polygon(at,circuit):continue
+			var gap:=INF
+			for enemy in roamers:gap=minf(gap,at.distance_to(enemy.position))
+			inner_hole=maxf(inner_hole,gap)
+		check(inner_hole<=1600,"seed_%d_no_large_empty_interior_pocket"%value)
 		for kind: String in plan.cache_zone:
 			var item: Dictionary=plan.loot.filter(func(e): return e.kind==kind)[0]
 			check(fraction(item.position)>=0.74,"seed_%d_%s_cache_follows_outer_region"%[value,kind])
-		metrics.append({"seed":value,"approach_roamer_counts":coverage})
+		metrics.append({"seed":value,"loop_max_distance":outer_hole,"interior_max_distance":inner_hole,"minimum_roamer_separation":closest,"perimeter_count":rim.size(),"interior_count":interior.size()})
 	# Verify every secondary-route objective remains outer, not only the sampled route.
 	RoundPlan.force_all_escapes=true
 	var full:=RoundPlan.new()

@@ -1,5 +1,37 @@
 # Development log
 
+## 2026-10-20 — cover the region loop and evenly fill its interior
+
+Replaced the inward-only/spoke-based roaming starts with fourteen starts targeting
+equal arc-length intervals on the circuit through region centers and fifteen
+farthest-point placements through the enclosed forest. A seeded phase/tie-break
+preserves repeatability. Circuit starts use nearby clearings within 384px;
+placement seeks 600px separation from existing creatures. Region exclusions and
+the 1100px camp-center buffer remain. The circuit is a placement guide, not a
+new road, movement fence or guarantee of encounters. Monster count, abilities,
+regions, objectives and resource tuning are unchanged. The three illustrated
+seeds preserve exact van-part assignments and positions. Recipe rules are now
+**lnac-net-32**; update/restart clients and server together. No package refresh or
+server deployment was performed.
+
+Regenerated and inspected the 1800×1080 maps for seeds 13, 42 and 2026. Dashed
+region circuit and extra perimeter halos distinguish the 14/15 split; the diagram
+shows all starts only for inspection. Maximum sampled circuit distance to a
+roaming start shrinks from 2193/2308/2477px to 1156/1408/1093px; enclosed clearing
+coverage improves from 2121/1891/2147px to 1229/1462/1229px. These are straight-line
+initial-position measurements, not path length, detection or actual encounter rates.
+
+Verification: eight-seed placement **522/522**, actual native navigation
+**113/113**, ENet listen-host/client **261/261** (labelled forced all-escape
+fixture), four-client dedicated **153/153**. Eight seeds have minimum roaming
+separation >=607px, worst circuit gap <=1409px and worst interior gap <=1463px.
+Required import/startup, changed Markdown links and `git diff --check` pass.
+Native diagram uses no world lighting, frozen gameplay, microphone capture or
+paid assets. Human balance/active solo traversal was not repeated; the earlier
+solo-bot downing remains an open acceptance limit. Internet/cross-machine,
+exports and Windows/Linux are unverified.
+[New maps, source data and before/after evidence](evidence/roamer_coverage/README.md).
+
 ## 2026-10-20 — outer regions, five separate van-part regions and survival tuning
 
 Moved all fourteen regions to the outer map band, preserving region-owned

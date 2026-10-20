@@ -1,5 +1,9 @@
 # Outer destinations and inward roaming starts — 20 October 2026
 
+Historical initial distribution; the inward-only spawn rule is superseded by
+the [region-circuit/interior update](../roamer_coverage/README.md). Outer-region,
+objective and resource rules below remain implemented.
+
 [Current three-seed map](sample_distributions.png) · [Before](../monster_distributions/sample_distributions.png)
 · [Source positions/waypoints/van parts](plans.json) · [Execution results](results.json).
 

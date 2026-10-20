@@ -65,10 +65,12 @@ These are code-backed facts, not a substitute for human acceptance testing.
   are on the outskirts; all five required van parts occupy five distinct outer
   regions (none in camp). Battery/key remain unlocked from Dusk; three locked
   parts retain phase gating. Four directions and eight ranger notes support
-  discovery. Camp keeps lock tools and supplies. All 29 roaming starts occupy
-  the inner 68% of each map half-extent, at least 1100px from camp center, along
-  roads/region approaches; one start is allocated near each of 14 approaches,
-  with the rest spread across that transit band. Guardians move with regions;
+  discovery. Camp keeps lock tools and supplies. The 29 roaming starts now split into
+  14 approximately evenly spaced around the region-center circuit (within 384px)
+  and 15 spread over the enclosed forest by farthest-point sampling. The 1100px
+  camp-center buffer remains; starts avoid regions and seek at least 600px
+  separation from existing creatures. The circuit is a placement guide, not a
+  constructed road or movement limit. Guardians move with regions;
   patrols/chases have no new hard boundary. Quick Camp keeps its camp parts. Team trail
   exploration is recorded for every living/downed survivor at the authority and
   replicated as a bounded bitmap; local prediction does not reveal map cells.
@@ -127,7 +129,7 @@ render loop and Dummy audio; server paths skip voice codec/capture/playback.
 Source launch first imports assets/registers script classes and refuses to start
 after import errors, including when Godot exits zero. Exported packs skip import.
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
-cleanup are implemented. The game protocol is `lnac-net-31` (new outer-region/inner-transit seed recipe), compatible with
+cleanup are implemented. The game protocol is `lnac-net-32` (region-circuit/interior roaming recipe), compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
 The October 19 [server review](docs/server_review.md) fixes mixed-role assignment,
 batched-disconnect packet sends and stale package metadata. Actual four-client
@@ -138,7 +140,7 @@ bounded prediction/reconciliation and buffered remote motion; see evidence below
 
 ## Movement transport
 
-Rules are `lnac-net-31`: authority-only 30Hz player packets include applied-input
+Rules are `lnac-net-32`: authority-only 30Hz player packets include applied-input
 acknowledgements, bounded owner movement state and server-detected discontinuity
 counters. The owner predicts shared collision/movement immediately, with no AI
 hearing, blood or gameplay outcomes; authoritative fields are restored after each
@@ -230,7 +232,7 @@ not player inactivity), loading (90s) and reservation (5m) are separate clocks.
 Detached actors have tethers, holds, casts, riders, targets and vaults cleaned up.
 An empty dedicated round pauses until return/expiry; intentional Leave relinquishes
 recovery. Tokens are memory-only; no restart persistence or host migration.
-Protocol is lnac-net-31. [Investigation and superseded proposals](docs/playtest_followup.md)
+Protocol is lnac-net-32. [Investigation and superseded proposals](docs/playtest_followup.md)
 retain the playtest history. The [new monster plan](docs/new_monster_plan.md)
 now has implemented Lifeguard, Night-Light Kid, Vulture, Huntmaster, Magician,
 Nobody, plus the agreed Shade. All have host brains, journal entries, copied

@@ -17,7 +17,7 @@ class DistributionCanvas extends Node2D:
 	func _draw() -> void:
 		draw_rect(Rect2(0,0,1800,1080),Color("10181f"))
 		label(Vector2(35,40),"WHERE MONSTERS AND OBJECTIVES START" if outer_regions else "WHERE THE ROAMERS START",30)
-		label(Vector2(35,70),"Three seeded Woods plans • 29 inward roamer starts • five van parts in five separate outer regions" if outer_regions else "Three actual seeded Woods plans • 29 roamers per map • numbered by species below",18,Color("a8bac8"))
+		label(Vector2(35,70),"Three seeded Woods plans • 14 circuit + 15 interior roaming starts • five van parts in five separate outer regions" if outer_regions else "Three actual seeded Woods plans • 29 roamers per map • numbered by species below",18,Color("a8bac8"))
 		for panel in range(plans.size()):
 			var plan: RoundPlan=plans[panel]
 			var origin:=Vector2(35+panel*590,125)
@@ -48,6 +48,9 @@ class DistributionCanvas extends Node2D:
 						var part: String=parts[0].replace("_"," ").to_upper()
 						var part_width:=font.get_string_size(part,HORIZONTAL_ALIGNMENT_LEFT,-1,10).x
 						label(Vector2(clampf(point(zone.position,origin).x-part_width/2,origin.x+3,origin.x+530-part_width-3),at.y+11),part,10,Color("ffdc8e"))
+			var circuit:=plan.roaming_circuit()
+			for index in range(circuit.size()):
+				draw_dashed_line(point(circuit[index],origin),point(circuit[(index+1)%circuit.size()],origin),Color("779397"),1.2,5)
 			# These hulls enclose assigned waypoints, not a hard movement boundary.
 			for encounter: Dictionary in plan.encounters:
 				if not HIGHLIGHTS.has(encounter.species): continue
@@ -64,12 +67,14 @@ class DistributionCanvas extends Node2D:
 				if index<0: continue
 				var at:=point(encounter.position,origin)
 				var color: Color=HIGHLIGHTS.get(encounter.species,Color("d6e4eb"))
+				var ordinal:=plan.encounters.filter(func(e): return e.species in RoundPlan.ROAMER_SPECIES).find(encounter)
+				if ordinal<RoundPlan.PERIMETER_ROAMERS: draw_circle(at,13,Color("6aa4ac"),false,1.2)
 				draw_circle(at,10.5,Color("10181f"))
 				draw_circle(at,10.5,color,false,1.0)
 				var number:=str(index+1)
 				var width:=font.get_string_size(number,HORIZONTAL_ALIGNMENT_LEFT,-1,12).x
 				label(at+Vector2(-width/2,4),number,12,color)
-			label(origin+Vector2(0,545),"29 roamer starts  •  9 regional creatures",16,Color("a8bac8"))
+			label(origin+Vector2(0,545),"14 circuit + 15 interior  •  9 regional creatures",16,Color("a8bac8"))
 		label(Vector2(35,722),"NUMBER KEY",18)
 		for index in range(RoundPlan.ROAMER_SPECIES.size()):
 			var species: String=RoundPlan.ROAMER_SPECIES[index]
@@ -77,8 +82,8 @@ class DistributionCanvas extends Node2D:
 			var row:=index%10
 			var title:=CampProfile.display_name(species)
 			label(Vector2(35+column*590,748+row*23),"%02d  %s" % [index+1,title],16,HIGHLIGHTS.get(species,ink))
-		label(Vector2(35,1000),"Colored outlines = assigned 16-waypoint footprints for Bear Hug, Lifeguard and Huntmaster. Tiny colored dots = waypoints.",17)
-		label(Vector2(35,1027),"They are not territories or chase limits. Gray diamonds = regional spawns; tinted boxes = named regions. Routes can overlap.",17,Color("a8bac8"))
+		label(Vector2(35,1000),"Dashed line = region-center circuit, not a new road. Outer halos = 14 circuit starts; plain circles = 15 interior starts.",17)
+		label(Vector2(35,1027),"Colored outlines = sample patrol waypoints, not chase limits. Gray diamonds = regional creatures; tinted boxes = named regions.",17,Color("a8bac8"))
 		label(Vector2(35,1054),"Diagnostic overview: all starts revealed. No simulated movement, altered lighting, frozen gameplay or forced escape routes. Stalker excluded.",16,Color("a8bac8"))
 
 func _initialize() -> void: run.call_deferred()
@@ -100,20 +105,28 @@ func run() -> void:
 		plan.generate(value,"woods")
 		canvas.plans.append(plan)
 		var encounters:=[]
+		var roaming_index:=0
 		for encounter: Dictionary in plan.encounters:
 			var route:=[]
 			for at: Vector2 in plan.woods.roaming_route(encounter.cell): route.append([at.x,at.y])
-			encounters.append({"species":encounter.species,"position":[encounter.position.x,encounter.position.y],"roamer":encounter.species in RoundPlan.ROAMER_SPECIES,"assigned_waypoints":route})
+			var roaming: bool=encounter.species in RoundPlan.ROAMER_SPECIES
+			encounters.append({"species":encounter.species,"position":[encounter.position.x,encounter.position.y],"roamer":roaming,"spawn_band":("circuit" if roaming_index<RoundPlan.PERIMETER_ROAMERS else "interior") if roaming else "regional","assigned_waypoints":route})
+			if roaming:roaming_index+=1
 		var parts:=[]
 		for kind: String in plan.cache_zone:
 			var item: Dictionary=plan.loot.filter(func(e): return e.kind==kind)[0]
 			parts.append({"kind":kind,"region":plan.woods.zones[plan.cache_zone[kind]].kind,"position":[item.position.x,item.position.y]})
-		records.append({"seed":value,"encounters":encounters,"van_parts":parts})
+		var circuit:=[]
+		for at: Vector2 in plan.roaming_circuit():circuit.append([at.x,at.y])
+		var regions:=[]
+		for zone: Dictionary in plan.woods.zones:
+			var bounds: Rect2=zone.bounds
+			regions.append({"kind":zone.kind,"bounds":[bounds.position.x,bounds.position.y,bounds.size.x,bounds.size.y]})
+		records.append({"seed":value,"encounters":encounters,"van_parts":parts,"region_circuit":circuit,"regions":regions})
 	viewport.add_child(canvas)
 	await process_frame
-	RenderingServer.force_draw(true)
 	await process_frame
-	await RenderingServer.frame_post_draw
+	RenderingServer.force_draw(true)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output))
 	var error:=viewport.get_texture().get_image().save_png(output+"sample_distributions.png")
 	var file:=FileAccess.open(output+"plans.json",FileAccess.WRITE)

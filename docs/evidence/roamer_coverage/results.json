@@ -1,0 +1,371 @@
+{
+  "platform": "macOS arm64 / Godot 4.7.2",
+  "rules": "lnac-net-32",
+  "offline": [
+    {
+      "checks": 522,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "outskirts_layout"
+    },
+    {
+      "checks": 113,
+      "clearings": 2410,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "surround_world",
+      "walls": 1280
+    }
+  ],
+  "network": {
+    "network": [
+      {
+        "name": "woods_2_host_0",
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/integration/network_peer.gd",
+          "--",
+          "--all-escapes",
+          "--side",
+          "host",
+          "--mode",
+          "woods",
+          "--port",
+          "28043",
+          "--peers",
+          "2",
+          "--index",
+          "0"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "errors": [],
+        "result": [
+          {
+            "checks": 197,
+            "event": "test_result",
+            "failures": 0,
+            "largest_snapshot_payload": 1000,
+            "snapshot_bytes": 4733,
+            "suite": "network_host_woods_2"
+          }
+        ],
+        "log": "artifacts/network/woods_2_host_0.log"
+      },
+      {
+        "name": "woods_2_client_1",
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/integration/network_peer.gd",
+          "--",
+          "--all-escapes",
+          "--side",
+          "client",
+          "--mode",
+          "woods",
+          "--port",
+          "28043",
+          "--peers",
+          "2",
+          "--index",
+          "1"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "errors": [],
+        "result": [
+          {
+            "checks": 62,
+            "event": "test_result",
+            "failures": 0,
+            "largest_snapshot_payload": 0,
+            "snapshot_bytes": 4733,
+            "suite": "network_client_woods_2"
+          }
+        ],
+        "log": "artifacts/network/woods_2_client_1.log"
+      },
+      {
+        "name": "woods_2_late_9",
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/integration/network_peer.gd",
+          "--",
+          "--all-escapes",
+          "--side",
+          "late",
+          "--mode",
+          "woods",
+          "--port",
+          "28043",
+          "--peers",
+          "2",
+          "--index",
+          "9"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "errors": [],
+        "result": [
+          {
+            "checks": 2,
+            "event": "test_result",
+            "failures": 0,
+            "largest_snapshot_payload": 0,
+            "snapshot_bytes": 0,
+            "suite": "network_late_woods_2"
+          }
+        ],
+        "log": "artifacts/network/woods_2_late_9.log"
+      }
+    ],
+    "dedicated": [
+      {
+        "side": "server",
+        "index": 0,
+        "exit": 0,
+        "passed": true,
+        "errors": [],
+        "results": [
+          {
+            "checks": 79,
+            "event": "test_result",
+            "failures": 0,
+            "players": 4,
+            "suite": "dedicated_server"
+          }
+        ],
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--disable-render-loop",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--script",
+          "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd",
+          "--",
+          "--dedicated-server",
+          "--port",
+          "57441",
+          "--mode",
+          "woods",
+          "--seed",
+          "13",
+          "--min-players",
+          "4",
+          "--start-delay",
+          "1",
+          "--result-delay",
+          "8"
+        ],
+        "log": "artifacts/dedicated/woods_4_1792507224682142000_server_0.log"
+      },
+      {
+        "side": "client",
+        "index": 0,
+        "exit": 0,
+        "passed": true,
+        "errors": [],
+        "results": [
+          {
+            "checks": 18,
+            "event": "test_result",
+            "failures": 0,
+            "players": 4,
+            "suite": "dedicated_client"
+          }
+        ],
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--disable-render-loop",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--script",
+          "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+        ],
+        "log": "artifacts/dedicated/woods_4_1792507224682142000_client_0.log"
+      },
+      {
+        "side": "client",
+        "index": 1,
+        "exit": 0,
+        "passed": true,
+        "errors": [],
+        "results": [
+          {
+            "checks": 18,
+            "event": "test_result",
+            "failures": 0,
+            "players": 4,
+            "suite": "dedicated_client"
+          }
+        ],
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--disable-render-loop",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--script",
+          "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+        ],
+        "log": "artifacts/dedicated/woods_4_1792507224682142000_client_1.log"
+      },
+      {
+        "side": "client",
+        "index": 2,
+        "exit": 0,
+        "passed": true,
+        "errors": [],
+        "results": [
+          {
+            "checks": 20,
+            "event": "test_result",
+            "failures": 0,
+            "players": 4,
+            "suite": "dedicated_client"
+          }
+        ],
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--disable-render-loop",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--script",
+          "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+        ],
+        "log": "artifacts/dedicated/woods_4_1792507224682142000_client_2.log"
+      },
+      {
+        "side": "client",
+        "index": 3,
+        "exit": 0,
+        "passed": true,
+        "errors": [],
+        "results": [
+          {
+            "checks": 18,
+            "event": "test_result",
+            "failures": 0,
+            "players": 4,
+            "suite": "dedicated_client"
+          }
+        ],
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--disable-render-loop",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--script",
+          "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+        ],
+        "log": "artifacts/dedicated/woods_4_1792507224682142000_client_3.log"
+      }
+    ]
+  },
+  "limits": [
+    "Diagnostic map reveals all starts; in-game discovery is unchanged.",
+    "Circuit is a geometric placement guide, not a constructed walkable road or hard territory.",
+    "Spacing/coverage metrics concern initial positions and straight-line distance, not guaranteed detection or encounters.",
+    "No active solo bot rerun or human balance acceptance; previous solo traversal limitation remains open.",
+    "No Internet/cross-machine, Windows/Linux, exported-package checks or server deployment.",
+    "Voice/microphones off; no paid generation or lighting changes."
+  ],
+  "coverage_metrics": [
+    {
+      "interior_count": 15,
+      "interior_max_distance": 1384.53173828125,
+      "loop_max_distance": 1402.783203125,
+      "minimum_roamer_separation": 607.157287597656,
+      "perimeter_count": 14,
+      "seed": 1
+    },
+    {
+      "interior_count": 15,
+      "interior_max_distance": 1357.64501953125,
+      "loop_max_distance": 1133.55883789062,
+      "minimum_roamer_separation": 607.157287597656,
+      "perimeter_count": 14,
+      "seed": 7
+    },
+    {
+      "interior_count": 15,
+      "interior_max_distance": 1229.39990234375,
+      "loop_max_distance": 1155.99304199219,
+      "minimum_roamer_separation": 607.157287597656,
+      "perimeter_count": 14,
+      "seed": 13
+    },
+    {
+      "interior_count": 15,
+      "interior_max_distance": 1462.22839355469,
+      "loop_max_distance": 1408.02917480469,
+      "minimum_roamer_separation": 607.157287597656,
+      "perimeter_count": 14,
+      "seed": 42
+    },
+    {
+      "interior_count": 15,
+      "interior_max_distance": 1357.64501953125,
+      "loop_max_distance": 1135.04321289062,
+      "minimum_roamer_separation": 607.157287597656,
+      "perimeter_count": 14,
+      "seed": 99
+    },
+    {
+      "interior_count": 15,
+      "interior_max_distance": 1229.39990234375,
+      "loop_max_distance": 1092.63818359375,
+      "minimum_roamer_separation": 607.157287597656,
+      "perimeter_count": 14,
+      "seed": 2026
+    },
+    {
+      "interior_count": 15,
+      "interior_max_distance": 1229.39990234375,
+      "loop_max_distance": 1187.45446777344,
+      "minimum_roamer_separation": 607.157287597656,
+      "perimeter_count": 14,
+      "seed": 6789
+    },
+    {
+      "interior_count": 15,
+      "interior_max_distance": 1229.39990234375,
+      "loop_max_distance": 1270.18298339844,
+      "minimum_roamer_separation": 607.157287597656,
+      "perimeter_count": 14,
+      "seed": 76543
+    }
+  ]
+}

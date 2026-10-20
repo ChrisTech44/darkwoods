@@ -8,8 +8,10 @@ const ROAMERS := 29
 const CRYPTID_COUNT := 9 + ROAMERS
 ## No roaming creature starts this close to camp (the first stretch is for exploring).
 const SAFE_RADIUS := 1100.0
-## Roamers occupy the inner journey; destinations/guardians live farther out.
-const ROAMER_INNER_FRACTION := 0.68
+## Split coverage between the region circuit and the whole enclosed forest.
+const PERIMETER_ROAMERS := 14
+const CIRCUIT_BAND := 384.0
+const ROAMER_GAP := 600.0
 ## Every roaming kind appears once. Seeded order and placement still vary.
 const ROAMER_SPECIES: Array[String] = ["werewolf", "bigfoot", "lantern_moth", "ration_moth", "briar_revenant", "switchback_hound", "lens_eater",
 	"last_car_conductor", "mimic", "owl", "bog_hands", "imps", "teddy",
@@ -179,52 +181,89 @@ func _add_creature_items(value: int) -> void:
 		loot.append({"kind": row[0], "position": Vector2.ZERO, "hint": row[1], "locked": false, "anchor": row[1]})
 
 
-## Seeded transit obstacles, not actors stranded on the outside of objectives.
-## One start near each of the 14 region approaches, then 15 spread over the
-## remaining inner road/approach band. No hard patrol/chase boundaries are added.
+## Ring coverage prevents a vacant region-to-region lap; farthest-point filling
+## spreads the other starts over the enclosed forest, excluding the quiet camp.
 func _spread_roamers(value: int) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = value + 3131
-	var camp_center := CampMap.CAMP_BOUNDS.get_center()
-	var transit := {}
-	var approach_bands: Array[Dictionary] = []
-	for cell: Vector2i in woods.road_cells: transit[cell] = true
-	for approach: Dictionary in woods.approaches:
-		var band := {}
-		for cell: Vector2i in approach.cells:
-			for y in range(-1,2):
-				for x in range(-1,2):
-					band[cell+Vector2i(x,y)] = true
-		for cell: Vector2i in band: transit[cell] = true
-		approach_bands.append(band)
-	var candidates: Array[Vector2i] = []
+	var circuit := roaming_circuit()
+	var candidates: Array[Dictionary] = []
+	var perimeter: Array[Dictionary] = []
+	var interior: Array[Dictionary] = []
 	for cell: Vector2i in woods.links:
 		var at := woods.center(cell)
-		var fraction := (at-camp_center).abs()/(WoodsLayout.WORLD_BOUNDS.size*0.5)
-		if at.distance_to(camp_center) >= SAFE_RADIUS and maxf(fraction.x,fraction.y) <= ROAMER_INNER_FRACTION and woods.zone_at(at).is_empty() and transit.has(cell):
-			candidates.append(cell)
-	candidates.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y * WoodsLayout.SIZE.x + a.x < b.y * WoodsLayout.SIZE.x + b.x)
+		if at.distance_to(CampMap.CAMP_BOUNDS.get_center()) < SAFE_RADIUS or not woods.zone_at(at).is_empty(): continue
+		var gap := circuit_distance(at,circuit)
+		var candidate := {"cell":cell,"position":at,"circuit_gap":gap}
+		if gap <= CIRCUIT_BAND:
+			perimeter.append(candidate)
+		elif Geometry2D.is_point_in_polygon(at,circuit):
+			interior.append(candidate)
+		else: continue
+		candidates.append(candidate)
+	# Stable order and seeded phase/tie breaks reproduce the same nightly recipe.
+	for pool: Array in [candidates,perimeter,interior]:
+		pool.sort_custom(func(a,b): return a.cell.y*WoodsLayout.SIZE.x+a.cell.x < b.cell.y*WoodsLayout.SIZE.x+b.cell.x)
 	var placed: Array[Vector2] = []
-	for encounter in encounters: placed.append(encounter["position"])
-	var offset := posmod(value, ROAMER_SPECIES.size())
+	for encounter in encounters: placed.append(encounter.position)
+	var length := 0.0
+	for index in range(circuit.size()): length += circuit[index].distance_to(circuit[(index+1)%circuit.size()])
+	var step := length/PERIMETER_ROAMERS
+	var phase := rng.randf()*step
+	var offset := posmod(value,ROAMER_SPECIES.size())
 	for index in range(ROAMERS):
-		var pool: Array[Vector2i] = candidates
-		if index < approach_bands.size():
-			pool = []
-			for cell in candidates:
-				if approach_bands[index].has(cell): pool.append(cell)
-			if pool.is_empty(): pool = candidates
-		var best := pool[rng.randi_range(0,pool.size()-1)]
-		var best_gap := -1.0
-		for attempt in range(12):
-			var cell := pool[rng.randi_range(0,pool.size()-1)]
-			var gap := INF
-			for other in placed: gap = minf(gap,woods.center(cell).distance_to(other))
-			if gap > best_gap:
-				best_gap = gap
-				best = cell
-		_encounter(ROAMER_SPECIES[(index+offset)%ROAMER_SPECIES.size()],best)
-		placed.append(woods.center(best))
+		var chosen: Dictionary
+		if index < PERIMETER_ROAMERS:
+			var target := circuit_point(circuit,phase+step*index)
+			var score := INF
+			for candidate: Dictionary in perimeter:
+				if spawn_gap_squared(candidate.position,placed) < ROAMER_GAP*ROAMER_GAP: continue
+				var cost: float = candidate.position.distance_squared_to(target)+candidate.circuit_gap*candidate.circuit_gap*0.2
+				if cost < score:
+					score = cost
+					chosen = candidate
+		if chosen.is_empty():
+			var pool: Array = interior if index>=PERIMETER_ROAMERS else perimeter
+			if pool.is_empty(): pool=candidates
+			var best := -1.0
+			for candidate: Dictionary in pool:
+				var gap := spawn_gap_squared(candidate.position,placed)
+				# Tiny seeded tie-break, rather than unconstrained random clustering.
+				var score := gap+rng.randf()*0.01
+				if score > best:
+					best = score
+					chosen = candidate
+		_encounter(ROAMER_SPECIES[(index+offset)%ROAMER_SPECIES.size()],chosen.cell)
+		placed.append(chosen.position)
+
+## Geometric circuit through all region centers, sorted around camp. It is a
+## placement guide, not a new road or a hard movement boundary.
+func roaming_circuit() -> PackedVector2Array:
+	var points: Array[Vector2] = []
+	for zone: Dictionary in woods.zones: points.append(zone.position)
+	var camp := CampMap.CAMP_BOUNDS.get_center()
+	points.sort_custom(func(a: Vector2,b: Vector2): return (a-camp).angle() < (b-camp).angle())
+	return PackedVector2Array(points)
+
+static func circuit_distance(at: Vector2,circuit: PackedVector2Array) -> float:
+	var gap := INF
+	for index in range(circuit.size()):
+		gap = minf(gap,at.distance_to(Geometry2D.get_closest_point_to_segment(at,circuit[index],circuit[(index+1)%circuit.size()])))
+	return gap
+
+static func circuit_point(circuit: PackedVector2Array,distance: float) -> Vector2:
+	for index in range(circuit.size()):
+		var a := circuit[index]
+		var b := circuit[(index+1)%circuit.size()]
+		var segment := a.distance_to(b)
+		if distance <= segment: return a.lerp(b,distance/segment)
+		distance -= segment
+	return circuit[0]
+
+static func spawn_gap_squared(at: Vector2,placed: Array[Vector2]) -> float:
+	var gap := INF
+	for other in placed: gap = minf(gap,at.distance_squared_to(other))
+	return gap
 
 
 ## Five distinct outer regions: one per cardinal pool, plus one unused region.

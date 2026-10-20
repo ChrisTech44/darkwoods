@@ -1,5 +1,23 @@
 # Development log
 
+## 2026-10-20 — source-generated monster distribution comparison
+
+Added a standalone 1800×1080 PNG comparing actual Woods seeds 13, 42 and 2026:
+all 29 numbered roaming starts, nine regional spawns, regions/camp, and the
+assigned 16-waypoint footprints for Bear Hug, Lifeguard and Huntmaster. Labels
+explicitly distinguish waypoint hulls from territories/chase limits. Raw plan
+positions/routes and the reusable Godot capture tool are preserved. This reveals
+all starts only in the diagnostic artifact; game discovery and behavior are unchanged.
+
+Validated counts, species uniqueness, waypoint counts and 1100px spawn exclusion
+for all three seeds. Native PNG opened and inspected for layout/labels. Required
+import/startup, Markdown links and whitespace checks pass on macOS/Godot 4.7.2.
+Initial capture failed on an invalid SubViewport property; corrected capture
+exits cleanly. No gameplay simulation, altered lighting, frozen actors, forced
+escape routes, paid graphics or microphones used. Other-platform/Internet and
+human balance acceptance are outside this artifact.
+[Image, source data and reproduction](evidence/monster_distributions/README.md).
+
 ## 2026-10-20 — clarified marker lifetime and survivor cooldown tuning
 
 Alex's marker now lasts **60s**; a completed normal/random teleport starts a

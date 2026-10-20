@@ -113,7 +113,6 @@ func _draw() -> void:
 	else:draw_arc(center,escapes.BOAT_RADIUS,0,TAU,64,Color("b6c6a0"),1,true)
 	for shot: Dictionary in shots:
 		if shot.tell>0:
-			draw_line(shot.origin,shot.target,Color(0.6,0.85,1,0.22),1)
 			draw_circle(shot.origin,5+sin(pulse*20),Color("92cdda"))
 		else:
 			var at: Vector2=shot.position+shot.direction*SPEED*visual_age

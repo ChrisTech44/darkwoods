@@ -1,5 +1,16 @@
 # Development log
 
+## 2026-10-20 — remove Lake Thing trajectory guides
+
+Removed the pre-launch aiming line at the user’s request. Source flashes,
+moving projectiles with short trails and the dock progress circle remain;
+attack timing, collision and progress rules are unchanged. Regenerated and
+inspected the native capture: staged seed-13 Boat/Van, frozen enemies/director,
+normal Witching Hour lighting, microphone off. Native mechanics/camera **32/32**,
+required import/startup, Markdown file links and whitespace checks pass. No
+network or human balance acceptance repeated for this drawing-only change.
+[Updated capture](evidence/boat_barrage/barrage_normal.png).
+
 ## 2026-10-20 — keep the current online ignition/revive operator
 
 Found a source-level preemption defect: every authority tick selected the lowest

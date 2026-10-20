@@ -15,10 +15,11 @@ back near the active circle and restores its original framing on exit/completion
 Host authority owns damage, progress and shots; snapshots carry the state.
 Update clients/server together to **lnac-net-33**. No server deployment occurred.
 
-The current capture reflects the follow-up removal of the small aim-point
-circles. Source flash, faint aiming line and dock progress circle remain;
-attack timing and collision are unchanged. The native 32-check suite and
-required import/startup passed again for this drawing-only follow-up.
+The current capture reflects removal of the small aim-point circles and
+trajectory aiming lines. Source flash, moving projectiles/trails and the dock
+progress circle remain. Attack timing and collision are unchanged. The native
+32-check suite and required import/startup passed again for this drawing-only
+follow-up.
 
 ![Actual native boat barrage](barrage_normal.png)
 

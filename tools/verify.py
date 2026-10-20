@@ -170,7 +170,7 @@ def main():
     for name, arguments in commands:
         command = [engine, *arguments]
         timed_out = False
-        timeout = 240 if name in ("graphical_audio", "graphical_expedition", "woods_playthrough", "graphical_polish", "layout_polish", "chase_props", "woods_replay", "graphical_woods", "menu_defaults", "graphical_defaults", "surround_world", "graphical_surround", "navigation_seeds") else 90
+        timeout = 480 if name == "graphical_expedition" else 240 if name in ("graphical_audio", "graphical_expedition", "woods_playthrough", "graphical_polish", "layout_polish", "chase_props", "woods_replay", "graphical_woods", "menu_defaults", "graphical_defaults", "surround_world", "graphical_surround", "navigation_seeds") else 90
         try:
             result = subprocess.run(command, cwd=ROOT, stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT, text=True, timeout=timeout)

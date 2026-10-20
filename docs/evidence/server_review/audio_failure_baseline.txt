@@ -1,0 +1,7 @@
+Historical failed native audio gate before gain/test fixes.
+{"step": "graphical_audio", "command": ["/opt/homebrew/bin/godot", "--audio-driver", "Dummy", "--path", "/Users/christianfranklin/games/darkwoods", "--fixed-fps", "60", "--disable-vsync", "--script", "res://tests/integration/audio_polish.gd", "--", "--audio-test", "--capture"], "exit_code": 1, "passed": false, "errors": ["SCRIPT ERROR: Invalid assignment of property or key 'loop' with value of type 'bool' on a base object of type 'AudioStreamWAV'."], "warnings": ["WARNING: 3 ObjectDB instances were leaked at exit (run with `--verbose` for details)."], "timed_out": false, "log": "artifacts/verification/graphical_audio.log"}
+{"event":"assertion","name":"real_import_and_loop_flag_wet_steps","passed":true}
+{"event":"assertion","name":"decoded_nonzero_gain_staged_pcm_wet_steps","passed":false}
+{"cue":"wet_steps","event":"audio_pcm","frames":32768,"peak":0.962057292461395}
+{"event":"assertion","name":"native_loop_wraps_wet_steps","passed":true}
+SCRIPT ERROR: Invalid assignment of property or key 'loop' with value of type 'bool' on a base object of type 'AudioStreamWAV'.

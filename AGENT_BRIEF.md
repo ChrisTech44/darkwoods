@@ -2,7 +2,8 @@
 
 Godot 4 cooperative woodland horror game — maintained agent brief.
 
-Version 2.0 — 18 October 2026.
+Version 2.0 — 18 October 2026. Maintained update: 19 October 2026
+(ability delivery, host rules and dedicated-server/audio review).
 
 ## Authority and current priority
 

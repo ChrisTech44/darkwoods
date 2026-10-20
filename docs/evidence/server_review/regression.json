@@ -1,0 +1,2785 @@
+{
+  "runtime_commit": "4e5d11925b48c027dc4da68033374b940fc523c3",
+  "timestamp_utc": "2026-10-20T00:06:56.573364+00:00",
+  "passed": true,
+  "total_steps": 254,
+  "parse_steps": 180,
+  "graphical_steps": 27,
+  "execution": "Complete suite across resumed runs; passing prefixes were retained rather than rerun. Final import/startup and affected sound/pack gates were rerun after runtime fixes. --from-step reports skipped steps explicitly.",
+  "prior_failed_attempts": [
+    {
+      "timestamp_utc": "2026-10-19T23:42:14.276743+00:00",
+      "step": "content_expansion",
+      "errors": [],
+      "warnings": [],
+      "timed_out": false
+    },
+    {
+      "timestamp_utc": "2026-10-19T23:44:57.967063+00:00",
+      "step": "playtest_balance",
+      "errors": [],
+      "warnings": [],
+      "timed_out": false
+    },
+    {
+      "timestamp_utc": "2026-10-19T23:46:31.613612+00:00",
+      "step": "graphical_content",
+      "errors": [],
+      "warnings": [
+        "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+      ],
+      "timed_out": false
+    },
+    {
+      "timestamp_utc": "2026-10-19T23:50:13.730079+00:00",
+      "step": "graphical_visibility",
+      "errors": [],
+      "warnings": [],
+      "timed_out": false
+    },
+    {
+      "timestamp_utc": "2026-10-19T23:52:39.262120+00:00",
+      "step": "graphical_audio",
+      "errors": [
+        "SCRIPT ERROR: Invalid assignment of property or key 'loop' with value of type 'bool' on a base object of type 'AudioStreamWAV'."
+      ],
+      "warnings": [
+        "WARNING: 3 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+      ],
+      "timed_out": false
+    },
+    {
+      "timestamp_utc": "2026-10-20T00:01:11.681968+00:00",
+      "step": "graphical_expedition",
+      "errors": [],
+      "warnings": [],
+      "timed_out": true
+    }
+  ],
+  "results": [
+    {
+      "step": "version",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/version.log"
+    },
+    {
+      "step": "import",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/import.log"
+    },
+    {
+      "step": "startup",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/startup.log"
+    },
+    {
+      "step": "parse_scripts_actors_player.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_actors_player.gd.log"
+    },
+    {
+      "step": "parse_scripts_actors_survivor_nameplate.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_actors_survivor_nameplate.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_banshee.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_banshee.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_bigfoot.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_bigfoot.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_bog_hands.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_bog_hands.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_boiler_saint.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_boiler_saint.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_bramble_seamstress.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_bramble_seamstress.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_briar_revenant.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_briar_revenant.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_candle_grazer.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_candle_grazer.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_creature_brain.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_creature_brain.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_cuckoo.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_cuckoo.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_echo.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_echo.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_fortune_teller.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_fortune_teller.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_groundskeeper.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_groundskeeper.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_hitchhiker.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_hitchhiker.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_imps.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_imps.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_lantern_moth.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_lantern_moth.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_last_car_conductor.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_last_car_conductor.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_lens_eater.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_lens_eater.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_mimic.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_mimic.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_owl.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_owl.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_ration_moth.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_ration_moth.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_relay_jackal.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_relay_jackal.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_shutter_wraith.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_shutter_wraith.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_slug.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_slug.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_stoneback_ram.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_stoneback_ram.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_surveyor.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_surveyor.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_switchback_hound.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_switchback_hound.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_teddy.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_teddy.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_tollkeeper.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_tollkeeper.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_vampire.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_vampire.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_werewolf.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_werewolf.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_brains_witch.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_brains_witch.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_camp_song.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_camp_song.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_cryptid.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_cryptid.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_hex_bolt.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_hex_bolt.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_killer.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_killer.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_landmark_hazard.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_landmark_hazard.gd.log"
+    },
+    {
+      "step": "parse_scripts_ai_stalker_traits.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ai_stalker_traits.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_audio_manager.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_audio_manager.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_camp_profile.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_camp_profile.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_game_config.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_game_config.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_night_clock.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_night_clock.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_pixel_art.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_pixel_art.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_round_plan.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_round_plan.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_session.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_session.gd.log"
+    },
+    {
+      "step": "parse_scripts_core_survivor_roster.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_core_survivor_roster.gd.log"
+    },
+    {
+      "step": "parse_scripts_items_escape_van.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_items_escape_van.gd.log"
+    },
+    {
+      "step": "parse_scripts_items_flare.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_items_flare.gd.log"
+    },
+    {
+      "step": "parse_scripts_items_noise_lure.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_items_noise_lure.gd.log"
+    },
+    {
+      "step": "parse_scripts_items_pickup.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_items_pickup.gd.log"
+    },
+    {
+      "step": "parse_scripts_network_camp_enet_peer.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_network_camp_enet_peer.gd.log"
+    },
+    {
+      "step": "parse_scripts_network_local_prediction.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_network_local_prediction.gd.log"
+    },
+    {
+      "step": "parse_scripts_network_network_session.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_network_network_session.gd.log"
+    },
+    {
+      "step": "parse_scripts_network_remote_motion.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_network_remote_motion.gd.log"
+    },
+    {
+      "step": "parse_scripts_network_server_runtime.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_network_server_runtime.gd.log"
+    },
+    {
+      "step": "parse_scripts_network_voice_chat.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_network_voice_chat.gd.log"
+    },
+    {
+      "step": "parse_scripts_network_world_sync.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_network_world_sync.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_audio_controls.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_audio_controls.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_camp_chart.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_camp_chart.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_camp_style.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_camp_style.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_effects_overlay.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_effects_overlay.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_field_guide.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_field_guide.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_forest_edge.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_forest_edge.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_hud.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_hud.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_loading_screen.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_loading_screen.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_main_menu.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_main_menu.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_menu_audio.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_menu_audio.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_menu_backdrop.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_menu_backdrop.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_moon_dial.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_moon_dial.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_network_lobby.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_network_lobby.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_night_broadcast.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_night_broadcast.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_night_overlay.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_night_overlay.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_notebook.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_notebook.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_objective_state.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_objective_state.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_skyline.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_skyline.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_weather.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_weather.gd.log"
+    },
+    {
+      "step": "parse_scripts_ui_woods_visibility.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_ui_woods_visibility.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_abilities.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_abilities.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_blood_trail.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_blood_trail.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_building_roof.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_building_roof.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_calling_cards.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_calling_cards.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_camp_building.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_camp_building.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_camp_layout.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_camp_layout.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_camp_lights.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_camp_lights.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_camp_map.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_camp_map.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_camp_soundscape.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_camp_soundscape.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_chase_props.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_chase_props.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_creature_samples.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_creature_samples.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_field_escape_art.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_field_escape_art.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_field_escape_structures.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_field_escape_structures.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_field_escapes.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_field_escapes.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_forest_level.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_forest_level.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_forest_site.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_forest_site.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_jackal_den.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_jackal_den.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_lake_water.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_lake_water.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_night_events.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_night_events.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_radio_rescue.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_radio_rescue.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_rescue_art.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_rescue_art.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_rescue_structures.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_rescue_structures.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_sample_presentation.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_sample_presentation.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_signal_fire.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_signal_fire.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_snares.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_snares.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_standing_props.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_standing_props.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_survivor_kits.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_survivor_kits.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_woods_decor.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_woods_decor.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_woods_layout.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_woods_layout.gd.log"
+    },
+    {
+      "step": "parse_scripts_world_woods_terrain.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_scripts_world_woods_terrain.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_ability_feedback.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_ability_feedback.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_audio_polish.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_audio_polish.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_barriers.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_barriers.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_camp_upgrade.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_camp_upgrade.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_camper_rule_peer.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_camper_rule_peer.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_chase_props.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_chase_props.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_chase_toolkit.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_chase_toolkit.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_content_expansion.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_content_expansion.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_dedicated_peer.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_dedicated_peer.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_design_feedback.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_design_feedback.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_field_escapes.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_field_escapes.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_forest_hunt.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_forest_hunt.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_four_survivors.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_four_survivors.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_killers_modifiers.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_killers_modifiers.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_layout_polish.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_layout_polish.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_map_exploration.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_map_exploration.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_menu_defaults.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_menu_defaults.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_menu_smoke.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_menu_smoke.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_meta_progress.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_meta_progress.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_monster_revamp.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_monster_revamp.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_movement_prediction.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_movement_prediction.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_navigation_aids.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_navigation_aids.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_navigation_seeds.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_navigation_seeds.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_network_peer.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_network_peer.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_new_creatures.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_new_creatures.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_night_events.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_night_events.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_night_phases.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_night_phases.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_notebook.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_notebook.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_objective_scenery.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_objective_scenery.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_offline_playthrough.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_offline_playthrough.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_offline_slice.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_offline_slice.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_pixel_palette.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_pixel_palette.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_player_render.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_player_render.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_playtest_balance.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_playtest_balance.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_radio_rescue.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_radio_rescue.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_render_replication.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_render_replication.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_road_network.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_road_network.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_roles_abilities.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_roles_abilities.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_rotation_clues.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_rotation_clues.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_signal_fire.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_signal_fire.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_sound_feedback.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_sound_feedback.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_stalker_distance.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_stalker_distance.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_surround_world.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_surround_world.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_treeline.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_treeline.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_voice_chat.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_voice_chat.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_voice_peer.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_voice_peer.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_woods_playthrough.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_woods_playthrough.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_woods_replay.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_woods_replay.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_woods_shadows.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_woods_shadows.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_woods_visibility.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_woods_visibility.gd.log"
+    },
+    {
+      "step": "parse_tests_integration_world_labels.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tests_integration_world_labels.gd.log"
+    },
+    {
+      "step": "parse_tools_audit_sound_feedback.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_audit_sound_feedback.gd.log"
+    },
+    {
+      "step": "parse_tools_capture_clips.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_capture_clips.gd.log"
+    },
+    {
+      "step": "parse_tools_capture_four_survivors.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_capture_four_survivors.gd.log"
+    },
+    {
+      "step": "parse_tools_capture_new_creatures.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_capture_new_creatures.gd.log"
+    },
+    {
+      "step": "parse_tools_capture_notebook.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_capture_notebook.gd.log"
+    },
+    {
+      "step": "parse_tools_capture_readability_audit.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_capture_readability_audit.gd.log"
+    },
+    {
+      "step": "parse_tools_capture_showcase.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_capture_showcase.gd.log"
+    },
+    {
+      "step": "parse_tools_capture_world_review.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_capture_world_review.gd.log"
+    },
+    {
+      "step": "parse_tools_import_friend_art.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_import_friend_art.gd.log"
+    },
+    {
+      "step": "parse_tools_import_spritecook_creatures.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_import_spritecook_creatures.gd.log"
+    },
+    {
+      "step": "parse_tools_import_spritecook_groundskeeper.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_import_spritecook_groundskeeper.gd.log"
+    },
+    {
+      "step": "parse_tools_import_spritecook_stalker.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_import_spritecook_stalker.gd.log"
+    },
+    {
+      "step": "parse_tools_import_spritecook_survivors.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_import_spritecook_survivors.gd.log"
+    },
+    {
+      "step": "parse_tools_import_spritecook_textures.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_import_spritecook_textures.gd.log"
+    },
+    {
+      "step": "parse_tools_probe_network.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_probe_network.gd.log"
+    },
+    {
+      "step": "parse_tools_slice_ability_effects.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_slice_ability_effects.gd.log"
+    },
+    {
+      "step": "parse_tools_slice_escape_props.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_slice_escape_props.gd.log"
+    },
+    {
+      "step": "parse_tools_slice_landmark_props.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_slice_landmark_props.gd.log"
+    },
+    {
+      "step": "parse_tools_slice_spritecook_components.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_slice_spritecook_components.gd.log"
+    },
+    {
+      "step": "parse_tools_slice_spritecook_grid.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_slice_spritecook_grid.gd.log"
+    },
+    {
+      "step": "parse_tools_slice_spritecook_props.gd",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/parse_tools_slice_spritecook_props.gd.log"
+    },
+    {
+      "step": "map_exploration",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/map_exploration.log",
+      "test_result": {
+        "checks": 15,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "map_exploration"
+      }
+    },
+    {
+      "step": "movement_prediction",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/movement_prediction.log",
+      "test_result": {
+        "checks": 81,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "movement_prediction"
+      }
+    },
+    {
+      "step": "render_replication",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/render_replication.log",
+      "test_result": {
+        "checks": 8,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "render_replication"
+      }
+    },
+    {
+      "step": "menu_smoke",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/menu_smoke.log",
+      "test_result": {
+        "checks": 37,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "menu_smoke"
+      }
+    },
+    {
+      "step": "offline_slice",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/offline_slice.log",
+      "test_result": {
+        "checks": 65,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "offline_slice"
+      }
+    },
+    {
+      "step": "offline_playthrough",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/offline_playthrough.log",
+      "test_result": {
+        "checks": 132,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "offline_playthrough"
+      }
+    },
+    {
+      "step": "camp_upgrade",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/camp_upgrade.log",
+      "test_result": {
+        "checks": 31,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "camp_upgrade"
+      }
+    },
+    {
+      "step": "woods_replay",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/woods_replay.log",
+      "test_result": {
+        "checks": 491,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "woods_replay"
+      }
+    },
+    {
+      "step": "woods_playthrough",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/woods_playthrough.log",
+      "test_result": {
+        "checks": 227,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "woods_playthrough"
+      }
+    },
+    {
+      "step": "forest_hunt",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/forest_hunt.log",
+      "test_result": {
+        "checks": 90,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "forest_hunt"
+      }
+    },
+    {
+      "step": "navigation_seeds",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/navigation_seeds.log",
+      "test_result": {
+        "checks": 12,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "navigation_seeds"
+      }
+    },
+    {
+      "step": "surround_world",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/surround_world.log",
+      "test_result": {
+        "checks": 105,
+        "clearings": 2410,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "surround_world",
+        "walls": 1280
+      }
+    },
+    {
+      "step": "woods_visibility",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/woods_visibility.log",
+      "test_result": {
+        "checks": 4,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "woods_visibility"
+      }
+    },
+    {
+      "step": "treeline",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/treeline.log",
+      "test_result": {
+        "checks": 12,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "treeline"
+      }
+    },
+    {
+      "step": "menu_defaults",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/menu_defaults.log",
+      "test_result": {
+        "checks": 19,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "menu_defaults"
+      }
+    },
+    {
+      "step": "woods_shadows",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/woods_shadows.log",
+      "test_result": {
+        "checks": 2,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "woods_shadows"
+      }
+    },
+    {
+      "step": "audio_polish",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/audio_polish.log",
+      "test_result": {
+        "audio_driver": "Dummy",
+        "checks": 127,
+        "display": "headless",
+        "event": "test_result",
+        "failures": 0,
+        "output_enabled": false,
+        "suite": "audio_polish"
+      }
+    },
+    {
+      "step": "layout_polish",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/layout_polish.log",
+      "test_result": {
+        "checks": 1323,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "layout_polish"
+      }
+    },
+    {
+      "step": "player_render",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/player_render.log",
+      "test_result": {
+        "checks": 5,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "player_render"
+      }
+    },
+    {
+      "step": "content_expansion",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/content_expansion.log",
+      "test_result": {
+        "checks": 389,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "content_expansion"
+      }
+    },
+    {
+      "step": "navigation_aids",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/navigation_aids.log",
+      "test_result": {
+        "checks": 45,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "navigation_aids"
+      }
+    },
+    {
+      "step": "night_phases",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/night_phases.log",
+      "test_result": {
+        "checks": 43,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "night_phases"
+      }
+    },
+    {
+      "step": "chase_toolkit",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/chase_toolkit.log",
+      "test_result": {
+        "checks": 29,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "chase_toolkit"
+      }
+    },
+    {
+      "step": "chase_props",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/chase_props.log",
+      "test_result": {
+        "checks": 46,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "chase_props"
+      }
+    },
+    {
+      "step": "road_network",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/road_network.log",
+      "test_result": {
+        "checks": 27,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "road_network"
+      }
+    },
+    {
+      "step": "rotation_clues",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/rotation_clues.log",
+      "test_result": {
+        "checks": 15,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "rotation_clues"
+      }
+    },
+    {
+      "step": "barriers",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/barriers.log",
+      "test_result": {
+        "checks": 32,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "barriers"
+      }
+    },
+    {
+      "step": "signal_fire",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/signal_fire.log",
+      "test_result": {
+        "checks": 31,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "signal_fire"
+      }
+    },
+    {
+      "step": "killers_modifiers",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/killers_modifiers.log",
+      "test_result": {
+        "checks": 33,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "killers_modifiers"
+      }
+    },
+    {
+      "step": "meta_progress",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/meta_progress.log",
+      "test_result": {
+        "checks": 27,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "meta_progress"
+      }
+    },
+    {
+      "step": "night_events",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/night_events.log",
+      "test_result": {
+        "checks": 31,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "night_events"
+      }
+    },
+    {
+      "step": "four_survivors",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/four_survivors.log",
+      "test_result": {
+        "checks": 169,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "four_survivors"
+      }
+    },
+    {
+      "step": "objective_scenery",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/objective_scenery.log",
+      "test_result": {
+        "checks": 33,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "objective_scenery"
+      }
+    },
+    {
+      "step": "radio_rescue",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/radio_rescue.log",
+      "test_result": {
+        "checks": 34,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "radio_rescue"
+      }
+    },
+    {
+      "step": "field_escapes",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/field_escapes.log",
+      "test_result": {
+        "checks": 58,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "field_escapes"
+      }
+    },
+    {
+      "step": "design_feedback",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/design_feedback.log",
+      "test_result": {
+        "checks": 52,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "design_feedback"
+      }
+    },
+    {
+      "step": "monster_revamp",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/monster_revamp.log",
+      "test_result": {
+        "checks": 147,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "monster_revamp"
+      }
+    },
+    {
+      "step": "stalker_distance",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/stalker_distance.log",
+      "test_result": {
+        "checks": 17,
+        "event": "test_result",
+        "failures": 0,
+        "following_gap": 153.696411132812,
+        "suite": "stalker_distance",
+        "walking_gap": 218.1357421875
+      }
+    },
+    {
+      "step": "sound_feedback",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/server_review/sound_shutdown_headless.log",
+      "test_result": {
+        "checks": 30,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "sound_feedback"
+      }
+    },
+    {
+      "step": "ability_feedback",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/ability_feedback.log",
+      "test_result": {
+        "checks": 89,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "ability_feedback"
+      }
+    },
+    {
+      "step": "notebook",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/notebook.log",
+      "test_result": {
+        "checks": 21,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "notebook"
+      }
+    },
+    {
+      "step": "world_labels",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/world_labels.log",
+      "test_result": {
+        "checks": 11,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "world_labels"
+      }
+    },
+    {
+      "step": "new_creatures",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/new_creatures.log",
+      "test_result": {
+        "checks": 33,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "new_creatures"
+      }
+    },
+    {
+      "step": "playtest_balance",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/playtest_balance.log",
+      "test_result": {
+        "checks": 23,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "playtest_balance"
+      }
+    },
+    {
+      "step": "graphical_ability_feedback",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_ability_feedback.log",
+      "test_result": {
+        "checks": 110,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "ability_feedback"
+      }
+    },
+    {
+      "step": "graphical_balance",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_balance.log",
+      "test_result": {
+        "checks": 30,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "playtest_balance"
+      }
+    },
+    {
+      "step": "graphical_field_escapes",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_field_escapes.log",
+      "test_result": {
+        "checks": 58,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "field_escapes"
+      }
+    },
+    {
+      "step": "graphical_rescue",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_rescue.log",
+      "test_result": {
+        "checks": 36,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "radio_rescue"
+      }
+    },
+    {
+      "step": "graphical_player_render",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_player_render.log",
+      "test_result": {
+        "checks": 9,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "player_render"
+      }
+    },
+    {
+      "step": "graphical_content",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_content.log",
+      "test_result": {
+        "checks": 426,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "content_expansion"
+      }
+    },
+    {
+      "step": "graphical_navigation",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_navigation.log",
+      "test_result": {
+        "checks": 48,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "navigation_aids"
+      }
+    },
+    {
+      "step": "graphical_nights",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_nights.log",
+      "test_result": {
+        "checks": 44,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "night_phases"
+      }
+    },
+    {
+      "step": "graphical_chase",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_chase.log",
+      "test_result": {
+        "checks": 30,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "chase_toolkit"
+      }
+    },
+    {
+      "step": "graphical_props",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_props.log",
+      "test_result": {
+        "checks": 49,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "chase_props"
+      }
+    },
+    {
+      "step": "graphical_roads",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_roads.log",
+      "test_result": {
+        "checks": 30,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "road_network"
+      }
+    },
+    {
+      "step": "graphical_clues",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_clues.log",
+      "test_result": {
+        "checks": 17,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "rotation_clues"
+      }
+    },
+    {
+      "step": "graphical_barriers",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_barriers.log",
+      "test_result": {
+        "checks": 34,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "barriers"
+      }
+    },
+    {
+      "step": "graphical_surround",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_surround.log",
+      "test_result": {
+        "checks": 134,
+        "clearings": 2410,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "surround_world",
+        "walls": 1280
+      }
+    },
+    {
+      "step": "graphical_visibility",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_visibility.log",
+      "test_result": {
+        "checks": 7,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "woods_visibility"
+      }
+    },
+    {
+      "step": "graphical_treeline",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_treeline.log",
+      "test_result": {
+        "checks": 20,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "treeline"
+      }
+    },
+    {
+      "step": "graphical_defaults",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_defaults.log",
+      "test_result": {
+        "checks": 21,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "menu_defaults"
+      }
+    },
+    {
+      "step": "graphical_shadows",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_shadows.log",
+      "test_result": {
+        "checks": 12,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "woods_shadows"
+      }
+    },
+    {
+      "step": "graphical_audio",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_audio.log",
+      "test_result": {
+        "audio_driver": "Dummy",
+        "checks": 215,
+        "display": "macOS",
+        "event": "test_result",
+        "failures": 0,
+        "output_enabled": true,
+        "suite": "audio_polish"
+      }
+    },
+    {
+      "step": "graphical_polish",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_polish.log",
+      "test_result": {
+        "checks": 1325,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "layout_polish"
+      }
+    },
+    {
+      "step": "graphical_smoke",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_smoke.log",
+      "test_result": {
+        "checks": 39,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "menu_smoke"
+      }
+    },
+    {
+      "step": "graphical_offline",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_offline.log",
+      "test_result": {
+        "checks": 71,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "offline_slice"
+      }
+    },
+    {
+      "step": "graphical_playthrough",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_playthrough.log",
+      "test_result": {
+        "checks": 140,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "offline_playthrough"
+      }
+    },
+    {
+      "step": "graphical_upgrade",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_upgrade.log",
+      "test_result": {
+        "checks": 44,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "camp_upgrade"
+      }
+    },
+    {
+      "step": "graphical_woods",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_woods.log",
+      "test_result": {
+        "checks": 507,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "woods_replay"
+      }
+    },
+    {
+      "step": "graphical_expedition",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_expedition.log",
+      "test_result": {
+        "checks": 228,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "woods_playthrough"
+      }
+    },
+    {
+      "step": "graphical_hunt",
+      "exit_code": 0,
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "timed_out": false,
+      "log": "artifacts/verification/graphical_hunt.log",
+      "test_result": {
+        "checks": 106,
+        "event": "test_result",
+        "failures": 0,
+        "suite": "forest_hunt"
+      }
+    }
+  ]
+}

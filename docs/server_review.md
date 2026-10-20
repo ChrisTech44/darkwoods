@@ -37,12 +37,28 @@ authoritative objective handlers rather than a full naturally played night.
 The host has no survivor slot or voice
 codec. Quick Camp two-client lifecycle also passed during review.
 
+The final PCK/ZIP was rebuilt from clean runtime commit `4e5d119`, then passed
+the four-client stress gate again. [Build metadata and SHA-256 hashes](evidence/server_review/package_build.json)
+identify the private local bundle; final evidence/documentation updates do not
+change its runtime code.
+
 The disabled-abilities gate passed both four-person listen hosting and dedicated
 source hosting, plus four clients against the PCK: guests cannot change the rule,
 local cash tampering is restored, all four starting/passive/active kits are off,
 and ordinary movement remains. Synthetic voice checks passed **24 codec/routing,
 8 guest and 13 host** assertions with microphone capture disabled. Python launcher,
 package and result-validation tests passed **12/12**.
+
+The broad regression completed **254 unique verification steps**, including 180
+parse checks and 27 named graphical suites, across explicit resumed runs after
+corrections. The fully rendered expedition needed a 480s harness budget; its
+active-enemy, normal-input run passed 228 assertions, collected/installed all five
+parts and escaped. Its director is disabled and clues are revealed by the fixture;
+this is route/mechanics acceptance, not natural discovery/pacing acceptance.
+Native PCM/looping passed **215 assertions across all 68 cues**, including the
+synthesized WAV whistle; wet-step peak is now 0.541. [Complete results and prior
+failed attempts](evidence/server_review/regression.json) identify the resumed gates.
+Final import/startup, Markdown links and diff checks also passed.
 
 [Selected logs and reports](evidence/server_review/README.md) preserve the executed
 checks. All tests ran on spare local ports. These checks do not establish Linux or

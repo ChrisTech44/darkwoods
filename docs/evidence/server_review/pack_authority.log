@@ -1,28 +1,28 @@
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
-{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
-{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
-{"audio_driver":"Dummy","camper_abilities_enabled":true,"event":"server_listening","max_players":4,"min_players":4,"mode":"woods","port":51421,"rules":"lnac-net-20"}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 54396."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 54396."}
+{"audio_driver":"Dummy","camper_abilities_enabled":true,"event":"server_listening","max_players":4,"min_players":4,"mode":"woods","port":54396,"rules":"lnac-net-20"}
 {"event":"server_status","loaded":[],"participants":[],"phase":"lobby","players":0,"round":0,"snapshot_bytes":0}
-{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
-{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
-{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
-{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
-{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
-{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
-{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
-{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 54396."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 54396."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 54396."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 54396."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 54396."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 54396."}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 54396."}
 {"event":"assertion","name":"wait_server_","passed":true}
 {"event":"assertion","name":"fixture_join_order_differs_from_reference_peer_order","passed":true}
+{"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Dedicated camp listening on UDP 54396."}
 {"event":"server_ready_countdown","players":4,"seconds":1.0}
-{"active":true,"event":"probe_net_state","phase":"loading","side":"server","status":"Dedicated camp listening on UDP 51421."}
+{"active":true,"event":"probe_net_state","phase":"loading","side":"server","status":"Dedicated camp listening on UDP 54396."}
 {"event":"loading_started"}
 {"event":"round_ready","milestone":"M1"}
 {"event":"server_world_loaded","round":1}
-{"event":"server_peer_loaded","peer":1219468551,"round":1}
-{"event":"server_peer_loaded","peer":76042904,"round":1}
-{"event":"server_peer_loaded","peer":1773390990,"round":1}
-{"event":"server_peer_loaded","peer":1067322968,"round":1}
+{"event":"server_peer_loaded","peer":1849504637,"round":1}
+{"event":"server_peer_loaded","peer":1101023058,"round":1}
+{"event":"server_peer_loaded","peer":742245481,"round":1}
+{"event":"server_peer_loaded","peer":921808642,"round":1}
 {"event":"server_round_started","players":4,"round":1}
 {"active":true,"event":"probe_net_state","phase":"playing","side":"server","status":"Night 13 / 4 survivors"}
 {"event":"assertion","name":"wait_server_","passed":true}
@@ -38,21 +38,21 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 {"event":"test_stage_sending","stage":"explore_walk"}
 {"event":"test_stage_sent","stage":"explore_walk"}
 {"event":"assertion","name":"wait_server_explore_walk","passed":true}
-{"event":"assertion","name":"all_clients_receive_team_trail_progress_76042904","passed":true}
-{"event":"assertion","name":"all_clients_receive_team_trail_progress_1067322968","passed":true}
-{"event":"assertion","name":"all_clients_receive_team_trail_progress_1219468551","passed":true}
-{"event":"assertion","name":"all_clients_receive_team_trail_progress_1773390990","passed":true}
+{"event":"assertion","name":"all_clients_receive_team_trail_progress_742245481","passed":true}
+{"event":"assertion","name":"all_clients_receive_team_trail_progress_921808642","passed":true}
+{"event":"assertion","name":"all_clients_receive_team_trail_progress_1101023058","passed":true}
+{"event":"assertion","name":"all_clients_receive_team_trail_progress_1849504637","passed":true}
 {"event":"test_stage_sending","stage":"move"}
 {"event":"test_stage_sent","stage":"move"}
 {"event":"assertion","name":"wait_server_move","passed":true}
-{"event":"assertion","name":"server_accepts_movement_76042904","passed":true}
-{"event":"assertion","name":"client_receives_own_motion_76042904","passed":true}
-{"event":"assertion","name":"server_accepts_movement_1067322968","passed":true}
-{"event":"assertion","name":"client_receives_own_motion_1067322968","passed":true}
-{"event":"assertion","name":"server_accepts_movement_1219468551","passed":true}
-{"event":"assertion","name":"client_receives_own_motion_1219468551","passed":true}
-{"event":"assertion","name":"server_accepts_movement_1773390990","passed":true}
-{"event":"assertion","name":"client_receives_own_motion_1773390990","passed":true}
+{"event":"assertion","name":"server_accepts_movement_742245481","passed":true}
+{"event":"assertion","name":"client_receives_own_motion_742245481","passed":true}
+{"event":"assertion","name":"server_accepts_movement_921808642","passed":true}
+{"event":"assertion","name":"client_receives_own_motion_921808642","passed":true}
+{"event":"assertion","name":"server_accepts_movement_1101023058","passed":true}
+{"event":"assertion","name":"client_receives_own_motion_1101023058","passed":true}
+{"event":"assertion","name":"server_accepts_movement_1849504637","passed":true}
+{"event":"assertion","name":"client_receives_own_motion_1849504637","passed":true}
 {"event":"test_stage_sending","stage":"relay"}
 {"event":"test_stage_sent","stage":"relay"}
 {"event":"assertion","name":"wait_server_relay","passed":true}
@@ -61,10 +61,10 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 {"event":"assertion","name":"client_to_client_voice_channel_relay_preserves_peer_ids","passed":true}
 {"event":"assertion","name":"client_to_client_voice_channel_relay_preserves_peer_ids","passed":true}
 {"event":"assertion","name":"client_to_client_voice_channel_relay_preserves_peer_ids","passed":true}
-{"event":"assertion","name":"dedicated_preserves_requested_role_76042904","passed":true}
-{"event":"assertion","name":"dedicated_preserves_requested_role_1067322968","passed":true}
-{"event":"assertion","name":"dedicated_preserves_requested_role_1219468551","passed":true}
-{"event":"assertion","name":"dedicated_preserves_requested_role_1773390990","passed":true}
+{"event":"assertion","name":"dedicated_preserves_requested_role_742245481","passed":true}
+{"event":"assertion","name":"dedicated_preserves_requested_role_921808642","passed":true}
+{"event":"assertion","name":"dedicated_preserves_requested_role_1101023058","passed":true}
+{"event":"assertion","name":"dedicated_preserves_requested_role_1849504637","passed":true}
 {"event":"assertion","name":"dedicated_roster_contains_requested_christian","passed":true}
 {"event":"assertion","name":"dedicated_spell_fixture_has_real_clear_collision_path","passed":true}
 {"event":"test_stage_sending","stage":"sample_shot"}
@@ -96,9 +96,9 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 {"event":"assertion","name":"normal_boat_night_without_all_escape_override","passed":true}
 {"event":"test_stage_sending","stage":"fit"}
 {"event":"test_stage_sent","stage":"fit"}
-{"event":"night_phase","phase":"NIGHTFALL","revealed":["fuel"],"time":6}
-{"event":"night_phase","phase":"DEEP NIGHT","revealed":["spark_plug"],"time":6}
-{"event":"night_phase","phase":"WITCHING HOUR","revealed":["tire"],"time":6}
+{"event":"night_phase","phase":"NIGHTFALL","revealed":["fuel"],"time":8}
+{"event":"night_phase","phase":"DEEP NIGHT","revealed":["spark_plug"],"time":8}
+{"event":"night_phase","phase":"WITCHING HOUR","revealed":["tire"],"time":8}
 {"event":"assertion","name":"wait_server_fit","passed":true}
 {"event":"assertion","name":"remote_installs_normal_night_boat_authoritatively","passed":true}
 {"event":"test_stage_sending","stage":"launch"}
@@ -132,10 +132,10 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 {"event":"loading_started"}
 {"event":"round_ready","milestone":"M1"}
 {"event":"server_world_loaded","round":2}
-{"event":"server_peer_loaded","peer":76042904,"round":2}
-{"event":"server_peer_loaded","peer":1067322968,"round":2}
-{"event":"server_peer_loaded","peer":1219468551,"round":2}
-{"event":"server_peer_loaded","peer":1773390990,"round":2}
+{"event":"server_peer_loaded","peer":742245481,"round":2}
+{"event":"server_peer_loaded","peer":1849504637,"round":2}
+{"event":"server_peer_loaded","peer":1101023058,"round":2}
+{"event":"server_peer_loaded","peer":921808642,"round":2}
 {"event":"server_round_started","players":4,"round":2}
 {"active":true,"event":"probe_net_state","phase":"playing","side":"server","status":"Night 13 / 4 survivors"}
 {"event":"assertion","name":"wait_server_ready_again","passed":true}
@@ -143,14 +143,14 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 {"event":"assertion","name":"second_round_resets_inventory_and_role_once","passed":true}
 {"event":"test_stage_sending","stage":"leave_focus"}
 {"event":"test_stage_sent","stage":"leave_focus"}
-{"event":"server_peer_left","peer":76042904}
+{"event":"server_peer_left","peer":742245481}
 {"event":"assertion","name":"wait_server_leave_focus","passed":true}
 {"event":"assertion","name":"server_survives_first_client_departure","passed":true}
 {"event":"test_stage_sending","stage":"leave_all"}
 {"event":"test_stage_sent","stage":"leave_all"}
-{"event":"server_peer_left","peer":1219468551}
-{"event":"server_peer_left","peer":1067322968}
-{"event":"server_peer_left","peer":1773390990}
+{"event":"server_peer_left","peer":921808642}
+{"event":"server_peer_left","peer":1849504637}
+{"event":"server_peer_left","peer":1101023058}
 {"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Night 13 / 4 survivors"}
 {"active":true,"event":"probe_net_state","phase":"lobby","side":"server","status":"Night 13 / 4 survivors"}
 {"event":"assertion","name":"wait_server_leave_all","passed":true}

@@ -102,7 +102,9 @@ This writes `artifacts/server/last-night-server.zip`: a server PCK, shell launch
 build metadata and this guide. Metadata records the actual engine build, protocol,
 source commit and whether the checkout was dirty. Export runs in a fresh staging
 directory, validates the new PCK and replaces the ZIP last; failed exports preserve
-the previous bundle. **It requires Godot 4.7.2 installed on the target
+the previous bundle. The current local package was built from clean runtime
+commit `4e5d119` and passed four-client lifecycle/ability/disconnect and abilities-off
+checks; [metadata and hashes](evidence/server_review/package_build.json). **It requires Godot 4.7.2 installed on the target
 OS**; it does not bundle an untested native engine binary. On Linux, unpack it,
 make the launcher executable if necessary, and run:
 

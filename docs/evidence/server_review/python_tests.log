@@ -12,6 +12,6 @@ test_new_suites_cannot_skip_result_validation (test_verify_results.VerifyResultT
 test_parse_checks_do_not_need_a_test_result (test_verify_results.VerifyResultTests.test_parse_checks_do_not_need_a_test_result) ... ok
 
 ----------------------------------------------------------------------
-Ran 12 tests in 0.008s
+Ran 12 tests in 0.007s
 
 OK

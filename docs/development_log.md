@@ -1,5 +1,29 @@
 # Development log
 
+## 2026-10-19 — Full regression completion and clean server bundle
+
+Completed all **254 verification steps**, including 180 parse checks and 27 named
+graphical suites, across explicitly resumed runs after fixing the findings below.
+Every final result passed without engine errors/warnings. The normal rendered
+woods bot exceeded its old 240s harness limit after collecting all five parts;
+raised only that test budget to 480s. Its rerun passed 228 assertions, walked
+19,023px, visited 81 clearings and escaped through ordinary input with enemies
+active (director disabled and staged clue reveal, as labelled by the fixture).
+Final hunt passed too. Native PCM/looping passes 215 assertions across all 68
+cues; shutdown passes 30 checks in both native graphical and headless paths.
+Import/startup, Markdown links, Python 12/12 and diff checks are clean.
+
+Published runtime fixes as `4e5d119`. Rebuilt the server ZIP/PCK from that clean
+commit (`worktree_dirty: false`, Godot 4.7.2, lnac-net-20) and repeated four-client
+pack stress acceptance: 77 authority + 70 client checks, relay intact, simultaneous
+leaves clean. Four-client packed abilities-off acceptance passes too. Later
+changes are the verifier's test budget and documentation/evidence; package runtime
+code remains the published commit. Preserved [complete resumed verification](evidence/server_review/regression.json),
+[clean package hashes](evidence/server_review/package_build.json) and final reports
+in the [server review](server_review.md). The local ZIP and 52-video gallery remain
+ignored. No regular server restart, new SpriteCook credits, Internet/platform,
+microphone or human-listening acceptance is claimed.
+
 ## 2026-10-19 — Dedicated authority audit and private gallery refresh
 
 Reviewed the production dedicated path after the ability overhaul. Fixed a

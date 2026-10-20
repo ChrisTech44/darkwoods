@@ -2,7 +2,7 @@
 
 This checkout includes a dedicated authority for **1–4 human
 survivors**. The server has no survivor and consumes no player slot. Use the
-updated `main` client with rules **lnac-net-23**, with the same protocol.
+updated `main` client with rules **lnac-net-24**, with the same protocol.
 Older clients must update. The server owns AI, movement validation, damage,
 inventory, clues, objectives and extraction, using the same gameplay scene.
 
@@ -10,11 +10,11 @@ Woods now contains **31 creatures plus the Stalker**, including every roaming
 and regional type on every seed, also during Blood Moon. Enemy replication uses
 the seeded roster order, so update **both server and every client** to rules21;
 older clients must not join with a smaller/different roster. Restart the server
-after updating and confirm its `server_listening` line says `lnac-net-23`.
+after updating and confirm its `server_listening` line says `lnac-net-24`.
 
 Trail exploration is shared by the whole team, including travel by humans other
 than the server's reference survivor. Earlier rules-18 builds had an incomplete
-coverage path; current server and clients both require lnac-net-23.
+coverage path; current server and clients both require lnac-net-24.
 [Map replication checks](evidence/map_exploration/README.md).
 
 ## Run from source
@@ -29,7 +29,7 @@ On Genesect's Snap installation, prefix the command with
 `GODOT_BIN=/snap/bin/godot-4` so noninteractive shells find the engine. After
 friends finish the current night, stop the old process, pull the current branch,
 update every player's `main` copy and relaunch with your usual options. Client
-and server protocol must match lnac-net-23; older rules-17/18/19/20 clients cannot
+and server protocol must match lnac-net-24; older rules-17/18/19/20 clients cannot
 join it. Diagnostics for this update did not restart the regular server.
 
 The source launcher first runs Godot's headless import step to generate asset
@@ -163,7 +163,7 @@ extend the earlier Linux/network results to the new build. See the
 [server review and execution evidence](server_review.md).
 
 Player poses now use an independent 30Hz stream; full world state uses 20Hz
-unordered fragments. Both clients and server must update to rules lnac-net-23 and
+unordered fragments. Both clients and server must update to rules lnac-net-24 and
 the server must restart before updated clients join. Bounded local prediction, acknowledged reconciliation and buffered remote motion
 are implemented; the client also avoids unchanged pickup/site redraws. See the
 [smoothness measurements](evidence/smoothness/README.md). The main client also

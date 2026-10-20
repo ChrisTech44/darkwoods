@@ -1,0 +1,37 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"weighted_wheel_totals_one_hundred","passed":true}
+{"event":"assertion","name":"no_money_or_permanent_explanation_panel","passed":true}
+{"event":"assertion","name":"one_spin_starts_sixty_second_cooldown","passed":true}
+{"event":"assertion","name":"hold_release_and_repeat_cannot_reroll","passed":true}
+{"event":"assertion","name":"capture_wheel_spinning","passed":true}
+{"event":"assertion","name":"spin_resolves_once_with_name_only","passed":true}
+{"event":"assertion","name":"advance_does_not_resolve_again","passed":true}
+{"event":"assertion","name":"wheel_speed_boost_changes_shared_movement","passed":true}
+{"event":"assertion","name":"wheel_speed_projects_into_owner_prediction","passed":true}
+{"event":"assertion","name":"wheel_slow_changes_shared_movement","passed":true}
+{"event":"assertion","name":"bad_beat_halves_current_health","passed":true}
+{"event":"assertion","name":"second_wind_fully_heals","passed":true}
+{"event":"assertion","name":"camp_warp_preserves_objective_and_safe_landing","passed":true}
+{"event":"assertion","name":"jackpot_copies_owned_supply_not_objective","passed":true}
+{"event":"assertion","name":"butterfingers_uses_real_drop_path","passed":true}
+{"event":"assertion","name":"dropped_objective_remains_recoverable","passed":true}
+{"event":"assertion","name":"lights_out_uses_existing_light_rule","passed":true}
+{"event":"assertion","name":"rare_skull_downs_without_permanent_elimination","passed":true}
+{"event":"assertion","name":"disabled_powers_cancel_spin_without_outcome","passed":true}
+{"event":"assertion","name":"interrupted_spin_keeps_cooldown","passed":true}
+{"event":"assertion","name":"capture_max_idle","passed":true}
+{"event":"assertion","name":"lifeguard_raises_whistle_before_punishment","passed":true}
+{"event":"assertion","name":"capture_lifeguard_tell","passed":true}
+{"event":"assertion","name":"whistle_emits_separate_authority_hearing_stimulus","passed":true}
+{"event":"assertion","name":"lifeguard_punishes_sprinting","passed":true}
+{"event":"assertion","name":"lifeguard_has_native_cue_route","passed":true}
+{"event":"assertion","name":"lifeguard_has_per_survivor_cooldown","passed":true}
+{"event":"assertion","name":"walking_is_lifeguard_counter","passed":true}
+{"event":"assertion","name":"flash_cancels_lifeguard_windup","passed":true}
+{"event":"assertion","name":"lifeguard_sample_accepted","passed":true}
+{"event":"assertion","name":"copied_whistle_exhausts_caster_as_well","passed":true}
+{"event":"assertion","name":"lifeguard_tell_round_trips","passed":true}
+{"checks":32,"event":"test_result","failures":0,"suite":"wheel_monsters"}

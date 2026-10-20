@@ -163,7 +163,7 @@ func sample_checks() -> void:
 	level.world_objects.add_child(enemy)
 	enemy.set_physics_process(false)
 	await frames()
-	check(CreatureSamples.SOURCES.size()==30,"thirty_explicit_sample_sources")
+	check(CreatureSamples.SOURCES.size()==RoundPlan.CRYPTID_COUNT-1,"thirty_explicit_sample_sources")
 	CreatureSamples.encounter(christian,enemy)
 	check(christian.kit.sample.is_empty(),"sample_not_immediate_before_survival")
 	CreatureSamples.advance(christian,3.1)

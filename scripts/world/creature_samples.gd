@@ -1,7 +1,7 @@
 class_name CreatureSamples
 extends RefCounted
 ## Borrowed signatures have explicit adapters, never generic player-state casts.
-const SOURCES := ["witch","werewolf","shutter_wraith","ration_moth","bramble_seamstress","vampire","bigfoot","briar_revenant","lantern_moth","candle_grazer","switchback_hound","lens_eater","last_car_conductor","mimic","owl","bog_hands","imps","teddy","groundskeeper","cuckoo","banshee","slug","surveyor","hitchhiker","tollkeeper","echo","fortune_teller","boiler_saint","relay_jackal","stoneback_ram"]
+const SOURCES := ["witch","werewolf","shutter_wraith","ration_moth","bramble_seamstress","vampire","bigfoot","briar_revenant","lantern_moth","candle_grazer","switchback_hound","lens_eater","last_car_conductor","mimic","owl","bog_hands","imps","teddy","groundskeeper","cuckoo","banshee","slug","surveyor","hitchhiker","tollkeeper","echo","fortune_teller","boiler_saint","relay_jackal","stoneback_ram", "lifeguard"]
 const FORMS := ["werewolf","briar_revenant","groundskeeper","mimic"]
 const NAMES := {"shutter_wraith":"PAPARAZZO", "ration_moth":"PUFFBALL", "bramble_seamstress":"SEAMSTRESS", "briar_revenant":"SCARECROW", "candle_grazer":"SNUFFER", "switchback_hound":"BUSTER", "lens_eater":"PEEPER", "last_car_conductor":"CONDUCTOR", "relay_jackal":"JACKAL", "stoneback_ram":"RAM", "boiler_saint":"LULLABY SAINT", "teddy":"BEAR HUG"}
 static var form_sheets: Dictionary = {}
@@ -243,6 +243,9 @@ static func apply(body: Node2D, kind: String, seconds: float) -> void:
 	body.queue_redraw()
 
 static func fire(actor: CampPlayer, cast: Dictionary) -> void:
+	if cast["kind"] in NewCreatureSamples.SOURCES:
+		NewCreatureSamples.fire(actor,cast["kind"])
+		return
 	var level: Node = SurvivorKits.world(actor)
 	var kind: String = cast["kind"]
 	if kind in SamplePresentation.SHOTS and not cast.get("resolved",false):

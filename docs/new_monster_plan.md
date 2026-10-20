@@ -1,11 +1,20 @@
 # New monster plan: five habit-breakers and an invisible hunter
 
-20 October 2026. **Status: proposal only.** Nothing in this document is
-implemented, wired or tested. It plans six woods creatures and lists the sounds
-they need. Each creature is built from hooks that already exist in the code
+20 October 2026. **Status: implementation in progress.** Executed increments are listed below;
+the detailed tables retain their approved design targets and open acceptance
+limits. This plan covers six woods creatures and their sounds. Each creature is built from hooks that already exist in the code
 (listed per creature) so that no new terrain, water, physics, collision, item or
 map system is required.
 
+Implementation defaults: preserve every type every night; keep the Stalker
+movement cap; allow its Magician swap only in Witching Hour. New audio is original
+procedural synthesis, not recorded character performances. The agreed Shade is
+an additional seventh creature. No extra SpriteCook generations beyond the
+shared 12-credit design sheet.
+
+## Delivered increments
+
+- **lifeguard**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (32 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/lifeguard_results.json).
 The four [playtest follow-up concepts](playtest_followup.md#mechanically-distinct-monster-proposals)
 and the 48 [catalog concepts](monster_catalog.md) remain separate proposals.
 

@@ -15,3 +15,5 @@ Original source and SHA-256 prefix are preserved in the project manifest.
 
 No Windows/Linux package, Internet endurance or production deployment is claimed.
 Update server and clients together; this build uses rules23.
+
+lifeguard: [32 cumulative gameplay checks and real ENet state/cue results](lifeguard_results.json).

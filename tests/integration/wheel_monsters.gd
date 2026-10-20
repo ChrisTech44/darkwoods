@@ -21,6 +21,7 @@ func run() -> void:
 	change_scene_to_file("res://scenes/world/forest_level.tscn")
 	await frames(12)
 	level=current_scene
+	level.hud.broadcast.hide() # Dismiss transient titles for unobscured inspection.
 	actor=level.player
 	actor.local_input=false
 	actor.set_physics_process(false)
@@ -106,4 +107,52 @@ func wheel() -> void:
 	actor.kit.wheel_show=0
 	await shot("max_idle")
 func creature_checks() -> void:
-	pass
+	if "lifeguard" in RoundPlan.ROAMER_SPECIES: await lifeguard_checks()
+
+func specimen(kind: String, at: Vector2) -> CampCryptid:
+	var enemy: CampCryptid=load("res://scenes/actors/cryptid.tscn").instantiate()
+	enemy.species=kind
+	enemy.position=at
+	level.world_objects.add_child(enemy)
+	enemy.set_physics_process(false)
+	enemy.enabled=true
+	return enemy
+
+func lifeguard_checks() -> void:
+	actor.position=Vector2(112,440)
+	actor.effects.clear()
+	actor.status=CampPlayer.Status.ALIVE
+	actor.stamina=4
+	actor.sprinting=true
+	var guard:=specimen("lifeguard",actor.position+Vector2(70,0))
+	await frames()
+	guard.brain.physics(0.01)
+	check(guard.brain.tell>0,"lifeguard_raises_whistle_before_punishment")
+	await shot("lifeguard_tell")
+	var cues: int=level.soundscape.played_counts.get("lifeguard_whistle",0)
+	level.night_clock.heat=0
+	guard.brain.physics(0.7)
+	check(level.night_clock.heat==3,"whistle_emits_separate_authority_hearing_stimulus")
+	check(actor.stamina==0 and actor.exhausted,"lifeguard_punishes_sprinting")
+	check(level.soundscape.played_counts.get("lifeguard_whistle",0)==cues+1,"lifeguard_has_native_cue_route")
+	check(guard.brain.punished.has(actor.get_instance_id()),"lifeguard_has_per_survivor_cooldown")
+	guard.brain.punished.clear()
+	actor.sprinting=false
+	guard.brain.physics(0.1)
+	check(guard.brain.target==null,"walking_is_lifeguard_counter")
+	actor.sprinting=true
+	guard.brain.physics(0.1)
+	guard.stun(1)
+	check(guard.brain.tell==0 and guard.brain.target==null,"flash_cancels_lifeguard_windup")
+	actor.role="christian"
+	actor.kit.sample="lifeguard"
+	actor.ability_cooldown=0
+	actor.stamina=4
+	check(CreatureSamples.use(actor),"lifeguard_sample_accepted")
+	CreatureSamples.advance(actor,1)
+	check(actor.stamina==0 and actor.exhausted,"copied_whistle_exhausts_caster_as_well")
+	var snapshot: Dictionary=guard.brain.snapshot()
+	guard.brain.restore(snapshot)
+	check(guard.brain.snapshot()==snapshot,"lifeguard_tell_round_trips")
+	guard.queue_free()
+	actor.role="max"

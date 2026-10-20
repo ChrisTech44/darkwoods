@@ -108,7 +108,10 @@ This writes `artifacts/server/last-night-server.zip`: a server PCK, shell launch
 build metadata and this guide. Metadata records the actual engine build, protocol,
 source commit and whether the checkout was dirty. Export runs in a fresh staging
 directory, validates the new PCK and replaces the ZIP last; failed exports preserve
-the previous bundle. The earlier rules20 package was built from clean runtime commit `4e5d119`;
+the previous bundle. The current rules21 package was built from clean runtime
+commit `787e98b` and passed all 153 dedicated/four-client checks, including the full
+roster; [current metadata and hashes](evidence/full_roster/package.json).
+The earlier rules20 package was built from clean runtime commit `4e5d119`;
 its [metadata and hashes](evidence/server_review/package_build.json) are historical.
 Rebuild with the command above for the current full-roster rules21 server. **It requires Godot 4.7.2 installed on the target
 OS**; it does not bundle an untested native engine binary. On Linux, unpack it,

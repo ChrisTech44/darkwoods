@@ -79,6 +79,7 @@ These are code-backed facts, not a substitute for human acceptance testing.
   regional types now appear every Woods night; no type sits out. Blood Moon keeps
   every type instead of replacing pranksters with werewolves. Its frequent moon
   and faster Stalker remain. Quick Camp retains its single headline killer.
+  [Full-roster source/PCK verification](docs/evidence/full_roster/README.md).
 - Stalker shadowing: Expedition, Nightfall onward, chosen living survivor in
   eligible woods; nearby clear-sight time before lunging is 90–130s. Ordinary
   SEARCH sightings beyond 40px return to stalking. Deliberate investigations and

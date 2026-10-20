@@ -19,8 +19,11 @@ Verification: modifiers 34 (complete rosters across 60 seeds/modifiers), brains
 assertions all pass without errors/warnings. All clients check their full roster;
 authority verifies live brains before the lifecycle fixture freezes enemies.
 Required import/startup, Markdown links and diff checks pass. [Evidence and fixture
-limits](evidence/full_roster/README.md). Pack rebuild/acceptance is recorded in the
-follow-up evidence; no full regression or production deployment is claimed.
+limits](evidence/full_roster/README.md). Rebuilt PCK/ZIP from clean published runtime
+commit `787e98b` and passed the same 153 assertions with four packed-server clients.
+[Build metadata/hashes](evidence/full_roster/package.json) identify rules21 and the
+local ignored artifacts. Later evidence updates do not alter package runtime code;
+no new full regression, Internet/platform or production deployment is claimed.
 
 ## 2026-10-19 — Compact abilities on/off checkbox
 

@@ -1,0 +1,18 @@
+{
+  "engine": "4.7.2",
+  "engine_build": "4.7.2.stable.official.ed1daf0bf",
+  "rules": "lnac-net-21",
+  "requires_runtime": "Godot 4.7.2 for the server OS",
+  "commit": "787e98b596f5178056c6b3b8fe7022392a472c92",
+  "worktree_dirty": false,
+  "files": {
+    "last-night-server.pck": {
+      "bytes": 29613152,
+      "sha256": "214e54eea379ab4bde83ab8387d4247964f949f3ba441a69fcfa107dd9d7d7a4"
+    },
+    "last-night-server.zip": {
+      "bytes": 28256349,
+      "sha256": "caa0d2979b62211102615e382110f6fb3c4dd35f301f4e8e8811ce22b26a3825"
+    }
+  }
+}

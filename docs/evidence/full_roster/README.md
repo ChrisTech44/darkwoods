@@ -18,6 +18,8 @@ Executed locally on macOS Apple M2, Godot 4.7.2, microphones disabled:
 - [Spawn spacing](spacing.log): 52 assertions, preserving the camp buffer, separation and forest coverage.
 - [Newer creatures](new_creatures.log): 36 assertions, including all roaming types on each tested seed.
 - [Dedicated source plus four clients](dedicated_source.json): 153 assertions, all 32 enemy bodies on every process, authority brains initially enabled, normal extraction/results/second round, relay and simultaneous disconnects.
+- [Clean server PCK plus four clients](dedicated_pack.json): the same 153 assertions pass, with [packed authority details](pack_authority.log).
+- [Package metadata and hashes](package.json): clean runtime commit `787e98b`, rules21, Godot 4.7.2. Local PCK/ZIP remain ignored. Later evidence updates do not change runtime code.
 - [Authority assertions](authority.log) and [Python launcher/package gates](python.log): 12 Python tests pass.
 
 No graphical layout/art/audio changes or new SpriteCook credits. This is targeted

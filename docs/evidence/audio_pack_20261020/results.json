@@ -353,5 +353,29 @@
     "Local ENet and macOS checks are not Internet/other-platform/package acceptance.",
     "Microphone capture disabled.",
     "Source originals and edits preserved; creator/license information not supplied by user."
-  ]
+  ],
+  "audio_polish_isolated_repeat": {
+    "args": "--headless --audio-driver Dummy --script res://tests/integration/audio_polish.gd -- --audio-test",
+    "result": {
+      "audio_driver": "Dummy",
+      "checks": 164,
+      "display": "headless",
+      "event": "test_result",
+      "failures": 0,
+      "output_enabled": false,
+      "suite": "audio_polish"
+    }
+  },
+  "refreshed_local_gallery": {
+    "source_commit": "9c01ce0",
+    "new_videos": 17,
+    "total_videos": 64,
+    "core_christian_signatures": 37,
+    "format": "H.264 1152x648 / 30fps; stereo AAC",
+    "bytes": 17279649,
+    "microphone": "off",
+    "all_new_clips_decode": true,
+    "all_new_audio_rms_finite": true,
+    "git_ignored": true
+  }
 }

@@ -1,5 +1,21 @@
 # Development log
 
+## 2026-10-20 — refreshed local clips with the supplied sound pack
+
+Re-recorded/re-encoded the eight recent wheel/monster and nine copied-signature
+MP4s from clean runtime commit `9c01ce0`, including recorded speech, breathing,
+Vulture calls, Magician drumroll/ending and the user's Huntmaster mega horn.
+All seventeen still pass staged outcome checks, frame-marker boundaries, full
+ffmpeg decode and H.264 1152×648/30fps + stereo AAC/nonzero-audio verification.
+All 64 gallery video/poster paths and 37 core Christian entries verify; the five
+old Max money videos remain absent. Capture fixtures retain their labelled
+lighting, supplied setup, controlled AI and microphones OFF. Media and harnesses
+remain Git-ignored. Native audio rules also pass 164 checks in the isolated
+`--audio-test` settings profile. Import/startup and diff checks pass. No additional
+runtime changes, SpriteCook spend, human listening or platform/Internet acceptance.
+[Updated audio evidence](evidence/audio_pack_20261020/results.json).
+
+
 ## 2026-10-20 — supplied audio pack, mega horn and accepted-event integration
 
 Processed twelve user uploads into fifteen mono runtime cues; preserved original

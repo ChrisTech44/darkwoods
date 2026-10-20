@@ -59,3 +59,11 @@ substitute): [breathing](nobody_breathing_processed.png),
 153 dedicated/four-client checks, plus existing audio, survivor and creature
 regressions. Required import/startup and diff checks are clean. Microphones off.
 No human listening-quality, Internet, package or other-platform acceptance claim.
+
+
+The local ignored gallery's seventeen recent monster/copy clips were refreshed
+from audio-integration commit `9c01ce0` with the supplied recordings. H.264/AAC,
+full decoding, nonzero audio, matching outcome observations and all 64 media paths
+verify. Original staging/lighting labels remain. The audio rules suite also passes
+164 checks with the isolated `--audio-test` settings profile. Local MP4s remain
+outside Git; no human listening acceptance is implied by these checks.

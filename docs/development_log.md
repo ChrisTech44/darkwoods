@@ -1,5 +1,23 @@
 # Development log
 
+## 2026-10-20 — Max: What Could Go Wrong?
+
+Replaced cash/purchases with a host-owned weighted wheel, one outcome per 60s
+commit. Names-only result presentation, a brief world wheel, no permanent help
+panel. Movement remains available during the spin; interruptions do not refund
+the cooldown. Owner prediction carries the movement effects. Existing injury,
+drop, authority and safe landing paths are reused. Rules advance to lnac-net-23.
+One SpriteCook NB2.1 3x3 sheet cost 12 credits (308 to 296), providing seven
+canonical creature designs and the wheel/skull. Inspected transparency and native
+output; sliced with deterministic bob/lean motion, no paid animation generation.
+The sheet/IDs/hashes are in the source-art manifest.
+
+Verification: wheel outcome/transition and rendered HUD checks, survivor and
+prediction suites, required import/startup and four-client dedicated client-input
+regression. Captures use normal lighting/routes, frozen AI and a staged outcome;
+no microphone. See the increment evidence for results and limits. Creature art
+is prepared here; each new brain/spawn/sample is a separate increment.
+
 ## 2026-10-20 — New monster plan (proposal only)
 
 Added the [new monster plan](new_monster_plan.md) at the user's request: five

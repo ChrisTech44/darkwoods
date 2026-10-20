@@ -2,7 +2,7 @@ class_name LocalPrediction
 extends RefCounted
 ## Presentation-only movement. The authority still receives directions, never positions.
 const FIELDS := ["stamina", "exhausted", "knock", "skid", "status", "health", "vault_time", "hidden_spot", "snared", "hex_remaining", "motor_assisted", "assisting_motor", "ability_active", "stride", "form_motion"]
-const EFFECTS := ["held", "asleep", "tripped", "backwards", "frog", "piggyback", "drowsy", "coffee", "hypnotized", "float", "slimed"]
+const EFFECTS := ["held", "asleep", "tripped", "backwards", "frog", "piggyback", "drowsy", "coffee", "hypnotized", "float", "slimed", "hot_streak", "lead_boots", "rally"]
 const MAX_AGE := 0.25
 const MAX_HISTORY := 60
 var actor: CampPlayer

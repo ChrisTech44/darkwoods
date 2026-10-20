@@ -86,13 +86,7 @@ static func guide(canvas: Node2D, level: Node, actor: CampPlayer) -> void:
 
 static func detail(actor: CampPlayer) -> String:
 	if not SurvivorKits.enabled(actor): return ""
-	if actor.role == "max":
-		var held: float=actor.kit.get("stake_time",-1.0)
-		if held>=0.0:
-			var cost := SurvivorKits.stake(actor)
-			if held<0.45: return "RELEASE X: BUY 1 random supply for $4\nKeep holding 0.45s+ to GAMBLE instead."
-			return "RELEASE X: GAMBLE $%d\n45%%: lose $%d / 55%%: win %d supplies\nLonger hold raises stake, up to $12." % [cost,cost,2*(cost/4)]
-		return "TAP X: buy 1 random supply for $4\nHOLD 0.45s+, release: gamble $4/$8/$12\n45%: nothing / 55%: 2 supplies per $4"
+	if actor.role == "max": return ""
 	var form: String=actor.kit.get("form","")
 	if not form.is_empty():
 		var action := "No extra X action."

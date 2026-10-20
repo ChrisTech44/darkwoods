@@ -10,7 +10,7 @@ var receipts: Dictionary = {}
 var enabled := true
 
 static func ability_name(role: String) -> String:
-	return {"christian":"FIELD TEST", "john":"PUSH THROUGH", "max":"CASH OUT", "alex":"MY OWN WAY BACK"}.get(role, "")
+	return {"christian":"FIELD TEST", "john":"PUSH THROUGH", "max":"WHAT COULD GO WRONG?", "alex":"MY OWN WAY BACK"}.get(role, "")
 
 static func setup(actor: CampPlayer) -> void:
 	actor.ability_charges = 0

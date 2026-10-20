@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-22"
+const RULES := "lnac-net-23"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -739,6 +739,7 @@ func _clear_links(actor: CampPlayer) -> Array[int]:
 			if other.has_meta("tether_partner"): other.remove_meta("tether_partner")
 	actor.release()
 	CreatureSamples.finish_cast(actor)
+	FortuneWheel.cancel(actor)
 	SurvivorKits.cancel_return(actor)
 	SurvivorKits.cancel_stake(actor)
 	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):

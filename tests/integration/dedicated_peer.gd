@@ -252,15 +252,15 @@ func client() -> void:
 				await create_timer(0.4).timeout
 				if own==probe.data.owner:
 					net.action("ability")
-					await until(func(): return net.actors[own].kit.stake_time>=0,10)
+					await until(func(): return net.actors[own].kit.wheel_time>0,10)
 					var escape := InputEventAction.new()
 					escape.action="pause"
 					escape.pressed=true
 					net.handle_input(escape)
-					await until(func(): return net.actors[own].kit.stake_time<0,10)
+					await until(func(): return net.actors[own].kit.wheel_time==0,10)
 					net.handle_input(escape)
-				await until(func(): return net.actors[probe.data.owner].kit.stake_time<0,10)
-				probe.report.rpc_id(1,handled,{"cancelled":net.actors[probe.data.owner].kit.stake_time<0,"cash":net.actors[probe.data.owner].kit.cash})
+				await until(func(): return net.actors[probe.data.owner].kit.wheel_time==0,10)
+				probe.report.rpc_id(1,handled,{"cancelled":net.actors[probe.data.owner].kit.wheel_time==0,"cash":net.actors[probe.data.owner].kit.cash})
 			"move":
 				var start: Vector2 = net.actors[own].position
 				Input.action_press("move_down")
@@ -341,4 +341,4 @@ func ability_checks(ids: Array) -> void:
 			net.actors[id].ability_cooldown=0
 			stage("max_cancel",{"owner":id})
 			if not await reports(humans): return
-			check(net.actors[id].kit.stake_time<0 and net.actors[id].kit.cash==6,"dedicated_menu_cancels_stake_without_charge")
+			check(net.actors[id].kit.wheel_time==0 and net.actors[id].kit.cash==0 and net.actors[id].ability_cooldown>0,"dedicated_menu_cancels_spin_without_refresh")

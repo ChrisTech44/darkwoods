@@ -654,6 +654,7 @@ static func visuals(level: Node) -> Array:
 static func draw_world(canvas: Node2D, level: Node) -> void:
 	for actor: CampPlayer in canvas.get_tree().get_nodes_in_group("survivors"):
 		if not SurvivorKits.enabled(actor): continue
+		if actor.role=="max": FortuneWheel.draw(canvas,actor)
 		SamplePresentation.guide(canvas,level,actor)
 		if actor.kit.get("marker_life",0.0)>0:
 			PixelArt.draw_in(canvas,"kit_return",Rect2(actor.kit["marker"]-Vector2(9,9),Vector2(18,18)))

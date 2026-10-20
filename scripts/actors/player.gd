@@ -118,7 +118,7 @@ var knock: Vector2 = Vector2.ZERO
 const EFFECT_NAMES := {"held": "HELD", "frog": "FROG", "backwards": "BACKWARDS", "float": "FLOATING", "helium": "HELIUM VOICE",
 	"sneezy": "SNEEZY", "drowsy": "DROWSY", "asleep": "ASLEEP", "hypnotized": "DRAWN", "whiteout": "BLINDED", "face_moth": "MOTH ON YOUR FACE",
 	"tethered": "STITCHED", "garlic": "GARLIC", "bug_spray": "BUG SPRAY", "coffee": "CAFFEINATED", "marked": "PHOTOGRAPHED", "tripped": "TRIPPED",
-	"slimed": "SLIMED", "piggyback": "HITCHHIKER ON YOUR BACK", "lost": "LOST", "deaf": "DEAFENED", "dark": "CURSED DARK", "rewound": "REWOUND"}
+	"slimed": "SLIMED", "piggyback": "HITCHHIKER ON YOUR BACK", "hot_streak":"HOT STREAK", "lead_boots":"LEAD BOOTS", "rally":"RALLY", "nightlight":"NIGHT-LIGHT", "lost": "LOST", "deaf": "DEAFENED", "dark": "CURSED DARK", "rewound": "REWOUND"}
 ## Slime skid: your actual velocity eases toward where you steer (Slug trails).
 var skid := Vector2.ZERO
 var form_motion := Vector2.ZERO
@@ -259,6 +259,9 @@ func apply_intent(direction: Vector2, wants_sprint: bool, delta: float, presenta
 		velocity = skid
 	else:
 		skid = velocity
+	if _movement_effect("hot_streak"): velocity *= 1.5
+	if _movement_effect("lead_boots"): velocity *= 0.5
+	if _movement_effect("rally"): velocity *= 1.2
 	velocity = CreatureSamples.player_velocity(self, velocity)
 	var previous := position
 	move_and_slide()

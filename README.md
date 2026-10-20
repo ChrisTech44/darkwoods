@@ -643,13 +643,13 @@ and hiking boots. These are stylized designs from descriptions.
 | --- | --- | --- | --- |
 | **Christian** | Survive a real creature signature to collect one sample | **Field Test:** reproduce its signature; some samples transform you. X again performs a form's secondary action | Friends can be affected. Full slots keep their sample; Werewolf needs the actual full moon |
 | **John** | Completing a new preparation step on any escape refills stamina | **Push Through:** halve accepted damage and defer the reduced bill for 6s, 45s cooldown | Reduced debt lands afterward. Grabs end the burst; healing waits. Lethal debt cannot be escaped by boarding |
-| **Max** | Optional searches earn $4; first recovery of a creature's stolen loot earns $3 | **Cash Out:** tap X for one ordinary supply ($4); hold then release to gamble $4/$8/$12 | Gamble: 45% bust, otherwise 2/4/6 supplies. Hits spill some cash; teammates can return it to its owner |
+| **Max** | Trust your luck | **What Could Go Wrong?** X spins a wheel every 60s | Discover the named results yourself |
 | **Alex** | After 4s isolated from living teammates, light uses 25% less charge and stamina recovers 35% faster | **My Own Way Back:** X places a 75s marker; X again while alone channels a 2s return, then 40s cooldown | Hits interrupt; holds/downing prevent return. Blocked landing or expiry can ruin the plan |
 
 Everyone has the same basic stats and starting supplies. Objective parts, tools,
 revives and all five escape routes stay available to every character. John earns
 preparation credit once per real step, not by collecting or reinstalling items.
-Max cannot purchase components, tools or more money. Alex's return moves his
+Max's wheel replaces his money and purchase system. Alex's return moves his
 current body and gear; it never rewinds injuries or spent resources.
 
 Christian has variants for all 30 creature-brain species. For example, a Werewolf
@@ -660,18 +660,16 @@ samples include curses, spores, thread, disguises, slime and sensory effects.
 No creature-selection menu is needed: the sample beside X determines the next
 experiment. The Stalker and Lake Thing special samples remain separate design
 proposals, outside the normal pool. Quick Camp starts Christian with one
-Paparazzo sample and Max with $6 because it has no woods acquisition loop.
+Paparazzo sample; Max's wheel works in both modes.
 
 Isolation enters beyond 190px, exits within 150px, and ignores downed/escaped
 teammates as proximity anchors. Multiple copies of a character remain allowed.
 Old role saves return to the four-character selection; camper artwork follows
 the requested descriptions. See the [overhaul and detailed rules](docs/four_survivor_overhaul.md).
 
-Max's **tap** spends $4 for one random ordinary supply. Hold X for **0.45s or
-longer**, then release to gamble: **45% lose the stake**, **55% win 2 supplies per
-$4**. Stakes rise from $4 to $8 at 0.65s and $12 at 1.3s; the HUD shows the actual
-cost and payout before release. Winnings are supplies, not cash. Overflow drops
-nearby. No objective parts or tools are purchased.
+Max's wheel appears briefly beside him, with a pointer and weighted slices.
+Results show names only. He can move while it spins; interruption does not
+refund the cooldown. The old permanent help paragraph and cash economy are gone.
 
 Christian's five ranged copy families launch distinct travelling shots; faint
 paths/cones/area guides show how his equipped sample applies. Transformations

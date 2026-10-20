@@ -242,9 +242,7 @@ func update_ability(actor: CampPlayer, text: String) -> void:
 	ability_icon.visible = actor.status == CampPlayer.Status.ALIVE and SurvivorKits.enabled(actor)
 	if not ability_icon.visible: return
 	var art: String = {"christian":"kit_sample","john":"kit_debt","alex":"kit_return","max":"kit_wallet"}.get(actor.role,"")
-	if actor.role == "max":
-		if actor.kit.get("stake_time",-1.0)>=0: art = "kit_dice"
-		elif actor.kit.get("cash",0)<SurvivorKits.CASH_PRICE: art = "kit_empty_wallet"
+	if actor.role == "max": art="kit_dice"
 	ability_icon.texture = PixelArt.fit(art,Vector2(9,9))
 
 

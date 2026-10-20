@@ -184,10 +184,10 @@ func run() -> void:
 		check(SamplePresentation.detail(actor).contains("left"),"visible_form_timer_"+kind)
 		await shot("form_"+kind)
 	reset("","max")
-	actor.kit.cash=24
+	actor.kit.cash=0
 	await shot("max_explained")
 	level.abilities.use(actor)
-	actor.kit.stake_time=1.4
+	actor.kit.wheel_time=1.4
 	await shot("max_gamble")
 	level.abilities.enabled=false
 	SurvivorKits.advance(actor,0.1)

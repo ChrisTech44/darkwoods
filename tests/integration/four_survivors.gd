@@ -112,30 +112,16 @@ func john_checks() -> void:
 	john.health = 100
 
 func max_checks() -> void:
-	var max_actor: CampPlayer = friends.max
-	max_actor.kit.cash = 12
-	var before: int = max_actor.supplies.values().reduce(func(a,b): return a+b,0)
-	check(level.abilities.use(max_actor),"max_press_starts_stake")
-	check(level.abilities.release(max_actor),"max_tap_commits_guaranteed_purchase")
-	var after: int = max_actor.supplies.values().reduce(func(a,b): return a+b,0)
-	check(max_actor.kit.cash==8 and after==before+1,"max_guaranteed_cost_and_one_supply")
-	check(not level.abilities.release(max_actor) and max_actor.kit.cash==8,"max_release_not_replayed")
-	SurvivorKits.earn(max_actor,"test:receipt",4)
-	SurvivorKits.earn(max_actor,"test:receipt",4)
-	check(max_actor.kit.cash==12,"max_receipt_awards_once")
-	max_actor.invulnerability = 0
-	max_actor.receive_hit(10)
-	var cash: CampPickup
-	for item: CampPickup in level.pickups:
-		if item.available and item.kind=="cash" and item.cash_owner==max_actor.kit.owner: cash=item
-	check(cash!=null and max_actor.kit.cash==8 and cash.cash_amount==4,"max_hit_spill_conserves_cash")
-	var helper: CampPlayer = friends.john
-	if cash!=null:
-		helper.position = cash.position
-		check(level.try_interact(helper) and not cash.available and max_actor.kit.cash==12,"friend_returns_cash_to_owner")
-	max_actor.kit.cash = 0
-	max_actor.ability_cooldown = 0
-	check(not level.abilities.use(max_actor),"max_cannot_buy_without_cash")
+	var max_actor: CampPlayer=friends.max
+	check(max_actor.kit.cash==0,"max_has_no_cash_economy")
+	check(level.abilities.use(max_actor),"max_spin_starts")
+	check(not level.abilities.use(max_actor) and not level.abilities.release(max_actor),"max_no_repeat_or_release_roll")
+	max_actor.kit.wheel_pick=4
+	max_actor.health=50
+	FortuneWheel.advance(max_actor,2)
+	check(max_actor.health==100 and max_actor.notice=="SECOND WIND","max_result_is_authoritative_name_only")
+	check(max_actor.ability_cooldown==60,"max_cooldown_starts_on_commit")
+	check(SamplePresentation.detail(max_actor).is_empty(),"max_no_large_help_panel")
 
 func alex_checks() -> void:
 	var alex: CampPlayer = friends.alex
@@ -355,7 +341,7 @@ func cancellation_checks() -> void:
 	check(level.abilities.use(max_actor),"pending_buy_starts_before_menu")
 	SurvivorKits.advance(max_actor,1.4)
 	SurvivorKits.cancel_stake(max_actor)
-	check(not level.abilities.release(max_actor) and max_actor.kit.cash==24,"cancelled_stake_cannot_charge_after_menu")
+	check(not level.abilities.release(max_actor) and max_actor.kit.cash==24 and max_actor.kit.wheel_time==0,"cancelled_spin_keeps_cooldown_after_menu")
 	var christian: CampPlayer=friends.christian
 	var target: CampPlayer=friends.john
 	christian.position=Vector2(900,520)

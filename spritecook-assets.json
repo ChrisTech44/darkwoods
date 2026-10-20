@@ -503,6 +503,12 @@
    "sha12": "4a261003311a",
    "file": "assets/sprites/sc/sample_toll.png",
    "label": "16 copied-ability effects; one NB2.1 sheet, 12 credits; preserved alpha 130; tools/slice_ability_effects.gd"
+  },
+  {
+   "asset_id": "cc998f67-e2b6-4b5b-8f14-f9c666c94496",
+   "sha12": "a92edb554e2c",
+   "file": "art_sources/spritecook/habit_breakers_sheet.png",
+   "label": "Seven habit-breaker creature designs, wheel and skull; 3x3; NB2.1; 12 credits; sliced by tools/import_habit_breakers.gd. Front designs with procedural motion; no paid animation."
   }
  ]
 }

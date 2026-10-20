@@ -17,10 +17,8 @@ acceptance remains pending. Target-only differences are called out explicitly.
 - John: 6s window / 45s cooldown, 50% incoming damage reduction before deferral; once-only preparation credit on all five routes.
   Deferred damage uses normal hit grace, effective wound/grab eligibility, and
   settles before boarding/extraction. Existing downed-team rescue is preserved.
-- Max: starts at $6, cap $100; searches +$4 and per-thieving-creature first
-  recovery +$3; tap buys for $4. Holding raises affordable whole stakes to $8/$12;
-  a gamble has 45% bust, otherwise 2/4/6 ordinary supplies. Hits spill one third
-  of current cash (minimum one when nonzero), recoverable for its owner.
+- Max: X spins a weighted wheel (1.8s), 60s cooldown. Names-only results, no
+  cash or purchases; movement outcomes use shared owner prediction.
 - Alex: isolation enters beyond 190px after 4s, leaves within 150px; light drain
   x0.75 and stamina recovery x1.35. Marker 75s, channel 2s, success cooldown 40s,
   interrupted/blocked retry guard 2s. Channels retain harmful attachments and
@@ -65,7 +63,7 @@ personality, rather than unrelated stat penalties.
 | --- | --- | --- | --- |
 | Christian | **Bad Research:** survive a creature encounter to collect its signature sample | **Field Test:** reproduce that creature's power, including transformations and area effects | Getting samples requires dangerous curiosity; experiments can affect friends and himself |
 | John | **Making Progress:** completing a preparation step refills stamina | **Push Through:** halve incoming damage, then defer the reduced bill and ordinary hit reactions briefly | He can finish the job, then collapse when the damage lands |
-| Max | **Finder's Fee:** optional searches and stolen-gear recovery award cash | **Cash Out:** purchase an ordinary supply or risk more money for a larger random payout | Damage spills money; greed tempts him to return for it |
+| Max | Trust your luck | **What Could Go Wrong?** Spin every 60s | Discover the named results yourself |
 | Alex | **Travel Alone:** better light economy and stamina recovery while isolated | **My Own Way Back:** place a temporary marker and channel a return with current gear | Damage interrupts; grabs/downing prevent return, leaving him dependent on a rescue |
 
 Everyone retains basic movement, flashlight/flash, supplies, tool use, collection,
@@ -249,41 +247,16 @@ and solo-recovery rules still apply. Down/revive/disconnect cannot apply the sam
 debt twice or carry a stale lethal ledger onto a revived body. There is no
 special protection for John after the job is finished.
 
-## Max — That's Worth Money
+## Max — What Could Go Wrong?
 
-### Finder's Fee
-
-Max earns a small cash award from a completed optional stash search and a bounty
-from first recovery of legitimately stolen supplies. Cash has a small counter
-outside the belt; it is not a second six-slot inventory. It does not unlock
-objective parts, tools, characters or real-money purchases.
-
-Award on the authoritative accepted action, not proximity or client UI. Each
-stash has a one-time reward identity. Recovery needs a theft/source/item identity
-so drop/re-pickup, Max's own payout, a returned spill and Christian's copied theft
-cannot generate cash. Repeat theft loops need strict caps. An empty/consumed
-stash or rejected belt-full search awards nothing.
-
-### Cash Out and loose pockets
-
-Tap X for a fixed-price guaranteed ordinary supply. Hold X to raise a bounded
-wager for a larger random payout; release commits the displayed cost. Always
-show cost and possible outcomes before commitment. Exact pool, prices, odds,
-hold threshold and maximum wager are tuning items. The gamble is not a hidden
-mandatory tax on the guaranteed purchase.
-
-Only ordinary supplies belong in the pool: never escape components, reusable
-unlock tools, more cash or recursively profitable payout vouchers. Affordability
-and one-shot commit are host validated. If a new supply type cannot fit on the
-belt, use the existing reachable dropped-pickup path and tell Max where it landed.
-
-An accepted hit spills a bounded portion of Max's bankroll onto reachable ground.
-It is a recoverable cash pickup, not destruction of somebody else's resources.
-Teammates can recover it for the owning Max; no new bounty or duplicated value is
-awarded. Cash on down/disconnect follows one documented drop/ownership rule and
-cannot survive in both player state and a world pickup. Multiple Max characters
-have separate ledgers. His temptation is to go back for money when running away
-would be wiser.
+20 October replacement: Max periodically spins a weighted wheel, with names-only
+results. X commits one spin and starts a 60s cooldown. The 1.8s spin allows normal
+movement; downing, restrictions, menu cancellation or disconnect can cancel it
+without refunding the cooldown. The host chooses and resolves the result once.
+There is no cash economy or permanent help paragraph. Named results and runtime
+weights live in `FortuneWheel`; the player guide deliberately leaves them mysterious.
+This supersedes Finder's Fee, Cash Out, prices, stakes, cash spills and the later
+item-duplication proposal. Ordinary finite stash loot remains shared as before.
 
 ## Alex — I Don't Need Backup
 

@@ -73,6 +73,7 @@ func john_checks() -> void:
 	SurvivorKits.progress(john,"test:one")
 	check(john.stamina == 0,"john_no_repeat_completion_farm")
 	check(level.abilities.use(john),"john_push_through_starts")
+	check(john.ability_cooldown==60,"john_cooldown_is_one_minute_from_activation")
 	john.invulnerability = 0
 	check(john.receive_hit(120) and john.health==100 and john.kit.debt==60 and john.wounded,"john_damage_deferred_effective_wound")
 	check(not john.receive_hit(120) and john.kit.debt==60,"john_hit_grace_before_ledger")
@@ -120,7 +121,7 @@ func max_checks() -> void:
 	max_actor.health=50
 	FortuneWheel.advance(max_actor,2)
 	check(max_actor.health==100 and max_actor.notice=="SECOND WIND","max_result_is_authoritative_name_only")
-	check(max_actor.ability_cooldown==60,"max_cooldown_starts_on_commit")
+	check(max_actor.ability_cooldown==120,"max_cooldown_starts_on_commit")
 	check(SamplePresentation.detail(max_actor).is_empty(),"max_no_large_help_panel")
 
 # Select each real RNG branch without replacing the host completion code.
@@ -137,7 +138,7 @@ func alex_checks() -> void:
 	level.player.position = Vector2(700,700)
 	SurvivorKits.advance(alex,4.1)
 	check(alex.kit.isolated,"alex_qualifies_after_real_isolation")
-	check(level.abilities.use(alex) and alex.kit.marker_life==75,"alex_places_marker")
+	check(level.abilities.use(alex) and alex.kit.marker_life==60,"alex_places_marker")
 	var origin := alex.position
 	alex.position += Vector2(0,20)
 	check(level.abilities.use(alex),"alex_begins_return")
@@ -161,13 +162,18 @@ func alex_checks() -> void:
 		var charge_before := alex.flashlight_charge
 		seed(return_seed(ticket))
 		SurvivorKits.advance(alex,7.01)
-		check(alex.kit.marker_life==0 and alex.kit.channel==0 and alex.ability_cooldown==40,"alex_completion_consumes_marker_and_cooldown_ticket_%d" % ticket)
+		check(alex.kit.marker_life==0 and alex.kit.channel==0 and alex.ability_cooldown==120,"alex_completion_consumes_marker_and_cooldown_ticket_%d" % ticket)
 		check(alex.health==95 and alex.inventory==inventory_before and alex.flashlight_charge==charge_before,"alex_completion_preserves_state_ticket_%d" % ticket)
 		if ticket==0:
 			check(alex.position.distance_to(origin)>300 and SurvivorKits.safe_point(alex,alex.position,1|CampPlayer.BARRIER_LAYER|CampPlayer.WATER_LAYER),"alex_misfire_lands_valid_elsewhere_on_map")
 		else:
 			check(alex.position.distance_to(origin)<1,"alex_second_normal_ticket_returns_to_marker")
 		alex.position = origin
+	check(not level.abilities.use(alex),"alex_cannot_replace_marker_during_two_minute_cooldown")
+	level.abilities.advance(119.9)
+	check(not level.abilities.use(alex),"alex_cannot_replace_marker_before_two_minutes")
+	level.abilities.advance(0.11)
+	check(alex.ability_cooldown==0,"alex_marker_cooldown_expires_after_two_minutes")
 	alex.ability_cooldown = 0
 	level.abilities.use(alex)
 	var threat: CampKiller = level.killer
@@ -203,6 +209,13 @@ func alex_checks() -> void:
 	friends.john.position = alex.position+Vector2(20,0)
 	SurvivorKits.advance(alex,0.1)
 	check(not alex.kit.isolated,"alex_near_friend_loses_bonus")
+	SurvivorKits.cleanup(alex)
+	alex.ability_cooldown = 0
+	check(level.abilities.use(alex) and alex.kit.marker_life==60,"alex_fresh_marker_lasts_one_minute")
+	SurvivorKits.advance(alex,59.9)
+	check(alex.kit.marker_life>0,"alex_marker_remains_before_one_minute")
+	SurvivorKits.advance(alex,0.11)
+	check(alex.kit.marker_life==0 and alex.ability_cooldown==0,"alex_unused_marker_expires_without_teleport_cooldown")
 
 func sample_checks() -> void:
 	var christian: CampPlayer = friends.christian

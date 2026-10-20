@@ -47,7 +47,7 @@ func shot(label: String) -> void:
 func wheel() -> void:
 	check(FortuneWheel.WEIGHTS.reduce(func(a,b): return a+b,0)==100,"weighted_wheel_totals_one_hundred")
 	check(actor.kit.cash==0 and SamplePresentation.detail(actor).is_empty(),"no_money_or_permanent_explanation_panel")
-	check(level.abilities.use(actor) and actor.ability_cooldown==60,"one_spin_starts_sixty_second_cooldown")
+	check(level.abilities.use(actor) and actor.ability_cooldown==120,"one_spin_starts_two_minute_cooldown")
 	check(not level.abilities.use(actor) and not level.abilities.release(actor),"hold_release_and_repeat_cannot_reroll")
 	await shot("wheel_spinning")
 	actor.kit.wheel_pick=0
@@ -101,7 +101,7 @@ func wheel() -> void:
 	FortuneWheel.start(actor)
 	actor.add_effect("held",1)
 	FortuneWheel.advance(actor,2)
-	check(actor.kit.wheel_time==0 and actor.ability_cooldown==60,"interrupted_spin_keeps_cooldown")
+	check(actor.kit.wheel_time==0 and actor.ability_cooldown==120,"interrupted_spin_keeps_cooldown")
 	actor.effects.clear()
 	actor.flashlight_on=true
 	actor.kit.wheel_time=0

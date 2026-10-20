@@ -1,0 +1,20 @@
+{
+  "platform": "macOS arm64 / Godot 4.7.2",
+  "suites": [
+    {
+      "checks": 235,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "four_survivors"
+    },
+    {
+      "checks": 86,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "wheel_monsters"
+    }
+  ],
+  "voice": "off",
+  "capture_fixture": "seed 42, frozen AI/director, forced all escapes, normal Dusk lighting",
+  "limits": "No Internet/cross-machine, Windows/Linux or human balance acceptance; earlier videos are historical."
+}

@@ -1,7 +1,7 @@
 class_name FortuneWheel
 extends RefCounted
 ## Authority selects and resolves a spin exactly once. The UI reveals names only.
-const COOLDOWN := 60.0
+const COOLDOWN := 120.0
 const SPIN := 1.8
 const NAMES := ["HOT STREAK", "LEAD BOOTS", "BAD BEAT", "DEAD MAN'S HAND", "SECOND WIND", "HOME SWEET HOME", "UNINVITED GUEST", "JACKPOT", "BUTTERFINGERS", "LIGHTS OUT", "DINNER BELL"]
 const WEIGHTS := [18,14,12,1,15,10,10,8,6,3,3]

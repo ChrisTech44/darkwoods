@@ -14,13 +14,13 @@ acceptance remains pending. Target-only differences are called out explicitly.
 
 - Four IDs, four selector/lobby choices, dedicated camper artwork, saved-role
   reselection and common baseline stats replace the old six roles.
-- John: 6s window / 45s cooldown, 50% incoming damage reduction before deferral; once-only preparation credit on all five routes.
+- John: 6s window / 60s cooldown, 50% incoming damage reduction before deferral; once-only preparation credit on all five routes.
   Deferred damage uses normal hit grace, effective wound/grab eligibility, and
   settles before boarding/extraction. Existing downed-team rescue is preserved.
-- Max: X spins a weighted wheel (1.8s), 60s cooldown. Names-only results, no
+- Max: X spins a weighted wheel (1.8s), 120s cooldown. Names-only results, no
   cash or purchases; movement outcomes use shared owner prediction.
 - Alex: isolation enters beyond 190px after 4s, leaves within 150px; light drain
-  x0.75 and stamina recovery x1.35. Marker 75s, channel 7s, success cooldown 40s,
+  x0.75 and stamina recovery x1.35. Marker 60s, channel 7s, success cooldown 120s,
   interrupted/blocked retry guard 2s. Channels retain harmful attachments and
   reject tethers/blocked landings; position changes use authority motion epochs.
 - Christian: one sample; source encounter survival window 3s with a 50s pending
@@ -63,7 +63,7 @@ personality, rather than unrelated stat penalties.
 | --- | --- | --- | --- |
 | Christian | **Bad Research:** survive a creature encounter to collect its signature sample | **Field Test:** reproduce that creature's power, including transformations and area effects | Getting samples requires dangerous curiosity; experiments can affect friends and himself |
 | John | **Making Progress:** completing a preparation step refills stamina | **Push Through:** halve incoming damage, then defer the reduced bill and ordinary hit reactions briefly | He can finish the job, then collapse when the damage lands |
-| Max | Trust your luck | **What Could Go Wrong?** Spin every 60s | Discover the named results yourself |
+| Max | Trust your luck | **What Could Go Wrong?** Spin every 120s | Discover the named results yourself |
 | Alex | **Travel Alone:** better light economy and stamina recovery while isolated | **My Own Way Back:** place a temporary marker and channel a return with current gear | Damage interrupts; grabs/downing prevent return, leaving him dependent on a rescue |
 
 Everyone retains basic movement, flashlight/flash, supplies, tool use, collection,
@@ -250,7 +250,7 @@ special protection for John after the job is finished.
 ## Max — What Could Go Wrong?
 
 20 October replacement: Max periodically spins a weighted wheel, with names-only
-results. X commits one spin and starts a 60s cooldown. The 1.8s spin allows normal
+results. X commits one spin and starts a 120s cooldown. The 1.8s spin allows normal
 movement; downing, restrictions, menu cancellation or disconnect can cancel it
 without refunding the cooldown. The host chooses and resolves the result once.
 There is no cash economy or permanent help paragraph. Named results and runtime
@@ -272,7 +272,7 @@ Exact distance, activation delay, fade and rates need balance tests.
 
 ### My Own Way Back and overconfidence
 
-X places one temporary marker at Alex's actual occupied, valid walkable position.
+X places one temporary marker at Alex's actual occupied, valid walkable position, lasting 60s.
 A later X, while alive, alone and able to act, channels a seven-second return to that marker.
 Any enabled monster within heartbeat proximity (300 world pixels, including
 behind walls) blocks starting and cancels progress if either body enters range.
@@ -281,7 +281,7 @@ guard, press X again when clear to restart the full seven seconds; the marker
 keeps only its remaining lifetime. This range is measured around Alex, not the marker.
 On completion the host rolls once: 2/3 return to the marker; 1/3 teleport to a
 random valid point across the whole map. Both arrivals consume the marker and
-start the 40s cooldown, preserving injuries and gear. Random positions reject
+start the 120s cooldown, preserving injuries and gear. Random positions reject
 walls, water and barriers; a bounded search failure follows the existing blocked
 landing path (marker retained, 2s retry guard). Interrupted attempts never roll.
 Show marker lifetime, channel progress, destination and unavailability reason.

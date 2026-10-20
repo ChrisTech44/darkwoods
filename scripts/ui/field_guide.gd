@@ -68,9 +68,9 @@ static func lines(topic: String, level: Node = null) -> Array[String]:
 			out.append("CHRISTIAN: survive signatures to collect one sample.")
 			out.append("X borrows powers; can hit friends. Wolf needs moon.")
 			out.append("Mimic needs a camper; forms show timers and aim guides.")
-			out.append("JOHN: X halves damage 6s, then debt. Prep restores stamina.")
-			out.append("MAX: X spins every 60s; discover the named results.")
-			out.append("ALEX: 4s alone: better light/stamina. X: mark 75s; return 7s.")
+			out.append("JOHN: X halves damage 6s; 60s cooldown. Prep refills stamina.")
+			out.append("MAX: X spins every 120s; discover the named results.")
+			out.append("ALEX: 4s alone boosts light/stamina. Mark 60s; return 7s/120s CD.")
 			out.append("Hits cancel; heartbeat blocks/cancels. 1/3 random, marker spent.")
 		"CREATURES":
 			var seen: Array = []

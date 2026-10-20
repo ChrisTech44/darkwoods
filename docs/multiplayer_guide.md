@@ -273,7 +273,7 @@ tickets are in memory only, so restarting the client or server loses them. This
 adds no host migration or save-game persistence. New players still wait for the lobby.
 
 John now halves numeric damage during Push Through before deferring its reduced
-bill; Alex's return marker is visible to teammates. Max now spins a names-only wheel every 60 seconds, replacing his cash economy
+bill; Alex's return marker is visible to teammates. Max now spins a names-only wheel every 120 seconds, replacing his cash economy
 and large permanent help panel. The seven new creatures and their counters are
 recorded in the [implemented monster plan](new_monster_plan.md).
 [Local reconnect evidence and limits](evidence/playtest_recovery/README.md).

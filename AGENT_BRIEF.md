@@ -204,13 +204,14 @@ blockers. Keep specifications and plans in Markdown only.
 ## 20 October friends-playtest amendment
 
 John now halves numeric damage during Push Through before deferring the reduced
-bill. Alex's return marker draws for teammates. His return now takes 7s; enabled
+bill. John's cooldown is 60s from activation. Alex's return marker lasts 60s
+and draws for teammates. His return now takes 7s; enabled
 monsters within the heartbeat proximity radius (300px around Alex, through walls)
 block starting or cancel progress. Retrying requires X and the full 7s; interrupted
 markers keep their remaining lifetime and the existing 2s retry guard. Each
 completed channel has a host-rolled 1/3 chance of landing at a random valid
 position across the map instead; either arrival consumes the marker and starts
-the 40s cooldown, preserving current gear/injuries. Unexpected ENet drops reserve the
+the 120s cooldown, preserving current gear/injuries. Unexpected ENet drops reserve the
 same server-owned survivor for five minutes and automatically retry from the
 running client. All supplies, tools and objectives drop immediately;
 returning actors receive no duplicated or refreshed gear. Input silence (15s,
@@ -230,7 +231,7 @@ processed cues from twelve uploads retain originals, edits/hashes and measured
 headroom. [Audio pack execution and limits](docs/evidence/audio_pack_20261020/README.md).
 Human balance/listening and platform/Internet acceptance remain open.
 
-20 October wheel amendment: Max now spins a names-only weighted wheel every 60s,
+20 October wheel amendment: Max now spins a names-only weighted wheel every 120s,
 replacing cash and purchases. Shared prediction includes wheel movement effects.
 One 12-credit SpriteCook sheet provides the wheel and seven new creature designs;
 creature mechanics have been delivered in separate verified increments.

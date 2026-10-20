@@ -2,13 +2,13 @@ class_name SurvivorKits
 extends RefCounted
 ## All outcomes are authority-owned; only the actor's plain-data kit replicates.
 const JOHN_WINDOW := 6.0
-const JOHN_COOLDOWN := 45.0
+const JOHN_COOLDOWN := 60.0
 const ALONE_ENTER := 190.0
 const ALONE_EXIT := 150.0
 const ALONE_DELAY := 4.0
-const MARK_LIFE := 75.0
+const MARK_LIFE := 60.0
 const RETURN_CHANNEL := 7.0
-const RETURN_COOLDOWN := 40.0
+const RETURN_COOLDOWN := 120.0
 const CASH_PRICE := 4
 const CASH_CAP := 100
 const PAYOUTS := ["flare", "battery_pack", "rations", "medkit", "noise_tin", "salt_ward", "glow_moss"]
@@ -58,7 +58,7 @@ static func use(actor: CampPlayer) -> bool:
 				if not safe_point(actor, actor.position): return false
 				actor.kit["marker"] = actor.position
 				actor.kit["marker_life"] = MARK_LIFE
-				level.announce("Return marker placed for 75s. Alone: X to channel back.", actor)
+				level.announce("Return marker placed for 60s. Alone: X to channel back.", actor)
 				return true
 			if not actor.kit["isolated"] or actor.has_effect("tethered"):
 				level.announce("Return needs isolation and freedom to move. No breakout from a grab.", actor)

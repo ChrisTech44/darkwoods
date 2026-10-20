@@ -1,5 +1,22 @@
 # Development log
 
+## 2026-10-20 — clarified marker lifetime and survivor cooldown tuning
+
+Alex's marker now lasts **60s**; a completed normal/random teleport starts a
+**120s** cooldown before placing another. Unused expiry has no teleport cooldown;
+seven-second channel and two-second interrupted retry remain. Max's spin cooldown
+is **120s** from activation, including interrupted spins. John's is **60s** from
+activation, including his six-second window. Christian is unchanged.
+
+Updated the maintained brief, roster/help text and player guide. Roster suite
+passes **235/235**, including expiry and full replacement wait; wheel/monster
+suite passes **86/86**. Required import/startup and diff checks pass with no engine
+errors/warnings. Native selector/guide captures were inspected for fit, with
+normal lighting, frozen AI/director, forced all escapes and voice/microphones off.
+Historical evidence/videos retain their earlier values. No human balance,
+Internet/cross-machine or other-platform acceptance is claimed.
+[Current tuning and inspected screenshots](evidence/ability_cooldowns_20261020/README.md).
+
 ## 2026-10-20 — Alex: interrupted seven-second return and random misfire
 
 Implemented the requested drawbacks at the authority: seven-second channel;

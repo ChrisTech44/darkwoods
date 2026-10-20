@@ -1,5 +1,8 @@
 # Alex return drawbacks — 20 October 2026
 
+Historical timing snapshot; marker lifetime/cooldowns are superseded by the
+[later tuning](../ability_cooldowns_20261020/README.md).
+
 The host now requires seven uninterrupted seconds to return. Any enabled monster
 within 300 world pixels of Alex blocks starting or cancels progress, through
 walls, using the heartbeat proximity constant independently of audio settings.

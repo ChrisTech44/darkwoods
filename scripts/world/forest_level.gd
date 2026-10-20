@@ -1140,7 +1140,7 @@ func use_supply(actor: CampPlayer, kind: String) -> bool:
 	elif kind == "battery_pack":
 		if actor.flashlight_charge >= config.flashlight_capacity:
 			return false
-		actor.flashlight_charge = minf(config.flashlight_capacity, actor.flashlight_charge + (40 if plan.has_modifier("dead_batteries") else 70))
+		actor.flashlight_charge = minf(config.flashlight_capacity, actor.flashlight_charge + (80 if plan.has_modifier("dead_batteries") else 140))
 		actor.flashlight_on = true
 	elif kind == "rations":
 		if actor.stamina >= actor.config.stamina_max and actor.health >= CampPlayer.MAX_HEALTH:

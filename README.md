@@ -2,7 +2,7 @@
 
 **Dedicated server:** run a camp without a host survivor. See the
 [server setup and connection guide](docs/dedicated_server.md). Updated `main`
-clients (`lnac-net-30`) can join; the server code is available in this checkout.
+clients (`lnac-net-31`) can join; the server code is available in this checkout.
 
 **Find the parts. Keep your light alive. Get out before the woods get you.**
 
@@ -334,7 +334,7 @@ for the next night and the next launch. Default port: **UDP 27840**. Everyone ma
 the host chooses mode/seed and starts. LAN/Wi-Fi uses the host's local IP;
 Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
 
-Update clients and server together to **lnac-net-30**. Your survivor now responds
+Update clients and server together to **lnac-net-31**. Your survivor now responds
 locally, with server corrections smoothed; other survivors use a short movement
 buffer. A long connection interruption can still pause movement. See
 [measured smoothness improvements](docs/evidence/smoothness/README.md).
@@ -366,13 +366,13 @@ hear. Monsters never hear voice. The HUD shows who is talking. **VOICE** and
 | Mode | Repair objective | Threats and exploration |
 | --- | --- | --- |
 | **Quick Camp** | Battery in the Fern bunk cabin, fuel in Maintenance, key in the Ranger Lodge. | The camp stalker and a shorter three-part objective with randomized camp buildings. Flashlight charge does not drain. |
-| **Woods Expedition** (a long night at your own pace) | Battery and key in camp location pools; fuel and two extra parts in themed-area caches, revealed by ranger radio as the night deepens. | A night that deepens as you make progress: the stalker plus 27 creatures of 21 kinds, each with its own trick (camp is safe until Deep Night), a seeded trail maze, survival supplies, weather, storms, blackouts and a draining flashlight. |
+| **Woods Expedition** (a long night at your own pace) | Five van parts in five different outer regions; battery/key available from Dusk, the other three revealed by ranger radio as the night deepens. | A night that deepens as you make progress: the Stalker plus 38 creatures, each with its own trick (camp is safe until Deep Night), a seeded trail maze, survival supplies, weather, storms, blackouts and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
-The pack lists the current requirements and location clues. The woods contains nine major regions.
-Each night three of them (one each in three different directions) hold the
-locked caches; the White Stone Quarry never does. Six smaller ruined landmarks
-also remain along the trails.
+The pack lists the current requirements and location clues. The woods contains fourteen outer regions. Five distinct regions across all four
+directions hold the van parts each night: two unlocked pickups and three locked
+caches. The White Stone Quarry never holds a van cache. Six smaller ruined
+landmarks also remain along the trails.
 
 ## The night (Woods Expedition)
 
@@ -500,7 +500,7 @@ the seed and announced in the Dusk message and the notebook.
 | Modifier | Effect |
 | --- | --- |
 | **Blood Moon** | The moon comes out twice as often; the killer runs 8% faster. All creature types remain present. |
-| **Dead Batteries** | Spare batteries restore 40 charge instead of 70. |
+| **Dead Batteries** | Spare batteries restore 80 charge instead of 140, capped at 90. |
 | **Fog Bank** | The night is foggy: shorter sight for everyone. |
 | **Silent Night** | No music; creatures hear 15% farther. |
 | **Generous Woods** | 48 extra supply caches in the woods. |
@@ -726,9 +726,9 @@ fuse, tire and spark plug; check Tab to see which two your night requires.
 
 | Item | Where to find it | What it does |
 | --- | --- | --- |
-| **Van battery** | Quick Camp: Fern Bunk Cabin. Woods: one of the Fern/Pine bunk cabins or Cedar Bunkhouse. | Required van component in both modes. This is different from a spare flashlight battery. |
-| **Fuel** | Quick Camp: Maintenance. Woods: one of the three locked objective caches listed below. | Required van component in both modes. |
-| **Key** | Quick Camp: Ranger Lodge. Woods: Ranger Lodge or First Aid. | Required van component in both modes. |
+| **Van battery** | Quick Camp: Fern Bunk Cabin. Woods: its own seeded outer region; follow the notebook and ranger notes. | Required van component in both modes. This is different from a spare flashlight battery. |
+| **Fuel** | Quick Camp: Maintenance. Woods: its own seeded outer-region locked cache. | Required van component in both modes. |
+| **Key** | Quick Camp: Ranger Lodge. Woods: its own seeded outer region; follow the notebook and ranger notes. | Required van component in both modes. |
 | **Drive belt** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
 | **Outboard motor** | Woods: west Logging Camp. | Heavy boat objective; no belt slot. Carry at 75% walk, no sprint/vault. G drops it; an adjacent teammate holding E restores full walking speed. E fits it at the boathouse. |
 | **Marine fuel** | Woods: east Rail Yard. | Dedicated boat fuel, separate from van fuel. No belt slot; E fits it at the boathouse. |
@@ -739,22 +739,32 @@ fuse, tire and spark plug; check Tab to see which two your night requires.
 | **Tire** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
 | **Spark plug** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
 | **Boltcutters** | Woods only: Maintenance, plus a second pair in a woods toolbox 1,000–1,600 px from camp (Tab shows its compass bearing). | Reusable tool that opens locked caches quietly when you press E. Kept after use; it is not installed in the van. Each survivor can carry one pair, so the second is left for a teammate. |
-| **Crowbar** | Woods only: the bunk cabin that does not hold the van battery. | Pries a locked cache open when you have no cutters, with a loud 500 px noise. Reusable; carried in the pack like cutters. |
+| **Crowbar** | Woods only: a seeded bunk cabin. | Pries a locked cache open when you have no cutters, with a loud 500 px noise. Reusable; carried in the pack like cutters. |
 
-The Woods objective caches are in **Village / Surveyor Hut**, **Witch's Bog /
-Stash**, and **Old Graveyard / Cache**. Fuel and the two selected extra parts are
-shuffled among these three caches. Optional landmark biomes are not required to
-complete the van. Building lots move with the seed, so follow the named clues
-rather than memorizing screen coordinates.
+In Woods, **all five required van parts are outside camp, in five different
+outer regions**. Each seed uses five of Village, Bog, Graveyard, Mill, Orchard,
+Observatory, Rail Yard and Chapel, covering all four cardinal directions.
+Battery and key are unlocked from Dusk. Fuel and the two extra parts retain their
+three locked caches and phase unlocks. The corkboard names fuel's region; ranger
+notes and regional exploration identify the other four. Camp retains cutters,
+crowbar and preparation supplies; Quick Camp keeps its original camp-based parts.
+
+All fourteen destinations sit near the map's outskirts. Roaming starts are now
+in the intervening woods, with starts near each region approach and the existing
+1100px quiet buffer around camp center. Guardians remain at their regions.
+Patrols and pursuit can leave their starting areas; these are not hard territories.
 
 ### Flashlight and survival supplies
 
 Every survivor has a built-in **flashlight**; it is not a pickup or belt item.
-A full charge lasts **7 minutes of ordinary woods use** (9m20s while Alex’s isolation bonus is active).
+A full charge lasts **14 minutes of ordinary woods use** (18m40s while Alex’s isolation bonus is active).
 The HUD shows remaining beam time; flash bursts and light-eating creatures can
-use charge sooner. Spare batteries still restore 70 charge out of 90.
-Toggle it with **F**. It starts with **90 charge**, drains at one third charge/second
-while lit in expedition woods (Alex alone: one quarter/second), and switches off at zero.
+use charge sooner. Each **Space flash costs 30 charge**: a full charge permits
+three bursts before passive drain; its cooldown/stun strength are unchanged.
+Spare batteries restore 140 charge, capped at the 90-charge capacity
+(a full refill from empty); Dead Batteries restores 80.
+Toggle it with **F**. It starts with **90 charge**, drains at 90/840 charge per second
+while lit in expedition woods (Alex alone: 75% of that rate), and switches off at zero.
 Camp use does not drain charge. Teammates see its light too.
 
 **Woods loot** below means seeded supply pickups scattered through forest
@@ -766,7 +776,7 @@ one of noise tin, salt ward or glow moss; the reward depends on its seeded site.
 | Supply | Where to find it | What it does / how to use it |
 | --- | --- | --- |
 | **Flare** | Start with 2; Woods loot; 3-flare Maintenance stash; 3-flare chapel rescue stash; Village well; Graveyard crypt. | **Q**, or select + **V**, throws it ahead. Lights the area for up to **9s** and repels enemies with clear sight nearby. **E at a rescue signal holder** instead spends one flare on a persistent signal light (no permanent repulsion). Lantern Moths follow it; Candle Grazers can consume it. |
-| **Spare flashlight battery** | Start with 1; Woods loot; extra campsite battery; Village well. | **R**, or select + **V**, restores **70 charge**, capped at 90, and switches the light on. Not consumed if already full. |
+| **Spare flashlight battery** | Start with 1; Woods loot; extra campsite battery; Village well. | **R**, or select + **V**, restores **140 charge** (80 with Dead Batteries), capped at 90, and switches the light on. Not consumed if already full. |
 | **Rations** | Start with 1; Woods loot; Village well. | **C**, or select + **V**, restores full stamina and clears exhaustion. Not consumed at full stamina. Eating can attract nearby Ration Moths. |
 | **Medkit** | Woods loot; Max may duplicate an owned one. | Select + **V** heals 50 health (refused at full health). Carried while you **hold E beside a downed teammate**, it speeds the revive to 3s instead of 6s bare-handed, and is consumed on completion. Interrupted attempts keep it. |
 | **Noise tin** | Woods loot; landmark reward. | Select + **V** places a lure ahead. It rattles at **1.5s, 3.5s and 5.5s**, drawing noise-sensitive enemies within 480 world pixels. Move away before they investigate. |
@@ -1148,14 +1158,14 @@ Both modes vary building positions and surrounding trees within reserved camp
 lots. Bunk cabins can trade places, as can the bathhouse and first aid building. Door paths, loot and field-map markers move together. Roof footprints
 and main trails stay separate. Retrying a seed reproduces the camp too.
 
-![Current full-map example for Night 42 with all fourteen numbered regions, central Fernwood camp and 48 cryptid spawn positions](docs/screenshots/full_map.png)
+![Three current seeded layouts with outer regions, five van-part labels and inward roaming starts](docs/evidence/outskirts_layout/sample_distributions.png)
 
-**Full-map example — Night 42.** Numbers match the region names around the map;
-**C** marks Fernwood camp and coral dots mark the 48 cryptid starting positions.
-The atlas includes Power Substation, Radio Relay Station, Logging Camp, Lakeshore
-Boathouse, the Ranger Road/bridge and the chapel rescue area. Van caches rotate across eight
-regions; labels identify possible cache regions rather than fixed objectives. North is up. This is an inspection
-atlas; the in-game field map still reveals only explored trails.
+**Current layout — seeds 13, 42 and 2026.** Gold labels identify five van parts in
+five separate outer regions; numbered circles identify the 29 roaming starts.
+Gray diamonds identify regional creatures. Colored hulls show three assigned
+patrol footprints, not chase limits. The Stalker is separate. This diagnostic
+reveals all starts; the in-game field map preserves ordinary clue discovery.
+[Rules, source data and execution limits](docs/evidence/outskirts_layout/README.md).
 
 ## Screenshots
 

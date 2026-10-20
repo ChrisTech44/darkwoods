@@ -127,7 +127,7 @@ func _flash_checks() -> void:
 		front.position = player.position + Vector2(40, 0)
 	player.flashlight_charge = 50.0
 	_check(level.use_flash(player) == 1 and front.stun_remaining > 0.0 and behind.stun_remaining == 0.0, "flash_stuns_only_creatures_in_beam")
-	_check(is_equal_approx(player.flashlight_charge, 35.0) and player.flash_cooldown > 7.9, "flash_costs_light_and_starts_cooldown")
+	_check(is_equal_approx(player.flashlight_charge, 20.0) and player.flash_cooldown > 7.9, "flash_costs_light_and_starts_cooldown")
 	if capture:
 		await _snapshot("chase_flash")
 	_check(level.use_flash(player) == -1, "flash_cooldown_blocks_spam")
@@ -142,7 +142,7 @@ func _flash_checks() -> void:
 	_check(front.stun_remaining == 0.0 and not front.stun(1.5), "stun_wears_off_with_immunity_window")
 	player.flash_cooldown = 0.0
 	player.flashlight_charge = 10.0
-	_check(level.use_flash(player) == -1 and is_equal_approx(player.flashlight_charge, 10.0), "flash_needs_fifteen_charge")
+	_check(level.use_flash(player) == -1 and is_equal_approx(player.flashlight_charge, 10.0), "flash_needs_thirty_charge")
 	for enemy in [front, behind]:
 		enemy.enabled = false
 

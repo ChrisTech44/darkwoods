@@ -97,9 +97,9 @@ func shot(label: String, zone: int, offset: Vector2, facing: Vector2, prop: Stri
 	camera.force_update_scroll()
 	level.player.flashlight_charge = 90
 	await frames(4)
-	RenderingServer.force_draw(true)
 	await process_frame
-	await RenderingServer.frame_post_draw
+	# Synchronous draw also works when macOS suppresses background window draws.
+	RenderingServer.force_draw(true)
 	check(root.get_texture().get_image().save_png(OUT + label + ".png") == OK, "capture_" + label)
 	if not prop.is_empty():
 		var standing: StandingProps = level.get_node("StandingProps")

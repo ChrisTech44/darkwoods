@@ -41,7 +41,7 @@ var supplies: Dictionary = {"flare": 2, "battery_pack": 1, "rations": 1, "medkit
 var invulnerability: float = 0.0
 var role: String = "christian"
 var kit: Dictionary = {}
-var light_drain: float = 90.0 / 420.0
+var light_drain: float = 90.0 / 840.0
 var sprint_hearing: float = 1.0
 var belt: Array[String] = ["flare", "battery_pack", "rations", "", "", ""]
 var selected_slot: int = 0
@@ -66,7 +66,7 @@ var hurt_time := 0.0
 const WOUND_GRACE := 1.5
 const WOUNDED_SPRINT := 0.9
 const CRAWL_SPEED := 20.0
-const FLASH_COST := 15.0
+const FLASH_COST := 30.0
 const FLASH_COOLDOWN := 8.0
 ## Derived from health: setting true drops to half health, false heals fully.
 var wounded: bool:

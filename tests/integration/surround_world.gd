@@ -87,6 +87,8 @@ func _run() -> void:
 	root.get_node("Session").next_seed=42
 	change_scene_to_file("res://scenes/world/forest_level.tscn")
 	await _frames(5)
+	while current_scene == null or current_scene.name != "ForestLevel":
+		await process_frame
 	level=current_scene
 	for enemy in get_nodes_in_group("killers"):
 		enemy.enabled=false

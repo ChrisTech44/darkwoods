@@ -168,20 +168,20 @@ func _rules() -> void:
 	player.facing = Vector2.RIGHT
 	player.flashlight_charge = 2
 	await _frames(180)
-	_check(absf(player.flashlight_charge - (2.0 - 3.0 * 90.0 / 420.0)) < 0.1, "woods_drains_flashlight_charge")
+	_check(absf(player.flashlight_charge - (2.0 - 3.0 * 90.0 / 840.0)) < 0.1, "woods_drains_flashlight_charge")
 	await _key(KEY_ESCAPE)
 	var before: float = player.flashlight_charge
 	await _frames(60)
 	_check(level.paused and is_equal_approx(player.flashlight_charge, before), "pause_stops_battery_drain")
 	_check(not level.use_supply(player, "flare"), "paused_supply_use_rejected")
 	await _key(KEY_ESCAPE)
-	await _frames(400)
+	await _frames(ceili(player.flashlight_charge/player.passive_light_rate()*60)+30)
 	_check(player.flashlight_charge == 0 and not player.flashlight_on, "empty_flashlight_turns_off")
 	await _key(KEY_F)
 	_check(not player.flashlight_on, "empty_flashlight_cannot_be_toggled_on")
 	var batteries: int = player.supplies["battery_pack"]
 	await _key(KEY_R)
-	_check(player.flashlight_charge > (39 if level.plan.has_modifier("dead_batteries") else 69) and player.flashlight_on and player.supplies["battery_pack"] == batteries - 1, "r_consumes_one_battery_and_restores_light")
+	_check(player.flashlight_charge > (79 if level.plan.has_modifier("dead_batteries") else 89) and player.flashlight_on and player.supplies["battery_pack"] == batteries - 1, "r_consumes_one_battery_and_restores_light")
 	player.stamina = 0.0
 	player.exhausted = true
 	await _key(KEY_C)

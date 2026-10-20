@@ -33,16 +33,14 @@ static func lines(topic: String, level: Node = null) -> Array[String]:
 			out.append("%s notebook: map, plan, guide, log · T next escape plan" % key("inventory", "Tab"))
 			out.append("%s talk (if voice is on) · %s pause offline / menu online" % [key("push_to_talk", "B"), key("pause", "Esc")])
 		"SURVIVAL":
-			out.append("Noise (sprinting, prying, flares, the horn) draws creatures;")
-			out.append("a noise tin lures them away. Camp is safe until DEEP NIGHT.")
-			out.append("The night deepens as your escape gets ready (and slowly")
-			out.append("on its own). There is no dawn deadline.")
-			out.append("Downed: teammates hold E to revive (a medkit is faster);")
-			out.append("press E to call for help. Alone, you get one slow get-up.")
-			out.append("Moon dial (top right) fills toward the next full moon;")
-			out.append("werewolves change while it is out. Red: Blood Moon.")
-			out.append("Full flashlight: 7 minutes of ordinary woods use; flashes")
-			out.append("and creature drains spend extra. Isolated Alex: 9m20s.")
+			out.append("Noise (sprint, pry, flare, horn) draws creatures.")
+			out.append("Camp is safe until Deep Night; noise tins lure them away.")
+			out.append("Escape progress deepens night; there is no dawn deadline.")
+			out.append("Downed: hold E to revive; medkit faster. E calls for help.")
+			out.append("Alone: one slow recovery. Moon dial fills toward moonrise.")
+			out.append("Werewolves change while moon is out. Red means Blood Moon.")
+			out.append("Full light: 14m; Alex alone: 18m40s. Flash costs 30 charge.")
+			out.append("Battery: +140 charge (cap 90); Dead Batteries: +80.")
 		"THE KILLER":
 			var who := "THE STALKER"
 			if level != null and level.plan.expedition:
@@ -56,8 +54,8 @@ static func lines(topic: String, level: Node = null) -> Array[String]:
 			out.append("He remembers hiding spots you used. He lays traps on")
 			out.append("trails you walk (E disarms). Humiliate him and he frenzies.")
 		"ESCAPES":
-			out.append("VAN: find and install every part, then hold E to start;")
-			out.append("everyone boards before it leaves.")
+			out.append("VAN: five parts in five outer regions; fit them at camp." if level != null and level.plan.expedition else "VAN: find and install every part, then hold E to start;")
+			out.append("Hold E to start; everyone boards before it leaves.")
 			out.append("Woods nights add one more route (T in the notebook):")
 			out.append("radio rescue, lakeshore boat, ranger gate or signal fire.")
 			out.append("Ranger notes, regions you walk into and the phase radio")

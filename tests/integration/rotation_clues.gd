@@ -53,9 +53,9 @@ func _plan_checks() -> void:
 			used[index] = true
 			directions[plan.cache_direction[kind]] = true
 			all_ok = all_ok and RoundPlan.REGION_POOL[plan.cache_direction[kind]].has(index)
-		all_ok = all_ok and plan.cache_zone.size() == 3 and directions.size() == 3 and plan.cache_zone.has("fuel")
+		all_ok = all_ok and plan.cache_zone.size() == 5 and directions.size() == 4 and plan.cache_zone.has("fuel")
 		var notes := plan.loot.filter(func(item: Dictionary) -> bool: return item["kind"] == "ranger_note")
-		var notes_ok := notes.size() == 4
+		var notes_ok := notes.size() == 8
 		for note: Dictionary in notes:
 			var region: Vector2 = plan.woods.zones[plan.cache_zone[note["part"]]]["position"]
 			notes_ok = notes_ok and note["part"] != "fuel" and plan.woods.walkable(note["position"]) and plan.woods.zone_at(note["position"]).is_empty()
@@ -63,7 +63,7 @@ func _plan_checks() -> void:
 		all_ok = all_ok and notes_ok
 		if not notes_ok:
 			print(JSON.stringify({"event":"note_problem","seed":seed_value,"notes":notes}))
-	_check(all_ok, "24_seeds_three_directions_from_pool_reproducible_notes_toward_regions")
+	_check(all_ok, "24_seeds_five_regions_four_directions_reproducible_notes_toward_regions")
 	_check(used.size() >= 7, "rotation_uses_%d_of_8_regions" % used.size())
 	var camp := RoundPlan.new()
 	camp.generate(42, "camp")

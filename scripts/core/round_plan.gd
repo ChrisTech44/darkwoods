@@ -8,6 +8,8 @@ const ROAMERS := 29
 const CRYPTID_COUNT := 9 + ROAMERS
 ## No roaming creature starts this close to camp (the first stretch is for exploring).
 const SAFE_RADIUS := 1100.0
+## Roamers occupy the inner journey; destinations/guardians live farther out.
+const ROAMER_INNER_FRACTION := 0.68
 ## Every roaming kind appears once. Seeded order and placement still vary.
 const ROAMER_SPECIES: Array[String] = ["werewolf", "bigfoot", "lantern_moth", "ration_moth", "briar_revenant", "switchback_hound", "lens_eater",
 	"last_car_conductor", "mimic", "owl", "bog_hands", "imps", "teddy",
@@ -50,7 +52,7 @@ var escape_options: Array[String] = ["van"]
 const HEADLINES: Array[String] = ["stalker"]
 const MODIFIERS: Array[String] = ["blood_moon", "dead_batteries", "fog_bank", "silent_night", "generous_woods", "lone_wolf"]
 const MODIFIER_NAMES := {"blood_moon": "BLOOD MOON", "dead_batteries": "DEAD BATTERIES", "fog_bank": "FOG BANK", "silent_night": "SILENT NIGHT", "generous_woods": "GENEROUS WOODS", "lone_wolf": "LONE WOLF"}
-const MODIFIER_RULES := {"blood_moon": "the moon comes out more often; the killer runs faster; every creature type remains", "dead_batteries": "spare batteries hold 40 charge", "fog_bank": "thick fog: shorter sight for everyone", "silent_night": "no music; creatures hear farther", "generous_woods": "half again as many supplies", "lone_wolf": "everyone starts in a different cabin"}
+const MODIFIER_RULES := {"blood_moon": "the moon comes out more often; the killer runs faster; every creature type remains", "dead_batteries": "spare batteries hold 80 charge", "fog_bank": "thick fog: shorter sight for everyone", "silent_night": "no music; creatures hear farther", "generous_woods": "half again as many supplies", "lone_wolf": "everyone starts in a different cabin"}
 ## Fixtures: null = seeded; otherwise the exact list to use (launch flag --no-modifiers sets []).
 static var force_modifiers: Variant = null
 static var force_headline := ""
@@ -93,9 +95,6 @@ func generate(value: int, mode: String) -> void:
 		required.append(extras[chosen])
 		extras.remove_at(chosen)
 	var battery_pool: Array[Vector2] = [Vector2(228, 120), Vector2(564, 120), Vector2(960, 128)]
-	var key_pool: Array[Vector2] = [Vector2(696, 680), Vector2(1096, 704)]
-	_add("battery", battery_pool[rng.randi_range(0, 2)], "BUNK CABINS", false)
-	_add("key", key_pool[rng.randi_range(0, 1)], "LODGE / FIRST AID", false)
 	_add("boltcutters", Vector2(1304, 272), "MAINTENANCE", false)
 	var caches: Array = _rotate_caches(value)
 	for index in range(caches.size() - 1, 0, -1):
@@ -103,9 +102,9 @@ func generate(value: int, mode: String) -> void:
 		var swap: Dictionary = caches[index]
 		caches[index] = caches[chosen]
 		caches[chosen] = swap
-	for index in range(3):
-		var kind := "fuel" if index == 0 else required[index + 2]
-		_add(kind, caches[index]["position"], caches[index]["label"], true)
+	for index in range(required.size()):
+		var kind: String = required[index]
+		_add(kind, caches[index]["position"], caches[index]["label"], kind not in ["battery","key"])
 		cache_zone[kind] = caches[index]["zone"]
 		cache_direction[kind] = caches[index]["direction"]
 	var supply_types: Array[String] = ["flare", "battery_pack", "rations", "medkit", "noise_tin", "salt_ward", "glow_moss"]
@@ -180,39 +179,57 @@ func _add_creature_items(value: int) -> void:
 		loot.append({"kind": row[0], "position": Vector2.ZERO, "hint": row[1], "locked": false, "anchor": row[1]})
 
 
-## Roaming creatures spread across the whole forest (seeded best-candidate
-## sampling: each pick is the farthest of a dozen random clearings from every
-## creature already placed), none within SAFE_RADIUS of camp, none in a region.
+## Seeded transit obstacles, not actors stranded on the outside of objectives.
+## One start near each of the 14 region approaches, then 15 spread over the
+## remaining inner road/approach band. No hard patrol/chase boundaries are added.
 func _spread_roamers(value: int) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = value + 3131
 	var camp_center := CampMap.CAMP_BOUNDS.get_center()
+	var transit := {}
+	var approach_bands: Array[Dictionary] = []
+	for cell: Vector2i in woods.road_cells: transit[cell] = true
+	for approach: Dictionary in woods.approaches:
+		var band := {}
+		for cell: Vector2i in approach.cells:
+			for y in range(-1,2):
+				for x in range(-1,2):
+					band[cell+Vector2i(x,y)] = true
+		for cell: Vector2i in band: transit[cell] = true
+		approach_bands.append(band)
 	var candidates: Array[Vector2i] = []
 	for cell: Vector2i in woods.links:
 		var at := woods.center(cell)
-		if at.distance_to(camp_center) >= SAFE_RADIUS and woods.zone_at(at).is_empty():
+		var fraction := (at-camp_center).abs()/(WoodsLayout.WORLD_BOUNDS.size*0.5)
+		if at.distance_to(camp_center) >= SAFE_RADIUS and maxf(fraction.x,fraction.y) <= ROAMER_INNER_FRACTION and woods.zone_at(at).is_empty() and transit.has(cell):
 			candidates.append(cell)
 	candidates.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y * WoodsLayout.SIZE.x + a.x < b.y * WoodsLayout.SIZE.x + b.x)
 	var placed: Array[Vector2] = []
-	for encounter in encounters:
-		placed.append(encounter["position"])
+	for encounter in encounters: placed.append(encounter["position"])
 	var offset := posmod(value, ROAMER_SPECIES.size())
 	for index in range(ROAMERS):
-		var best := candidates[rng.randi_range(0, candidates.size() - 1)]
+		var pool: Array[Vector2i] = candidates
+		if index < approach_bands.size():
+			pool = []
+			for cell in candidates:
+				if approach_bands[index].has(cell): pool.append(cell)
+			if pool.is_empty(): pool = candidates
+		var best := pool[rng.randi_range(0,pool.size()-1)]
 		var best_gap := -1.0
 		for attempt in range(12):
-			var cell := candidates[rng.randi_range(0, candidates.size() - 1)]
+			var cell := pool[rng.randi_range(0,pool.size()-1)]
 			var gap := INF
-			for other in placed:
-				gap = minf(gap, woods.center(cell).distance_to(other))
+			for other in placed: gap = minf(gap,woods.center(cell).distance_to(other))
 			if gap > best_gap:
 				best_gap = gap
 				best = cell
-		_encounter(ROAMER_SPECIES[(index + offset) % ROAMER_SPECIES.size()], best)
+		_encounter(ROAMER_SPECIES[(index+offset)%ROAMER_SPECIES.size()],best)
 		placed.append(woods.center(best))
 
 
-## Three regions in three different directions from camp, rotating every night.
+## Five distinct outer regions: one per cardinal pool, plus one unused region.
+## Battery/key stay unlocked and available at Dusk; the three other locks and
+## phase gates are unchanged. Notes cover every part not named by the corkboard.
 ## A separate RNG keeps the rest of the seeded recipe unchanged.
 func _rotate_caches(value: int) -> Array:
 	var rng := RandomNumberGenerator.new()
@@ -224,11 +241,18 @@ func _rotate_caches(value: int) -> Array:
 		directions[index] = directions[swap]
 		directions[swap] = held
 	var caches: Array = []
-	for direction: String in directions.slice(0, 3):
+	for direction: String in directions:
 		var choices: Array = REGION_POOL[direction]
 		var zone_index: int = choices[0] if rng.randf() < 0.5 else choices[1]
 		var zone: Dictionary = woods.zones[zone_index]
 		caches.append({"position": cache_spot(zone), "label": WoodsLayout.short_name(zone) + " / CACHE", "zone": zone_index, "direction": direction})
+	var remaining: Array = []
+	for direction: String in directions:
+		for zone_index: int in REGION_POOL[direction]:
+			if not caches.any(func(cache): return cache.zone==zone_index): remaining.append({"zone":zone_index,"direction":direction})
+	var extra: Dictionary = remaining[rng.randi_range(0,remaining.size()-1)]
+	var zone: Dictionary = woods.zones[extra.zone]
+	caches.append({"position":cache_spot(zone),"label":WoodsLayout.short_name(zone)+" / CACHE","zone":extra.zone,"direction":extra.direction})
 	return caches
 
 

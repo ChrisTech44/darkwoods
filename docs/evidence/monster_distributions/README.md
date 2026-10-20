@@ -1,5 +1,9 @@
 # Sample monster distributions
 
+Historical baseline from `0900fbd`, before the
+[outer-region update](../outskirts_layout/README.md). Reproduction below applies
+to that source revision; the current tool defaults to ignored artifacts.
+
 [Open the full-size image](sample_distributions.png).
 
 Generated directly from current `RoundPlan.generate` and

@@ -1,0 +1,637 @@
+{
+  "platform": "macOS arm64 / Godot 4.7.2",
+  "rules": "lnac-net-31",
+  "offline_suites": [
+    {
+      "checks": 594,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "outskirts_layout"
+    },
+    {
+      "checks": 15,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "rotation_clues"
+    },
+    {
+      "checks": 43,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "night_phases"
+    },
+    {
+      "checks": 113,
+      "clearings": 2410,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "surround_world",
+      "walls": 1280
+    },
+    {
+      "checks": 32,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "barriers"
+    },
+    {
+      "checks": 1355,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "layout_polish"
+    },
+    {
+      "checks": 561,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "woods_replay"
+    },
+    {
+      "checks": 97,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "objective_scenery"
+    },
+    {
+      "checks": 235,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "four_survivors"
+    },
+    {
+      "checks": 24,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "flashlight_endurance"
+    },
+    {
+      "checks": 29,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "chase_toolkit"
+    },
+    {
+      "checks": 34,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "killers_modifiers"
+    }
+  ],
+  "network": {
+    "network": [
+      {
+        "name": "woods_2_host_0",
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/integration/network_peer.gd",
+          "--",
+          "--all-escapes",
+          "--side",
+          "host",
+          "--mode",
+          "woods",
+          "--port",
+          "28043",
+          "--peers",
+          "2",
+          "--index",
+          "0"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "errors": [],
+        "result": [
+          {
+            "checks": 197,
+            "event": "test_result",
+            "failures": 0,
+            "largest_snapshot_payload": 1000,
+            "snapshot_bytes": 4733,
+            "suite": "network_host_woods_2"
+          }
+        ],
+        "log": "artifacts/network/woods_2_host_0.log"
+      },
+      {
+        "name": "woods_2_client_1",
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/integration/network_peer.gd",
+          "--",
+          "--all-escapes",
+          "--side",
+          "client",
+          "--mode",
+          "woods",
+          "--port",
+          "28043",
+          "--peers",
+          "2",
+          "--index",
+          "1"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "errors": [],
+        "result": [
+          {
+            "checks": 62,
+            "event": "test_result",
+            "failures": 0,
+            "largest_snapshot_payload": 0,
+            "snapshot_bytes": 4733,
+            "suite": "network_client_woods_2"
+          }
+        ],
+        "log": "artifacts/network/woods_2_client_1.log"
+      },
+      {
+        "name": "woods_2_late_9",
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/integration/network_peer.gd",
+          "--",
+          "--all-escapes",
+          "--side",
+          "late",
+          "--mode",
+          "woods",
+          "--port",
+          "28043",
+          "--peers",
+          "2",
+          "--index",
+          "9"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "errors": [],
+        "result": [
+          {
+            "checks": 2,
+            "event": "test_result",
+            "failures": 0,
+            "largest_snapshot_payload": 0,
+            "snapshot_bytes": 0,
+            "suite": "network_late_woods_2"
+          }
+        ],
+        "log": "artifacts/network/woods_2_late_9.log"
+      }
+    ],
+    "dedicated": [
+      {
+        "side": "server",
+        "index": 0,
+        "exit": 0,
+        "passed": true,
+        "errors": [],
+        "results": [
+          {
+            "checks": 79,
+            "event": "test_result",
+            "failures": 0,
+            "players": 4,
+            "suite": "dedicated_server"
+          }
+        ],
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--disable-render-loop",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--script",
+          "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd",
+          "--",
+          "--dedicated-server",
+          "--port",
+          "51602",
+          "--mode",
+          "woods",
+          "--seed",
+          "13",
+          "--min-players",
+          "4",
+          "--start-delay",
+          "1",
+          "--result-delay",
+          "8"
+        ],
+        "log": "artifacts/dedicated/woods_4_1792505716100529000_server_0.log"
+      },
+      {
+        "side": "client",
+        "index": 0,
+        "exit": 0,
+        "passed": true,
+        "errors": [],
+        "results": [
+          {
+            "checks": 18,
+            "event": "test_result",
+            "failures": 0,
+            "players": 4,
+            "suite": "dedicated_client"
+          }
+        ],
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--disable-render-loop",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--script",
+          "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+        ],
+        "log": "artifacts/dedicated/woods_4_1792505716100529000_client_0.log"
+      },
+      {
+        "side": "client",
+        "index": 1,
+        "exit": 0,
+        "passed": true,
+        "errors": [],
+        "results": [
+          {
+            "checks": 18,
+            "event": "test_result",
+            "failures": 0,
+            "players": 4,
+            "suite": "dedicated_client"
+          }
+        ],
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--disable-render-loop",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--script",
+          "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+        ],
+        "log": "artifacts/dedicated/woods_4_1792505716100529000_client_1.log"
+      },
+      {
+        "side": "client",
+        "index": 2,
+        "exit": 0,
+        "passed": true,
+        "errors": [],
+        "results": [
+          {
+            "checks": 20,
+            "event": "test_result",
+            "failures": 0,
+            "players": 4,
+            "suite": "dedicated_client"
+          }
+        ],
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--disable-render-loop",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--script",
+          "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+        ],
+        "log": "artifacts/dedicated/woods_4_1792505716100529000_client_2.log"
+      },
+      {
+        "side": "client",
+        "index": 3,
+        "exit": 0,
+        "passed": true,
+        "errors": [],
+        "results": [
+          {
+            "checks": 18,
+            "event": "test_result",
+            "failures": 0,
+            "players": 4,
+            "suite": "dedicated_client"
+          }
+        ],
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--disable-render-loop",
+          "--audio-driver",
+          "Dummy",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--script",
+          "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+        ],
+        "log": "artifacts/dedicated/woods_4_1792505716100529000_client_3.log"
+      }
+    ]
+  },
+  "limits": [
+    "No human encounter-frequency/balance acceptance. Spawn/approach coverage is not a guarantee that every monster is encountered.",
+    "Patrols and pursuit can leave their spawn band; regional guardians remain at regions.",
+    "Native scenery is staged with frozen AI/director and normal lighting/sight on ordinary two-route nights.",
+    "Escape guide uses a labelled all-escape fixture, normal Dusk lighting, frozen AI/director.",
+    "Plan diagram is an all-revealed diagnostic, not the in-game discovery-limited map.",
+    "Voice/microphones off; no Internet/cross-machine, Windows/Linux or exported-package checks.",
+    "No running server deployment or local legacy PCK/ZIP refresh.",
+    "Two active solo bot probes were downed with no supplies after collecting two forest parts (129 assertions, one failure each), before and after doubled endurance, both before the final flash-cost increase. No successful active solo traversal is claimed.",
+    "The dedicated run covers the final map recipe before endurance/flash tuning; final endurance/refill/flash checks are exercised locally, and listen-host/client checks include doubled endurance/refills before the final flash-cost-only increase."
+  ],
+  "approach_coverage": [
+    {
+      "approach_roamer_counts": [
+        2,
+        2,
+        2,
+        3,
+        3,
+        2,
+        2,
+        2,
+        2,
+        3,
+        2,
+        2,
+        3,
+        3
+      ],
+      "seed": 1
+    },
+    {
+      "approach_roamer_counts": [
+        2,
+        3,
+        2,
+        2,
+        2,
+        3,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        2,
+        2
+      ],
+      "seed": 7
+    },
+    {
+      "approach_roamer_counts": [
+        3,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        1,
+        3,
+        3,
+        1,
+        3,
+        2
+      ],
+      "seed": 13
+    },
+    {
+      "approach_roamer_counts": [
+        3,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        2,
+        3,
+        2,
+        1,
+        3,
+        3
+      ],
+      "seed": 42
+    },
+    {
+      "approach_roamer_counts": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        3,
+        2
+      ],
+      "seed": 99
+    },
+    {
+      "approach_roamer_counts": [
+        2,
+        2,
+        2,
+        2,
+        4,
+        2,
+        2,
+        2,
+        3,
+        2,
+        3,
+        4,
+        3,
+        2
+      ],
+      "seed": 2026
+    },
+    {
+      "approach_roamer_counts": [
+        3,
+        2,
+        2,
+        2,
+        3,
+        2,
+        1,
+        2,
+        3,
+        3,
+        2,
+        2,
+        2,
+        2
+      ],
+      "seed": 6789
+    },
+    {
+      "approach_roamer_counts": [
+        2,
+        2,
+        4,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        4,
+        1,
+        1,
+        3,
+        2
+      ],
+      "seed": 76543
+    }
+  ],
+  "active_solo_probes": [
+    {
+      "probe": "active_walk",
+      "result": [
+        {
+          "checks": 129,
+          "event": "test_result",
+          "failures": 1,
+          "suite": "woods_playthrough"
+        }
+      ],
+      "failure_state": [
+        {
+          "controls": true,
+          "destination": "(4647.0, 2087.0)",
+          "effects": {},
+          "event": "expedition_blocked",
+          "health": 0.0,
+          "hidden": -1,
+          "knock": "(0.0, 0.0)",
+          "paused": false,
+          "position": "(4630.155, 2367.573)",
+          "stamina": 3.13333333333334,
+          "status": 1,
+          "supplies": {
+            "air_horn": 0,
+            "battery_pack": 0,
+            "bug_spray": 0,
+            "coffee": 0,
+            "flare": 0,
+            "garlic": 0,
+            "glow_moss": 0,
+            "medkit": 0,
+            "noise_tin": 0,
+            "rations": 0,
+            "salt_ward": 0,
+            "scissors": 0,
+            "train_ticket": 0,
+            "wolfsbane": 0
+          },
+          "velocity": "(0.0, 0.0)"
+        }
+      ],
+      "collected": [
+        "input_collect_battery_pack",
+        "input_collect_flare",
+        "input_collect_flare",
+        "input_collect_flare",
+        "input_collect_boltcutters",
+        "input_collect_fuse",
+        "input_collect_spark_plug"
+      ]
+    },
+    {
+      "probe": "active_walk_recharged",
+      "result": [
+        {
+          "checks": 129,
+          "event": "test_result",
+          "failures": 1,
+          "suite": "woods_playthrough"
+        }
+      ],
+      "failure_state": [
+        {
+          "controls": true,
+          "destination": "(4647.0, 2087.0)",
+          "effects": {},
+          "event": "expedition_blocked",
+          "health": 0.0,
+          "hidden": -1,
+          "knock": "(0.0, 0.0)",
+          "paused": false,
+          "position": "(4630.155, 2367.573)",
+          "stamina": 3.13333333333334,
+          "status": 1,
+          "supplies": {
+            "air_horn": 0,
+            "battery_pack": 0,
+            "bug_spray": 0,
+            "coffee": 0,
+            "flare": 0,
+            "garlic": 0,
+            "glow_moss": 0,
+            "medkit": 0,
+            "noise_tin": 0,
+            "rations": 0,
+            "salt_ward": 0,
+            "scissors": 0,
+            "train_ticket": 0,
+            "wolfsbane": 0
+          },
+          "velocity": "(0.0, 0.0)"
+        }
+      ],
+      "collected": [
+        "input_collect_battery_pack",
+        "input_collect_flare",
+        "input_collect_flare",
+        "input_collect_flare",
+        "input_collect_boltcutters",
+        "input_collect_fuse",
+        "input_collect_spark_plug"
+      ]
+    }
+  ],
+  "tuning": {
+    "ordinary_light_seconds": 840,
+    "isolated_alex_seconds": 1120,
+    "capacity": 90,
+    "battery_restore": 140,
+    "dead_battery_restore": 80,
+    "flash_charge_cost": 30,
+    "flash_cooldown_seconds": 8
+  }
+}

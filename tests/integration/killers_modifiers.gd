@@ -192,7 +192,7 @@ func _modifier_checks() -> void:
 	player.flashlight_charge = 0.0
 	player.supplies["battery_pack"] = 1
 	level.use_supply(player, "battery_pack")
-	_check(is_equal_approx(player.flashlight_charge, 40.0), "dead_batteries_hold_40")
+	_check(is_equal_approx(player.flashlight_charge, 80.0), "dead_batteries_hold_80")
 	var base: CampConfig = preload("res://assets/default_config.tres")
 	var expected_hearing: float = 220.0 * (0.7 if level.plan.weather == "rain" else 1.0) * 1.15
 	_check(is_equal_approx(level.killer.config.hearing_radius, expected_hearing), "silent_night_sharpens_hearing_%d" % int(level.killer.config.hearing_radius))

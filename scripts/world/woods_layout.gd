@@ -22,11 +22,13 @@ const EXPLORATION_BYTES := (SIZE.x * SIZE.y + 7) / 8
 var landmark_distances: Dictionary = {}
 var open_tiles: Dictionary = {}
 var signposts: Array[Dictionary] = []
-## F4a road network: a ring road through the three objective regions and four
+## F4a road network: an inner distribution ring and four
 ## straight spokes from the camp exits to the map edges. The maze between them
 ## stays as the dark "thickets".
 const ROAD_HALF := 80
 const RING := Rect2i(16, 17, 17, 14)
+## Region approaches branch from the inner roads to the outer destinations.
+var approaches: Array[Dictionary] = []
 var roads: Array[Rect2] = []
 var road_cells: Dictionary = {}
 var road_tiles: Dictionary = {}
@@ -61,6 +63,7 @@ func generate(seed_value: int) -> void:
 	open_tiles.clear()
 	signposts.clear()
 	roads.clear()
+	approaches.clear()
 	gates.clear()
 	fences.clear()
 	blocked.clear()
@@ -93,14 +96,7 @@ func generate(seed_value: int) -> void:
 	_make_zones(rng)
 	_make_roads()
 	_make_shortcuts()
-	_connect_grid(Vector2i(25,34), zones[12]["cell"] + Vector2i(1,2))
-	_connect_grid(Vector2i(16,29), zones[11]["cell"] + Vector2i(1,1))
-	# The relay approach branches cleanly from the east spoke.
-	_connect_grid(Vector2i(40,24), zones[10]["cell"] + Vector2i(1,1))
-	# Traversable approach routes keep objectives reachable without flattening the outer maze.
-	_connect_grid(ENTRIES[0], zones[0]["cell"] + Vector2i(2,2))
-	_connect_grid(ENTRIES[1], zones[1]["cell"] + Vector2i(1,1))
-	_connect_grid(ENTRIES[3], zones[2]["cell"] + Vector2i(1,1))
+	_make_approaches()
 	for cell: Vector2i in links:
 		var at := center(cell)
 		_carve(Rect2(at - Vector2(HALF_TRAIL, HALF_TRAIL), Vector2.ONE * HALF_TRAIL * 2))
@@ -192,8 +188,8 @@ func _road(cells: Array[Vector2i], lit: bool) -> void:
 				lamps.append(post)
 
 
-## Straight trail from an optional region's edge to the nearest road (at most 5
-## cells). The gate sits on the last link, next to the road.
+## Straight trail from an outer optional region to the nearest road (up to 20
+## cells, matching the longer journey). The gate sits on the last link, next to the road.
 func _make_shortcuts() -> void:
 	for zone_index in SHORTCUT_ZONES:
 		var zone: Dictionary = zones[zone_index]
@@ -205,7 +201,7 @@ func _make_shortcuts() -> void:
 					var start := Vector2i(x, y)
 					if area.has_point(start + direction):
 						continue
-					for step in range(1, 6):
+					for step in range(1, 21):
 						var next := start + direction * step
 						if not valid(next) or not zone_at(center(next)).is_empty():
 							break
@@ -406,7 +402,23 @@ func _link(a: Vector2i, b: Vector2i) -> void:
 		links[a].append(b)
 		links[b].append(a)
 
-func _connect_grid(start: Vector2i, goal: Vector2i) -> void:
+## Each destination gets a traversable approach from the closest inner road.
+## Roads retain their existing lighting; these are ordinary unlit forest trails.
+func _make_approaches() -> void:
+	for index in range(zones.size()):
+		var zone: Dictionary = zones[index]
+		var goal := cell_at(zone["position"])
+		var start := ENTRY
+		var gap := INF
+		for cell: Vector2i in road_cells:
+			if not RING.grow(1).has_point(cell): continue
+			var distance := Vector2(cell-goal).length_squared()
+			if distance < gap:
+				gap = distance
+				start = cell
+		approaches.append({"zone":index,"cells":_connect_grid(start,goal)})
+
+func _connect_grid(start: Vector2i, goal: Vector2i) -> Array[Vector2i]:
 	var parents := {start: start}
 	var queue: Array[Vector2i] = [start]
 	var cursor := 0
@@ -418,28 +430,32 @@ func _connect_grid(start: Vector2i, goal: Vector2i) -> void:
 			if valid(next) and not parents.has(next):
 				parents[next] = cell
 				queue.append(next)
+	var route: Array[Vector2i] = [goal]
 	var cell := goal
 	while cell != start:
 		var previous: Vector2i = parents[cell]
 		_link(cell, previous)
 		cell = previous
+		route.append(cell)
+	route.reverse()
+	return route
 
 func _make_zones(rng: RandomNumberGenerator) -> void:
 	var definitions := [
-		["village", "NORTHWEST / ABANDONED VILLAGE", Vector2i(rng.randi_range(15,16), rng.randi_range(16,17)), Vector2i(5,3)],
-		["bog", "EAST / WITCH'S BOG", Vector2i(rng.randi_range(31,32), rng.randi_range(20,21)), Vector2i(4,4)],
-		["graveyard", "SOUTH / OLD GRAVEYARD", Vector2i(rng.randi_range(23,24), rng.randi_range(29,30)), Vector2i(4,4)],
-		["mill", "FLOODED MILL / PIPE LANES", Vector2i(9,20), Vector2i(4,4)],
-		["orchard", "BRAMBLE ORCHARD / THREAD ROWS", Vector2i(13,32), Vector2i(4,4)],
-		["observatory", "STARLESS OBSERVATORY", Vector2i(33,11), Vector2i(4,4)],
-		["rail", "LAST-CAR RAIL YARD", Vector2i(37,30), Vector2i(5,3)],
-		["quarry", "WHITE STONE QUARRY", Vector2i(8,8), Vector2i(4,4)],
-		["chapel", "DROWNED CHAPEL / CANDLE COURT", Vector2i(27,38), Vector2i(4,4)],
-		["substation", "NORTH / POWER SUBSTATION", Vector2i(23 + posmod(rng.seed, 2),10), Vector2i(3,3)],
-		["relay", "EAST / RADIO RELAY STATION", Vector2i(39,20 + posmod(rng.seed, 2)), Vector2i(3,3)],
-		["logging", "WEST / LOGGING CAMP", Vector2i(9,28), Vector2i(3,3)],
-		["boathouse", "SOUTHEAST / LAKESHORE BOATHOUSE", Vector2i(36,37), Vector2i(4,4)],
-		["ranger", "NORTH / RANGER ROAD AND BRIDGE", Vector2i(23,3), Vector2i(3,6)]
+		["village", "NORTHWEST / ABANDONED VILLAGE", Vector2i(rng.randi_range(12,13), rng.randi_range(2,3)), Vector2i(5,3)],
+		["bog", "EAST / WITCH'S BOG", Vector2i(rng.randi_range(43,44), rng.randi_range(13,14)), Vector2i(4,4)],
+		["graveyard", "SOUTH / OLD GRAVEYARD", Vector2i(rng.randi_range(20,21), rng.randi_range(42,43)), Vector2i(4,4)],
+		["mill", "FLOODED MILL / PIPE LANES", Vector2i(3,20), Vector2i(4,4)],
+		["orchard", "BRAMBLE ORCHARD / THREAD ROWS", Vector2i(9,42), Vector2i(4,4)],
+		["observatory", "STARLESS OBSERVATORY", Vector2i(42,3), Vector2i(4,4)],
+		["rail", "LAST-CAR RAIL YARD", Vector2i(43,33), Vector2i(5,3)],
+		["quarry", "WHITE STONE QUARRY", Vector2i(3,3), Vector2i(4,4)],
+		["chapel", "DROWNED CHAPEL / CANDLE COURT", Vector2i(29,42), Vector2i(4,4)],
+		["substation", "NORTH / POWER SUBSTATION", Vector2i(31 + posmod(rng.seed, 2),3), Vector2i(3,3)],
+		["relay", "EAST / RADIO RELAY STATION", Vector2i(44,23 + posmod(rng.seed, 2)), Vector2i(3,3)],
+		["logging", "WEST / LOGGING CAMP", Vector2i(3,31), Vector2i(3,3)],
+		["boathouse", "SOUTHEAST / LAKESHORE BOATHOUSE", Vector2i(40,42), Vector2i(4,4)],
+		["ranger", "NORTH / RANGER ROAD AND BRIDGE", Vector2i(23,1), Vector2i(3,6)]
 	]
 	for d in definitions:
 		var anchor: Vector2i = d[2]

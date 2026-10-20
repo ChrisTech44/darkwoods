@@ -1,11 +1,12 @@
 extends SceneTree
 ## Source-generated diagnostic map, not the discovery-limited in-game notebook.
-const OUT := "res://docs/evidence/monster_distributions/"
+const OUT := "res://artifacts/monster_distributions/"
 const SEEDS := [13,42,2026]
 const HIGHLIGHTS := {"teddy":Color("ffbe69"),"lifeguard":Color("6ee5d4"),"huntmaster":Color("cc9aff")}
 
 class DistributionCanvas extends Node2D:
 	var plans: Array = []
+	var outer_regions := false
 	var font := ThemeDB.fallback_font
 	var ink := Color("e6e9ec")
 	const SCALE := 530.0/9600.0
@@ -15,8 +16,8 @@ class DistributionCanvas extends Node2D:
 		return origin+(at-WoodsLayout.WORLD_BOUNDS.position)*SCALE
 	func _draw() -> void:
 		draw_rect(Rect2(0,0,1800,1080),Color("10181f"))
-		label(Vector2(35,40),"WHERE THE ROAMERS START",30)
-		label(Vector2(35,70),"Three actual seeded Woods plans • 29 roamers per map • numbered by species below",18,Color("a8bac8"))
+		label(Vector2(35,40),"WHERE MONSTERS AND OBJECTIVES START" if outer_regions else "WHERE THE ROAMERS START",30)
+		label(Vector2(35,70),"Three seeded Woods plans • 29 inward roamer starts • five van parts in five separate outer regions" if outer_regions else "Three actual seeded Woods plans • 29 roamers per map • numbered by species below",18,Color("a8bac8"))
 		for panel in range(plans.size()):
 			var plan: RoundPlan=plans[panel]
 			var origin:=Vector2(35+panel*590,125)
@@ -35,6 +36,18 @@ class DistributionCanvas extends Node2D:
 				if not encounter.species in RoundPlan.ROAMER_SPECIES:
 					var at:=point(encounter.position,origin)
 					draw_colored_polygon(PackedVector2Array([at+Vector2(0,-4),at+Vector2(4,0),at+Vector2(0,4),at+Vector2(-4,0)]),Color("92a1aa"))
+			if outer_regions:
+				for zone: Dictionary in plan.woods.zones:
+					var name: String=WoodsLayout.SIGN_NAMES[zone.kind]
+					var width:=font.get_string_size(name,HORIZONTAL_ALIGNMENT_LEFT,-1,11).x
+					var at:=point(zone.position,origin)
+					at.x=clampf(at.x-width/2,origin.x+3,origin.x+530-width-3)
+					var parts: Array = plan.cache_zone.keys().filter(func(kind): return plan.woods.zones[plan.cache_zone[kind]].kind==zone.kind)
+					label(at+Vector2(0,-3 if not parts.is_empty() else 4),name,11,Color("acced3"))
+					if not parts.is_empty():
+						var part: String=parts[0].replace("_"," ").to_upper()
+						var part_width:=font.get_string_size(part,HORIZONTAL_ALIGNMENT_LEFT,-1,10).x
+						label(Vector2(clampf(point(zone.position,origin).x-part_width/2,origin.x+3,origin.x+530-part_width-3),at.y+11),part,10,Color("ffdc8e"))
 			# These hulls enclose assigned waypoints, not a hard movement boundary.
 			for encounter: Dictionary in plan.encounters:
 				if not HIGHLIGHTS.has(encounter.species): continue
@@ -78,6 +91,10 @@ func run() -> void:
 	root.add_child(viewport)
 	var canvas:=DistributionCanvas.new()
 	var records:=[]
+	var output:=OUT
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--out="): output=argument.trim_prefix("--out=").trim_suffix("/")+"/"
+	canvas.outer_regions="--region-labels" in OS.get_cmdline_user_args()
 	for value in SEEDS:
 		var plan:=RoundPlan.new()
 		plan.generate(value,"woods")
@@ -87,15 +104,19 @@ func run() -> void:
 			var route:=[]
 			for at: Vector2 in plan.woods.roaming_route(encounter.cell): route.append([at.x,at.y])
 			encounters.append({"species":encounter.species,"position":[encounter.position.x,encounter.position.y],"roamer":encounter.species in RoundPlan.ROAMER_SPECIES,"assigned_waypoints":route})
-		records.append({"seed":value,"encounters":encounters})
+		var parts:=[]
+		for kind: String in plan.cache_zone:
+			var item: Dictionary=plan.loot.filter(func(e): return e.kind==kind)[0]
+			parts.append({"kind":kind,"region":plan.woods.zones[plan.cache_zone[kind]].kind,"position":[item.position.x,item.position.y]})
+		records.append({"seed":value,"encounters":encounters,"van_parts":parts})
 	viewport.add_child(canvas)
 	await process_frame
 	RenderingServer.force_draw(true)
 	await process_frame
 	await RenderingServer.frame_post_draw
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
-	var error:=viewport.get_texture().get_image().save_png(OUT+"sample_distributions.png")
-	var file:=FileAccess.open(OUT+"plans.json",FileAccess.WRITE)
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output))
+	var error:=viewport.get_texture().get_image().save_png(output+"sample_distributions.png")
+	var file:=FileAccess.open(output+"plans.json",FileAccess.WRITE)
 	file.store_string(JSON.stringify(records,"  ")+"\n")
 	file.close()
 	print(JSON.stringify({"event":"distribution_capture","seeds":SEEDS,"png_error":error,"size":[1800,1080]}))

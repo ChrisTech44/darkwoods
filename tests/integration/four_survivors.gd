@@ -482,9 +482,9 @@ func rule_checks() -> void:
 	check(not CreatureSamples.use(christian),"direct_sample_cannot_bypass_disabled_rule")
 	check(SurvivorKits.status(christian)=="CAMPER ABILITIES OFF","disabled_rule_visible")
 	level.abilities.enabled=true
-	check(is_equal_approx(christian.config.flashlight_capacity/christian.light_drain,420),"ordinary_flashlight_lasts_seven_minutes")
+	check(is_equal_approx(christian.config.flashlight_capacity/christian.light_drain,840),"ordinary_flashlight_lasts_fourteen_minutes")
 	alex.kit.isolated=true
-	check(is_equal_approx(alex.config.flashlight_capacity/alex.passive_light_rate(),560),"isolated_alex_light_estimate_matches_drain")
+	check(is_equal_approx(alex.config.flashlight_capacity/alex.passive_light_rate(),1120),"isolated_alex_light_estimate_matches_drain")
 
 func disconnect_cleanup_checks() -> void:
 	var actor: CampPlayer = friends.alex

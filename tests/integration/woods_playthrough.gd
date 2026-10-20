@@ -14,6 +14,8 @@ func _run() -> void:
 	capture = "--capture" in OS.get_cmdline_user_args()
 	change_scene_to_file("res://scenes/world/forest_level.tscn")
 	await _frames(3)
+	while current_scene == null or current_scene.name != "ForestLevel":
+		await process_frame
 	level = current_scene
 	player = level.player
 	# Route/mechanics regression: reveal staged parts now and keep the director out;
@@ -33,7 +35,7 @@ func _run() -> void:
 			return
 	var remaining: Array[CampPickup] = []
 	for pickup: CampPickup in level.pickups:
-		if pickup.locked:
+		if pickup.kind in level.plan.required and pickup.available:
 			remaining.append(pickup)
 	while not remaining.is_empty():
 		var closest: CampPickup

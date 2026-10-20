@@ -1,5 +1,56 @@
 # Development log
 
+## 2026-10-20 — outer regions, five separate van-part regions and survival tuning
+
+Moved all fourteen regions to the outer map band, preserving region-owned
+scenery, guardians and objective offsets. Ordinary unlit approaches lead from
+inner roads; longer optional gated connectors preserve shortcut access. All 29
+roaming starts occupy the inward transit band (existing 1100px camp-center buffer,
+68% of each map half-extent), with one near each approach and fifteen additional
+seeded spread placements. No patrol/chase fences were added. Eight checked seeds
+have one to four nearby roaming starts per approach, not guaranteed contacts.
+
+All five Woods van parts now occupy five distinct outer regions across all four
+cardinal pools. Battery/key remain unlocked from Dusk; three locks and phase
+unlocks remain. Eight ranger notes and regional exploration retain discovery.
+Camp keeps lock tools/preparation supplies; Quick Camp keeps its original parts.
+Protocol **lnac-net-31** prevents old geometry recipes from joining: clients and
+server must update/restart together. No live server deployment or old ZIP/PCK
+refresh was performed.
+
+At the user's follow-up, doubled passive beam duration to **840s / 14m**
+(**1120s / 18m40s** isolated Alex) and nominal spare refill to **140 charge**
+(**80** with Dead Batteries), capped at existing **90**. Increased Space flash
+penalty from **15 to 30 charge**, retaining **8s** cooldown/stun behavior. Updated
+brief, guide and help; compacted previously clipped survival text after native QA.
+
+Verification: outer-plan invariants **594/594**, 24-seed clue rotation **15/15**,
+night phases **43/43**, native region/spawn navigation **113/113**, barriers
+**32/32**, every pickup/door across eight seeds **1355/1355**, Woods replay
+**561/561**, survivor abilities **235/235**, endurance/refill/flash **24/24**,
+chase toolkit **29/29**, modifiers **34/34**, native normal-route scenery
+**97/97**. Actual ENet listen-host/client **261/261** and four-client dedicated
+**153/153** pass for the updated map. Dedicated precedes endurance tuning;
+listen-host includes endurance/refill before the final flash-cost increase.
+Final cost/threshold/stun/cooldown behavior is verified locally. Required import,
+startup, changed Markdown links and whitespace checks pass.
+
+**Active traversal limit:** two solo input bots were downed after collecting two
+forest parts with no supplies left (129 checks, one failure each), before/after
+endurance tuning, both before the final flash-cost increase. No successful active
+solo run or human balance clearance is claimed. The bot's route list now includes
+unlocked required parts. Physical reachability and scripted multiplayer escapes
+pass; encounter frequency, supply economy and longer journeys need playtesting.
+Initial layout checks exposed outer-anchor/gate-count defects, corrected before
+passing reruns; fixtures now wait for scene readiness and draw synchronously in
+background macOS windows. A drain-to-empty test now waits for the longer duration.
+
+Inspected the actual three-seed diagram, normal-lighting scenery and help.
+Scenery uses ordinary two-route nights, staged poses and frozen AI/director;
+guide fixtures force all escapes and freeze AI/director. Microphones/voice off.
+No paid assets, Windows/Linux, Internet/cross-machine or export acceptance added.
+[Current image, source data, results and limits](evidence/outskirts_layout/README.md).
+
 ## 2026-10-20 — source-generated monster distribution comparison
 
 Added a standalone 1800×1080 PNG comparing actual Woods seeds 13, 42 and 2026:

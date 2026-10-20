@@ -57,9 +57,14 @@ func _plan_checks() -> void:
 	var seen := {}
 	var counts_ok := true
 	var fog_ok := true
+	var complete_rosters := true
 	for seed_value in range(1, 61):
 		var plan := RoundPlan.new()
 		plan.generate(seed_value, "woods")
+		var species: Array=plan.encounters.map(func(row: Dictionary) -> String: return row["species"])
+		complete_rosters = complete_rosters and plan.encounters.size()==31 and species.count("relay_jackal")==2
+		for kind: String in CampProfile.TIPS:
+			if kind!="stalker": complete_rosters=complete_rosters and kind in species
 		headlines[plan.headline] = true
 		counts_ok = counts_ok and plan.modifiers.size() <= 2 and (plan.modifiers.size() < 2 or plan.modifiers[0] != plan.modifiers[1])
 		for id in plan.modifiers:
@@ -70,12 +75,12 @@ func _plan_checks() -> void:
 	_check(seen.size() == RoundPlan.MODIFIERS.size(), "all_six_modifiers_appear")
 	_check(counts_ok, "zero_to_two_distinct_modifiers")
 	_check(fog_ok, "fog_bank_forces_fog")
+	_check(complete_rosters, "all_creature_types_across_sixty_seeds_and_modifiers")
 	var base := _plan_with(9, [])
 	var rich := _plan_with(9, ["generous_woods"])
 	_check(rich.loot.size() > base.loot.size() + 30, "generous_woods_adds_supplies")
 	var moon := _plan_with(9, ["blood_moon"])
-	var wolves := func(plan: RoundPlan) -> int: return plan.encounters.filter(func(item: Dictionary) -> bool: return item["species"] == "werewolf").size()
-	_check(moon.encounters.size() == base.encounters.size() and wolves.call(moon) >= wolves.call(base) + 4, "blood_moon_more_werewolves_same_total")
+	_check(moon.encounters==base.encounters, "blood_moon_preserves_every_type_and_seeded_position")
 	var camp := RoundPlan.new()
 	camp.generate(9, "camp")
 	_check(camp.modifiers.is_empty(), "quick_camp_has_no_modifiers")

@@ -1,5 +1,27 @@
 # Development log
 
+## 2026-10-19 — Every monster type on every Woods night
+
+Implemented the user's full-roster instruction: all 22 roaming types now spawn
+alongside the regional creatures, giving 31 creatures plus the Stalker (32 enemy
+bodies). Removed Blood Moon's replacement of pranksters with wolves so every type
+remains available there too; retained its moon cadence and faster Stalker. Seeded
+placement, camp spawn buffer, paired jackals, normal creature conditions and Quick
+Camp's single Stalker remain. No artwork/audio changes or SpriteCook credits.
+
+Advanced rules to lnac-net-21 because enemy snapshots map onto the locally seeded
+array: old clients would miss the added body and disagree about Blood Moon types.
+Update and restart both server and clients together. Updated current player/agent
+and server guides; older rules20 package evidence remains historical.
+
+Verification: modifiers 34 (complete rosters across 60 seeds/modifiers), brains
+147, spacing 52, newer creatures 36, Python 12 and real dedicated/four-client 153
+assertions all pass without errors/warnings. All clients check their full roster;
+authority verifies live brains before the lifecycle fixture freezes enemies.
+Required import/startup, Markdown links and diff checks pass. [Evidence and fixture
+limits](evidence/full_roster/README.md). Pack rebuild/acceptance is recorded in the
+follow-up evidence; no full regression or production deployment is claimed.
+
 ## 2026-10-19 — Compact abilities on/off checkbox
 
 User confirmed pulling current main resolved the rules-18/server join mismatch,

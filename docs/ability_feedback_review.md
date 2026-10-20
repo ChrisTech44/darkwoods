@@ -95,7 +95,7 @@ locked for the round. Dedicated: `python3 tools/run_server.py --no-camper-abilit
 (or the same user flag with direct Godot server launch). It disables all four
 passives and actives, including starting samples/cash; movement, ordinary supplies,
 flashlights, handoffs, revives, objectives and monsters remain available. New
-round/lobby rule packets require **lnac-net-20** on both server and clients.
+round/lobby rule packets require **lnac-net-21** on both server and clients.
 
 ## Artwork and evidence
 

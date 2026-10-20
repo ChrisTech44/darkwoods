@@ -17,8 +17,9 @@ verified. Where the build differs from the first draft:
   every 3 s (−10% progress); tearing free of him leaves you tripped (1 s) and
   drops what you held. Teammates' flashes, flares and the air horn free you
   instantly and cleanly.
-- **Blood Moon** turns pranksters (Puffballs, Lantern Moths, Imps) into
-  werewolves and brings the moon out about twice as often.
+- **Blood Moon** brings the moon out about twice as often and speeds up the
+  Stalker. Following the 19 October full-roster request, every creature type
+  remains present; pranksters are no longer replaced by werewolves.
 
 Code map:
 - **Creatures:** `scripts/ai/brains/<id>.gd` (one CreatureBrain each) on

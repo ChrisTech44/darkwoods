@@ -89,6 +89,14 @@ func server() -> void:
 	check(not root.get_node("AudioManager").output_enabled and net.world.soundscape.loops.is_empty(), "server_has_no_audio_playback")
 	check(net.world.player in net.actors.values() and net.world.hud.process_mode == Node.PROCESS_MODE_DISABLED, "server_focus_is_a_real_client_and_hud_disabled")
 	var level: Node = net.world
+	if level.plan.expedition:
+		var cryptids: Array=get_nodes_in_group("cryptids")
+		var species: Array=cryptids.map(func(enemy: CampCryptid) -> String: return enemy.species)
+		check(cryptids.size()==31 and get_nodes_in_group("killers").size()==32,"dedicated_spawns_full_32_enemy_roster")
+		var complete := true
+		for kind: String in CampProfile.TIPS:
+			if kind!="stalker": complete=complete and kind in species
+		check(complete and cryptids.all(func(enemy: CampCryptid) -> bool: return enemy.enabled and enemy.brain!=null),"dedicated_all_types_spawn_enabled_with_live_brains")
 	for enemy in get_nodes_in_group("killers"): enemy.enabled = false
 	level.night_clock.director_enabled = false
 	var ids: Array = net.actors.keys()
@@ -194,6 +202,12 @@ func client() -> void:
 	await capture("joined")
 	var own: int = get_multiplayer().get_unique_id()
 	check(net.actors[own].role==role,"client_keeps_requested_character")
+	if net.world.plan.expedition:
+		var species: Array=get_nodes_in_group("cryptids").map(func(enemy: CampCryptid) -> String: return enemy.species)
+		var complete := true
+		for kind: String in CampProfile.TIPS:
+			if kind!="stalker": complete=complete and kind in species
+		check(species.size()==31 and get_nodes_in_group("killers").size()==32 and complete,"client_builds_every_authoritative_creature_type")
 	var handled := ""
 	while net.active:
 		await process_frame

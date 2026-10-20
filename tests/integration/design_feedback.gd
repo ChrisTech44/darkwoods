@@ -42,7 +42,7 @@ func _run() -> void:
 
 
 func _encounter_checks() -> void:
-	_check(RoundPlan.CRYPTID_COUNT <= 30, "fewer_creatures_than_before")
+	_check(RoundPlan.ROAMERS == RoundPlan.ROAMER_SPECIES.size(), "all_roaming_kinds_each_night")
 	for value in [42, 7, 2026, 6789]:
 		var plan := RoundPlan.new()
 		plan.generate(value, "woods")

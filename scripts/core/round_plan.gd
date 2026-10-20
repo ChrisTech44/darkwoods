@@ -3,16 +3,12 @@ extends RefCounted
 ## Seeded authority-side run recipe. No gameplay relies on global RNG state.
 
 ## Two region dwellers, six landmark guardians (the Rail Yard's jackals come
-## as a pair) and ROAMERS spread through the woods. 30 in all: playtesters found
-## more too oppressive (17 October), so with 22 roaming kinds one sits out each
-## night, rotating with the seed.
-const ROAMERS := 21
+## as a pair), and all 22 roaming kinds: 31 creatures plus the headline Stalker.
+const ROAMERS := 22
 const CRYPTID_COUNT := 9 + ROAMERS
 ## No roaming creature starts this close to camp (the first stretch is for exploring).
 const SAFE_RADIUS := 1100.0
-## One night's roaming mix (docs/monster_revamp.md, docs/monster_catalog.md):
-## each roaming kind at most once (the Witch lives in the bog); the order and
-## the kind that rests rotate with the seed.
+## Every roaming kind appears once. Seeded order and placement still vary.
 const ROAMER_SPECIES: Array[String] = ["werewolf", "bigfoot", "lantern_moth", "ration_moth", "briar_revenant", "switchback_hound", "lens_eater",
 	"last_car_conductor", "mimic", "owl", "bog_hands", "imps", "teddy",
 	"groundskeeper", "cuckoo", "banshee", "slug", "surveyor", "hitchhiker", "tollkeeper", "echo", "fortune_teller"]
@@ -54,7 +50,7 @@ var escape_options: Array[String] = ["van"]
 const HEADLINES: Array[String] = ["stalker"]
 const MODIFIERS: Array[String] = ["blood_moon", "dead_batteries", "fog_bank", "silent_night", "generous_woods", "lone_wolf"]
 const MODIFIER_NAMES := {"blood_moon": "BLOOD MOON", "dead_batteries": "DEAD BATTERIES", "fog_bank": "FOG BANK", "silent_night": "SILENT NIGHT", "generous_woods": "GENEROUS WOODS", "lone_wolf": "LONE WOLF"}
-const MODIFIER_RULES := {"blood_moon": "werewolves everywhere, the moon comes out more often; the killer runs faster", "dead_batteries": "spare batteries hold 40 charge", "fog_bank": "thick fog: shorter sight for everyone", "silent_night": "no music; creatures hear farther", "generous_woods": "half again as many supplies", "lone_wolf": "everyone starts in a different cabin"}
+const MODIFIER_RULES := {"blood_moon": "the moon comes out more often; the killer runs faster; every creature type remains", "dead_batteries": "spare batteries hold 40 charge", "fog_bank": "thick fog: shorter sight for everyone", "silent_night": "no music; creatures hear farther", "generous_woods": "half again as many supplies", "lone_wolf": "everyone starts in a different cabin"}
 ## Fixtures: null = seeded; otherwise the exact list to use (launch flag --no-modifiers sets []).
 static var force_modifiers: Variant = null
 static var force_headline := ""
@@ -165,13 +161,6 @@ func generate(value: int, mode: String) -> void:
 			_encounter("relay_jackal", cell + Vector2i(1, 0))
 			encounters.back()["home"] = zone["bounds"].grow(48)
 	_spread_roamers(value)
-	if has_modifier("blood_moon"):
-		# Blood Moon: pranksters turn into werewolves, same total count.
-		var converted := 0
-		for encounter in encounters:
-			if encounter["species"] in ["ration_moth", "lantern_moth", "imps", "echo", "hitchhiker", "cuckoo"] and not encounter.has("home") and converted < 5:
-				encounter["species"] = "werewolf"
-				converted += 1
 
 
 ## Garlic, wolfsbane, bug spray, tickets and coffee in the woods, and the air

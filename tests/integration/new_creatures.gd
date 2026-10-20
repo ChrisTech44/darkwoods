@@ -49,11 +49,13 @@ func _run() -> void:
 			break
 		await physics_frame
 	_check(level.killer.headline == "stalker", "stalker_headlines")
-	# One roaming kind rests each night, so look across a few seeds.
+	# Every kind must now appear on each seeded night.
 	var spawned := {}
 	for seed_value in [42, 43, 44]:
 		var plan := RoundPlan.new()
 		plan.generate(seed_value, "woods")
+		var roster: Array=plan.encounters.map(func(row: Dictionary) -> String: return row["species"])
+		_check(RoundPlan.ROAMER_SPECIES.all(func(kind: String) -> bool: return kind in roster),"all_roamers_on_seed_%d" % seed_value)
 		for row in plan.encounters:
 			spawned[row["species"]] = true
 	_check(["groundskeeper", "cuckoo", "banshee", "slug", "surveyor", "hitchhiker", "tollkeeper", "echo", "fortune_teller"].all(func(species: String) -> bool: return spawned.has(species) and CreatureBrain.for_species(species) != null and ResourceLoader.exists("res://assets/sprites/%s.png" % species)), "new_creatures_spawn_with_brains_and_art")

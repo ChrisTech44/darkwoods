@@ -2,7 +2,7 @@
 
 **Dedicated server:** run a camp without a host survivor. See the
 [server setup and connection guide](docs/dedicated_server.md). Updated `main`
-clients (`lnac-net-20`) can join; the server code is available in this checkout.
+clients (`lnac-net-21`) can join; the server code is available in this checkout.
 
 **Find the parts. Keep your light alive. Get out before the woods get you.**
 
@@ -334,7 +334,7 @@ for the next night and the next launch. Default port: **UDP 27840**. Everyone ma
 the host chooses mode/seed and starts. LAN/Wi-Fi uses the host's local IP;
 Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
 
-Update clients and server together to **lnac-net-20**. Your survivor now responds
+Update clients and server together to **lnac-net-21**. Your survivor now responds
 locally, with server corrections smoothed; other survivors use a short movement
 buffer. A long connection interruption can still pause movement. See
 [measured smoothness improvements](docs/evidence/smoothness/README.md).
@@ -497,7 +497,7 @@ the seed and announced in the Dusk message and the notebook.
 
 | Modifier | Effect |
 | --- | --- |
-| **Blood Moon** | Pranksters become werewolves and the moon comes out twice as often; the killer runs 8% faster. |
+| **Blood Moon** | The moon comes out twice as often; the killer runs 8% faster. All creature types remain present. |
 | **Dead Batteries** | Spare batteries restore 40 charge instead of 70. |
 | **Fog Bank** | The night is foggy: shorter sight for everyone. |
 | **Silent Night** | No music; creatures hear 15% farther. |
@@ -946,13 +946,13 @@ reliable way out.
 Rations double as **bait** (Buster, jackals), the **salt ward** reflects witch
 curses, and **glow moss** also makes you glow for 60 s (nothing can snuff it).
 
-Each expedition has **30 creatures, plus the Stalker** (playtesters found more
-too oppressive): the Vampire and the Witch in their regions, the six guardians
-(the jackals are a pair), and **21 roamers spread across the whole forest**, none
-within 1,100 px of camp. There are 22 roaming kinds, so each night one of them
-sits out, a different one depending on the seed. Roamers
-follow trail circuits and investigate sensed activity. There's a three-flare
-stash in Maintenance for when they come.
+Each expedition includes every woods creature type: **31 creatures plus the
+Stalker (32 enemies)**. The Vampire and Witch live in their regions; the six
+regional guardians include a pair of jackals. **All 22 roaming types** are spread
+across the forest, starting at least 1,100 px from camp. No type sits out; the seed
+varies their placement and order. Blood Moon keeps the complete roster too.
+Roamers follow trail circuits and investigate sensed activity. There's a
+three-flare stash in Maintenance for when they come.
 
 **Camp is a refuge until Deep Night.** For the first half of the night no
 creature (the stalker included) enters camp, sees into it or hears noise from

@@ -15,7 +15,7 @@ import package_server
 
 class ServerPackageTests(unittest.TestCase):
     def test_rules_read_from_game(self):
-        self.assertEqual(package_server.protocol_rules(), 'lnac-net-20')
+        self.assertEqual(package_server.protocol_rules(), 'lnac-net-21')
 
     def test_missing_protocol_fails(self):
         with tempfile.TemporaryDirectory() as temp:

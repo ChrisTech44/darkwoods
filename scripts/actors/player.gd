@@ -150,7 +150,11 @@ func _physics_process(delta: float) -> void:
 	if effect_data.get("sample_moth",false):
 		if has_effect("face_moth"): flashlight_charge = maxf(0.0,flashlight_charge-3*delta)
 		else: effect_data.erase("sample_moth")
-	if has_effect("dark"):
+	if expedition and flashlight_charge<=0:
+		flashlight_on=false
+	elif has_effect("nightlight") and flashlight_charge>0:
+		flashlight_on=true
+	elif has_effect("dark"):
 		flashlight_on = false
 	if expedition and CampMap.is_woods(global_position) and flashlight_on and status == Status.ALIVE:
 		flashlight_charge = maxf(0.0, flashlight_charge - delta * passive_light_rate())
@@ -541,7 +545,7 @@ func name_origin() -> Vector2:
 	return Vector2(-ThemeDB.fallback_font.get_string_size(peer_name,HORIZONTAL_ALIGNMENT_LEFT,-1,7).x * 0.5,-34)
 
 func passive_light_rate() -> float:
-	return light_drain*(0.75 if kit_isolated() else 1.0)
+	return light_drain*(0.75 if kit_isolated() else 1.0)*(2.0 if has_effect("nightlight") else 1.0)
 
 func kit_isolated() -> bool:
 	return bool(kit.get("isolated",false)) if prediction_kit.is_empty() else prediction_kit[1]

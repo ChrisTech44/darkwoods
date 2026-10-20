@@ -1,7 +1,7 @@
 class_name CreatureSamples
 extends RefCounted
 ## Borrowed signatures have explicit adapters, never generic player-state casts.
-const SOURCES := ["witch","werewolf","shutter_wraith","ration_moth","bramble_seamstress","vampire","bigfoot","briar_revenant","lantern_moth","candle_grazer","switchback_hound","lens_eater","last_car_conductor","mimic","owl","bog_hands","imps","teddy","groundskeeper","cuckoo","banshee","slug","surveyor","hitchhiker","tollkeeper","echo","fortune_teller","boiler_saint","relay_jackal","stoneback_ram", "lifeguard"]
+const SOURCES := ["witch","werewolf","shutter_wraith","ration_moth","bramble_seamstress","vampire","bigfoot","briar_revenant","lantern_moth","candle_grazer","switchback_hound","lens_eater","last_car_conductor","mimic","owl","bog_hands","imps","teddy","groundskeeper","cuckoo","banshee","slug","surveyor","hitchhiker","tollkeeper","echo","fortune_teller","boiler_saint","relay_jackal","stoneback_ram", "lifeguard", "nightlight_kid"]
 const FORMS := ["werewolf","briar_revenant","groundskeeper","mimic"]
 const NAMES := {"shutter_wraith":"PAPARAZZO", "ration_moth":"PUFFBALL", "bramble_seamstress":"SEAMSTRESS", "briar_revenant":"SCARECROW", "candle_grazer":"SNUFFER", "switchback_hound":"BUSTER", "lens_eater":"PEEPER", "last_car_conductor":"CONDUCTOR", "relay_jackal":"JACKAL", "stoneback_ram":"RAM", "boiler_saint":"LULLABY SAINT", "teddy":"BEAR HUG"}
 static var form_sheets: Dictionary = {}

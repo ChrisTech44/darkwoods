@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-24"
+const RULES := "lnac-net-25"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -552,7 +552,7 @@ func _accept_action(id: int, generation: int, code: String, slot: int) -> void:
 		"ability_cancel": SurvivorKits.cancel_stake(actor)
 		"give": world.abilities.give(actor)
 		"light":
-			if not actor.expedition or actor.flashlight_charge>0: actor.flashlight_on=not actor.flashlight_on
+			if not actor.has_effect("nightlight") and (not actor.expedition or actor.flashlight_charge>0): actor.flashlight_on=not actor.flashlight_on
 
 @rpc("authority","call_remote","unreliable",1)
 func _snapshot_piece(generation: int, sequence: int, part: int, count: int, bytes: PackedByteArray) -> void:

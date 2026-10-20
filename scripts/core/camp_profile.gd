@@ -24,6 +24,7 @@ const BADGES := {
 ## One practical tip per creature, revealed in the journal after a sighting
 ## (docs/monster_revamp.md). Keys are species ids; NAMES are what players see.
 const TIPS := {
+	"nightlight_kid":"Keep your light on near it. Its touch jams your flashlight on and doubles passive drain.",
 	"lifeguard":"Walk in its sight; stop sprinting when its whistle rises. Flash interrupts it.",
 	"stalker": "He whistles the camp song. Wounded, he carries you to his hook; an air horn or a teammate's flash makes him drop you.",
 	"groundskeeper": "Rides a mower that runs you down on open ground but turns wide: sidestep late, or duck into trees or a cabin. When he walks off to rake for you, pull its spark plug (hold E).",
@@ -57,7 +58,7 @@ const TIPS := {
 	"echo": "It whistles the stalker's tune from the wrong place. Harmless; your light bursts it up close.",
 	"fortune_teller": "She turns a tarot card when she reaches you: three help, four hurt. Walk away to decline.",
 }
-const NAMES := {"lifeguard":"THE LIFEGUARD", "stalker": "THE STALKER", "groundskeeper": "THE GROUNDSKEEPER", "vampire": "THE VAMPIRE", "werewolf": "THE WEREWOLF", "bigfoot": "BIGFOOT",
+const NAMES := {"nightlight_kid":"THE NIGHT-LIGHT KID", "lifeguard":"THE LIFEGUARD", "stalker": "THE STALKER", "groundskeeper": "THE GROUNDSKEEPER", "vampire": "THE VAMPIRE", "werewolf": "THE WEREWOLF", "bigfoot": "BIGFOOT",
 	"witch": "THE WITCH", "lantern_moth": "THE LANTERN MOTH", "ration_moth": "THE PUFFBALL", "briar_revenant": "THE SCARECROW",
 	"switchback_hound": "BUSTER, THE STALKER'S HOUND", "relay_jackal": "TRASH JACKALS", "lens_eater": "THE PEEPER", "shutter_wraith": "THE PAPARAZZO",
 	"last_car_conductor": "THE CONDUCTOR", "stoneback_ram": "THE RAM", "candle_grazer": "THE SNUFFER", "bramble_seamstress": "THE SEAMSTRESS",

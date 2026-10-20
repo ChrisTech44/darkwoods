@@ -108,6 +108,7 @@ func wheel() -> void:
 	await shot("max_idle")
 func creature_checks() -> void:
 	if "lifeguard" in RoundPlan.ROAMER_SPECIES: await lifeguard_checks()
+	if "nightlight_kid" in RoundPlan.ROAMER_SPECIES: await nightlight_checks()
 
 func specimen(kind: String, at: Vector2) -> CampCryptid:
 	var enemy: CampCryptid=load("res://scenes/actors/cryptid.tscn").instantiate()
@@ -156,3 +157,39 @@ func lifeguard_checks() -> void:
 	check(guard.brain.snapshot()==snapshot,"lifeguard_tell_round_trips")
 	guard.queue_free()
 	actor.role="max"
+
+func nightlight_checks() -> void:
+	CreatureSamples.finish_cast(actor)
+	actor.effects.clear()
+	actor.flashlight_charge=90
+	actor.flashlight_on=false
+	var kid:=specimen("nightlight_kid",actor.position+Vector2(60,0))
+	await frames()
+	check(kid.brain.senses(actor)==1,"kid_senses_only_unlit_survivor")
+	var heat: float=level.night_clock.heat
+	level.night_clock.heat=0
+	kid.brain.contact(actor)
+	check(actor.has_effect("nightlight") and actor.flashlight_on,"kid_forces_light_on")
+	check(is_equal_approx(actor.passive_light_rate(),actor.light_drain*2),"nightlight_doubles_passive_drain")
+	check(level.night_clock.heat==3 and level.soundscape.played_counts.get("nightlight_scream",0)>0,"kid_noise_and_native_cue_both_route")
+	await shot("nightlight_kid_scream")
+	actor.flashlight_on=false
+	actor._physics_process(0.01)
+	check(actor.flashlight_on,"forced_light_resists_switching_off")
+	check(kid.brain.senses(actor)==0,"lit_survivor_is_safe_from_kid")
+	actor.flashlight_charge=0
+	actor.flashlight_on=false
+	actor._physics_process(0.01)
+	check(not actor.flashlight_on and actor.flashlight_charge==0,"empty_charge_never_lights_or_goes_negative")
+	actor.effects.clear()
+	actor.flashlight_charge=90
+	actor.role="christian"
+	actor.kit.sample="nightlight_kid"
+	actor.ability_cooldown=0
+	actor.flashlight_on=false
+	check(CreatureSamples.use(actor),"kid_sample_accepted")
+	CreatureSamples.advance(actor,1)
+	check(actor.has_effect("nightlight") and actor.flashlight_on,"kid_sample_affects_caster")
+	actor.effects.clear()
+	actor.role="max"
+	kid.queue_free()

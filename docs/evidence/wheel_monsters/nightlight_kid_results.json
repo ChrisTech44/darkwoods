@@ -1,0 +1,39 @@
+{
+  "gameplay": {
+    "checks": 42,
+    "event": "test_result",
+    "failures": 0,
+    "suite": "wheel_monsters"
+  },
+  "network": {
+    "passed": true,
+    "results": [
+      {
+        "passed": true,
+        "result": [
+          {
+            "checks": 15,
+            "event": "test_result",
+            "failures": 0,
+            "suite": "habit_peer_host"
+          }
+        ],
+        "errors": [],
+        "log": "artifacts/wheel_monsters/habit_host.log"
+      },
+      {
+        "passed": true,
+        "result": [
+          {
+            "checks": 6,
+            "event": "test_result",
+            "failures": 0,
+            "suite": "habit_peer_client"
+          }
+        ],
+        "errors": [],
+        "log": "artifacts/wheel_monsters/habit_client.log"
+      }
+    ]
+  }
+}

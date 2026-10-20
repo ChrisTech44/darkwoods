@@ -4,14 +4,14 @@ extends RefCounted
 
 ## Two region dwellers, six landmark guardians (the Rail Yard's jackals come
 ## as a pair), and all 22 roaming kinds: 31 creatures plus the headline Stalker.
-const ROAMERS := 23
+const ROAMERS := 24
 const CRYPTID_COUNT := 9 + ROAMERS
 ## No roaming creature starts this close to camp (the first stretch is for exploring).
 const SAFE_RADIUS := 1100.0
 ## Every roaming kind appears once. Seeded order and placement still vary.
 const ROAMER_SPECIES: Array[String] = ["werewolf", "bigfoot", "lantern_moth", "ration_moth", "briar_revenant", "switchback_hound", "lens_eater",
 	"last_car_conductor", "mimic", "owl", "bog_hands", "imps", "teddy",
-	"groundskeeper", "cuckoo", "banshee", "slug", "surveyor", "hitchhiker", "tollkeeper", "echo", "fortune_teller", "lifeguard"]
+	"groundskeeper", "cuckoo", "banshee", "slug", "surveyor", "hitchhiker", "tollkeeper", "echo", "fortune_teller", "lifeguard", "nightlight_kid"]
 ## Region guardians in zones 3..8: Mill, Orchard, Observatory, Rail Yard, Quarry, Chapel.
 const GUARDIANS: Array[String] = ["boiler_saint", "bramble_seamstress", "shutter_wraith", "relay_jackal", "stoneback_ram", "candle_grazer"]
 ## Monster-revamp items in the woods (count each) and at camp spots.

@@ -17,3 +17,5 @@ No Windows/Linux package, Internet endurance or production deployment is claimed
 Update server and clients together; this build uses rules23.
 
 lifeguard: [32 cumulative gameplay checks and real ENet state/cue results](lifeguard_results.json).
+
+nightlight_kid: [42 cumulative gameplay checks and real ENet state/cue results](nightlight_kid_results.json).

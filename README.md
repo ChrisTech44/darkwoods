@@ -526,7 +526,9 @@ when that route is inactive. Whichever escape finishes first ends the round.
 3. **Repair the van.** Return to its rear and press **E** to install carried
    components. You can make several trips; all required parts must be installed.
 4. **Hold E for two seconds** at the rear to start the repaired van. Letting go
-   or moving out of range resets the start hold.
+   or moving out of range resets the start hold. Online, the current operator
+   keeps the hold when teammates also press E; their attempts cannot reset it
+   or speed it up. If the operator stops, a replacement starts fresh.
 5. **Stay aboard.** Starting automatically seats the driver. In Quick Camp the
    van departs after **eight seconds**. On an expedition the engine roar is a
    finale: departure takes **20 seconds**, the engine revs every 5 seconds, and

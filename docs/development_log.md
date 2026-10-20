@@ -1,5 +1,27 @@
 # Development log
 
+## 2026-10-20 — keep the current online ignition/revive operator
+
+Found a source-level preemption defect: every authority tick selected the lowest
+peer ID holding E. A lower-ID helper joining an existing van-start or revive
+hold changed ownership and reset progress. Selection now retains the eligible
+current operator. Others joining/releasing neither reset work nor multiply its
+rate. Actual operator release, invalidation or disconnection allows a fresh
+operator whose hold starts from zero, preserving interruption rules. Radio and
+gate already retain their current operators; boat progress is shared occupancy.
+No packet/schema change or protocol bump was required.
+
+A staged authority regression covers joining/releasing helpers, single-rate work,
+operator release/range/disconnection, boarding and revive ownership. The real
+ENet test now starts a remote client’s ignition before the lower-ID host joins,
+then checks that the remote operator finishes and all clients observe monotonic
+progress. Staged authority **12/12**, full Woods two-player ENet regression
+**265/265**, no engine errors/warnings. Required import/startup, Markdown
+file links and whitespace checks pass. macOS arm64/Godot 4.7.2 only; microphone
+off, staged poses, network fixture forces all escapes. No human pacing,
+Internet/cross-machine, exports or Windows/Linux acceptance was repeated.
+[Executed evidence](evidence/shared_holds/README.md).
+
 ## 2026-10-20 — remove Lake Thing target circles
 
 Removed the small circle drawn at each projectile aim point at the user’s

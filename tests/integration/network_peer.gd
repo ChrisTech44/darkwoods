@@ -353,8 +353,16 @@ func _host() -> void:
 	for id: int in ids:
 		net.actors[id].position=level.van.interaction_point() if id==guest else level.van.position+Vector2(-22,2)
 	harness.advance.rpc("ignite",{"guest":guest})
+	if not await _until(func(): return level.van.start_progress>=.4,5): return
+	var held_progress: float=level.van.start_progress
+	level.player.position=level.van.interaction_point()+Vector2(-12,0)
+	Input.action_press("interact")
 	if not await _until(func(): return level.van.running,5): return
+	Input.action_release("interact")
 	_check(level.van.start_actor==injured and injured.status==CampPlayer.Status.BOARDED,"remote_mechanic_ignites_and_boards")
+	_check(level.van.start_progress>=held_progress,"second_holder_does_not_reset_van_progress")
+	if not await _reports(peers-1): return
+	for report: Dictionary in harness.reports.values(): _check(report.get("monotonic",false) and report.get("running",false),"client_observes_consistent_shared_ignition_progress")
 	# Leave one teammate down away from the van: departure must rescue them too.
 	level.player.position=Vector2(180,420)
 	level.player.invulnerability=0
@@ -668,6 +676,15 @@ func _client() -> void:
 				harness.report.rpc_id(1, handled, {"won":net.world.won, "escaped":net.world.player.status == CampPlayer.Status.ESCAPED, "route":net.world.escape_route})
 			"ignite":
 				if mine==harness.data["guest"]: Input.action_press("interact")
+				var last_progress:=0.0
+				var monotonic:=true
+				var until:=Time.get_ticks_msec()+8000
+				while not net.world.van.running and Time.get_ticks_msec()<until:
+					var progress: float=net.world.van.start_progress
+					if progress+.001<last_progress:monotonic=false
+					last_progress=progress
+					await process_frame
+				harness.report.rpc_id(1,handled,{"monotonic":monotonic,"running":net.world.van.running})
 			"board":
 				Input.action_release("interact")
 				net.action("interact")

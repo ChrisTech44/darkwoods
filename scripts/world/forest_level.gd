@@ -1363,6 +1363,7 @@ func drop_held(actor: CampPlayer) -> bool:
 
 func _advance_network_holds(net: Node, delta: float) -> void:
 	# A single deterministic actor owns each hold. Never sum work across survivors.
+	# Keep an eligible incumbent; lower-ID helpers joining must not restart work.
 	var starter: CampPlayer
 	var rescuer: CampPlayer
 	var target: CampPlayer
@@ -1373,10 +1374,10 @@ func _advance_network_holds(net: Node, delta: float) -> void:
 		if actor.status==CampPlayer.Status.DOWNED: advance_self_recovery(actor,net.holding(id),delta)
 		if actor.status!=CampPlayer.Status.ALIVE or not net.holding(id): continue
 		var downed := nearby_downed(actor)
-		if downed!=null and rescuer==null:
+		if downed!=null and (rescuer==null or (actor==revive_actor and downed==revive_target)):
 			rescuer=actor
 			target=downed
-		elif starter==null and van.in_range(actor) and clear_path(actor.position,van.interaction_point()): starter=actor
+		elif (starter==null or actor==van.start_actor) and van.in_range(actor) and clear_path(actor.position,van.interaction_point()): starter=actor
 	if rescuer!=null: advance_revive(rescuer,target,true,delta)
 	else:
 		revive_target=null

@@ -77,6 +77,9 @@ These are code-backed facts, not a substitute for human acceptance testing.
 - Five implemented escape routes: Van, Radio Rescue, Lakeshore Boat, Ranger
   Gate, Signal Fire. Normal Expedition: van plus one seeded secondary. Quick
   Camp: van only. `--all-escapes` is a diagnostic override, not the normal rules.
+- Online ignition/revive holds retain the eligible current operator when other
+  players join or release E. Work advances once per authority tick; a genuine
+  operator change resets the incomplete hold.
 - Boat finale: 25s earned while at least one living, unhidden, unheld, awake
   survivor occupies the 80px dock circle with clear access; empty circle pauses,
   retaining progress. Lake Thing fires aimed 18-damage water shots every 0.5s

@@ -120,7 +120,10 @@ limited sight, stamina, inventory and role advantage.
 
 The host validates movement, pickups, supply use, damage, revives, AI and the
 vehicle. A contested pickup awards once. One survivor owns a revive/ignition
-hold; changing actor resets progress. Everyone can install every component.
+hold. The current operator keeps it while their hold remains valid; another
+player joining or releasing E does not reset or accelerate it. If the operator
+releases E, moves away, becomes downed or disconnects, a new operator starts
+fresh. Everyone can install every component.
 The starter boards automatically; others press E beside the running van before
 its eight-second countdown ends. Downed teammates are also rescued when at least one passenger escapes; living
 survivors outside the van are left behind.

@@ -1,0 +1,135 @@
+{
+  "platform": "macOS arm64, Godot 4.7.2",
+  "shared_hold_authority": {
+    "checks": 12,
+    "failures": 0
+  },
+  "real_enet_woods_two_player": {
+    "checks": 265,
+    "failures": 0,
+    "records": [
+      {
+        "name": "woods_2_host_0",
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/integration/network_peer.gd",
+          "--",
+          "--all-escapes",
+          "--side",
+          "host",
+          "--mode",
+          "woods",
+          "--port",
+          "28043",
+          "--peers",
+          "2",
+          "--index",
+          "0"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "errors": [],
+        "result": [
+          {
+            "checks": 201,
+            "event": "test_result",
+            "failures": 0,
+            "largest_snapshot_payload": 1000,
+            "snapshot_bytes": 4752,
+            "suite": "network_host_woods_2"
+          }
+        ],
+        "log": "artifacts/network/woods_2_host_0.log"
+      },
+      {
+        "name": "woods_2_client_1",
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/integration/network_peer.gd",
+          "--",
+          "--all-escapes",
+          "--side",
+          "client",
+          "--mode",
+          "woods",
+          "--port",
+          "28043",
+          "--peers",
+          "2",
+          "--index",
+          "1"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "errors": [],
+        "result": [
+          {
+            "checks": 62,
+            "event": "test_result",
+            "failures": 0,
+            "largest_snapshot_payload": 0,
+            "snapshot_bytes": 4752,
+            "suite": "network_client_woods_2"
+          }
+        ],
+        "log": "artifacts/network/woods_2_client_1.log"
+      },
+      {
+        "name": "woods_2_late_9",
+        "command": [
+          "/opt/homebrew/bin/godot",
+          "--headless",
+          "--path",
+          "/Users/christianfranklin/games/darkwoods",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/integration/network_peer.gd",
+          "--",
+          "--all-escapes",
+          "--side",
+          "late",
+          "--mode",
+          "woods",
+          "--port",
+          "28043",
+          "--peers",
+          "2",
+          "--index",
+          "9"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "errors": [],
+        "result": [
+          {
+            "checks": 2,
+            "event": "test_result",
+            "failures": 0,
+            "largest_snapshot_payload": 0,
+            "snapshot_bytes": 0,
+            "suite": "network_late_woods_2"
+          }
+        ],
+        "log": "artifacts/network/woods_2_late_9.log"
+      }
+    ]
+  },
+  "limits": [
+    "Staged actor poses and disabled enemies for authority mechanics.",
+    "Real ENet regression uses its existing forced all-escape fixture.",
+    "No Internet/cross-machine/exports/Windows/Linux acceptance; microphone capture off."
+  ]
+}

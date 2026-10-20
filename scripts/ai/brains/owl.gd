@@ -85,7 +85,7 @@ func _fly_to(point: Vector2, speed: float, delta: float) -> void:
 	if CampKiller.camp_closed:
 		point = CampKiller.outside_camp(point)
 	var step := point - body.global_position
-	body.velocity = step.limit_length(speed)
+	body.velocity = step.limit_length(body.motion_speed(speed))
 	if step.length() > 1.0:
 		body.facing = step.normalized()
 	var next: Vector2 = body.global_position + body.velocity * delta

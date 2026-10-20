@@ -47,7 +47,7 @@ func _dash(delta: float) -> void:
 	if body.home.has_area() and not body.home.has_point(body.global_position + body.dash_direction * 10.0):
 		body.dash_remaining = 0.0
 		return
-	body.velocity = body.dash_direction * DASH_SPEED
+	body.velocity = body.dash_direction * body.motion_speed(DASH_SPEED)
 	body.facing = body.dash_direction
 	body.move_and_slide()
 	if body.get_slide_collision_count() > 0:

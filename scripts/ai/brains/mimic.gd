@@ -75,7 +75,7 @@ func physics(delta: float) -> bool:
 		return true
 	# Navigation can call it "arrived" a step short; close the last few px directly.
 	if body.steer(friend.global_position, 40.0, delta) and body.has_line_of_sight(friend.global_position):
-		body.velocity = body.global_position.direction_to(friend.global_position) * 40.0
+		body.velocity = body.global_position.direction_to(friend.global_position) * body.motion_speed(40.0)
 		body.move_and_slide()
 	return true
 

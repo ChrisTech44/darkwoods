@@ -59,6 +59,7 @@ func _physics_process(delta: float) -> void:
 	if not enabled:
 		velocity = Vector2.ZERO
 		return
+	haste_remaining=maxf(0,haste_remaining-delta)
 	if brain!=null: brain.tick_status(delta)
 	if tick_stun(delta):
 		dash_remaining = 0
@@ -152,6 +153,7 @@ func _draw() -> void:
 		draw_sheet()
 	if brain != null:
 		brain.draw_over()
+	if haste_remaining>0: draw_arc(Vector2.ZERO,12,0,TAU,12,Color("e4b75c"),1)
 	if casting:
 		draw_arc(Vector2(0, -20), 22, 0, TAU * (1 - cast_remaining / 0.8), 24, Color("c4aadf"), 2)
 	draw_stun(-66)

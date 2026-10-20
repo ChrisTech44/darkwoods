@@ -2,7 +2,7 @@ class_name WorldSync
 extends RefCounted
 ## Host snapshots contain plain data only. Clients render, never simulate outcomes.
 const PLAYER_FIELDS := ["notice","notice_time","velocity","status","stamina","exhausted","sprinting","flashlight_on","flashlight_charge","bleedout","invulnerability","hex_remaining","ward_remaining","selected_slot","facing","stride","health","last_hit","hurt_time","effects","effect_data","struggle","flash_time","flash_cooldown","self_recovery_used","help_cooldown","hidden_spot","breath","vault_time","motor_assisted","assisting_motor","ability_charges","ability_cooldown","ability_active","snared","flicker","kit","form_motion"]
-const ENEMY_FIELDS := ["enabled","velocity","facing","stride","state","stun_remaining","faded","frenzy","carrying","sample_state"]
+const ENEMY_FIELDS := ["haste_remaining","enabled","velocity","facing","stride","state","stun_remaining","faded","frenzy","carrying","sample_state"]
 const CRYPTID_FIELDS := ["power_tell","power_aim","dash_remaining","casting","cast_remaining","cast_aim","hunt_clock","brain_state"]
 
 static func capture(net: Node) -> Dictionary:

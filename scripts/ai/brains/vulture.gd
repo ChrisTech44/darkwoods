@@ -21,7 +21,7 @@ func physics(delta: float) -> bool:
 	if target==null: wander(32,delta);return true
 	var perch := target.position+Vector2(18,-8)
 	if body.position.distance_to(perch)>8:
-		body.position=body.position.move_toward(perch,70*delta)
+		body.position=body.position.move_toward(perch,body.motion_speed(70)*delta)
 		body.velocity=Vector2.ZERO
 		body.queue_redraw()
 		return true

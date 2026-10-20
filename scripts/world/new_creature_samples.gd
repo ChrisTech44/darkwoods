@@ -1,9 +1,15 @@
 class_name NewCreatureSamples
 extends RefCounted
-const SOURCES := ["lifeguard","nightlight_kid","vulture","nobody"]
+const SOURCES := ["lifeguard","nightlight_kid","vulture","nobody","huntmaster"]
 static func fire(actor: CampPlayer, kind: String) -> void:
 	var level: Node=SurvivorKits.world(actor)
 	match kind:
+		"huntmaster":
+			level.soundscape.broadcast("huntmaster_horn",actor.position)
+			for friend: CampPlayer in actor.get_tree().get_nodes_in_group("survivors"):
+				if friend.status==CampPlayer.Status.ALIVE and friend.position.distance_to(actor.position)<=300: friend.add_effect("rally",10)
+			for enemy: CampKiller in actor.get_tree().get_nodes_in_group("killers"):
+				if enemy.enabled and enemy.position.distance_to(actor.position)<=400: enemy.haste_remaining=maxf(enemy.haste_remaining,15)
 		"vulture":
 			var friend:=downed_friend(actor)
 			if friend!=null:

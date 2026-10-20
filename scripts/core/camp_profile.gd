@@ -24,6 +24,7 @@ const BADGES := {
 ## One practical tip per creature, revealed in the journal after a sighting
 ## (docs/monster_revamp.md). Keys are species ids; NAMES are what players see.
 const TIPS := {
+	"huntmaster":"Its horn hastens creatures. Flash during the raised-horn warning; leave the crowd if it sounds.",
 	"nobody":"Its breathing and prints betray it. Sweep your beam for a shimmer; flash reveals it briefly.",
 	"vulture":"Flash it away before reviving. Its wing-flap warns of a peck; solo recovery slows while it perches.",
 	"nightlight_kid":"Keep your light on near it. Its touch jams your flashlight on and doubles passive drain.",
@@ -60,7 +61,7 @@ const TIPS := {
 	"echo": "It whistles the stalker's tune from the wrong place. Harmless; your light bursts it up close.",
 	"fortune_teller": "She turns a tarot card when she reaches you: three help, four hurt. Walk away to decline.",
 }
-const NAMES := {"nobody":"NOBODY", "vulture":"THE VULTURE", "nightlight_kid":"THE NIGHT-LIGHT KID", "lifeguard":"THE LIFEGUARD", "stalker": "THE STALKER", "groundskeeper": "THE GROUNDSKEEPER", "vampire": "THE VAMPIRE", "werewolf": "THE WEREWOLF", "bigfoot": "BIGFOOT",
+const NAMES := {"huntmaster":"THE HUNTMASTER", "nobody":"NOBODY", "vulture":"THE VULTURE", "nightlight_kid":"THE NIGHT-LIGHT KID", "lifeguard":"THE LIFEGUARD", "stalker": "THE STALKER", "groundskeeper": "THE GROUNDSKEEPER", "vampire": "THE VAMPIRE", "werewolf": "THE WEREWOLF", "bigfoot": "BIGFOOT",
 	"witch": "THE WITCH", "lantern_moth": "THE LANTERN MOTH", "ration_moth": "THE PUFFBALL", "briar_revenant": "THE SCARECROW",
 	"switchback_hound": "BUSTER, THE STALKER'S HOUND", "relay_jackal": "TRASH JACKALS", "lens_eater": "THE PEEPER", "shutter_wraith": "THE PAPARAZZO",
 	"last_car_conductor": "THE CONDUCTOR", "stoneback_ram": "THE RAM", "candle_grazer": "THE SNUFFER", "bramble_seamstress": "THE SEAMSTRESS",

@@ -171,7 +171,7 @@ func _drive(goal: Vector2, top: float, delta: float) -> void:
 	if CampKiller.camp_closed and not CampKiller.in_camp(body.global_position) and CampKiller.in_camp(body.global_position + heading * 16.0):
 		speed = 0.0
 		heading = -heading
-	body.velocity = heading * speed
+	body.velocity = heading * body.motion_speed(speed)
 	body.facing = heading
 	var before := body.global_position
 	body.move_and_slide()

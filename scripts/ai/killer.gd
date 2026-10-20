@@ -1,6 +1,7 @@
 class_name CampKiller
 extends CharacterBody2D
 var sample_state: Dictionary = {}
+var haste_remaining:=0.0
 ## Authority-only senses and FSM. Destinations come from patrol or sensed memory.
 
 signal state_changed(next: State)
@@ -90,6 +91,7 @@ func _physics_process(delta: float) -> void:
 	if not enabled:
 		velocity = Vector2.ZERO
 		return
+	if not self is CampCryptid: haste_remaining=maxf(0,haste_remaining-delta)
 	frenzy = maxf(0.0, frenzy - delta)
 	if tick_stun(delta):
 		return
@@ -178,6 +180,7 @@ func _physics_process(delta: float) -> void:
 			velocity *= 1.25
 		if retreat_remaining > 0:
 			velocity = direction * maxf(config.killer_patrol_speed, 82)
+	velocity*=1.3 if haste_remaining>0 else 1.0
 	if traits != null:
 		velocity = velocity.limit_length(StalkerTraits.MAX_SPEED)
 	if camp_closed and velocity != Vector2.ZERO and not in_camp(global_position) and in_camp(global_position + velocity.normalized() * 12.0):
@@ -236,6 +239,7 @@ func strike(actor: CampPlayer) -> void:
 
 ## Brains: walk toward `point` on the navmesh at `speed`. True once arrived.
 func steer(point: Vector2, speed: float, delta: float) -> bool:
+	speed=motion_speed(speed)
 	var borrowed: Dictionary = sample_state.get("timers",{})
 	if borrowed.has("slimed") or borrowed.has("drowsy") or borrowed.has("piggyback"): speed *= 0.55
 	if borrowed.has("hypnotized"): point = sample_state.get("anchor",point)
@@ -465,3 +469,7 @@ func _draw() -> void:
 		tint = Color(1.0, 0.55 + 0.25 * sin(Time.get_ticks_msec() * 0.02), 0.5)
 	draw_texture_rect_region(sheet, Rect2(-20, -44, 40, 48), Rect2(frame * 40, row * 48, 40, 48), tint)
 	# No "!"/"?" markers: whether it is hunting you is told by your heartbeat.
+
+func motion_speed(speed: float) -> float:
+	var result:=speed*(1.3 if haste_remaining>0 else 1.0)
+	return minf(result,StalkerTraits.MAX_SPEED) if traits!=null else result

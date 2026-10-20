@@ -112,6 +112,7 @@ func creature_checks() -> void:
 	if "nightlight_kid" in RoundPlan.ROAMER_SPECIES: await nightlight_checks()
 	if "vulture" in RoundPlan.ROAMER_SPECIES: await vulture_checks()
 	if "nobody" in RoundPlan.ROAMER_SPECIES: await nobody_checks()
+	if "huntmaster" in RoundPlan.ROAMER_SPECIES: await huntmaster_checks()
 
 func specimen(kind: String, at: Vector2) -> CampCryptid:
 	var enemy: CampCryptid=load("res://scenes/actors/cryptid.tscn").instantiate()
@@ -295,3 +296,37 @@ func nobody_checks() -> void:
 	check(actor.kit.form.is_empty(),"invisibility_expires_without_resource_reset")
 	ghost.queue_free()
 	actor.role="max"
+
+func huntmaster_checks() -> void:
+	CreatureSamples.finish_cast(actor)
+	actor.kit.form=""
+	actor.effects.clear()
+	actor.health=100
+	actor.hurt_time=0
+	var horn:=specimen("huntmaster",actor.position+Vector2(70,0))
+	var friend:=specimen("werewolf",actor.position+Vector2(100,0))
+	await frames()
+	horn.brain.physics(0.01)
+	check(horn.brain.tell==2,"huntmaster_has_two_second_windup")
+	await shot("huntmaster_horn")
+	level.night_clock.heat=0
+	horn.brain.physics(2.1)
+	check(friend.haste_remaining==15 and is_equal_approx(friend.motion_speed(100),130),"horn_hastens_other_creatures_for_fifteen_seconds")
+	check(level.night_clock.heat==0,"support_horn_does_not_reveal_survivor_to_ai")
+	level.killer.haste_remaining=15
+	check(level.killer.motion_speed(100)<=90,"haste_preserves_headline_final_speed_cap")
+	horn.brain.cooldown=0
+	horn.brain.physics(0.1)
+	horn.stun(1)
+	check(horn.brain.tell==0,"flash_interrupts_support_horn")
+	actor.role="christian"
+	actor.kit.sample="huntmaster"
+	actor.ability_cooldown=0
+	check(CreatureSamples.use(actor),"huntmaster_sample_accepted")
+	CreatureSamples.advance(actor,1)
+	check(actor.has_effect("rally") and friend.haste_remaining==15,"copied_horn_buffs_both_friends_and_creatures")
+	check(LocalPrediction.valid(LocalPrediction.capture(actor)),"rally_has_valid_owner_movement_projection")
+	actor.effects.clear()
+	actor.role="max"
+	horn.queue_free()
+	friend.queue_free()

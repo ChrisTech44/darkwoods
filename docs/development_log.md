@@ -1,5 +1,16 @@
 # Development log
 
+## 2026-10-20 — remove Lake Thing target circles
+
+Removed the small circle drawn at each projectile aim point at the user’s
+request. The source flash, faint aiming line, moving shots and dock progress
+circle remain; firing, damage and progress rules are unchanged. Native capture
+regenerated and inspected with the same staged seed-13 Boat/Van fixture, frozen
+enemies/director and normal Witching Hour lighting, microphone off. Native
+mechanics/camera checks: **32/32**; required import/startup and whitespace checks
+pass. No network or human balance acceptance was repeated for this drawing-only
+change. [Updated capture](evidence/boat_barrage/barrage_normal.png).
+
 ## 2026-10-20 — dodge projectiles while launching the boat
 
 Replaced the Lake Thing's three timed ripples with a half-second projectile

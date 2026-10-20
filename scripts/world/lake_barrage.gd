@@ -114,7 +114,6 @@ func _draw() -> void:
 	for shot: Dictionary in shots:
 		if shot.tell>0:
 			draw_line(shot.origin,shot.target,Color(0.6,0.85,1,0.22),1)
-			draw_arc(shot.target,9,0,TAU,20,Color("b5ecfa"),1)
 			draw_circle(shot.origin,5+sin(pulse*20),Color("92cdda"))
 		else:
 			var at: Vector2=shot.position+shot.direction*SPEED*visual_age

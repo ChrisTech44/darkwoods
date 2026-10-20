@@ -59,6 +59,7 @@ func _physics_process(delta: float) -> void:
 	if not enabled:
 		velocity = Vector2.ZERO
 		return
+	if brain!=null: brain.tick_status(delta)
 	if tick_stun(delta):
 		dash_remaining = 0
 		power_tell = 0
@@ -102,6 +103,7 @@ func on_released(actor: CampPlayer) -> void:
 
 
 func can_sense(actor: CampPlayer) -> bool:
+	if actor.kit.get("form","")=="nobody": return false
 	if CreatureSamples.deceived(self,actor): return false
 	if sample_state.get("timers",{}).has("whiteout") or sample_state.get("timers",{}).has("lost"): return false
 	if home.has_area() and not home.has_point(actor.global_position):

@@ -116,7 +116,7 @@ render loop and Dummy audio; server paths skip voice codec/capture/playback.
 Source launch first imports assets/registers script classes and refuses to start
 after import errors, including when Godot exits zero. Exported packs skip import.
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
-cleanup are implemented. The game protocol is `lnac-net-26`, compatible with
+cleanup are implemented. The game protocol is `lnac-net-27`, compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
 The October 19 [server review](docs/server_review.md) fixes mixed-role assignment,
 batched-disconnect packet sends and stale package metadata. Actual four-client
@@ -127,7 +127,7 @@ bounded prediction/reconciliation and buffered remote motion; see evidence below
 
 ## Movement transport
 
-Rules are `lnac-net-26`: authority-only 30Hz player packets include applied-input
+Rules are `lnac-net-27`: authority-only 30Hz player packets include applied-input
 acknowledgements, bounded owner movement state and server-detected discontinuity
 counters. The owner predicts shared collision/movement immediately, with no AI
 hearing, blood or gameplay outcomes; authoritative fields are restored after each
@@ -212,7 +212,7 @@ not player inactivity), loading (90s) and reservation (5m) are separate clocks.
 Detached actors have tethers, holds, casts, riders, targets and vaults cleaned up.
 An empty dedicated round pauses until return/expiry; intentional Leave relinquishes
 recovery. Tokens are memory-only; no restart persistence or host migration.
-Protocol is lnac-net-26. [Investigation, Max UI/economy proposals and new monster
+Protocol is lnac-net-27. [Investigation, Max UI/economy proposals and new monster
 concepts](docs/playtest_followup.md) distinguish implemented fixes from design.
 The [new monster plan](docs/new_monster_plan.md) proposes six unimplemented
 creatures (Lifeguard, Night-Light Kid, Vulture, Huntmaster, Magician, Nobody)

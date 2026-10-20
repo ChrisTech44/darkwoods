@@ -64,6 +64,9 @@ func host_checks() -> void:
 		if kind=="lifeguard":
 			net.world.player.sprinting=true
 			enemy.brain.physics(0.01)
+		elif kind=="nobody": enemy.brain.physics(0.5)
+		elif enemy.brain.get_property_list().any(func(p): return p.name=="tell"): enemy.brain.set("tell",1.25)
+		elif kind=="nightlight_kid": enemy.brain.near_dark=true;enemy.brain.scream=0.5
 		var state: Dictionary=enemy.brain.snapshot()
 		bridge.stage.rpc({"stage":"state_"+kind,"index":enemies.find(enemy),"kind":kind,"state":state})
 		if not await until(func(): return bridge.reports.size()==1): return

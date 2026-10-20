@@ -111,6 +111,7 @@ func creature_checks() -> void:
 	if "lifeguard" in RoundPlan.ROAMER_SPECIES: await lifeguard_checks()
 	if "nightlight_kid" in RoundPlan.ROAMER_SPECIES: await nightlight_checks()
 	if "vulture" in RoundPlan.ROAMER_SPECIES: await vulture_checks()
+	if "nobody" in RoundPlan.ROAMER_SPECIES: await nobody_checks()
 
 func specimen(kind: String, at: Vector2) -> CampCryptid:
 	var enemy: CampCryptid=load("res://scenes/actors/cryptid.tscn").instantiate()
@@ -248,4 +249,49 @@ func vulture_checks() -> void:
 	actor.health=100
 	friend.queue_free()
 	bird.queue_free()
+	actor.role="max"
+
+func nobody_checks() -> void:
+	level.self_recovery_progress=0
+	level.revive_progress=0
+	level.revive_target=null
+	level.revive_actor=null
+	actor.hurt_time=0
+	actor.notice_time=0
+	level.message_time=0
+	CreatureSamples.finish_cast(actor)
+	actor.effects.clear()
+	actor.health=100
+	actor.invulnerability=0
+	actor.ward_remaining=0
+	actor.flashlight_charge=90
+	actor.flashlight_on=false
+	var ghost:=specimen("nobody",actor.position+Vector2(60,0))
+	await frames()
+	for i in range(12):
+		ghost.position+=Vector2(4,0)
+		ghost.brain.physics(0.6)
+	check(ghost.brain.prints.size()==8 and not ghost.brain.shimmer,"invisible_creature_has_bounded_print_trail")
+	await shot("nobody_prints")
+	actor.flashlight_on=true
+	actor.facing=actor.position.direction_to(ghost.position)
+	ghost.brain.physics(0.01)
+	check(ghost.brain.shimmer,"beam_reveals_nobody_shimmer")
+	await shot("nobody_shimmer")
+	ghost.stun(1)
+	check(ghost.brain.revealed==3,"flash_reveals_nobody_for_three_seconds")
+	ghost.brain.tick_status(1)
+	check(ghost.brain.revealed==2,"reveal_and_prints_decay_during_stun")
+	ghost.brain.contact(actor)
+	check(actor.health==65 and ghost.brain.rest==20 and ghost.position.distance_to(actor.position)>400,"nobody_hits_then_relocates_and_rests")
+	actor.role="christian"
+	actor.kit.sample="nobody"
+	actor.ability_cooldown=0
+	check(CreatureSamples.use(actor) and actor.kit.form=="nobody","nobody_sample_becomes_timed_invisible_form")
+	check(not ghost.can_sense(actor) and not level.killer.can_sense(actor),"copied_invisibility_blocks_creature_and_headline_sight")
+	level.soundscape._follow_loops()
+	check(level.soundscape.follow_loops.has("sample_breath:%d" % actor.get_instance_id()),"invisible_caster_has_audible_breathing_drawback")
+	CreatureSamples.advance(actor,11)
+	check(actor.kit.form.is_empty(),"invisibility_expires_without_resource_reset")
+	ghost.queue_free()
 	actor.role="max"

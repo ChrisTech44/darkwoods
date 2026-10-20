@@ -1,8 +1,8 @@
 class_name CreatureSamples
 extends RefCounted
 ## Borrowed signatures have explicit adapters, never generic player-state casts.
-const SOURCES := ["witch","werewolf","shutter_wraith","ration_moth","bramble_seamstress","vampire","bigfoot","briar_revenant","lantern_moth","candle_grazer","switchback_hound","lens_eater","last_car_conductor","mimic","owl","bog_hands","imps","teddy","groundskeeper","cuckoo","banshee","slug","surveyor","hitchhiker","tollkeeper","echo","fortune_teller","boiler_saint","relay_jackal","stoneback_ram", "lifeguard", "nightlight_kid", "vulture"]
-const FORMS := ["werewolf","briar_revenant","groundskeeper","mimic"]
+const SOURCES := ["witch","werewolf","shutter_wraith","ration_moth","bramble_seamstress","vampire","bigfoot","briar_revenant","lantern_moth","candle_grazer","switchback_hound","lens_eater","last_car_conductor","mimic","owl","bog_hands","imps","teddy","groundskeeper","cuckoo","banshee","slug","surveyor","hitchhiker","tollkeeper","echo","fortune_teller","boiler_saint","relay_jackal","stoneback_ram", "lifeguard", "nightlight_kid", "vulture", "nobody"]
+const FORMS := ["werewolf","briar_revenant","groundskeeper","mimic","nobody"]
 const NAMES := {"shutter_wraith":"PAPARAZZO", "ration_moth":"PUFFBALL", "bramble_seamstress":"SEAMSTRESS", "briar_revenant":"SCARECROW", "candle_grazer":"SNUFFER", "switchback_hound":"BUSTER", "lens_eater":"PEEPER", "last_car_conductor":"CONDUCTOR", "relay_jackal":"JACKAL", "stoneback_ram":"RAM", "boiler_saint":"LULLABY SAINT", "teddy":"BEAR HUG"}
 static var form_sheets: Dictionary = {}
 static var history: Dictionary = {}
@@ -81,6 +81,11 @@ static func use(actor: CampPlayer) -> bool:
 	actor.ability_cooldown = 0.35
 	level.announce("FIELD TEST: " + name_of(kind) + " — friends can be affected!",actor)
 	if kind in FORMS:
+		if kind=="nobody":
+			for enemy: CampKiller in actor.get_tree().get_nodes_in_group("killers"):
+				if enemy.visible_target==actor: enemy.visible_target=null
+				if enemy.traits!=null and enemy.traits.favourite==actor: enemy.traits.favourite=null
+				if enemy is CampCryptid and enemy.brain!=null: enemy.brain.survivor_left(actor)
 		actor.kit["form"] = kind
 		actor.kit["form_time"] = 10.0
 		actor.kit["ram"] = false
@@ -656,6 +661,14 @@ static func visuals(level: Node) -> Array:
 	return rows
 
 static func draw_world(canvas: Node2D, level: Node) -> void:
+	# Prints stay readable with muted/deafened audio and obey actual sight.
+	for enemy: CampCryptid in canvas.get_tree().get_nodes_in_group("cryptids"):
+		if enemy.species!="nobody" or enemy.brain==null: continue
+		for i in range(enemy.brain.prints.size()):
+			var mark: Array=enemy.brain.prints[i]
+			var at: Vector2=mark[0]+Vector2(-3 if i%2==0 else 3,0)
+			if level.sight!=null and not level.sight.can_see(at): continue
+			canvas.draw_line(at,at+Vector2(0,-4),Color(0.65,0.78,0.8,mark[1]/4.0),2)
 	for actor: CampPlayer in canvas.get_tree().get_nodes_in_group("survivors"):
 		if not SurvivorKits.enabled(actor): continue
 		if actor.role=="max": FortuneWheel.draw(canvas,actor)

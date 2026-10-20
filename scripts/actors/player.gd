@@ -446,6 +446,7 @@ func set_status(next: Status) -> void:
 
 
 func _draw() -> void:
+	if kit.get("form","")=="nobody": return
 	if status in [Status.ESCAPED, Status.BOARDED]:
 		return
 	if hidden_spot >= 0:

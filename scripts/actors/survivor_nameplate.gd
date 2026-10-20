@@ -9,6 +9,7 @@ func _ready() -> void:
 	material=ink
 func _process(_delta: float) -> void: queue_redraw()
 func _draw() -> void:
+	if is_instance_valid(actor) and actor.kit.get("form","")=="nobody": return
 	if actor==null or actor.hidden_spot>=0 or actor.status in [CampPlayer.Status.ESCAPED,CampPlayer.Status.BOARDED]: return
 	if actor.peer_name.is_empty() and actor.kit.get("form","")!="mimic": return
 	var world: Node=SurvivorKits.world(actor)

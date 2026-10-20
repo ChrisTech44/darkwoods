@@ -92,7 +92,7 @@ func physics(delta: float) -> bool:
 	_check_memory()
 	if body.state != CampKiller.State.PATROL or world.night_clock.phase < 1:
 		return false
-	if not is_instance_valid(favourite) or favourite.status != CampPlayer.Status.ALIVE or favourite.hidden_spot >= 0 or not CampMap.is_woods(favourite.global_position):
+	if not is_instance_valid(favourite) or favourite.status != CampPlayer.Status.ALIVE or favourite.kit.get("form","")=="nobody" or favourite.hidden_spot >= 0 or not CampMap.is_woods(favourite.global_position):
 		_pick_favourite()
 	if not is_instance_valid(favourite) or not CampMap.is_woods(favourite.global_position) or (CampKiller.camp_closed and CampKiller.in_camp(favourite.global_position)):
 		return false

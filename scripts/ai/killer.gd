@@ -370,8 +370,8 @@ func sense_visible_target() -> CampPlayer:
 	return nearest
 
 
-func can_sense(_actor: CampPlayer) -> bool:
-	return true
+func can_sense(actor: CampPlayer) -> bool:
+	return actor.kit.get("form","")!="nobody"
 
 
 func is_class_cryptid() -> bool:

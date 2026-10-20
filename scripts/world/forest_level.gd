@@ -322,6 +322,7 @@ func _process(_delta: float) -> void:
 				continue
 			if cryptid.species == "bog_hands" and cryptid.brain != null and cryptid.brain.sinking <= 0.0:
 				continue
+			if cryptid.species=="nobody" and not cryptid.brain.shimmer and cryptid.brain.revealed<=0: continue
 			note_sighting(enemy.species)
 	if player.hex_remaining > 0:
 		hud.threat_label.text = "HEXED %.1fs / SLOWED!" % player.hex_remaining

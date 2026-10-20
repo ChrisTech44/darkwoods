@@ -28,7 +28,7 @@ func level() -> Node:
 func survivors() -> Array[CampPlayer]:
 	var result: Array[CampPlayer] = []
 	for actor: CampPlayer in body.get_tree().get_nodes_in_group("survivors"):
-		if actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0:
+		if actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and actor.kit.get("form","")!="nobody":
 			result.append(actor)
 	return result
 
@@ -171,3 +171,7 @@ func survivor_left(actor: CampPlayer) -> void:
 	for property: Dictionary in get_property_list():
 		if property.type == TYPE_OBJECT and property.usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
 			if get(property.name) == actor: set(property.name, null)
+
+
+func tick_status(_delta: float) -> void:
+	pass

@@ -21,3 +21,5 @@ lifeguard: [32 cumulative gameplay checks and real ENet state/cue results](lifeg
 nightlight_kid: [42 cumulative gameplay checks and real ENet state/cue results](nightlight_kid_results.json).
 
 vulture: [53 cumulative gameplay checks and real ENet state/cue results](vulture_results.json).
+
+nobody: [64 cumulative gameplay checks and real ENet state/cue results](nobody_results.json).

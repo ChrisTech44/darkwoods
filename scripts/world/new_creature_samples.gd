@@ -1,6 +1,6 @@
 class_name NewCreatureSamples
 extends RefCounted
-const SOURCES := ["lifeguard","nightlight_kid","vulture"]
+const SOURCES := ["lifeguard","nightlight_kid","vulture","nobody"]
 static func fire(actor: CampPlayer, kind: String) -> void:
 	var level: Node=SurvivorKits.world(actor)
 	match kind:

@@ -14,7 +14,7 @@ const CHORUS_DISTANCE := 480.0
 const KILLER_CUES := {"stalker": ["screech_3", 0.7]}
 ## Heavier creatures step lower and louder.
 const STEP_PITCH := {"bigfoot": 0.55, "stoneback_ram": 0.6, "boiler_saint": 0.62, "werewolf": 0.7, "switchback_hound": 0.9, "relay_jackal": 1.0, "lantern_moth": 1.3, "ration_moth": 1.35, "teddy": 1.8, "imps": 1.6, "mimic": 1.0}
-const CREATURE_CUES := {"vulture":"vulture_squawk", "nightlight_kid":"nightlight_scream", "lifeguard":"lifeguard_whistle", "werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl",
+const CREATURE_CUES := {"nobody":"nobody_exhale", "vulture":"vulture_squawk", "nightlight_kid":"nightlight_scream", "lifeguard":"lifeguard_whistle", "werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl",
 	"switchback_hound": "dog_bark", "relay_jackal": "monster_6", "shutter_wraith": "monster_9", "lens_eater": "screech_1",
 	"bramble_seamstress": "monster_7", "candle_grazer": "screech_2", "boiler_saint": "screech_3", "last_car_conductor": "train",
 	"stoneback_ram": "monster_8", "ration_moth": "screech_5",
@@ -503,6 +503,8 @@ func _follow_loops() -> void:
 	for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
 		if enemy.species == "boiler_saint" and enemy.enabled and enemy.global_position.distance_to(listener) < LULLABY_RANGE + 60.0:
 			wanted[enemy.get_instance_id()] = ["lullaby", enemy]
+		elif enemy.species=="nobody" and enemy.enabled and enemy.position.distance_to(listener)<360:
+			wanted[enemy.get_instance_id()]=["nobody_breathing",enemy]
 		elif enemy.species=="nightlight_kid" and enemy.enabled and enemy.brain.near_dark and enemy.position.distance_to(listener)<320:
 			wanted[enemy.get_instance_id()]=["nightlight_whimper",enemy]
 		# The Groundskeeper's mower engine: always audible from well off-screen.
@@ -514,6 +516,8 @@ func _follow_loops() -> void:
 		if actor.status != CampPlayer.Status.ALIVE: continue
 		if actor.kit.get("cast",{}).get("kind","")=="boiler_saint" and actor.kit.get("cast",{}).get("fired",false):
 			wanted["sample_song:%d" % actor.get_instance_id()] = ["lullaby",actor]
+		if actor.kit.get("form","")=="nobody":
+			wanted["sample_breath:%d" % actor.get_instance_id()]=["nobody_breathing",actor]
 		if actor.kit.get("form","")=="groundskeeper":
 			wanted["sample_mower:%d" % actor.get_instance_id()] = ["boat_engine",actor]
 	for id in follow_loops.keys():
@@ -542,6 +546,7 @@ func _follow_loops() -> void:
 			follow_loops[id] = node
 			if mixer.output_enabled and node.stream != null:
 				node.play()
+		if cue=="nobody_breathing": follow_loops[id].volume_db=float(mixer.cues[cue]["gain_db"])-(6.0 if level.night_clock.phase>=3 else 0.0)
 		follow_loops[id].global_position = source.global_position
 
 

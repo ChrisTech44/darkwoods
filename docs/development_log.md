@@ -1,5 +1,30 @@
 # Development log
 
+## 2026-10-20 — Christian copies of the seven new creatures: local MP4s
+
+Added nine 14-second H.264 MP4s with stereo AAC native game audio to the existing
+ignored `artifacts/ability_gallery/videos/`: copied Lifeguard, Night-Light Kid,
+Vulture, Nobody, Huntmaster, Magician and Shade, plus selected Magician creature-
+swap and Shade self-hit examples. Gallery now has 64 valid clips and all 37 core
+Christian signatures. No previous videos were removed or recreated; obsolete Max
+money clips remain absent. Capture/build scripts, AVI, MP4s, metadata and extracted
+review frames stay Git-ignored. No gameplay source edits or SpriteCook spend.
+
+Supplied samples/positions call the real ability path; normal seeded routes,
+forced Deep Night and controlled/frozen background AI. Bright inspection ambient
+is labelled except normal-dark Nobody/Shade. Magician RNG examples are selected,
+not sampled odds. Microphone/voice capture remained off. Verified source outcome
+observations: friendly exhaustion/light jam, creature pause/guard stun, slower
+revive, invisibility/sensing rejection/expiry, both-team rally/expiry, both swap
+destinations, Shade creature stun and 50-health self-hit. Inspected extracted
+before/after/expiry frames for every clip. All nine fully decode with ffmpeg;
+ffprobe verifies 1152×648, 30 fps, 14s and stereo AAC with nonzero audio. All 64
+gallery video/poster paths resolve; 37 core-signature filters and the nine new
+Git-ignored video paths verify. Required import/startup and whitespace checks
+pass. macOS Godot 4.7.2 capture only; no human listening-quality, organic encounter
+or multiplayer acceptance claim. Local details: `christian_new_validation.json`.
+
+
 ## 2026-10-20 — local wheel and seven-monster MP4 gallery
 
 Recorded eight 10-second demonstrations in the existing Git-ignored

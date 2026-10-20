@@ -1,5 +1,34 @@
 # Development log
 
+## 2026-10-20 — local wheel and seven-monster MP4 gallery
+
+Recorded eight 10-second demonstrations in the existing Git-ignored
+`artifacts/ability_gallery/videos/`: one native Max wheel spin and Lifeguard,
+Night-Light Kid, Vulture, Nobody, Huntmaster, Magician and Shade. Removed the five
+obsolete Max money/purchase/win/bust/spill MP4s and their old gallery thumbnails;
+refreshed the local manifest/index to 55 valid video/poster entries. Videos,
+recording harnesses, raw takes, metadata and review frames remain untracked.
+No gameplay source changes, additional SpriteCook spend or microphone capture.
+
+Staged supplied positions/manual real brain steps, frozen background AI/director,
+normal seeded routes and forced Deep Night. Bright inspection ambient is labelled
+for six clips; Nobody and Shade retain normal darkness. The supporting Bigfoot's
+poses are controlled after the native horn haste. Native player status timers
+advance so the Magician's whiteout ends normally. This is a demonstration fixture,
+not an organic match or multiplayer acceptance pass.
+
+Verified eight H.264 1152×648 / 30 fps MP4s, each 10 seconds with stereo AAC and
+nonzero native game audio, full ffmpeg decoding, exact frame-marker boundaries,
+and trigger observations (including pecks, swap and Shade's 50-health strike).
+Inspected extracted frames/contact sheets, including the Magician ring and both
+post-swap bodies. Godot's force-draw movie summary reports zero internal frames;
+actual movie frames and all final durations were independently checked by ffmpeg
+and ffprobe. Required headless import/startup and whitespace checks pass. Checked
+all 55 gallery video/poster paths, confirmed all eight new videos are Git-ignored,
+and verified all five obsolete Max video paths are absent. macOS/Godot 4.7.2 only;
+no human listening-quality or other-platform acceptance is claimed.
+
+
 ## 2026-10-20 — completed wheel/creature regression and maintained specification
 
 All seven planned/agreed additions now have host-owned brains, replicated tells,

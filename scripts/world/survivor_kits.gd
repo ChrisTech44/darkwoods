@@ -7,7 +7,7 @@ const ALONE_ENTER := 190.0
 const ALONE_EXIT := 150.0
 const ALONE_DELAY := 4.0
 const MARK_LIFE := 75.0
-const RETURN_CHANNEL := 2.0
+const RETURN_CHANNEL := 7.0
 const RETURN_COOLDOWN := 40.0
 const CASH_PRICE := 4
 const CASH_CAP := 100
@@ -30,6 +30,13 @@ static func setup(actor: CampPlayer) -> void:
 
 static func able(actor: CampPlayer) -> bool:
 	return actor.status == CampPlayer.Status.ALIVE and actor.hidden_spot < 0 and not actor.has_effect("held") and not actor.has_effect("asleep") and not actor.has_effect("tripped") and not actor.has_effect("frog")
+
+## Same enabled-enemy radius as heartbeat proximity, independent of audio/LOS.
+static func return_threat_near(actor: CampPlayer) -> bool:
+	for enemy: CampKiller in actor.get_tree().get_nodes_in_group("killers"):
+		if enemy.enabled and actor.global_position.distance_to(enemy.global_position) <= CampSoundscape.NEAR_RANGE:
+			return true
+	return false
 
 static func use(actor: CampPlayer) -> bool:
 	var level: Node = world(actor)
@@ -57,6 +64,9 @@ static func use(actor: CampPlayer) -> bool:
 				level.announce("Return needs isolation and freedom to move. No breakout from a grab.", actor)
 				return false
 			if actor.kit["channel"] > 0.0: return false
+			if return_threat_near(actor):
+				level.announce("Return blocked: a monster is within heartbeat range.", actor)
+				return false
 			actor.kit["channel"] = RETURN_CHANNEL
 			return true
 	return false
@@ -100,20 +110,35 @@ static func advance(actor: CampPlayer, delta: float) -> void:
 		if actor.kit["channel"] > 0.0:
 			if not able(actor) or not actor.kit["isolated"] or actor.kit["marker_life"] <= 0.0 or actor.has_effect("tethered"):
 				cancel_return(actor)
+			elif return_threat_near(actor):
+				cancel_return(actor)
+				world(actor).announce("Return interrupted: monster nearby. Restart when clear.", actor)
 			else:
 				actor.kit["channel"] = maxf(0.0,actor.kit["channel"]-delta)
 				if actor.kit["channel"] <= 0.0:
-					if safe_point(actor,actor.kit["marker"]):
-						actor.position = actor.kit["marker"]
+					var misfire := randi_range(0,2) == 0
+					var destination: Vector2 = random_return_point(actor) if misfire else actor.kit["marker"]
+					if safe_point(actor,destination,1|CampPlayer.BARRIER_LAYER|CampPlayer.WATER_LAYER):
+						actor.position = destination
+						actor.velocity = Vector2.ZERO
 						actor.kit["marker_life"] = 0.0
 						actor.ability_cooldown = RETURN_COOLDOWN
-						world(actor).announce("Your own way back. Your injuries came too.",actor)
+						world(actor).announce("Wrong way back! Your marker is gone." if misfire else "Your own way back. Your injuries came too.",actor)
 					else:
 						actor.ability_cooldown = 2.0
 						world(actor).announce("Return blocked. Marker remains until expiry.",actor)
 	if actor.role == "christian":
 		CreatureSamples.advance(actor,delta)
 		NewCreatureSamples.advance(actor,delta)
+
+## Uniform rejection sampling across the whole map, never walls/water/barriers.
+## The bounded failure path preserves the marker rather than stranding the actor.
+static func random_return_point(actor: CampPlayer) -> Vector2:
+	var bounds := CampMap.WORLD_BOUNDS.grow(-24.0)
+	for attempt in range(1024):
+		var at := Vector2(randf_range(bounds.position.x,bounds.end.x),randf_range(bounds.position.y,bounds.end.y))
+		if safe_point(actor,at,1|CampPlayer.BARRIER_LAYER|CampPlayer.WATER_LAYER): return at
+	return Vector2.INF
 
 static func safe_point(actor: CampPlayer, point: Vector2, mask: int=-1) -> bool:
 	if not point.is_finite() or not CampMap.WORLD_BOUNDS.has_point(point): return false
@@ -189,7 +214,7 @@ static func status(actor: CampPlayer) -> String:
 			if actor.kit.get("wheel_time",0.0)>0: return "SPINNING"
 			if actor.kit.get("wheel_show",0.0)>0: return actor.kit.get("wheel_result","")
 		"alex":
-			if actor.kit["channel"] > 0.0: return "RETURN %.1fs / HIT CANCELS" % actor.kit["channel"]
-			if actor.kit["marker_life"] > 0.0: return "X RETURN %ds / %s" % [actor.kit["marker_life"],"ALONE" if actor.kit["isolated"] else "NEED ISOLATION"]
+			if actor.kit["channel"] > 0.0: return "RETURN %.1fs / DANGER CANCELS" % actor.kit["channel"]
+			if actor.kit["marker_life"] > 0.0: return "X RETURN %ds / %s" % [actor.kit["marker_life"],"MONSTER NEAR" if return_threat_near(actor) else ("ALONE" if actor.kit["isolated"] else "NEED ISOLATION")]
 	if actor.ability_cooldown > 0: return "X %s %ds" % [SurvivorAbilities.ability_name(actor.role),ceili(actor.ability_cooldown)]
 	return "X " + SurvivorAbilities.ability_name(actor.role) + (" / SOLO" if actor.kit.get("isolated",false) else "")

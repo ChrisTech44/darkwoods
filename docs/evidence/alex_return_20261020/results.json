@@ -1,0 +1,274 @@
+{
+  "platform": "macOS arm64 / Godot 4.7.2",
+  "voice": "off",
+  "gameplay": [
+    {
+      "checks": 228,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "four_survivors"
+    }
+  ],
+  "alex_assertions": [
+    {
+      "event": "assertion",
+      "name": "alex_qualifies_after_real_isolation",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_places_marker",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_begins_return",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_damage_interrupt_keeps_lifetime",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_cannot_return_before_seven_seconds",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_position_only_no_heal",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_places_marker_for_ticket_2",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_channels_ticket_2",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_completion_consumes_marker_and_cooldown_ticket_2",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_completion_preserves_state_ticket_2",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_second_normal_ticket_returns_to_marker",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_places_marker_for_ticket_0",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_channels_ticket_0",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_completion_consumes_marker_and_cooldown_ticket_0",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_completion_preserves_state_ticket_0",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_misfire_lands_valid_elsewhere_on_map",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_heartbeat_boundary_blocks_start",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_blocked_start_preserves_marker_and_cooldown",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_status_explains_monster_block",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_outside_heartbeat_starts_full_seven",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_monster_entry_cancels_without_refreshing_marker",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_monster_interrupt_uses_existing_retry_guard",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_restart_discards_previous_progress",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_moving_into_heartbeat_cancels_even_completion_tick",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_disabled_enemy_does_not_block",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_grab_blocks_escape",
+      "passed": true
+    },
+    {
+      "event": "assertion",
+      "name": "alex_near_friend_loses_bonus",
+      "passed": true
+    }
+  ],
+  "network_rules": [
+    {
+      "log": "artifacts/ability_polish/rules/listen_host_0.log",
+      "passed": true,
+      "result": [
+        {
+          "checks": 13,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "camper_rule_host"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "log": "artifacts/ability_polish/rules/listen_client_1.log",
+      "passed": true,
+      "result": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "camper_rule_client"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "log": "artifacts/ability_polish/rules/listen_client_2.log",
+      "passed": true,
+      "result": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "camper_rule_client"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "log": "artifacts/ability_polish/rules/listen_client_3.log",
+      "passed": true,
+      "result": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "camper_rule_client"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "log": "artifacts/ability_polish/rules/dedicated_server_0.log",
+      "passed": true,
+      "result": [
+        {
+          "checks": 10,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "camper_rule_server"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "log": "artifacts/ability_polish/rules/dedicated_client_0.log",
+      "passed": true,
+      "result": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "camper_rule_client"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "log": "artifacts/ability_polish/rules/dedicated_client_1.log",
+      "passed": true,
+      "result": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "camper_rule_client"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "log": "artifacts/ability_polish/rules/dedicated_client_2.log",
+      "passed": true,
+      "result": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "camper_rule_client"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "log": "artifacts/ability_polish/rules/dedicated_client_3.log",
+      "passed": true,
+      "result": [
+        {
+          "checks": 8,
+          "event": "test_result",
+          "failures": 0,
+          "suite": "camper_rule_client"
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "limits": [
+    "Native captures use seed 42, frozen AI/director, forced all escapes and normal Dusk lighting.",
+    "RNG outcome branches are selected in tests; production rolls once on authority at completion.",
+    "No human balance session, Internet/cross-machine or Windows/Linux validation.",
+    "The existing local MP4 gallery is historical and has not been re-recorded for this change."
+  ]
+}

@@ -1,5 +1,32 @@
 # Development log
 
+## 2026-10-20 — Alex: interrupted seven-second return and random misfire
+
+Implemented the requested drawbacks at the authority: seven-second channel;
+enabled monsters within the shared 300px heartbeat radius block starting and
+cancel progress if either moves into range (including the final tick). Existing
+2s retry guard and remaining marker lifetime survive cancellation; X restarts
+all seven seconds. Each completed channel rolls once: 2/3 marker, 1/3 random
+collision-valid map position. Both arrivals consume the marker, start 40s
+cooldown and preserve inventory, injuries and charge. Random landings reject
+walls, barriers and water; the bounded no-landing fallback uses the existing
+blocked retry path. The monster check concerns departure, not the destination.
+
+Updated roster/HUD/guide, README and brief. Native inspection found the survivor
+guide clipped Alex; condensed the copy to fit all four plus the disabled-powers
+header. Updated the historical capture helper to wait seven seconds and select
+a normal-return illustration explicitly. Existing MP4s were not refreshed.
+
+Verification: `godot --headless --path . --import`, five-frame startup, and
+`git diff --check` pass. `tests/integration/four_survivors.gd`: **228/228**;
+`python3 tools/verify_camper_rules.py`: **79/79** across real listen-host and
+dedicated ENet processes. Final native screenshots use normal Dusk lighting,
+frozen AI/director, forced all escapes and microphones/voice off. Initial
+capture omitted audio shutdown and leaked objects; the corrected final capture
+is clean. New RNG scenarios are executed offline; existing authority gates are
+executed online. No human balance or cross-machine/platform acceptance claimed.
+[Selected screenshots, detailed rules and results](evidence/alex_return_20261020/README.md).
+
 ## 2026-10-20 — refreshed local clips with the supplied sound pack
 
 Re-recorded/re-encoded the eight recent wheel/monster and nine copied-signature

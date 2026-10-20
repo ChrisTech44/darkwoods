@@ -116,7 +116,13 @@ func run() -> void:
 	level.player.position += Vector2(0,20)
 	level.abilities.use(level.player)
 	await shot("alex_channel")
-	SurvivorKits.advance(level.player,2.1)
+	# Select a normal return for this staged illustration.
+	for candidate in range(100):
+		seed(candidate)
+		if randi_range(0,2)!=0:
+			seed(candidate)
+			break
+	SurvivorKits.advance(level.player,7.1)
 	await shot("alex_returned")
 	role("christian")
 	level.player.position = at

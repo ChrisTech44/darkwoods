@@ -20,7 +20,7 @@ acceptance remains pending. Target-only differences are called out explicitly.
 - Max: X spins a weighted wheel (1.8s), 60s cooldown. Names-only results, no
   cash or purchases; movement outcomes use shared owner prediction.
 - Alex: isolation enters beyond 190px after 4s, leaves within 150px; light drain
-  x0.75 and stamina recovery x1.35. Marker 75s, channel 2s, success cooldown 40s,
+  x0.75 and stamina recovery x1.35. Marker 75s, channel 7s, success cooldown 40s,
   interrupted/blocked retry guard 2s. Channels retain harmful attachments and
   reject tethers/blocked landings; position changes use authority motion epochs.
 - Christian: one sample; source encounter survival window 3s with a 50s pending
@@ -273,7 +273,17 @@ Exact distance, activation delay, fade and rates need balance tests.
 ### My Own Way Back and overconfidence
 
 X places one temporary marker at Alex's actual occupied, valid walkable position.
-A later X, while alive, alone and able to act, channels a return to that marker.
+A later X, while alive, alone and able to act, channels a seven-second return to that marker.
+Any enabled monster within heartbeat proximity (300 world pixels, including
+behind walls) blocks starting and cancels progress if either body enters range.
+Audio muting/deafness does not bypass this host rule. After the existing 2s retry
+guard, press X again when clear to restart the full seven seconds; the marker
+keeps only its remaining lifetime. This range is measured around Alex, not the marker.
+On completion the host rolls once: 2/3 return to the marker; 1/3 teleport to a
+random valid point across the whole map. Both arrivals consume the marker and
+start the 40s cooldown, preserving injuries and gear. Random positions reject
+walls, water and barriers; a bounded search failure follows the existing blocked
+landing path (marker retained, 2s retry guard). Interrupted attempts never roll.
 Show marker lifetime, channel progress, destination and unavailability reason.
 The world continues during the channel. Current gear travels with Alex; damage,
 spent supplies, installed components and global phase progress are not rewound.

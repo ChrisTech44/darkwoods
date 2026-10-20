@@ -123,6 +123,13 @@ func max_checks() -> void:
 	check(max_actor.ability_cooldown==60,"max_cooldown_starts_on_commit")
 	check(SamplePresentation.detail(max_actor).is_empty(),"max_no_large_help_panel")
 
+# Select each real RNG branch without replacing the host completion code.
+func return_seed(ticket: int) -> int:
+	for candidate in range(100):
+		seed(candidate)
+		if randi_range(0,2)==ticket: return candidate
+	return -1
+
 func alex_checks() -> void:
 	var alex: CampPlayer = friends.alex
 	alex.position = Vector2(96,384)
@@ -139,10 +146,57 @@ func alex_checks() -> void:
 	check(alex.kit.channel==0 and alex.kit.marker_life>0,"alex_damage_interrupt_keeps_lifetime")
 	alex.ability_cooldown = 0
 	level.abilities.use(alex)
-	SurvivorKits.advance(alex,2.1)
+	SurvivorKits.advance(alex,6.9)
+	check(alex.kit.channel>0 and alex.position.distance_to(origin)>1,"alex_cannot_return_before_seven_seconds")
+	seed(return_seed(1))
+	SurvivorKits.advance(alex,0.11)
 	check(alex.position.distance_to(origin)<1 and alex.kit.marker_life==0 and alex.health==95,"alex_position_only_no_heal")
+	# Both ordinary tickets return to the marker; one ticket misfires to the map.
+	for ticket in [2,0]:
+		alex.ability_cooldown = 0
+		check(level.abilities.use(alex),"alex_places_marker_for_ticket_%d" % ticket)
+		alex.position = origin+Vector2(0,20)
+		check(level.abilities.use(alex),"alex_channels_ticket_%d" % ticket)
+		var inventory_before := alex.inventory.duplicate()
+		var charge_before := alex.flashlight_charge
+		seed(return_seed(ticket))
+		SurvivorKits.advance(alex,7.01)
+		check(alex.kit.marker_life==0 and alex.kit.channel==0 and alex.ability_cooldown==40,"alex_completion_consumes_marker_and_cooldown_ticket_%d" % ticket)
+		check(alex.health==95 and alex.inventory==inventory_before and alex.flashlight_charge==charge_before,"alex_completion_preserves_state_ticket_%d" % ticket)
+		if ticket==0:
+			check(alex.position.distance_to(origin)>300 and SurvivorKits.safe_point(alex,alex.position,1|CampPlayer.BARRIER_LAYER|CampPlayer.WATER_LAYER),"alex_misfire_lands_valid_elsewhere_on_map")
+		else:
+			check(alex.position.distance_to(origin)<1,"alex_second_normal_ticket_returns_to_marker")
+		alex.position = origin
 	alex.ability_cooldown = 0
 	level.abilities.use(alex)
+	var threat: CampKiller = level.killer
+	var saved_position := threat.global_position
+	threat.enabled = true
+	threat.global_position = alex.global_position + Vector2(CampSoundscape.NEAR_RANGE,0)
+	check(not level.abilities.use(alex) and alex.kit.channel==0,"alex_heartbeat_boundary_blocks_start")
+	check(alex.kit.marker_life>0 and alex.ability_cooldown==0,"alex_blocked_start_preserves_marker_and_cooldown")
+	check("MONSTER NEAR" in SurvivorKits.status(alex),"alex_status_explains_monster_block")
+	threat.global_position.x += 1
+	check(level.abilities.use(alex) and alex.kit.channel==7,"alex_outside_heartbeat_starts_full_seven")
+	SurvivorKits.advance(alex,3)
+	threat.global_position.x -= 1
+	var life_before: float = alex.kit.marker_life
+	SurvivorKits.advance(alex,0.1)
+	check(alex.kit.channel==0 and is_equal_approx(alex.kit.marker_life,life_before-0.1),"alex_monster_entry_cancels_without_refreshing_marker")
+	check(alex.ability_cooldown==2,"alex_monster_interrupt_uses_existing_retry_guard")
+	threat.global_position.x += 1
+	alex.ability_cooldown = 0
+	check(level.abilities.use(alex) and alex.kit.channel==7,"alex_restart_discards_previous_progress")
+	alex.position.x += 2
+	SurvivorKits.advance(alex,7.1)
+	check(alex.kit.channel==0 and alex.kit.marker_life>0,"alex_moving_into_heartbeat_cancels_even_completion_tick")
+	threat.enabled = false
+	alex.ability_cooldown = 0
+	check(level.abilities.use(alex),"alex_disabled_enemy_does_not_block")
+	SurvivorKits.cancel_return(alex)
+	threat.global_position = saved_position
+	alex.ability_cooldown = 0
 	alex.grab(friends.john,"TEST",0.2,0)
 	check(not level.abilities.use(alex) and alex.kit.channel==0,"alex_grab_blocks_escape")
 	alex.release()

@@ -66,16 +66,12 @@ static func lines(topic: String, level: Node = null) -> Array[String]:
 		"SURVIVORS":
 			if level != null and not level.abilities.enabled: out.append("HOST RULE: ALL CAMPER POWERS ARE OFF THIS ROUND.")
 			out.append("CHRISTIAN: survive signatures to collect one sample.")
-			out.append("X experiments can transform you or hit friends. Wolf needs moon.")
-			out.append("Faint guides show shot paths, aim cones and effect areas.")
-			out.append("Forms show time left and extra X actions on screen.")
-			out.append("Mimic copies only a living camper actually in this round.")
-			out.append("JOHN: prepare escapes for stamina. X halves damage 6s.")
-			out.append("Reduced debt lands later; grabs end it. Healing waits.")
-			out.append("MAX: X spins the wheel. Ready again in 60 seconds.")
-			out.append("Results have names. Discover them for yourself.")
-			out.append("ALEX: after 4s alone, save light and recover stamina faster.")
-			out.append("X marks for 75s; X alone channels 2s back. Hits interrupt.")
+			out.append("X borrows powers; can hit friends. Wolf needs moon.")
+			out.append("Mimic needs a camper; forms show timers and aim guides.")
+			out.append("JOHN: X halves damage 6s, then debt. Prep restores stamina.")
+			out.append("MAX: X spins every 60s; discover the named results.")
+			out.append("ALEX: 4s alone: better light/stamina. X: mark 75s; return 7s.")
+			out.append("Hits cancel; heartbeat blocks/cancels. 1/3 random, marker spent.")
 		"CREATURES":
 			var seen: Array = []
 			if level != null:

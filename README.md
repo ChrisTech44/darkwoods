@@ -644,7 +644,7 @@ and hiking boots. These are stylized designs from descriptions.
 | **Christian** | Survive a real creature signature to collect one sample | **Field Test:** reproduce its signature; some samples transform you. X again performs a form's secondary action | Friends can be affected. Full slots keep their sample; Werewolf needs the actual full moon |
 | **John** | Completing a new preparation step on any escape refills stamina | **Push Through:** halve accepted damage and defer the reduced bill for 6s, 45s cooldown | Reduced debt lands afterward. Grabs end the burst; healing waits. Lethal debt cannot be escaped by boarding |
 | **Max** | Trust your luck | **What Could Go Wrong?** X spins a wheel every 60s | Discover the named results yourself |
-| **Alex** | After 4s isolated from living teammates, light uses 25% less charge and stamina recovers 35% faster | **My Own Way Back:** X places a 75s marker; X again while alone channels a 2s return, then 40s cooldown | Hits interrupt; holds/downing prevent return. Blocked landing or expiry can ruin the plan |
+| **Alex** | After 4s isolated from living teammates, light uses 25% less charge and stamina recovers 35% faster | **My Own Way Back:** X places a 75s marker; X again while alone channels a 7s return, then 40s cooldown; 1/3 chance of a random valid landing instead, consuming the marker | Hits interrupt; monsters within heartbeat range (300px) block or interrupt the full 7s return; holds/downing prevent return. Blocked landing or expiry can ruin the plan |
 
 Everyone has the same basic stats and starting supplies. Objective parts, tools,
 revives and all five escape routes stay available to every character. John earns

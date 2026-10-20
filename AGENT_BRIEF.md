@@ -204,7 +204,13 @@ blockers. Keep specifications and plans in Markdown only.
 ## 20 October friends-playtest amendment
 
 John now halves numeric damage during Push Through before deferring the reduced
-bill. Alex's return marker draws for teammates. Unexpected ENet drops reserve the
+bill. Alex's return marker draws for teammates. His return now takes 7s; enabled
+monsters within the heartbeat proximity radius (300px around Alex, through walls)
+block starting or cancel progress. Retrying requires X and the full 7s; interrupted
+markers keep their remaining lifetime and the existing 2s retry guard. Each
+completed channel has a host-rolled 1/3 chance of landing at a random valid
+position across the map instead; either arrival consumes the marker and starts
+the 40s cooldown, preserving current gear/injuries. Unexpected ENet drops reserve the
 same server-owned survivor for five minutes and automatically retry from the
 running client. All supplies, tools and objectives drop immediately;
 returning actors receive no duplicated or refreshed gear. Input silence (15s,

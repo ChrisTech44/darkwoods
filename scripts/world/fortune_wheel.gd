@@ -93,7 +93,7 @@ static func landing(actor: CampPlayer, enemy: CampKiller) -> Vector2:
 
 ## Used by chance relocations and the Magician; gear and injuries travel once.
 static func relocate(actor: CampPlayer, at: Vector2) -> bool:
-	if not SurvivorKits.safe_point(actor,at): return false
+	if not SurvivorKits.safe_point(actor,at,1|CampPlayer.BARRIER_LAYER|CampPlayer.WATER_LAYER): return false
 	var level: Node = SurvivorKits.world(actor)
 	var partner: CampPlayer = actor.get_meta("tether_partner") if actor.has_meta("tether_partner") else null
 	for end: CampPlayer in [actor,partner]:

@@ -25,3 +25,5 @@ vulture: [53 cumulative gameplay checks and real ENet state/cue results](vulture
 nobody: [64 cumulative gameplay checks and real ENet state/cue results](nobody_results.json).
 
 huntmaster: [73 cumulative gameplay checks and real ENet state/cue results](huntmaster_results.json).
+
+magician: [84 cumulative gameplay checks and real ENet state/cue results](magician_results.json).

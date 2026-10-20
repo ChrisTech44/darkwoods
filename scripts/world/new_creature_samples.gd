@@ -1,9 +1,15 @@
 class_name NewCreatureSamples
 extends RefCounted
-const SOURCES := ["lifeguard","nightlight_kid","vulture","nobody","huntmaster"]
+const SOURCES := ["lifeguard","nightlight_kid","vulture","nobody","huntmaster","magician"]
 static func fire(actor: CampPlayer, kind: String) -> void:
 	var level: Node=SurvivorKits.world(actor)
 	match kind:
+		"magician":
+			var partner: Node2D=CreatureSwap.friend(actor)
+			var choices:=CreatureSwap.creatures(actor)
+			choices.sort_custom(func(a,b): return a.position.distance_to(actor.position)<b.position.distance_to(actor.position))
+			if not choices.is_empty() and (partner==null or randf()<0.3): partner=choices[0]
+			if partner!=null: CreatureSwap.perform(actor,partner)
 		"huntmaster":
 			level.soundscape.broadcast("huntmaster_horn",actor.position)
 			for friend: CampPlayer in actor.get_tree().get_nodes_in_group("survivors"):

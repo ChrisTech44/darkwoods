@@ -14,6 +14,7 @@ shared 12-credit design sheet.
 
 ## Delivered increments
 
+- **magician**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (84 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/magician_results.json).
 - **huntmaster**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (73 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/huntmaster_results.json).
 - **nobody**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (64 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/nobody_results.json).
 - **vulture**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (53 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/vulture_results.json).

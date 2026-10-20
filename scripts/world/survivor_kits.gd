@@ -115,14 +115,14 @@ static func advance(actor: CampPlayer, delta: float) -> void:
 		CreatureSamples.advance(actor,delta)
 		NewCreatureSamples.advance(actor,delta)
 
-static func safe_point(actor: CampPlayer, point: Vector2) -> bool:
+static func safe_point(actor: CampPlayer, point: Vector2, mask: int=-1) -> bool:
 	if not point.is_finite() or not CampMap.WORLD_BOUNDS.has_point(point): return false
 	var shape := CircleShape2D.new()
 	shape.radius = 7.0
 	var query := PhysicsShapeQueryParameters2D.new()
 	query.shape = shape
 	query.transform = Transform2D(0,point)
-	query.collision_mask = actor.collision_mask
+	query.collision_mask = actor.collision_mask if mask<0 else mask
 	query.exclude = [actor.get_rid()]
 	return actor.get_world_2d().direct_space_state.intersect_shape(query,1).is_empty()
 

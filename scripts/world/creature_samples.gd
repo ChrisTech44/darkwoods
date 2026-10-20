@@ -1,7 +1,7 @@
 class_name CreatureSamples
 extends RefCounted
 ## Borrowed signatures have explicit adapters, never generic player-state casts.
-const SOURCES := ["witch","werewolf","shutter_wraith","ration_moth","bramble_seamstress","vampire","bigfoot","briar_revenant","lantern_moth","candle_grazer","switchback_hound","lens_eater","last_car_conductor","mimic","owl","bog_hands","imps","teddy","groundskeeper","cuckoo","banshee","slug","surveyor","hitchhiker","tollkeeper","echo","fortune_teller","boiler_saint","relay_jackal","stoneback_ram", "lifeguard", "nightlight_kid", "vulture", "nobody", "huntmaster"]
+const SOURCES := ["witch","werewolf","shutter_wraith","ration_moth","bramble_seamstress","vampire","bigfoot","briar_revenant","lantern_moth","candle_grazer","switchback_hound","lens_eater","last_car_conductor","mimic","owl","bog_hands","imps","teddy","groundskeeper","cuckoo","banshee","slug","surveyor","hitchhiker","tollkeeper","echo","fortune_teller","boiler_saint","relay_jackal","stoneback_ram", "lifeguard", "nightlight_kid", "vulture", "nobody", "huntmaster", "magician"]
 const FORMS := ["werewolf","briar_revenant","groundskeeper","mimic","nobody"]
 const NAMES := {"shutter_wraith":"PAPARAZZO", "ration_moth":"PUFFBALL", "bramble_seamstress":"SEAMSTRESS", "briar_revenant":"SCARECROW", "candle_grazer":"SNUFFER", "switchback_hound":"BUSTER", "lens_eater":"PEEPER", "last_car_conductor":"CONDUCTOR", "relay_jackal":"JACKAL", "stoneback_ram":"RAM", "boiler_saint":"LULLABY SAINT", "teddy":"BEAR HUG"}
 static var form_sheets: Dictionary = {}
@@ -74,6 +74,7 @@ static func use(actor: CampPlayer) -> bool:
 		if disguise == null:
 			level.announce("Mimic needs another living player in this round. Sample kept.",actor)
 			return false
+	if kind=="magician" and CreatureSwap.friend(actor)==null and CreatureSwap.creatures(actor).is_empty(): return false
 	if kind=="vulture" and NewCreatureSamples.downed_friend(actor)==null: return false
 	if kind not in SOURCES: return false
 	actor.kit["sample"] = ""
@@ -101,6 +102,9 @@ static func use(actor: CampPlayer) -> bool:
 	var delay := 0.8
 	if kind in ["banshee","shutter_wraith"]: delay = 1.0
 	if kind == "cuckoo": delay = 3.0
+	if kind=="magician":
+		delay=1.5
+		level.soundscape.broadcast("magician_drumroll",actor.position)
 	var at := actor.position
 	if kind in ["witch","ration_moth","bramble_seamstress","bog_hands","echo","tollkeeper"]:
 		var ahead := actor.position + actor.facing * 90

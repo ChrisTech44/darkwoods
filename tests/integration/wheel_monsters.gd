@@ -113,6 +113,7 @@ func creature_checks() -> void:
 	if "vulture" in RoundPlan.ROAMER_SPECIES: await vulture_checks()
 	if "nobody" in RoundPlan.ROAMER_SPECIES: await nobody_checks()
 	if "huntmaster" in RoundPlan.ROAMER_SPECIES: await huntmaster_checks()
+	if "magician" in RoundPlan.ROAMER_SPECIES: await magician_checks()
 
 func specimen(kind: String, at: Vector2) -> CampCryptid:
 	var enemy: CampCryptid=load("res://scenes/actors/cryptid.tscn").instantiate()
@@ -330,3 +331,46 @@ func huntmaster_checks() -> void:
 	actor.role="max"
 	horn.queue_free()
 	friend.queue_free()
+
+func magician_checks() -> void:
+	CreatureSamples.finish_cast(actor)
+	actor.effects.clear()
+	actor.kit.form=""
+	level.night_clock.force_phase(2) # Late-night camp access for staged swaps.
+	level.hud.broadcast.hide()
+	actor.position=Vector2(112,440)
+	var mage:=specimen("magician",actor.position+Vector2(70,0))
+	var other:=specimen("bigfoot",actor.position+Vector2(90,0))
+	await frames()
+	mage.brain.physics(0.01)
+	check(mage.brain.tell==1.5,"magician_warns_with_stationary_ring")
+	await shot("magician_ring")
+	actor.position+=Vector2(0,40)
+	mage.brain.physics(2)
+	check(mage.brain.target==null and mage.brain.tell==0,"leaving_ring_cancels_swap")
+	actor.position=Vector2(112,440)
+	var old:=actor.position
+	var destination:=other.position
+	actor.inventory.assign(["battery"])
+	actor.health=73
+	check(CreatureSwap.perform(actor,other),"validated_creature_swap_succeeds")
+	check(actor.position==destination and other.position==old and actor.inventory==["battery"] and actor.health==73,"swap_moves_bodies_not_gear_or_health_copies")
+	other.hold(actor,"TEST",0.1)
+	check(not CreatureSwap.valid(actor,other),"held_survivor_and_holding_creature_are_ineligible")
+	actor.release()
+	other.home=Rect2(Vector2(500,500),Vector2(100,100))
+	check(not CreatureSwap.valid(actor,other),"swap_cannot_displace_regional_guard_outside_territory")
+	other.home=Rect2()
+	check(not CreatureSwap.creatures(actor,mage,false).has(level.killer),"headline_excluded_before_witching_hour")
+	mage.brain.tell=1
+	mage.stun(1)
+	check(mage.brain.tell==0,"flash_cancels_magician")
+	actor.role="christian"
+	actor.kit.sample="magician"
+	actor.ability_cooldown=0
+	check(CreatureSamples.use(actor),"magician_sample_accepted_with_valid_partner")
+	CreatureSamples.advance(actor,2)
+	check(actor.kit.sample.is_empty(),"copied_swap_consumes_once")
+	actor.role="max"
+	mage.queue_free()
+	other.queue_free()

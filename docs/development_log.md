@@ -1,5 +1,19 @@
 # Development log
 
+## 2026-10-20 — vulture: verified creature increment
+
+Implemented vulture from the monster plan, including its full-roster spawn,
+SpriteCook design, journal tip, host-owned mechanics, counters, replicated tell
+and Christian signature. Source gameplay/capture gate passes 53
+cumulative assertions; real two-process ENet verifies matching brain state and
+exactly-once accepted cue replay. Audio is original deterministic synthesis from
+`tools/generate_habit_sounds.py`; playback routing and the AI noise path are
+separate. Required import/startup and diff checks pass. Normal-light captures use
+frozen enemies/director, staged poses and dismissed transient title banners;
+no microphones or listening-quality/Internet/platform acceptance is claimed.
+[Results and limitations](evidence/wheel_monsters/vulture_results.json).
+Current protocol: lnac-net-26. No further SpriteCook credits used.
+
 ## 2026-10-20 — nightlight_kid: verified creature increment
 
 Implemented nightlight_kid from the monster plan, including its full-roster spawn,

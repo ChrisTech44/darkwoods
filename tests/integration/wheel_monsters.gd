@@ -25,6 +25,7 @@ func run() -> void:
 	actor=level.player
 	actor.local_input=false
 	actor.set_physics_process(false)
+	level.set_physics_process(false)
 	level.abilities.set_physics_process(false)
 	level.night_clock.director_enabled=false
 	level.night_clock.set_physics_process(false)
@@ -109,6 +110,7 @@ func wheel() -> void:
 func creature_checks() -> void:
 	if "lifeguard" in RoundPlan.ROAMER_SPECIES: await lifeguard_checks()
 	if "nightlight_kid" in RoundPlan.ROAMER_SPECIES: await nightlight_checks()
+	if "vulture" in RoundPlan.ROAMER_SPECIES: await vulture_checks()
 
 func specimen(kind: String, at: Vector2) -> CampCryptid:
 	var enemy: CampCryptid=load("res://scenes/actors/cryptid.tscn").instantiate()
@@ -193,3 +195,57 @@ func nightlight_checks() -> void:
 	actor.effects.clear()
 	actor.role="max"
 	kid.queue_free()
+
+func vulture_checks() -> void:
+	CreatureSamples.finish_cast(actor)
+	actor.effects.clear()
+	actor.status=CampPlayer.Status.ALIVE
+	actor.health=100
+	actor.invulnerability=0
+	actor.ward_remaining=0
+	var friend: CampPlayer=load("res://scenes/actors/player.tscn").instantiate()
+	friend.local_input=false
+	friend.position=actor.position+Vector2(10,0)
+	level.world_objects.add_child(friend)
+	friend.set_physics_process(false)
+	friend.set_status(CampPlayer.Status.DOWNED)
+	var bird:=specimen("vulture",friend.position+Vector2(18,-8))
+	await frames()
+	bird.brain.physics(0.1)
+	check(bird.brain.target==friend,"vulture_perches_on_downed_survivor")
+	level.advance_revive(actor,friend,true,0.1)
+	bird.brain.physics(0.1)
+	check(bird.brain.tell>0,"vulture_warns_before_peck")
+	await shot("vulture_peck")
+	bird.brain.physics(0.5)
+	check(actor.health==85 and friend.status==CampPlayer.Status.DOWNED,"vulture_pecks_reviver_without_executing_body")
+	bird.stun(1)
+	check(bird.brain.target==null and bird.brain.rest==20,"flash_sends_vulture_away_for_twenty_seconds")
+	actor.role="christian"
+	actor.kit.sample="vulture"
+	actor.ability_cooldown=0
+	check(CreatureSamples.use(actor),"vulture_sample_requires_and_accepts_downed_friend")
+	CreatureSamples.advance(actor,1)
+	check(actor.kit.get("vulture_guard",0.0)>0,"copied_vulture_guards_friend")
+	level.revive_progress=0
+	level.advance_revive(actor,friend,true,0.5)
+	check(is_equal_approx(level.revive_progress,0.25),"copied_vulture_halves_casters_revive_speed")
+	friend.set_status(CampPlayer.Status.ALIVE)
+	NewCreatureSamples.advance(actor,0.1)
+	check(actor.kit.vulture_guard==0,"guard_ends_when_friend_revives")
+	bird.brain.rest=0
+	bird.brain.target=friend
+	bird.brain.physics(0.1)
+	check(bird.brain.target==null,"vulture_releases_revived_target")
+	friend.remove_from_group("survivors")
+	actor.set_status(CampPlayer.Status.DOWNED)
+	bird.brain.target=actor
+	bird.position=actor.position+Vector2(18,-8)
+	level.self_recovery_progress=0
+	level.advance_self_recovery(actor,true,2)
+	check(is_equal_approx(level.self_recovery_progress,1),"vulture_halves_solo_recovery_rate")
+	actor.set_status(CampPlayer.Status.ALIVE)
+	actor.health=100
+	friend.queue_free()
+	bird.queue_free()
+	actor.role="max"

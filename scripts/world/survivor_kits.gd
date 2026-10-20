@@ -111,7 +111,9 @@ static func advance(actor: CampPlayer, delta: float) -> void:
 					else:
 						actor.ability_cooldown = 2.0
 						world(actor).announce("Return blocked. Marker remains until expiry.",actor)
-	if actor.role == "christian": CreatureSamples.advance(actor,delta)
+	if actor.role == "christian":
+		CreatureSamples.advance(actor,delta)
+		NewCreatureSamples.advance(actor,delta)
 
 static func safe_point(actor: CampPlayer, point: Vector2) -> bool:
 	if not point.is_finite() or not CampMap.WORLD_BOUNDS.has_point(point): return false
@@ -148,6 +150,7 @@ static func cleanup(actor: CampPlayer) -> void:
 	actor.kit["stake_time"] = -1.0
 	actor.kit["marker_life"] = 0.0
 	FortuneWheel.cancel(actor)
+	actor.kit["vulture_guard"]=0.0
 	CreatureSamples.finish_cast(actor)
 	actor.kit["research"] = {}
 	actor.kit["sample"] = ""

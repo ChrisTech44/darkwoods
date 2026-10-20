@@ -14,6 +14,7 @@ shared 12-credit design sheet.
 
 ## Delivered increments
 
+- **vulture**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (53 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/vulture_results.json).
 - **nightlight_kid**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (42 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/nightlight_kid_results.json).
 - **lifeguard**: brain, full-roster spawn, journal, Christian sample, native cue routing and host/client checks pass (32 cumulative gameplay assertions). [Evidence](evidence/wheel_monsters/lifeguard_results.json).
 The four [playtest follow-up concepts](playtest_followup.md#mechanically-distinct-monster-proposals)

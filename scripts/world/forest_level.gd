@@ -558,7 +558,7 @@ func advance_revive(actor: CampPlayer, target: CampPlayer, holding: bool, delta:
 		revive_actor = actor
 		revive_target = target
 		revive_progress = 0.0
-	revive_progress += delta
+	revive_progress += delta*(0.5 if actor.kit.get("vulture_guard",0.0)>0 else 1.0)
 	# A medkit makes the revive fast; bare hands work too, just slower.
 	var kit: bool = actor.supplies.get("medkit", 0) > 0
 	revive_duration = actor.config.revive_seconds * (1.0 if kit else KITLESS_REVIVE_FACTOR)
@@ -581,7 +581,11 @@ func advance_self_recovery(actor: CampPlayer, holding: bool, delta: float) -> vo
 	if paused or finished or not holding or not solo_recovery_available(actor):
 		self_recovery_progress = 0.0
 		return
-	self_recovery_progress += delta
+	var recovery_scale:=1.0
+	for enemy: CampCryptid in get_tree().get_nodes_in_group("cryptids"):
+		if enemy.enabled and enemy.species=="vulture" and enemy.brain.target==actor and enemy.brain.rest<=0 and enemy.position.distance_to(actor.position)<40:
+			recovery_scale=0.5
+	self_recovery_progress += delta*recovery_scale
 	if self_recovery_progress >= SELF_RECOVERY_SECONDS:
 		self_recovery_progress = 0.0
 		actor.self_recovery_used = true

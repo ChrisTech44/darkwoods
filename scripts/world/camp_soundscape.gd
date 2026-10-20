@@ -14,7 +14,7 @@ const CHORUS_DISTANCE := 480.0
 const KILLER_CUES := {"stalker": ["screech_3", 0.7]}
 ## Heavier creatures step lower and louder.
 const STEP_PITCH := {"bigfoot": 0.55, "stoneback_ram": 0.6, "boiler_saint": 0.62, "werewolf": 0.7, "switchback_hound": 0.9, "relay_jackal": 1.0, "lantern_moth": 1.3, "ration_moth": 1.35, "teddy": 1.8, "imps": 1.6, "mimic": 1.0}
-const CREATURE_CUES := {"nightlight_kid":"nightlight_scream", "lifeguard":"lifeguard_whistle", "werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl",
+const CREATURE_CUES := {"vulture":"vulture_squawk", "nightlight_kid":"nightlight_scream", "lifeguard":"lifeguard_whistle", "werewolf": "werewolf_howl", "bigfoot": "bigfoot_growl", "lantern_moth": "lantern_moth_screech", "witch": "witch_cackle", "briar_revenant": "revenant_screech", "vampire": "vampire_snarl",
 	"switchback_hound": "dog_bark", "relay_jackal": "monster_6", "shutter_wraith": "monster_9", "lens_eater": "screech_1",
 	"bramble_seamstress": "monster_7", "candle_grazer": "screech_2", "boiler_saint": "screech_3", "last_car_conductor": "train",
 	"stoneback_ram": "monster_8", "ration_moth": "screech_5",

@@ -14,7 +14,7 @@ the same checkbox is in main-menu Settings. Dedicated servers use
 
 ## Player movement updates
 
-All players and the server must update together to **lnac-net-21**. Player poses
+All players and the server must update together to **lnac-net-22**. Player poses
 (position, velocity and facing) now use bounded, single-packet authority updates
 at 30 Hz on channel 2, independent of fragmented world state. Input uses channel 2
 in the opposite direction. Full world snapshots retain their intended 20 Hz rate;
@@ -49,7 +49,7 @@ for this fix (rules18 remains compatible; old servers do not send exploration).
 
 ## Radio Rescue (expedition)
 
-All peers must use rules `lnac-net-21` (the same build). The host owns the fuse,
+All peers must use rules `lnac-net-22` (the same build). The host owns the fuse,
 substation, six-second relay hold, persistent signal lights, countdown and
 extraction results. Clients send the usual E/hold intents. **T** switches only
 that player's objective page. A remote operator can complete the whole chain;
@@ -95,8 +95,8 @@ LAN instead. Wi-Fi is a local connection method, not automatic Internet hosting.
 The game provides no matchmaking, automatic NAT traversal, relay or UPnP setup.
 
 Connection failure, incompatible rules, full/running camps and host loss show a
-message. A new player can join only in the lobby. Leave the current round before
-changing survivor; there is no mid-round reconnect that refreshes supplies.
+message. A new player can join only in the lobby. Changing survivor requires the lobby. Unexpected disconnections now retry for
+up to five minutes using a private ticket in the running app; see below.
 
 ## During the round
 
@@ -109,7 +109,7 @@ and shares them with everyone. The host also owns the progress-paced night (phas
 Flash-stuns (Space) and help calls are host-validated intents.
 Hiding, doors and knock-overs use the normal E intent; the host owns breath,
 door breaking and blocking. The road network changes the generated woods, so
-both copies must run rules version `lnac-net-21`. Vaults and gate openings are
+both copies must run rules version `lnac-net-22`. Vaults and gate openings are
 host-validated E actions. Clue knowledge (ranger notes,
 regions visited) is shared by the whole team.
 Nearby teammates show their names; each survivor keeps their own flashlight,
@@ -137,14 +137,14 @@ resume searching/patrolling. The stalker now sweeps central camp early.
 Empty interactions, pickup/belt errors and supply feedback display only on the
 acting player’s HUD; shared team events still announce to everyone.
 Every survivor’s flashlight and flare lights render on all peers, with local
-wall shadows and woods sight occlusion. Leaving does not grant fresh supplies or permit an
-active-round rejoin.
+wall shadows and woods sight occlusion. Reconnecting never grants fresh supplies: all carried gear drops immediately
+when the server detects the disconnect.
 
 The host chooses **Return to Lobby** or **Retry Seed / Lobby** on the results
 screen. All remaining peers return together, with readiness cleared. Retry keeps
 the seed; another night uses a fresh seed. Roles may be changed before the next
-start. A host disconnect ends the session and returns clients to the menu; there
-is no host migration. Leaving from the pause/results menu disconnects you.
+start. Host loss starts reconnect attempts, but recovery requires that same authority
+to still be running; there is no host migration. Leaving from the pause/results menu disconnects you.
 
 ## Rescue and shared lighting examples
 
@@ -252,3 +252,29 @@ voice was silent (playback started paused); fixed, and the two-process test now
 checks the mixer's actual output level. **Not verified:** a human listening test
 after the fix. The unattended probe could not answer macOS's microphone
 permission dialog, and cross-machine Internet latency was not measured.
+
+
+## Recovering from a lost connection
+
+An unexpected disconnect reserves your survivor for **five minutes**. The running
+client retries the same address every two seconds. Your character returns to the
+same night with its health/life state, light charge and ability state preserved;
+no new starting items are granted. All carried supplies, tools, objectives and
+Max's cash drop immediately for recovery. Gear already taken by teammates stays
+with them. Max's dropped cash retains its owner tag and can be returned after he
+reconnects. Grabs, tethers and committed casts end when the body leaves play.
+Standing still is safe: idle clients continuously send zero-direction input.
+The server removes a silent client after fifteen seconds without those packets,
+then starts its reservation. Initial loading retains a separate 90s allowance.
+
+Other players see a departure notice and the body disappears. With anyone still
+connected, the night continues. An entirely disconnected dedicated round pauses
+until a survivor returns or the last reservation expires. A completed/reset round
+ends reservations. Deliberate Leave gives up recovery. Keep the app running:
+tickets are in memory only, so restarting the client or server loses them. This
+adds no host migration or save-game persistence. New players still wait for the lobby.
+
+John now halves numeric damage during Push Through before deferring its reduced
+bill; Alex's return marker is visible to teammates. Max's smaller help panel and
+new income sources are [proposals](playtest_followup.md), pending selection.
+[Local reconnect evidence and limits](evidence/playtest_recovery/README.md).

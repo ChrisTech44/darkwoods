@@ -1,7 +1,7 @@
 extends Node
 ## Stable RPC endpoint. Only the listen host advances accepted gameplay.
 signal changed
-const RULES := "lnac-net-21"
+const RULES := "lnac-net-22"
 const MAX_PLAYERS := 4
 const DEFAULT_PORT := 27840
 const SNAPSHOT_CHUNK := 1000
@@ -49,13 +49,27 @@ var replicas := {}
 var next_entity_id := 0
 var local_name := "Camper"
 var last_packet := 0
+const RECONNECT_MS := 300000
+var reconnect_token := ""
+var reconnect_address := ""
+var reconnect_port := 0
+var reconnect_until := 0
+var retry_at := 0
+var peer_tokens := {}
+var reservations := {}
+var departing := {}
+var resuming := {}
+var peer_activity := {}
+var last_world_packet := 0
+var minimum_world_sequence := 0
+
 
 func _ready() -> void:
 	multiplayer.peer_connected.connect(_peer_connected)
 	multiplayer.peer_disconnected.connect(_peer_disconnected)
 	multiplayer.connected_to_server.connect(_connected)
-	multiplayer.connection_failed.connect(func(): leave("Connection failed. Check host address, UDP port and firewall."))
-	multiplayer.server_disconnected.connect(func(): leave("Host disconnected. The camp session ended."))
+	multiplayer.connection_failed.connect(func(): _connection_lost("Connection failed. Check host address, UDP port and firewall."))
+	multiplayer.server_disconnected.connect(func(): _connection_lost("Host disconnected."))
 
 func host_dedicated(port: int) -> Error:
 	if active or port < 1 or port > 65535: return ERR_INVALID_PARAMETER
@@ -90,6 +104,11 @@ func host(port: int, player_name: String, role: String) -> Error:
 
 func join(address: String, port: int, player_name: String, role: String) -> Error:
 	if active or address.strip_edges().is_empty() or address.length()>253 or port<1 or port>65535: return ERR_INVALID_PARAMETER
+	if address.strip_edges() != reconnect_address or port != reconnect_port:
+		reconnect_token = ""
+		reconnect_until = 0
+	reconnect_address = address.strip_edges()
+	reconnect_port = port
 	var peer := CampENetPeer.new()
 	var error := peer.create_client(address.strip_edges(),port,3)
 	if error!=OK:
@@ -107,17 +126,18 @@ func join(address: String, port: int, player_name: String, role: String) -> Erro
 	return OK
 
 func _connected() -> void:
-	_register.rpc_id(1,RULES,local_name,get_node("/root/Session").survivor)
+	multiplayer.multiplayer_peer.get_peer(1).set_timeout(32, 90000, 90000)
+	_register.rpc_id(1,RULES,local_name,get_node("/root/Session").survivor,reconnect_token)
 
 func _peer_connected(id: int) -> void:
-	if dedicated:
+	if multiplayer.is_server():
 		# Match the world-loading allowance; ENet otherwise drops a client while
 		# its first graphical frame prepares scenery before it can poll again.
 		multiplayer.multiplayer_peer.get_peer(id).set_timeout(32, 90000, 90000)
 	if multiplayer.is_server(): pending[id]=Time.get_ticks_msec()+5000
 
 @rpc("any_peer","call_remote","reliable",0)
-func _register(version: String, player_name: String, role: String) -> void:
+func _register(version: String, player_name: String, role: String, token: String = "") -> void:
 	if not active or not multiplayer.is_server(): return
 	var id := multiplayer.get_remote_sender_id()
 	if id==1 or not pending.has(id): return
@@ -125,10 +145,22 @@ func _register(version: String, player_name: String, role: String) -> void:
 	if version!=RULES or role not in SurvivorRoster.IDS:
 		_reject_peer(id,"Incompatible game rules or survivor. Update both copies.")
 		return
+	if phase == "playing" and not token.is_empty():
+		for previous: int in peer_tokens.keys():
+			if peer_tokens[previous] == token:
+				# A client can detect a dead link before ENet's server timeout.
+				multiplayer.multiplayer_peer.disconnect_peer(previous, true)
+				if actors.has(previous): _peer_disconnected(previous)
+				break
+	if phase == "playing" and reservations.has(token):
+		_resume_peer(id, token)
+		return
 	if phase!="lobby" or roster.size()>=MAX_PLAYERS:
 		_reject_peer(id,"Camp full or already running. Join in the lobby before the next night.")
 		return
 	roster[id]={"name":_clean_name(player_name),"role":role,"ready":false}
+	peer_tokens[id] = Crypto.new().generate_random_bytes(32).hex_encode()
+	_ticket.rpc_id(id, peer_tokens[id])
 	_broadcast_roster()
 
 func _reject_peer(id: int, reason: String) -> void:
@@ -170,6 +202,7 @@ func _lobby(peers: Dictionary, chosen_mode: String, value: int, powers: bool = t
 	mode=chosen_mode
 	seed_value=value
 	phase="lobby"
+	reconnect_until = 0
 	status_text="Connected. Choose your survivor and mark Ready."
 	changed.emit()
 
@@ -227,6 +260,7 @@ func _begin(chosen_mode: String, value: int, peers: Dictionary, generation: int,
 	last_snapshot=0
 	assembling_sequence=0
 	snapshot_parts.clear()
+	minimum_world_sequence = 0
 	expected_parts=0
 	largest_snapshot_payload=0
 	next_entity_id=0
@@ -303,8 +337,16 @@ func _world_loaded(generation: int) -> void:
 	if active and multiplayer.is_server(): _accept_loaded(multiplayer.get_remote_sender_id(),generation)
 
 func _accept_loaded(id: int, generation: int) -> void:
-	if phase!="loading" or generation!=round_id or not participants.has(id): return
+	if generation != round_id or not participants.has(id): return
+	if phase == "playing" and resuming.has(id):
+		resuming.erase(id)
+		loaded[id] = true
+		peer_activity[id] = Time.get_ticks_msec()
+		_go.rpc_id(id, round_id)
+		return
+	if phase != "loading": return
 	loaded[id]=true
+	peer_activity[id] = Time.get_ticks_msec()
 	if dedicated: print(JSON.stringify({"event":"server_peer_loaded", "peer":id, "round":round_id}))
 	if world != null and loaded.size() == participants.size() + int(dedicated): _go.rpc(round_id)
 
@@ -312,20 +354,39 @@ func _accept_loaded(id: int, generation: int) -> void:
 func _go(generation: int) -> void:
 	if not active or generation!=round_id or world==null: return
 	phase="playing"
+	reconnect_until = 0
 	# The first-snapshot timeout starts after scene loading, not before it.
 	last_packet=Time.get_ticks_msec()
 	waiting=false
 	for actor: CampPlayer in actors.values(): actor.controls_enabled=true
 	if multiplayer.is_server():
+		for id: int in loaded: peer_activity[id] = Time.get_ticks_msec()
 		for enemy: CampKiller in get_tree().get_nodes_in_group("killers"): enemy.enabled=true
 	status_text="Night %d / %d survivors" % [seed_value,actors.size()]
 	if dedicated: print(JSON.stringify({"event":"server_round_started", "round":round_id, "players":actors.size()}))
 	changed.emit()
 
 func _physics_process(delta: float) -> void:
-	if not active: return
+	var clock_now := Time.get_ticks_msec()
+	if reconnect_until > 0 and clock_now >= reconnect_until:
+		leave("Reconnect window expired. Join the next lobby.")
+		return
+	if not active:
+		if reconnect_until > 0 and clock_now >= retry_at:
+			retry_at = clock_now + 2000
+			join(reconnect_address, reconnect_port, local_name, get_node("/root/Session").survivor)
+		return
+	if multiplayer.is_server():
+		for token: String in reservations.keys():
+			if clock_now >= reservations[token].expires: _expire_reservation(token)
 	var now := Time.get_ticks_msec()
 	if multiplayer.is_server():
+		if phase == "playing":
+			for id: int in peer_activity.keys():
+				if id == 1 or not loaded.has(id) or now-peer_activity[id] <= 15000: continue
+				print(JSON.stringify({"event":"server_input_timeout", "peer":id, "idle_ms":now-peer_activity[id], "round":round_id}))
+				multiplayer.multiplayer_peer.disconnect_peer(id, true)
+				if actors.has(id): _peer_disconnected(id)
 		for id: int in pending.keys():
 			if now>pending[id]:
 				pending.erase(id)
@@ -334,7 +395,7 @@ func _physics_process(delta: float) -> void:
 		if dedicated:
 			print(JSON.stringify({"event": "server_loading_timeout", "loaded": loaded.size(), "players": participants.size()}))
 			return_lobby(false)
-		else: leave("Connection/loading timed out. Check host, UDP port and firewall.")
+		else: _connection_lost("Connection/loading timed out. Check host, UDP port and firewall.")
 		return
 	if world==null or waiting or phase not in ["playing","results"]: return
 	if phase=="playing" and not dedicated:
@@ -369,7 +430,7 @@ func _physics_process(delta: float) -> void:
 				var actor: CampPlayer = actors[id]
 				poses.append([id, actor.position, actor.velocity, actor.facing, motion_epoch(actor)])
 			for id: int in actors:
-				if id == 1: continue # The listen host already runs authoritative movement.
+				if id == 1 or not loaded.has(id): continue # Rejoining peers must finish loading.
 				var owner: CampPlayer = actors[id]
 				var payload := var_to_bytes([poses, owner.network_applied_sequence, LocalPrediction.capture(owner), Engine.get_physics_frames()])
 				if payload.size() <= MAX_MOTION_BYTES:
@@ -390,7 +451,7 @@ func _physics_process(delta: float) -> void:
 				largest_snapshot_payload=maxi(largest_snapshot_payload,piece.size())
 				_snapshot_piece.rpc(round_id,snapshot_sequence,part,count,piece)
 	elif now-last_packet>10000:
-		leave("Host stopped responding. The camp session ended.")
+		_connection_lost("Host stopped responding.")
 
 ## One small authority-only packet on a channel independent of world fragments.
 @rpc("authority", "call_remote", "unreliable_ordered", 2)
@@ -406,6 +467,7 @@ func _motion_packet(generation: int, sequence: int, payload: PackedByteArray) ->
 		if not row is Array or row.size() != 5: return
 		if not row[0] is int or not row[1] is Vector2 or not row[2] is Vector2 or not row[3] is Vector2 or not row[4] is int: return
 		if not row[1].is_finite() or not row[2].is_finite() or not row[3].is_finite(): return
+	last_packet = Time.get_ticks_msec()
 	last_motion_sequence = sequence
 	latest_motion_bytes = payload.size()
 	var now := Time.get_ticks_usec() / 1000000.0
@@ -445,6 +507,7 @@ func _input_packet(generation: int, sequence: int, direction: Vector2, sprint: b
 func _accept_input(id: int, generation: int, sequence: int, direction: Vector2, sprint: bool, hold: bool) -> void:
 	if phase!="playing" or generation!=round_id or not actors.has(id) or not direction.is_finite(): return
 	if sequence<=inputs.get(id,{}).get("seq",-1): return
+	peer_activity[id] = Time.get_ticks_msec()
 	inputs[id]={"seq":sequence,"direction":direction.limit_length(1),"sprint":sprint,"hold":hold,"time":Time.get_ticks_msec()}
 
 func holding(id: int) -> bool:
@@ -493,25 +556,32 @@ func _accept_action(id: int, generation: int, code: String, slot: int) -> void:
 
 @rpc("authority","call_remote","unreliable",1)
 func _snapshot_piece(generation: int, sequence: int, part: int, count: int, bytes: PackedByteArray) -> void:
-	if not active or multiplayer.is_server() or generation!=round_id or sequence<=last_snapshot or world==null: return
+	if not active or multiplayer.is_server() or generation!=round_id or sequence<=last_snapshot or sequence<minimum_world_sequence or world==null: return
+	assembling_sequence = maxi(assembling_sequence, sequence)
 	if count<1 or count>66 or part<0 or part>=count or bytes.is_empty() or bytes.size()>SNAPSHOT_CHUNK: return
-	if sequence<assembling_sequence: return
-	if sequence>assembling_sequence:
-		assembling_sequence=sequence
-		expected_parts=count
-		snapshot_parts.clear()
-	if count!=expected_parts or snapshot_parts.has(part): return
-	snapshot_parts[part]=bytes
-	if snapshot_parts.size()!=count: return
+	# Keep four interleaved snapshots so a newer first fragment cannot discard
+	# a nearly complete older world update. Still apply complete states in order.
+	if not snapshot_parts.has(sequence):
+		if snapshot_parts.size() >= 4:
+			var oldest: int = snapshot_parts.keys().min()
+			if sequence < oldest: return
+			snapshot_parts.erase(oldest)
+		snapshot_parts[sequence] = {"count":count, "pieces":{}}
+	var assembly: Dictionary = snapshot_parts[sequence]
+	if count != assembly.count or assembly.pieces.has(part): return
+	assembly.pieces[part] = bytes
+	if assembly.pieces.size() != count: return
 	var complete := PackedByteArray()
-	for index in range(count): complete.append_array(snapshot_parts[index])
-	snapshot_parts.clear()
+	for index in range(count): complete.append_array(assembly.pieces[index])
+	for old: int in snapshot_parts.keys():
+		if old <= sequence: snapshot_parts.erase(old)
 	if complete.size()>MAX_SNAPSHOT_BYTES: return
 	var unpacked := complete.decompress_dynamic(1048576,FileAccess.COMPRESSION_DEFLATE)
 	if unpacked.is_empty(): return
 	var state: Variant=bytes_to_var(unpacked)
 	if not state is Dictionary: return
 	last_snapshot=sequence
+	last_world_packet = Time.get_ticks_msec()
 	last_packet=Time.get_ticks_msec()
 	latest_snapshot_bytes=complete.size()
 	WorldSync.apply(self,state)
@@ -567,6 +637,7 @@ func return_lobby(retry: bool) -> void:
 @rpc("authority","call_local","reliable",0)
 func _return_lobby(retry_seed: int) -> void:
 	if not active: return
+	_clear_reservations()
 	loaded.clear()
 	command_budgets.clear()
 	world=null
@@ -578,6 +649,7 @@ func _return_lobby(retry_seed: int) -> void:
 	prediction.bind(null)
 	replicas.clear()
 	snapshot_parts.clear()
+	minimum_world_sequence = 0
 	participants.clear()
 	for entry in roster.values(): entry["ready"]=false
 	seed_value=get_node("/root/Server").configured_seed if dedicated else retry_seed
@@ -590,27 +662,147 @@ func _return_lobby(retry_seed: int) -> void:
 	else: get_tree().change_scene_to_file("res://scenes/ui/network_lobby.tscn")
 	changed.emit()
 
+@rpc("authority", "call_remote", "reliable", 0)
+func _actor_departed(generation: int, id: int, through_sequence: int, released: Array[int], reserved: bool) -> void:
+	if not active or generation != round_id or world == null: return
+	minimum_world_sequence = maxi(minimum_world_sequence, through_sequence+1)
+	for sequence: int in snapshot_parts.keys():
+		if sequence < minimum_world_sequence: snapshot_parts.erase(sequence)
+	var name_text: String = participants.get(id, {}).get("name", "A survivor")
+	participants.erase(id)
+	roster.erase(id)
+	for other_id: int in released:
+		if actors.has(other_id): actors[other_id].clear_effect("tethered")
+	WorldSync.remove_actor(self, id)
+	world.announce(name_text + (" disconnected. Gear dropped; survivor reserved for 5 minutes." if reserved else " left the camp. Gear dropped."))
+
+@rpc("authority", "call_remote", "reliable", 0)
+func _ticket(token: String) -> void:
+	reconnect_token = token
+
+@rpc("any_peer", "call_remote", "reliable", 0)
+func _depart() -> void:
+	if multiplayer.is_server(): departing[multiplayer.get_remote_sender_id()] = true
+
+func _connection_lost(reason: String) -> void:
+	if not active: return
+	print(JSON.stringify({"event":"client_connection_lost", "reason":reason, "phase":phase, "packet_idle_ms":Time.get_ticks_msec()-last_packet, "world_idle_ms":Time.get_ticks_msec()-last_world_packet, "motion_sequence":last_motion_sequence, "world_sequence":last_snapshot, "snapshot_bytes":latest_snapshot_bytes}))
+	if not reconnect_token.is_empty() and phase in ["playing", "loading", "connecting"]:
+		if reconnect_until == 0: reconnect_until = Time.get_ticks_msec() + RECONNECT_MS
+		retry_at = Time.get_ticks_msec() + 2000
+		leave(reason + " Reconnecting to your survivor...", true)
+	else: leave(reason)
+
+func _resume_peer(id: int, token: String) -> void:
+	var saved: Dictionary = reservations[token]
+	if Time.get_ticks_msec() >= saved.expires:
+		_expire_reservation(token)
+		_reject_peer(id, "Reconnect window expired. Join the next lobby.")
+		return
+	reservations.erase(token)
+	var actor: CampPlayer = saved.actor
+	world.world_objects.add_child(actor)
+	if not is_instance_valid(world.player) or not world.player.is_inside_tree():
+		world.player = actor
+		world.camp_map.focus = actor
+		world.sight.player = actor
+	actor.controls_enabled = true
+	actors[id] = actor
+	for pin: Dictionary in world.pins:
+		if pin.owner == saved.id: pin.owner = id
+	roster[id] = saved.entry
+	participants[id] = saved.entry
+	peer_tokens[id] = token
+	resuming[id] = true
+	# The same authoritative body retains injuries and kit; carried gear dropped.
+	# Only the returning client rebuilds its replica world.
+	world.process_mode = Node.PROCESS_MODE_INHERIT
+	waiting = false
+	_ticket.rpc_id(id, token)
+	_begin.rpc_id(id, mode, seed_value, participants, round_id, camper_abilities_enabled)
+	world.announce(saved.entry.name + " reconnected.")
+	if dedicated: print(JSON.stringify({"event":"server_peer_resumed", "peer":id, "previous_peer":saved.id, "round":round_id}))
+
+func _clear_links(actor: CampPlayer) -> Array[int]:
+	var released: Array[int] = []
+	var vault_id := actor.get_instance_id()
+	if world.props.vaults.has(vault_id):
+		actor.position = world.props.vaults[vault_id]["from"]
+		world.props.vaults.erase(vault_id)
+		actor.vault_time = 0.0
+		actor.collision_mask |= CampPlayer.BARRIER_LAYER
+	for other: CampPlayer in get_tree().get_nodes_in_group("survivors"):
+		if other == actor or (other.has_meta("tether_partner") and other.get_meta("tether_partner") == actor):
+			var other_id: Variant = actors.find_key(other)
+			if other_id != null: released.append(other_id)
+			other.clear_effect("tethered")
+			if other.has_meta("tether_partner"): other.remove_meta("tether_partner")
+	actor.release()
+	CreatureSamples.finish_cast(actor)
+	SurvivorKits.cancel_return(actor)
+	SurvivorKits.cancel_stake(actor)
+	for enemy: CampKiller in get_tree().get_nodes_in_group("killers"):
+		if enemy.held == actor: enemy.release_held()
+		if enemy.visible_target == actor: enemy.visible_target = null
+		if enemy.traits != null and enemy.traits.favourite == actor: enemy.traits.favourite = null
+		if enemy is CampCryptid and enemy.brain != null: enemy.brain.survivor_left(actor)
+	return released
+
+func _expire_reservation(token: String) -> void:
+	var saved: Dictionary = reservations[token]
+	reservations.erase(token)
+	var actor: CampPlayer = saved.actor
+	actor.free() # Gear was already dropped when the link was lost.
+	if dedicated: print(JSON.stringify({"event":"server_reconnect_expired", "peer":saved.id, "round":round_id}))
+	if dedicated and actors.is_empty() and reservations.is_empty(): return_lobby(false)
+
+func _clear_reservations() -> void:
+	for saved: Dictionary in reservations.values():
+		if is_instance_valid(saved.actor): saved.actor.free()
+	reservations.clear()
+	resuming.clear()
+	peer_activity.clear()
+
 func _peer_disconnected(id: int) -> void:
 	if dedicated: print(JSON.stringify({"event":"server_peer_left", "peer":id}))
 	pending.erase(id)
 	if not active or not multiplayer.is_server(): return
+	var token: String = peer_tokens.get(id, "")
+	peer_tokens.erase(id)
+	var reserve := phase == "playing" and not departing.has(id) and not token.is_empty() and actors.has(id)
+	var entry: Dictionary = participants.get(id, {}).duplicate(true)
+	departing.erase(id)
+	resuming.erase(id)
 	roster.erase(id)
 	participants.erase(id)
 	loaded.erase(id)
 	inputs.erase(id)
+	peer_activity.erase(id)
+	command_budgets.erase(id)
 	if actors.has(id):
 		var actor: CampPlayer=actors[id]
-		# Return objective objects so a departing player cannot strand the round.
-		if world!=null:
-			_drop_objectives(actor)
-			world.van.passengers.erase(actor)
+		var released := _clear_links(actor)
+		_drop_objectives(actor) # Supplies, tools, cash and objectives drop immediately, once.
+		world.van.passengers.erase(actor)
 		actors.erase(id)
-		if dedicated and world != null and not actors.is_empty():
+		if not participants.is_empty(): _actor_departed.rpc(round_id, id, snapshot_sequence, released, reserve)
+		motion_epochs.erase(actor)
+		if not actors.is_empty() and world.player == actor:
 			world.player = actors.values()[0]
 			world.camp_map.focus = world.player
 			world.sight.player = world.player
-		actor.queue_free()
-	if dedicated and participants.is_empty() and phase in ["loading", "playing", "results"]:
+		if reserve:
+			reservations[token] = {"id":id, "actor":actor, "entry":entry, "expires":Time.get_ticks_msec()+RECONNECT_MS}
+			actor.controls_enabled = false
+			actor.velocity = Vector2.ZERO
+			actor.get_parent().remove_child(actor)
+			world.announce(entry.name + " disconnected. Gear dropped; survivor reserved for 5 minutes.")
+			if actors.is_empty():
+				waiting = true
+				world.process_mode = Node.PROCESS_MODE_DISABLED
+		else:
+			actor.queue_free()
+	if dedicated and participants.is_empty() and reservations.is_empty() and phase in ["loading", "playing", "results"]:
 		return_lobby(false)
 		return
 	if phase=="lobby": _broadcast_roster()
@@ -620,8 +812,19 @@ func _drop_objectives(actor: CampPlayer) -> void:
 	if world==null: return
 	world.drop_all_items(actor)
 
-func leave(reason: String = "Left the camp.") -> void:
-	if active: multiplayer.multiplayer_peer.close()
+func leave(reason: String = "Left the camp.", recovering: bool = false) -> void:
+	if active:
+		if not recovering and multiplayer.multiplayer_peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED and not multiplayer.is_server():
+			_depart.rpc_id(1)
+			# Give the reliable voluntary-departure notice a poll before closing.
+			var closing: MultiplayerPeer = multiplayer.multiplayer_peer
+			closing.transport.host.flush()
+			_close_departed(closing)
+		else: multiplayer.multiplayer_peer.close()
+	if not recovering:
+		reconnect_token = ""
+		reconnect_until = 0
+	_clear_reservations()
 	multiplayer.multiplayer_peer=OfflineMultiplayerPeer.new()
 	active=false
 	phase="offline"
@@ -639,6 +842,7 @@ func leave(reason: String = "Left the camp.") -> void:
 	menu_open=false
 	waiting=false
 	snapshot_parts.clear()
+	minimum_world_sequence = 0
 	assembling_sequence=0
 	status_text=reason
 	get_node("/root/Session").notice=reason
@@ -651,3 +855,7 @@ func leave(reason: String = "Left the camp.") -> void:
 func _clean_name(value: String) -> String:
 	var result := value.strip_edges().replace("\n"," ").replace("\r"," ").left(20)
 	return "Camper" if result.is_empty() else result
+
+func _close_departed(peer: MultiplayerPeer) -> void:
+	await get_tree().create_timer(0.15).timeout
+	peer.close()

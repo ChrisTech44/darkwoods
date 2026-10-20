@@ -97,4 +97,4 @@ func _process(_delta: float) -> void:
 			net.return_lobby(false)
 	if now >= next_status:
 		next_status = now + 30.0
-		print(JSON.stringify({"event": "server_status", "phase": net.phase, "players": net.roster.size(), "round": net.round_id, "snapshot_bytes": net.latest_snapshot_bytes, "loaded": net.loaded.keys(), "participants": net.participants.keys()}))
+		print(JSON.stringify({"event": "server_status", "phase": net.phase, "players": net.roster.size(), "round": net.round_id, "snapshot_bytes": net.latest_snapshot_bytes, "loaded": net.loaded.keys(), "participants": net.participants.keys(), "reserved_survivors": net.reservations.size(), "resuming": net.resuming.keys()}))

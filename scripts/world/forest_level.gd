@@ -668,7 +668,7 @@ func _advance_effects(delta: float) -> void:
 			var anchor: Vector2 = actor.effect_data.get("tether_to", actor.global_position)
 			if is_instance_valid(partner) and partner.has_effect("tethered"):
 				anchor = partner.global_position
-			elif partner != null:
+			elif actor.has_meta("tether_partner"):
 				actor.clear_effect("tethered")
 				actor.remove_meta("tether_partner")
 				continue

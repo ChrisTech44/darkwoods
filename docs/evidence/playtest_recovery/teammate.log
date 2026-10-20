@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2
+
+{"event":"assertion","name":"client_connects","passed":true}
+{"event":"assertion","name":"wait__client","passed":true}
+{"event":"loading_started"}
+{"event":"round_ready","milestone":"M1"}
+{"event":"assertion","name":"wait_before_client","passed":true}
+{"event":"assertion","name":"wait_before_client","passed":true}
+{"event":"assertion","name":"remote_marker_in_authoritative_kit","passed":true}
+{"event":"assertion","name":"wait_departure_client","passed":true}
+{"event":"assertion","name":"departure_reliably_clears_remote_tether_without_snapshot","passed":true}
+{"event":"assertion","name":"wait_after_client","passed":true}
+{"event":"assertion","name":"wait_after_client","passed":true}
+{"event":"assertion","name":"wait_resumed_silence_client","passed":true}
+{"event":"client_connection_lost","motion_sequence":646,"packet_idle_ms":13,"phase":"playing","reason":"Host disconnected.","snapshot_bytes":4075,"world_idle_ms":13,"world_sequence":427}
+{"event":"menu_ready","milestone":"M1"}
+{"checks":10,"event":"test_result","failures":0,"suite":"reconnect_client"}

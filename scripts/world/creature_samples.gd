@@ -655,9 +655,9 @@ static func draw_world(canvas: Node2D, level: Node) -> void:
 	for actor: CampPlayer in canvas.get_tree().get_nodes_in_group("survivors"):
 		if not SurvivorKits.enabled(actor): continue
 		SamplePresentation.guide(canvas,level,actor)
-		if actor.kit.get("marker_life",0.0)>0 and actor==level.player:
+		if actor.kit.get("marker_life",0.0)>0:
 			PixelArt.draw_in(canvas,"kit_return",Rect2(actor.kit["marker"]-Vector2(9,9),Vector2(18,18)))
-			canvas.draw_string(ThemeDB.fallback_font,actor.kit["marker"]+Vector2(-10,-15),"RETURN",HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("82c9d9"))
+			canvas.draw_string(ThemeDB.fallback_font,actor.kit["marker"]+Vector2(-10,-15),("RETURN" if actor==level.player else actor.display_name()+" RETURN"),HORIZONTAL_ALIGNMENT_LEFT,-1,7,Color("82c9d9"))
 		var impact_fx: Dictionary=actor.kit.get("impact",{})
 		if not impact_fx.is_empty() and (level.sight==null or level.sight.can_see(impact_fx["at"])):
 			SamplePresentation.sprite(canvas,impact_fx.kind,impact_fx.at,impact_fx.subtype,30,impact_fx.life/0.45)

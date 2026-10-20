@@ -116,7 +116,7 @@ render loop and Dummy audio; server paths skip voice codec/capture/playback.
 Source launch first imports assets/registers script classes and refuses to start
 after import errors, including when Godot exits zero. Exported packs skip import.
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
-cleanup are implemented. The game protocol is `lnac-net-21`, compatible with
+cleanup are implemented. The game protocol is `lnac-net-22`, compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
 The October 19 [server review](docs/server_review.md) fixes mixed-role assignment,
 batched-disconnect packet sends and stale package metadata. Actual four-client
@@ -127,7 +127,7 @@ bounded prediction/reconciliation and buffered remote motion; see evidence below
 
 ## Movement transport
 
-Rules are `lnac-net-21`: authority-only 30Hz player packets include applied-input
+Rules are `lnac-net-22`: authority-only 30Hz player packets include applied-input
 acknowledgements, bounded owner movement state and server-detected discontinuity
 counters. The owner predicts shared collision/movement immediately, with no AI
 hearing, blood or gameplay outcomes; authoritative fields are restored after each
@@ -199,3 +199,18 @@ relevant player documentation, fetch, commit intended changes, push the current
 branch to origin and confirm the remote commit. Preserve remote and unrelated
 work; never force-push or rewrite published history. Report exact publication
 blockers. Keep specifications and plans in Markdown only.
+
+
+## 20 October friends-playtest amendment
+
+John now halves numeric damage during Push Through before deferring the reduced
+bill. Alex's return marker draws for teammates. Unexpected ENet drops reserve the
+same server-owned survivor for five minutes and automatically retry from the
+running client. All supplies, tools, objectives and Max cash drop immediately;
+returning actors receive no duplicated or refreshed gear. Input silence (15s,
+not player inactivity), loading (90s) and reservation (5m) are separate clocks.
+Detached actors have tethers, holds, casts, riders, targets and vaults cleaned up.
+An empty dedicated round pauses until return/expiry; intentional Leave relinquishes
+recovery. Tokens are memory-only; no restart persistence or host migration.
+Protocol is lnac-net-22. [Investigation, Max UI/economy proposals and new monster
+concepts](docs/playtest_followup.md) distinguish implemented fixes from design.

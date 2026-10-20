@@ -2,7 +2,7 @@
 
 This checkout includes a dedicated authority for **1–4 human
 survivors**. The server has no survivor and consumes no player slot. Use the
-updated `main` client with rules **lnac-net-21**, with the same protocol.
+updated `main` client with rules **lnac-net-22**, with the same protocol.
 Older clients must update. The server owns AI, movement validation, damage,
 inventory, clues, objectives and extraction, using the same gameplay scene.
 
@@ -10,11 +10,11 @@ Woods now contains **31 creatures plus the Stalker**, including every roaming
 and regional type on every seed, also during Blood Moon. Enemy replication uses
 the seeded roster order, so update **both server and every client** to rules21;
 older clients must not join with a smaller/different roster. Restart the server
-after updating and confirm its `server_listening` line says `lnac-net-21`.
+after updating and confirm its `server_listening` line says `lnac-net-22`.
 
 Trail exploration is shared by the whole team, including travel by humans other
 than the server's reference survivor. Earlier rules-18 builds had an incomplete
-coverage path; current server and clients both require lnac-net-21.
+coverage path; current server and clients both require lnac-net-22.
 [Map replication checks](evidence/map_exploration/README.md).
 
 ## Run from source
@@ -29,7 +29,7 @@ On Genesect's Snap installation, prefix the command with
 `GODOT_BIN=/snap/bin/godot-4` so noninteractive shells find the engine. After
 friends finish the current night, stop the old process, pull the current branch,
 update every player's `main` copy and relaunch with your usual options. Client
-and server protocol must match lnac-net-21; older rules-17/18/19/20 clients cannot
+and server protocol must match lnac-net-22; older rules-17/18/19/20 clients cannot
 join it. Diagnostics for this update did not restart the regular server.
 
 The source launcher first runs Godot's headless import step to generate asset
@@ -76,13 +76,17 @@ Start. The server starts automatically after the minimum count is reached and
 unready cancels it. Set the minimum to your whole group to prevent an early start.
 
 Results return everyone to the lobby automatically; mark Ready for the next night.
-The client’s host-only results buttons remain unavailable. No mid-round join,
-reconnect, persistence, password, matchmaking or host migration is added. The
+The client’s host-only results buttons remain unavailable. New arrivals still wait for the lobby. Existing clients can automatically recover
+their survivor with an in-memory ticket for five minutes after an unexpected drop.
+No crash persistence, password, matchmaking or host migration is added. The
 server keeps running when a client leaves; departed gear drops for teammates.
-When everybody leaves a round it clears the world and waits in the lobby.
+When everybody deliberately leaves, the world clears. If everyone unexpectedly
+disconnects, the round pauses until somebody returns or all five-minute
+reservations expire. Items drop immediately; reconnect never duplicates them.
 A loading timeout resets the lobby and readiness rather than ending the server.
-ENet peer timeouts allow 90s for slow initial graphical loading; detecting an
-abruptly lost connection can therefore take up to that allowance.
+Initial graphical loading retains a 90s allowance. During play, fifteen seconds
+without input packets triggers removal and reservation; idle players still send
+packets continuously. Transport failures may also be detected earlier by ENet.
 
 ## Connect over a network
 
@@ -108,7 +112,7 @@ This writes `artifacts/server/last-night-server.zip`: a server PCK, shell launch
 build metadata and this guide. Metadata records the actual engine build, protocol,
 source commit and whether the checkout was dirty. Export runs in a fresh staging
 directory, validates the new PCK and replaces the ZIP last; failed exports preserve
-the previous bundle. The current rules21 package was built from clean runtime
+the previous bundle. The historical rules21 package was built from clean runtime
 commit `787e98b` and passed all 153 dedicated/four-client checks, including the full
 roster; [current metadata and hashes](evidence/full_roster/package.json).
 The earlier rules20 package was built from clean runtime commit `4e5d119`;
@@ -159,9 +163,14 @@ extend the earlier Linux/network results to the new build. See the
 [server review and execution evidence](server_review.md).
 
 Player poses now use an independent 30Hz stream; full world state uses 20Hz
-unordered fragments. Both clients and server must update to rules lnac-net-21 and
+unordered fragments. Both clients and server must update to rules lnac-net-22 and
 the server must restart before updated clients join. Bounded local prediction, acknowledged reconciliation and buffered remote motion
 are implemented; the client also avoids unchanged pickup/site redraws. See the
 [smoothness measurements](evidence/smoothness/README.md). The main client also
 includes the first-frame scenery preparation fix. These changes do not establish
 generally improved Internet latency or eliminate all player corrections.
+
+[20 October reconnect/watchdog investigation and acceptance](playtest_followup.md#disconnect-investigation-and-implemented-recovery). Update clients and authority together to rules22.
+
+The rules22 changes require a fresh source launch or rebuilt package; this increment
+does not replace the earlier local rules21 ZIP/PCK or deploy a running server.

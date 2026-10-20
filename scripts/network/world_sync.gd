@@ -10,7 +10,7 @@ static func capture(net: Node) -> Dictionary:
 	var players := {}
 	for id: int in net.actors:
 		var actor: CampPlayer=net.actors[id]
-		var row := {"position":actor.position,"inventory":actor.inventory,"supplies":actor.supplies,"belt":actor.belt,"blood":actor.blood}
+		var row := {"role":actor.role,"name":actor.peer_name,"position":actor.position,"inventory":actor.inventory,"supplies":actor.supplies,"belt":actor.belt,"blood":actor.blood}
 		for field in PLAYER_FIELDS: row[field]=actor.get(field)
 		players[id]=row
 	var enemies := []
@@ -58,16 +58,31 @@ static func apply(net: Node, state: Dictionary) -> void:
 	if state.get("exploration") is PackedByteArray:
 		level.plan.woods.restore_exploration(state["exploration"])
 	var players: Dictionary=state["players"]
+	if net.active and not net.multiplayer.is_server():
+		# Rejoining peers receive new transport IDs. Keep identity consumers such
+		# as opt-in voice in step with the same authoritative actor membership.
+		var membership := {}
+		for id: int in players:
+			membership[id] = {"name":players[id]["name"], "role":players[id]["role"], "ready":true}
+		net.participants = membership
+		net.roster = membership.duplicate(true)
 	for id: int in net.actors.keys():
 		if not players.has(id):
-			var old: CampPlayer=net.actors[id]
-			net.motion_targets.erase(old)
-			net.remote_motion.erase(old)
-			level.van.passengers.erase(old)
-			net.actors.erase(id)
-			old.queue_free()
+			remove_actor(net, id)
 	for id: int in players:
-		if not net.actors.has(id): continue # Mid-round joining is disallowed.
+		if not net.actors.has(id):
+			var fresh: CampPlayer = level.PLAYER_SCENE.instantiate()
+			fresh.config = level.config
+			fresh.role = players[id]["role"]
+			fresh.peer_name = players[id]["name"]
+			fresh.expedition = level.plan.expedition
+			fresh.local_input = false
+			fresh.net_controlled = true
+			fresh.controls_enabled = true
+			level.world_objects.add_child(fresh)
+			fresh.set_physics_process(false)
+			fresh.position = players[id]["position"]
+			net.actors[id] = fresh
 		var actor: CampPlayer=net.actors[id]
 		var row: Dictionary=players[id]
 		# A delayed world snapshot must not overwrite a newer player pose.
@@ -179,3 +194,13 @@ static func apply(net: Node, state: Dictionary) -> void:
 		net.phase="results"
 		level.soundscape.stop_round()
 		level.hud.show_result(level.won,level.escape_route + "\nYou: %s.\nNight %d" % [CampPlayer.Status.keys()[level.player.status].to_lower().replace("_"," "),net.seed_value] + level.awards_text + level.record_profile(level.won))
+
+
+static func remove_actor(net: Node, id: int) -> void:
+	if not net.actors.has(id): return
+	var old: CampPlayer = net.actors[id]
+	net.motion_targets.erase(old)
+	net.remote_motion.erase(old)
+	net.world.van.passengers.erase(old)
+	net.actors.erase(id)
+	old.queue_free()

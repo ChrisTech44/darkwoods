@@ -1,5 +1,49 @@
 # Development log
 
+## 2026-10-20 — Friends-playtest recovery, John and Alex
+
+Implemented five-minute reconnect reservations and automatic two-second retry for
+unexpected client drops, superseding the initial 90s proposal at the user's request.
+The user's later instruction makes all carried supplies/tools/objectives and Max
+cash drop immediately on detected disconnect. Returning actors keep injuries,
+position and kit state but receive no fresh/duplicate gear. Tethers, grabs, copied
+holds, riders, creature targets and unfinished vaults are cleaned up. An empty
+dedicated round pauses until return/final expiry. Tickets stay in memory; intentional
+Leave relinquishes recovery, and no crash persistence/host migration is claimed.
+
+The supplied server log does detect both departures. Source revealed a ten-second
+client timeout based only on complete world snapshots, an assembler discarding
+older interleaved sequences, rejected mid-round registrations and stale tether
+cleanup. Valid motion now maintains liveness, four assemblies are bounded, and
+private tokens reclaim existing survivors. The server detects fifteen seconds of
+missing input packets; standing still and menus still send packets. Readiness
+resets that clock after slow scene loading. Reliable departures clear bodies and
+tethers even without world snapshots; pre-departure snapshots cannot restore them.
+New diagnostics report silence, loss, reservations, recovery and expiry without
+logging tickets. Identity membership/map pins follow returning transport IDs.
+
+John halves numerical damage before deferring it during Push Through, including
+numeric drain while the window remains active. Grabs end the window even when
+there was no prior debt; forced-down transitions remain separate. Alex's replicated
+marker now renders for teammates with owner identity. John's selector/guide rules
+now describe the reduced damage, and his actual selector capture was inspected. Max's permanent three-line
+help panel is confirmed in a rendered capture; the compact wallet, alternative
+income proposals and four distinct monster concepts are documented as proposals,
+not implemented balance/UI/content changes. [Investigation and proposals](playtest_followup.md).
+Rules advance to lnac-net-22; update client and authority together.
+
+Verification: required import/startup, 190 ability/cleanup assertions, four-player
+rendered dedicated recovery (80), four-person listen recovery (68), fully empty
+dedicated recovery/expiry (41), production dedicated simultaneous-departure
+regression (153), four-peer Woods network (428), Quick Camp network (150), menu smoke (37), prediction
+(81), map replication (15) and synthetic voice (45) pass. No microphones. Actual
+normal-light teammate captures were inspected; AI, poses, injected gear and forced
+expiry are labelled. The general network fixture uses diagnostic all-escape mode;
+recovery captures use normal routes. [Evidence, early corrected failures and limits](evidence/playtest_recovery/README.md).
+Markdown links and `git diff --check` were checked before publication. No complete
+broad regression, original Internet reproduction, new rules22 package or server
+deployment is claimed; previous packages must be rebuilt for the new protocol.
+
 ## 2026-10-19 — Every monster type on every Woods night
 
 Implemented the user's full-roster instruction: all 22 roaming types now spawn

@@ -14,7 +14,7 @@ acceptance remains pending. Target-only differences are called out explicitly.
 
 - Four IDs, four selector/lobby choices, dedicated camper artwork, saved-role
   reselection and common baseline stats replace the old six roles.
-- John: 6s window / 45s cooldown; once-only preparation credit on all five routes.
+- John: 6s window / 45s cooldown, 50% incoming damage reduction before deferral; once-only preparation credit on all five routes.
   Deferred damage uses normal hit grace, effective wound/grab eligibility, and
   settles before boarding/extraction. Existing downed-team rescue is preserved.
 - Max: starts at $6, cap $100; searches +$4 and per-thieving-creature first
@@ -30,7 +30,7 @@ acceptance remains pending. Target-only differences are called out explicitly.
   10s; secondary pounces have 3s cooldown. Most copied AI statuses cap at 6s;
   headline sensory disruption caps at 2s, with no frog/hold-lock on the Stalker.
   Activations have warnings and finite cleanup; sample casts cannot earn samples.
-- Protocol is `lnac-net-20`. Host RNG, cash receipts/spills, sample state and the
+- Protocol is `lnac-net-22`. Host RNG, cash receipts/spills, sample state and the
   compact movement projection replicate; clients cannot award these outcomes.
 
 Current implementation differences to assess explicitly: creature slime uses a
@@ -64,7 +64,7 @@ personality, rather than unrelated stat penalties.
 | Character | Passive | X ability | Personal temptation / drawback |
 | --- | --- | --- | --- |
 | Christian | **Bad Research:** survive a creature encounter to collect its signature sample | **Field Test:** reproduce that creature's power, including transformations and area effects | Getting samples requires dangerous curiosity; experiments can affect friends and himself |
-| John | **Making Progress:** completing a preparation step refills stamina | **Push Through:** defer incoming damage and its ordinary hit reactions briefly | He can finish the job, then collapse when the damage lands |
+| John | **Making Progress:** completing a preparation step refills stamina | **Push Through:** halve incoming damage, then defer the reduced bill and ordinary hit reactions briefly | He can finish the job, then collapse when the damage lands |
 | Max | **Finder's Fee:** optional searches and stolen-gear recovery award cash | **Cash Out:** purchase an ordinary supply or risk more money for a larger random payout | Damage spills money; greed tempts him to return for it |
 | Alex | **Travel Alone:** better light economy and stamina recovery while isolated | **My Own Way Back:** place a temporary marker and channel a return with current gear | Damage interrupts; grabs/downing prevent return, leaving him dependent on a rescue |
 
@@ -224,13 +224,13 @@ Installed progress still advances the night normally, with all its consequences.
 
 ### Push Through and the bill
 
-For a short, visibly timed window, accepted incoming damage enters a deferred
+For a short, visibly timed window, accepted incoming damage is halved and enters a deferred
 ledger instead of being immediately subtracted. Ordinary associated hit reactions
 are suppressed so John can finish moving or interacting. He remains vulnerable
 to grabs, downing conditions outside ordinary damage, curses, traps, tethering
 and task range/hold requirements. This is not immunity or a universal CC cleanse.
 
-At expiry, apply the full outstanding damage once through normal down/drop
+At expiry, apply the full reduced outstanding debt once through normal down/drop
 handling. Show projected remaining health and debt throughout; lethal debt must
 be obvious. Deferred damage cannot be healed away before it lands. Proposed first
 implementation rejects health-restoring consumables while debt is pending,
@@ -456,3 +456,5 @@ Implementation verification and its limits are recorded in the
 [development log](development_log.md). The original catalogue remains a design
 contract; distinguish individual acceptance cases from the existence of handlers.
 The optional Stalker/Lake Thing special-source proposals remain outside the pool.
+
+20 October amendment: [playtest fixes and unimplemented Max/monster proposals](playtest_followup.md).

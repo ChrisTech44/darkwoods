@@ -158,3 +158,16 @@ func snapshot() -> Dictionary:
 
 func restore(_state: Dictionary) -> void:
 	pass
+
+
+## A reserved survivor remains allocated outside the scene tree. Clear direct
+## references so no windup, rider or drain can keep using that absent body.
+func survivor_left(actor: CampPlayer) -> void:
+	if body.species == "hitchhiker" and get("rider_of") == actor:
+		call("_hop_off", actor)
+	if body.species == "lantern_moth" and get("riding") == actor:
+		actor.clear_effect("face_moth")
+		call("_let_go")
+	for property: Dictionary in get_property_list():
+		if property.type == TYPE_OBJECT and property.usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
+			if get(property.name) == actor: set(property.name, null)

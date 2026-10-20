@@ -294,6 +294,7 @@ func receive_hit(damage: float = DEFAULT_HIT) -> bool:
 	if status != Status.ALIVE or hidden_spot >= 0:
 		return false
 	var was_wounded := wounded
+	if role == "john" and ability_active > 0.0: damage *= 0.5
 	SurvivorKits.hit(self,damage)
 	if role == "john" and ability_active > 0.0:
 		kit["debt"] = float(kit.get("debt",0.0)) + damage
@@ -354,7 +355,7 @@ func _tick_effects(delta: float) -> void:
 ## free: every E press adds `per_press` of a full escape.
 func grab(by: Node, label: String, per_press: float, decay: float = 0.1) -> void:
 	SurvivorKits.cancel_return(self)
-	if kit.get("debt",0.0) > 0.0:
+	if kit.get("debt",0.0) > 0.0 or (role == "john" and ability_active > 0.0):
 		SurvivorKits.settle(self)
 		if status != Status.ALIVE: return
 	holder = by
@@ -548,6 +549,9 @@ func on_released(_actor: CampPlayer) -> void:
 ## Holds drain continuously after ending Push Through at grab time; hit grace
 ## does not turn a bite/squeeze into one hit every 1.5 seconds.
 func receive_drain(damage: float) -> void:
+	if role == "john" and ability_active > 0.0 and status == Status.ALIVE:
+		kit["debt"] = float(kit.get("debt",0.0)) + damage * 0.5
+		return
 	SurvivorKits.settle(self)
 	if status != Status.ALIVE: return
 	SurvivorKits.cancel_return(self)

@@ -207,6 +207,25 @@ func _host() -> void:
 	for report: Dictionary in harness.reports.values():
 		_check(report.get("beam",false),"remote_flashlight_node_enabled")
 		if capture: _check(report.get("pixels",false),"remote_flashlight_illuminates_client_pixels")
+	# Start the next sequence before finishing this one: older complete state
+	# must still apply even with a newer incomplete assembly in flight.
+	net.snapshot_clock = 1000
+	net.snapshot_sequence += 1
+	var interleaved: int = net.snapshot_sequence
+	var full: PackedByteArray = var_to_bytes(WorldSync.capture(net)).compress(FileAccess.COMPRESSION_DEFLATE)
+	var parts := ceili(float(full.size())/net.SNAPSHOT_CHUNK)
+	harness.advance.rpc("interleaved", {"sequence":interleaved})
+	var interleave_deadline := Time.get_ticks_msec()+5000
+	while harness.reports.size()<peers-1 and Time.get_ticks_msec()<interleave_deadline:
+		net._snapshot_piece.rpc(net.round_id,interleaved,0,parts,full.slice(0,net.SNAPSHOT_CHUNK))
+		net._snapshot_piece.rpc(net.round_id,interleaved+1,0,parts,full.slice(0,net.SNAPSHOT_CHUNK))
+		for part in range(1,parts):
+			net._snapshot_piece.rpc(net.round_id,interleaved,part,parts,full.slice(part*net.SNAPSHOT_CHUNK,(part+1)*net.SNAPSHOT_CHUNK))
+		await create_timer(0.1).timeout
+	if not await _reports(peers-1): return
+	for report: Dictionary in harness.reports.values(): _check(report.get("applied",false),"older_complete_snapshot_survives_newer_incomplete_sequence")
+	net.snapshot_sequence += 1
+	net.snapshot_clock = 0
 	# Deliberately omit snapshot pieces. Clients must keep old state and recover on the next complete sequence.
 	net.snapshot_clock=1000
 	net.snapshot_sequence+=1
@@ -215,7 +234,7 @@ func _host() -> void:
 	level.player.position += Vector2(32, 0)
 	harness.advance.rpc("packet_gap",{"sequence":gap, "position":level.player.position})
 	# This channel is intentionally lossy: retry the same incomplete piece until observed.
-	var gap_deadline := Time.get_ticks_msec()+4000
+	var gap_deadline := Time.get_ticks_msec()+16000
 	while harness.reports.size()<peers-1 and Time.get_ticks_msec()<gap_deadline:
 		net._snapshot_piece.rpc(net.round_id,gap,0,2,incomplete.slice(0,mini(900,incomplete.size()/2)))
 		await create_timer(0.1).timeout
@@ -550,11 +569,17 @@ func _client() -> void:
 				await create_timer(0.15).timeout
 				if capture: light_dark=await _light_image()
 				harness.report.rpc_id(1,handled,{})
+			"interleaved":
+				await _until(func(): return net.last_snapshot == harness.data.sequence,5)
+				harness.report.rpc_id(1,handled,{"applied":net.last_snapshot == harness.data.sequence})
 			"packet_gap":
 				var first_motion: int = net.last_motion_sequence
 				await _until(func(): return net.assembling_sequence>=harness.data["sequence"],5)
 				var live := func() -> bool: return net.last_motion_sequence > first_motion + 2 and net.actors[1].position.distance_to(harness.data["position"]) < 3.0
 				await _until(live, 5)
+				# Healthy motion must prevent the old 10s full-world-only timeout.
+				await create_timer(11.0).timeout
+				_check(net.active and net.phase == "playing","motion_liveness_survives_eleven_seconds_without_world_state")
 				harness.report.rpc_id(1,handled,{"partial_rejected":net.last_snapshot<harness.data["sequence"], "motion_live":live.call()})
 			"packet_recovery":
 				await _until(func(): return net.last_snapshot>harness.data["sequence"],5)

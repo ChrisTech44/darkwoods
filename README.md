@@ -2,7 +2,7 @@
 
 **Dedicated server:** run a camp without a host survivor. See the
 [server setup and connection guide](docs/dedicated_server.md). Updated `main`
-clients (`lnac-net-21`) can join; the server code is available in this checkout.
+clients (`lnac-net-22`) can join; the server code is available in this checkout.
 
 **Find the parts. Keep your light alive. Get out before the woods get you.**
 
@@ -334,14 +334,16 @@ for the next night and the next launch. Default port: **UDP 27840**. Everyone ma
 the host chooses mode/seed and starts. LAN/Wi-Fi uses the host's local IP;
 Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
 
-Update clients and server together to **lnac-net-21**. Your survivor now responds
+Update clients and server together to **lnac-net-22**. Your survivor now responds
 locally, with server corrections smoothed; other survivors use a short movement
 buffer. A long connection interruption can still pause movement. See
 [measured smoothness improvements](docs/evidence/smoothness/README.md).
 
 **[Connection setup, co-op rules and screenshots](docs/multiplayer_guide.md)**
 explains routing, joining, revives, shared escape and replay. New joins are
-lobby-only. **Esc opens a local menu without pausing the shared world.**
+lobby-only; disconnected players can recover their existing survivor for five
+minutes. All carried gear drops immediately and never duplicates on return.
+**Esc opens a local menu without pausing the shared world.**
 
 **Proximity voice** (optional, off by default): in **Settings** or the Esc menu,
 set **MIC** to *Push to talk (B)* or *Open mic*, then **restart the game once**.
@@ -640,7 +642,7 @@ and hiking boots. These are stylized designs from descriptions.
 | Survivor | Passive | X ability | Drawback |
 | --- | --- | --- | --- |
 | **Christian** | Survive a real creature signature to collect one sample | **Field Test:** reproduce its signature; some samples transform you. X again performs a form's secondary action | Friends can be affected. Full slots keep their sample; Werewolf needs the actual full moon |
-| **John** | Completing a new preparation step on any escape refills stamina | **Push Through:** defer accepted damage for 6s, 45s cooldown | Full debt lands afterward. Grabs end the burst; healing waits. Lethal debt cannot be escaped by boarding |
+| **John** | Completing a new preparation step on any escape refills stamina | **Push Through:** halve accepted damage and defer the reduced bill for 6s, 45s cooldown | Reduced debt lands afterward. Grabs end the burst; healing waits. Lethal debt cannot be escaped by boarding |
 | **Max** | Optional searches earn $4; first recovery of a creature's stolen loot earns $3 | **Cash Out:** tap X for one ordinary supply ($4); hold then release to gamble $4/$8/$12 | Gamble: 45% bust, otherwise 2/4/6 supplies. Hits spill some cash; teammates can return it to its owner |
 | **Alex** | After 4s isolated from living teammates, light uses 25% less charge and stamina recovers 35% faster | **My Own Way Back:** X places a 75s marker; X again while alone channels a 2s return, then 40s cooldown | Hits interrupt; holds/downing prevent return. Blocked landing or expiry can ruin the plan |
 
@@ -1132,7 +1134,8 @@ After a round:
 
 In co-op, only the host chooses replay: everyone returns to the lobby with
 readiness cleared; Retry Seed retains the world recipe. Guests wait for the host
-or leave. A host disconnect ends the session.
+or leave. Lost connections retry the same authority for five minutes; a stopped
+host cannot be recovered through host migration.
 
 Both modes vary building positions and surrounding trees within reserved camp
 lots. Bunk cabins can trade places, as can the bathhouse and first aid building. Door paths, loot and field-map markers move together. Roof footprints

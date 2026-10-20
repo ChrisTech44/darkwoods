@@ -43,7 +43,7 @@ static func use(actor: CampPlayer) -> bool:
 			if actor.ability_active > 0.0: return false
 			actor.ability_active = JOHN_WINDOW
 			actor.ability_cooldown = JOHN_COOLDOWN
-			level.announce("Push Through: damage is deferred, not forgiven.", actor)
+			level.announce("Push Through: half damage; the reduced bill lands afterward.", actor)
 			return true
 		"max":
 			if actor.kit["stake_time"] >= 0.0: return false

@@ -59,6 +59,7 @@ func run() -> void:
 	watching_checks()
 	rule_checks()
 	cancellation_checks()
+	disconnect_cleanup_checks()
 	print(JSON.stringify({"event":"test_result","suite":"four_survivors","checks":checks,"failures":failures}))
 	await root.get_node("AudioManager").prepare_shutdown()
 	quit(1 if failures else 0)
@@ -73,8 +74,8 @@ func john_checks() -> void:
 	check(john.stamina == 0,"john_no_repeat_completion_farm")
 	check(level.abilities.use(john),"john_push_through_starts")
 	john.invulnerability = 0
-	check(john.receive_hit(60) and john.health==100 and john.kit.debt==60 and john.wounded,"john_damage_deferred_effective_wound")
-	check(not john.receive_hit(60) and john.kit.debt==60,"john_hit_grace_before_ledger")
+	check(john.receive_hit(120) and john.health==100 and john.kit.debt==60 and john.wounded,"john_damage_deferred_effective_wound")
+	check(not john.receive_hit(120) and john.kit.debt==60,"john_hit_grace_before_ledger")
 	john.supplies.medkit = 1
 	check(not level.use_supply(john,"medkit") and john.supplies.medkit == 1,"john_no_heal_debt_consumption")
 	john.heal(50)
@@ -87,12 +88,27 @@ func john_checks() -> void:
 	john.ability_cooldown = 0
 	level.abilities.use(john)
 	john.invulnerability = 0
-	john.receive_hit(120)
+	john.receive_hit(240)
 	john.set_status(CampPlayer.Status.ESCAPED)
 	check(john.status==CampPlayer.Status.DOWNED and john.kit.debt==0,"john_cannot_escape_lethal_debt")
 	john.set_status(CampPlayer.Status.ALIVE)
 	SurvivorKits.settle(john)
 	check(john.health==35,"john_revive_has_no_stale_ledger")
+	john.health = 100
+	john.ability_active = 6
+	john.receive_drain(20)
+	check(john.health == 100 and john.kit.debt == 10 and john.ability_active == 6,"john_continuous_drain_halved_and_deferred")
+	SurvivorKits.settle(john)
+	check(john.health == 90,"john_reduced_drain_settles_once")
+	john.receive_drain(20)
+	check(john.health == 70,"john_outside_window_drain_full_strength")
+	john.health = 100
+	john.ability_active = 6
+	john.grab(friends.christian,"TEST",0.1)
+	check(john.ability_active == 0,"john_grab_ends_window_even_without_prior_debt")
+	john.receive_drain(10)
+	check(john.health == 90,"john_post_grab_drain_is_full_strength")
+	john.release()
 	john.health = 100
 
 func max_checks() -> void:
@@ -406,3 +422,32 @@ func rule_checks() -> void:
 	check(is_equal_approx(christian.config.flashlight_capacity/christian.light_drain,420),"ordinary_flashlight_lasts_seven_minutes")
 	alex.kit.isolated=true
 	check(is_equal_approx(alex.config.flashlight_capacity/alex.passive_light_rate(),560),"isolated_alex_light_estimate_matches_drain")
+
+func disconnect_cleanup_checks() -> void:
+	var actor: CampPlayer = friends.alex
+	var net: Node = root.get_node("Net")
+	net.world = level
+	# Set each typed player reference, including windups and passive targets.
+	var assigned := 0
+	for enemy: CampKiller in get_nodes_in_group("killers"):
+		if not enemy is CampCryptid or enemy.brain == null: continue
+		for property: Dictionary in enemy.brain.get_property_list():
+			if property.get("class_name", "") == "CampPlayer":
+				enemy.brain.set(property.name, actor)
+				assigned += 1
+	level.killer.traits.favourite = actor
+	actor.kit.cast = {"kind":"vampire"}
+	friends.christian.grab(actor,"COPIED HOLD",0.1)
+	level.props.vaults[actor.get_instance_id()] = {"actor":weakref(actor),"from":Vector2(96,384),"to":Vector2(96,420)}
+	actor.vault_time = 0.1
+	actor.collision_mask &= ~CampPlayer.BARRIER_LAYER
+	net._clear_links(actor)
+	check(assigned >= 10,"disconnect_fixture_covers_direct_brain_targets")
+	for enemy: CampKiller in get_nodes_in_group("killers"):
+		if not enemy is CampCryptid or enemy.brain == null: continue
+		for property: Dictionary in enemy.brain.get_property_list():
+			if property.get("class_name", "") == "CampPlayer":
+				check(enemy.brain.get(property.name) != actor,"disconnect_clears_"+enemy.species+"_"+property.name)
+	check(level.killer.traits.favourite == null and not friends.christian.has_effect("held") and actor.kit.cast.is_empty(),"disconnect_releases_favourite_and_copied_hold")
+	check(not level.props.vaults.has(actor.get_instance_id()) and actor.vault_time == 0 and actor.collision_mask & CampPlayer.BARRIER_LAYER and actor.position == Vector2(96,384),"disconnect_cancels_vault_on_safe_starting_side")
+	net.world = null

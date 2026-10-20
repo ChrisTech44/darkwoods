@@ -1,5 +1,23 @@
 # Development log
 
+## 2026-10-19 — Compact abilities on/off checkbox
+
+User confirmed pulling current main resolved the rules-18/server join mismatch,
+then clarified that the oversized bar meant the abilities on/off control. Narrowed
+this increment to that UI: replaced the full-row gold CheckButton with a compact,
+flat CheckBox shared by lobby and offline Settings. Lobby allocation is 140×16
+instead of 356×16; Settings shrinks to content. Native check mark, keyboard focus,
+short tooltip and all existing host/guest/readiness/round-lock behavior remain.
+In-game status and connection behavior retain their published implementation.
+
+Inspected actual menu/lobby captures at the 384×216 viewport; no new artwork or
+SpriteCook credits. Graphical ability feedback passes 110 assertions. Real ENet
+abilities-off verification passes nine processes/79 assertions for four-person
+listen and dedicated hosting, including guest restrictions. Microphones stayed
+off. [Before/after and executed evidence](evidence/abilities_toggle/README.md).
+Required import/startup, changed Markdown links and diff checks pass. This is a
+UI-only increment, not a new full regression or remote deployment claim.
+
 ## 2026-10-19 — Full regression completion and clean server bundle
 
 Completed all **254 verification steps**, including 180 parse checks and 27 named

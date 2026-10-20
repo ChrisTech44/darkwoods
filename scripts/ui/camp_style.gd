@@ -23,6 +23,21 @@ static func art(name: String, margin: int, padding: int, fallback: StyleBox) -> 
 	return result
 
 
+## Compact checkbox: inherited Button art would turn this rule into a full-width
+## gold action bar. Keep a native check mark, keyboard focus and readable label.
+static func abilities_toggle() -> CheckBox:
+	var control := CheckBox.new()
+	control.name = "CamperAbilities"
+	control.text = "CAMPER ABILITIES"
+	control.tooltip_text = "Passive + active powers. Host controls online."
+	control.add_theme_font_size_override("font_size", 8)
+	control.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	for state in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
+		control.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	control.add_theme_stylebox_override("focus", box("00000000", "e1c888", 0))
+	return control
+
+
 static func make() -> Theme:
 	var result := Theme.new()
 	result.default_font_size = 9

@@ -88,8 +88,9 @@ is physically within 230px; it does not conjure cards from a distant location.
 Distance/sight gating, beam fade, speed cap, grabs and deliberate investigations
 retain their existing behavior. Human scare/balance acceptance remains pending.
 
-**Camper abilities** defaults on. Offline: main-menu Settings switch. Listen host:
-lobby switch, visible but locked for guests. Changes clear readiness; the rule is
+**Camper abilities** defaults on. Offline: compact main-menu Settings checkbox.
+Listen host: compact lobby checkbox, visible but locked for guests.
+[Control sizing evidence](evidence/abilities_toggle/README.md). Changes clear readiness; the rule is
 locked for the round. Dedicated: `python3 tools/run_server.py --no-camper-abilities`
 (or the same user flag with direct Godot server launch). It disables all four
 passives and actives, including starting samples/cash; movement, ordinary supplies,

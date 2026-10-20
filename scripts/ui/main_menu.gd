@@ -62,10 +62,7 @@ func _ready() -> void:
 	content.add_child(scroll)
 	knobs.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 	scroll.add_child(knobs)
-	var powers := CheckButton.new()
-	powers.name = "CamperAbilities"
-	powers.text = "CAMPER ABILITIES"
-	powers.add_theme_font_size_override("font_size", 9)
+	var powers := CampStyle.abilities_toggle()
 	powers.button_pressed = session.camper_abilities_enabled
 	powers.toggled.connect(func(value: bool): session.camper_abilities_enabled = value)
 	content.add_child(powers)

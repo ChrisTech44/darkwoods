@@ -6,6 +6,12 @@ Both modes keep the current survivor choices, items, enemies and escape rules.
 Voice chat follows the first [gameplay overhaul](fun_overhaul.md) slices; no
 microphone is opened or requested.
 
+Before a night, **CAMPER ABILITIES** is a compact checkbox in the lobby. The
+listen host controls it; guests see the host's choice. It enables/disables all
+camper passive and active powers, and changing it clears readiness. Offline,
+the same checkbox is in main-menu Settings. Dedicated servers use
+`--no-camper-abilities`; see the [server guide](dedicated_server.md).
+
 ## Player movement updates
 
 All players and the server must update together to **lnac-net-20**. Player poses

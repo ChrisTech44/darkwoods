@@ -110,12 +110,9 @@ func _ready() -> void:
 	roster_label=_label("",Vector2(14,115),8)
 	roster_label.add_theme_constant_override("line_spacing",-4)
 	roster_label.size=Vector2(356,30)
-	var powers := CheckButton.new()
-	powers.name="CamperAbilities"
-	powers.text="CAMPER ABILITIES (PASSIVE + ACTIVE)"
+	var powers := CampStyle.abilities_toggle()
 	powers.position=Vector2(14,145)
-	powers.size=Vector2(356,16)
-	powers.add_theme_font_size_override("font_size",7)
+	powers.size=Vector2(140,16)
 	powers.button_pressed=net.camper_abilities_enabled
 	powers.toggled.connect(func(value: bool):
 		if not net.active: net.camper_abilities_enabled=value

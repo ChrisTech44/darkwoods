@@ -1,0 +1,713 @@
+{
+  "platform": "macOS arm64; Godot 4.7.2",
+  "protocol": "lnac-net-34",
+  "total_checks": 1263,
+  "results": {
+    "randomized_layout": {
+      "checks": 105,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "randomized_layout"
+    },
+    "outskirts_layout": {
+      "checks": 522,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "outskirts_layout"
+    },
+    "navigation_seeds": {
+      "checks": 12,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "navigation_seeds"
+    },
+    "road_network": {
+      "checks": 38,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "road_network"
+    },
+    "rotation_clues": {
+      "checks": 15,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "rotation_clues"
+    },
+    "barriers": {
+      "checks": 32,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "barriers"
+    },
+    "field_escapes": {
+      "checks": 57,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "field_escapes"
+    },
+    "signal_fire": {
+      "checks": 31,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "signal_fire"
+    },
+    "boat_barrage_native_dummy": {
+      "checks": 32,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "boat_barrage"
+    },
+    "map_capture": {
+      "checks": 1,
+      "event": "test_result",
+      "failures": 0,
+      "suite": "random_layout_capture"
+    },
+    "listen_host_client": {
+      "checks": 265,
+      "failures": 0,
+      "records": [
+        {
+          "name": "woods_2_host_0",
+          "command": [
+            "/opt/homebrew/bin/godot",
+            "--headless",
+            "--path",
+            "/Users/christianfranklin/games/darkwoods",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tests/integration/network_peer.gd",
+            "--",
+            "--all-escapes",
+            "--side",
+            "host",
+            "--mode",
+            "woods",
+            "--port",
+            "28043",
+            "--peers",
+            "2",
+            "--index",
+            "0"
+          ],
+          "exit_code": 0,
+          "passed": true,
+          "errors": [],
+          "result": [
+            {
+              "checks": 201,
+              "event": "test_result",
+              "failures": 0,
+              "largest_snapshot_payload": 1000,
+              "snapshot_bytes": 4726,
+              "suite": "network_host_woods_2"
+            }
+          ],
+          "log": "artifacts/network/woods_2_host_0.log"
+        },
+        {
+          "name": "woods_2_client_1",
+          "command": [
+            "/opt/homebrew/bin/godot",
+            "--headless",
+            "--path",
+            "/Users/christianfranklin/games/darkwoods",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tests/integration/network_peer.gd",
+            "--",
+            "--all-escapes",
+            "--side",
+            "client",
+            "--mode",
+            "woods",
+            "--port",
+            "28043",
+            "--peers",
+            "2",
+            "--index",
+            "1"
+          ],
+          "exit_code": 0,
+          "passed": true,
+          "errors": [],
+          "result": [
+            {
+              "checks": 62,
+              "event": "test_result",
+              "failures": 0,
+              "largest_snapshot_payload": 0,
+              "snapshot_bytes": 4726,
+              "suite": "network_client_woods_2"
+            }
+          ],
+          "log": "artifacts/network/woods_2_client_1.log"
+        },
+        {
+          "name": "woods_2_late_9",
+          "command": [
+            "/opt/homebrew/bin/godot",
+            "--headless",
+            "--path",
+            "/Users/christianfranklin/games/darkwoods",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tests/integration/network_peer.gd",
+            "--",
+            "--all-escapes",
+            "--side",
+            "late",
+            "--mode",
+            "woods",
+            "--port",
+            "28043",
+            "--peers",
+            "2",
+            "--index",
+            "9"
+          ],
+          "exit_code": 0,
+          "passed": true,
+          "errors": [],
+          "result": [
+            {
+              "checks": 2,
+              "event": "test_result",
+              "failures": 0,
+              "largest_snapshot_payload": 0,
+              "snapshot_bytes": 0,
+              "suite": "network_late_woods_2"
+            }
+          ],
+          "log": "artifacts/network/woods_2_late_9.log"
+        }
+      ]
+    },
+    "dedicated_four_client": {
+      "checks": 153,
+      "failures": 0,
+      "records": [
+        {
+          "side": "server",
+          "index": 0,
+          "exit": 0,
+          "passed": true,
+          "errors": [],
+          "results": [
+            {
+              "checks": 79,
+              "event": "test_result",
+              "failures": 0,
+              "players": 4,
+              "suite": "dedicated_server"
+            }
+          ],
+          "command": [
+            "/opt/homebrew/bin/godot",
+            "--headless",
+            "--disable-render-loop",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/Users/christianfranklin/games/darkwoods",
+            "--script",
+            "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd",
+            "--",
+            "--dedicated-server",
+            "--port",
+            "54249",
+            "--mode",
+            "woods",
+            "--seed",
+            "13",
+            "--min-players",
+            "4",
+            "--start-delay",
+            "1",
+            "--result-delay",
+            "8"
+          ],
+          "log": "artifacts/dedicated/woods_4_1792552255709248000_server_0.log"
+        },
+        {
+          "side": "client",
+          "index": 0,
+          "exit": 0,
+          "passed": true,
+          "errors": [],
+          "results": [
+            {
+              "checks": 18,
+              "event": "test_result",
+              "failures": 0,
+              "players": 4,
+              "suite": "dedicated_client"
+            }
+          ],
+          "command": [
+            "/opt/homebrew/bin/godot",
+            "--headless",
+            "--disable-render-loop",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/Users/christianfranklin/games/darkwoods",
+            "--script",
+            "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+          ],
+          "log": "artifacts/dedicated/woods_4_1792552255709248000_client_0.log"
+        },
+        {
+          "side": "client",
+          "index": 1,
+          "exit": 0,
+          "passed": true,
+          "errors": [],
+          "results": [
+            {
+              "checks": 18,
+              "event": "test_result",
+              "failures": 0,
+              "players": 4,
+              "suite": "dedicated_client"
+            }
+          ],
+          "command": [
+            "/opt/homebrew/bin/godot",
+            "--headless",
+            "--disable-render-loop",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/Users/christianfranklin/games/darkwoods",
+            "--script",
+            "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+          ],
+          "log": "artifacts/dedicated/woods_4_1792552255709248000_client_1.log"
+        },
+        {
+          "side": "client",
+          "index": 2,
+          "exit": 0,
+          "passed": true,
+          "errors": [],
+          "results": [
+            {
+              "checks": 20,
+              "event": "test_result",
+              "failures": 0,
+              "players": 4,
+              "suite": "dedicated_client"
+            }
+          ],
+          "command": [
+            "/opt/homebrew/bin/godot",
+            "--headless",
+            "--disable-render-loop",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/Users/christianfranklin/games/darkwoods",
+            "--script",
+            "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+          ],
+          "log": "artifacts/dedicated/woods_4_1792552255709248000_client_2.log"
+        },
+        {
+          "side": "client",
+          "index": 3,
+          "exit": 0,
+          "passed": true,
+          "errors": [],
+          "results": [
+            {
+              "checks": 18,
+              "event": "test_result",
+              "failures": 0,
+              "players": 4,
+              "suite": "dedicated_client"
+            }
+          ],
+          "command": [
+            "/opt/homebrew/bin/godot",
+            "--headless",
+            "--disable-render-loop",
+            "--audio-driver",
+            "Dummy",
+            "--path",
+            "/Users/christianfranklin/games/darkwoods",
+            "--script",
+            "/Users/christianfranklin/games/darkwoods/tests/integration/dedicated_peer.gd"
+          ],
+          "log": "artifacts/dedicated/woods_4_1792552255709248000_client_3.log"
+        }
+      ]
+    }
+  },
+  "metrics": {
+    "randomized_layout_metrics": {
+      "event": "randomized_layout_metrics",
+      "plans": [
+        {
+          "anchors": [
+            "(768.0, 480.0)",
+            "(-2880.0, 4266.0)"
+          ],
+          "minimum_graph_steps": 22,
+          "orchard": "(4800.0, -1536.0)",
+          "pieces": 8,
+          "region_assignment": {
+            "battery": 9,
+            "belt": 13,
+            "flare_gun": 11,
+            "fuel": 0,
+            "kerosene_1": 12,
+            "kerosene_2": 1,
+            "key": 2,
+            "spark_plug": 3
+          },
+          "route": [
+            "van",
+            "signal"
+          ],
+          "seed": 1
+        },
+        {
+          "anchors": [
+            "(768.0, 480.0)",
+            "(-1056.0, 4560.0)",
+            "(-2016.0, -3304.0)",
+            "(4800.0, -922.0)"
+          ],
+          "minimum_graph_steps": 17,
+          "orchard": "(-3264.0, 4416.0)",
+          "pieces": 6,
+          "region_assignment": {
+            "battery": 13,
+            "belt": 2,
+            "fuel": 1,
+            "key": 12,
+            "rescue_fuse": 5,
+            "spark_plug": 11
+          },
+          "route": [
+            "van",
+            "radio"
+          ],
+          "seed": 7
+        },
+        {
+          "anchors": [
+            "(768.0, 480.0)",
+            "(-3264.0, 2209.0)"
+          ],
+          "minimum_graph_steps": 19,
+          "orchard": "(-2880.0, 4416.0)",
+          "pieces": 8,
+          "region_assignment": {
+            "battery": 0,
+            "boat_fuel": 7,
+            "drain_plug": 6,
+            "fuel": 3,
+            "key": 5,
+            "outboard_motor": 1,
+            "spark_plug": 8,
+            "tire": 11
+          },
+          "route": [
+            "van",
+            "boat"
+          ],
+          "seed": 13
+        },
+        {
+          "anchors": [
+            "(768.0, 480.0)",
+            "(-3168.0, 2640.0)",
+            "(-2208.0, -2860.0)",
+            "(-2208.0, -3860.0)"
+          ],
+          "minimum_graph_steps": 6,
+          "orchard": "(-3264.0, -1920.0)",
+          "pieces": 9,
+          "region_assignment": {
+            "battery": 2,
+            "fuel": 11,
+            "fuse": 10,
+            "gate_code_1": 8,
+            "gate_code_2": 1,
+            "gate_code_3": 7,
+            "key": 5,
+            "rescue_fuse": 3,
+            "spark_plug": 6
+          },
+          "route": [
+            "van",
+            "gate"
+          ],
+          "seed": 42
+        },
+        {
+          "anchors": [
+            "(768.0, 480.0)",
+            "(-1536.0, -3606.0)"
+          ],
+          "minimum_graph_steps": 18,
+          "orchard": "(960.0, -3456.0)",
+          "pieces": 8,
+          "region_assignment": {
+            "battery": 0,
+            "flare_gun": 1,
+            "fuel": 5,
+            "kerosene_1": 4,
+            "kerosene_2": 9,
+            "key": 6,
+            "spark_plug": 12,
+            "tire": 13
+          },
+          "route": [
+            "van",
+            "signal"
+          ],
+          "seed": 99
+        },
+        {
+          "anchors": [
+            "(768.0, 480.0)",
+            "(-864.0, 4368.0)",
+            "(-1824.0, -3496.0)",
+            "(4800.0, -922.0)"
+          ],
+          "minimum_graph_steps": 19,
+          "orchard": "(3456.0, 4416.0)",
+          "pieces": 6,
+          "region_assignment": {
+            "battery": 6,
+            "belt": 5,
+            "fuel": 0,
+            "key": 11,
+            "rescue_fuse": 13,
+            "tire": 3
+          },
+          "route": [
+            "van",
+            "radio"
+          ],
+          "seed": 2026
+        },
+        {
+          "anchors": [
+            "(768.0, 480.0)",
+            "(-2496.0, -3606.0)"
+          ],
+          "minimum_graph_steps": 19,
+          "orchard": "(-3264.0, -1920.0)",
+          "pieces": 8,
+          "region_assignment": {
+            "battery": 13,
+            "belt": 10,
+            "flare_gun": 0,
+            "fuel": 12,
+            "kerosene_1": 8,
+            "kerosene_2": 3,
+            "key": 5,
+            "spark_plug": 11
+          },
+          "route": [
+            "van",
+            "signal"
+          ],
+          "seed": 6789
+        },
+        {
+          "anchors": [
+            "(768.0, 480.0)",
+            "(-2688.0, -3551.0)"
+          ],
+          "minimum_graph_steps": 18,
+          "orchard": "(4800.0, 3072.0)",
+          "pieces": 8,
+          "region_assignment": {
+            "battery": 3,
+            "boat_fuel": 10,
+            "drain_plug": 7,
+            "fuel": 11,
+            "key": 9,
+            "outboard_motor": 0,
+            "spark_plug": 13,
+            "tire": 4
+          },
+          "route": [
+            "van",
+            "boat"
+          ],
+          "seed": 76543
+        }
+      ]
+    },
+    "outskirts_metrics": {
+      "event": "outskirts_metrics",
+      "plans": [
+        {
+          "interior_count": 15,
+          "interior_max_distance": 1287.97509765625,
+          "loop_max_distance": 1137.92797851562,
+          "minimum_roamer_separation": 607.157287597656,
+          "perimeter_count": 14,
+          "seed": 1
+        },
+        {
+          "interior_count": 15,
+          "interior_max_distance": 1357.64501953125,
+          "loop_max_distance": 1251.68688964844,
+          "minimum_roamer_separation": 607.157287597656,
+          "perimeter_count": 14,
+          "seed": 7
+        },
+        {
+          "interior_count": 15,
+          "interior_max_distance": 1384.53173828125,
+          "loop_max_distance": 1347.42407226562,
+          "minimum_roamer_separation": 607.157287597656,
+          "perimeter_count": 14,
+          "seed": 13
+        },
+        {
+          "interior_count": 15,
+          "interior_max_distance": 1287.97509765625,
+          "loop_max_distance": 1251.68688964844,
+          "minimum_roamer_separation": 607.157287597656,
+          "perimeter_count": 14,
+          "seed": 42
+        },
+        {
+          "interior_count": 15,
+          "interior_max_distance": 1214.31457519531,
+          "loop_max_distance": 1152.0166015625,
+          "minimum_roamer_separation": 607.157287597656,
+          "perimeter_count": 14,
+          "seed": 99
+        },
+        {
+          "interior_count": 15,
+          "interior_max_distance": 1547.95349121094,
+          "loop_max_distance": 1538.9970703125,
+          "minimum_roamer_separation": 607.157287597656,
+          "perimeter_count": 14,
+          "seed": 2026
+        },
+        {
+          "interior_count": 15,
+          "interior_max_distance": 1287.97509765625,
+          "loop_max_distance": 1228.06848144531,
+          "minimum_roamer_separation": 607.157287597656,
+          "perimeter_count": 14,
+          "seed": 6789
+        },
+        {
+          "interior_count": 15,
+          "interior_max_distance": 1287.97509765625,
+          "loop_max_distance": 1310.40869140625,
+          "minimum_roamer_separation": 607.157287597656,
+          "perimeter_count": 14,
+          "seed": 76543
+        }
+      ]
+    },
+    "native_travel_times": [
+      {
+        "event": "travel_time",
+        "pixels": 5715,
+        "walk_seconds": 81.7,
+        "zone": "village"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 4653,
+        "walk_seconds": 66.5,
+        "zone": "bog"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 4110,
+        "walk_seconds": 58.7,
+        "zone": "graveyard"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 4133,
+        "walk_seconds": 59.0,
+        "zone": "mill"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 5674,
+        "walk_seconds": 81.1,
+        "zone": "orchard"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 4071,
+        "walk_seconds": 58.2,
+        "zone": "observatory"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 6205,
+        "walk_seconds": 88.7,
+        "zone": "rail"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 4319,
+        "walk_seconds": 61.7,
+        "zone": "quarry"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 5221,
+        "walk_seconds": 74.6,
+        "zone": "chapel"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 4727,
+        "walk_seconds": 67.5,
+        "zone": "substation"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 5367,
+        "walk_seconds": 76.7,
+        "zone": "relay"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 5594,
+        "walk_seconds": 79.9,
+        "zone": "logging"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 6436,
+        "walk_seconds": 92.0,
+        "zone": "boathouse"
+      },
+      {
+        "event": "travel_time",
+        "pixels": 5643,
+        "walk_seconds": 80.6,
+        "zone": "ranger"
+      }
+    ]
+  },
+  "limits": [
+    "Normal-plan diversity/spacing checks; forced all-escape navigation/network fixtures are labelled.",
+    "Graphic overview reveals all information; native scene uses staged parts/poses, frozen AI/director and normal Witching Hour light. Microphone off; Dummy audio.",
+    "Earlier CoreAudio native fixture passed assertions but reported 24 leaked instances at exit. Physical-device audio/resource acceptance is not extended.",
+    "No human full-round balance, Internet/cross-machine, exported-build or Windows/Linux acceptance."
+  ]
+}

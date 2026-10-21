@@ -119,7 +119,7 @@ func prompt(actor: CampPlayer) -> String:
 	if not gate_enabled:
 		return ""
 	if near(actor, breaker_point):
-		return "FLOODLIGHTS ON · GATE ALARM DRAWS THE STALKER" if gate_powered else "E · POWER FLOODLIGHTS / NEED NORTH SUBSTATION"
+		return "FLOODLIGHTS ON · GATE ALARM DRAWS THE STALKER" if gate_powered else "E · POWER FLOODLIGHTS / NEED POWER SUBSTATION"
 	if near(actor, gate_point):
 		if gate_open:
 			return "GATE OPEN · RUN NORTH ALONG ROAD TO BRIDGE"
@@ -155,7 +155,7 @@ func interact(actor: CampPlayer) -> bool:
 		if gate_powered:
 			return true
 		if not level.rescue.powered:
-			level.announce("Fit the mill emergency fuse at the north Power Substation first.",actor)
+			level.announce("Fit the emergency fuse from the T plan at the Power Substation first.",actor)
 			return false
 		gate_powered = true
 		SurvivorKits.progress(actor,"gate:power")
@@ -284,7 +284,7 @@ func heading() -> String:
 	if boat_started and boat_remaining <= other and (not bridge_started or boat_remaining <= bridge_remaining):
 		return "BOAT %.1fs · %s" % [boat_remaining,"DODGE / STAY IN CIRCLE" if boat_occupied else "PAUSED / ENTER DOCK CIRCLE"]
 	if bridge_started and bridge_remaining <= other:
-		return "BRIDGE EVACUATION %.1fs · NORTH RANGER ROAD" % bridge_remaining
+		return "BRIDGE EVACUATION %.1fs · RANGER ROAD" % bridge_remaining
 	if gate_open and other == INF and not boat_started and not bridge_started:
 		return "RANGER GATE OPEN · RUN NORTH TO THE BRIDGE"
 	return ""
@@ -316,11 +316,11 @@ func boat_step(kind: String) -> String:
 
 func pack_text(page: String) -> String:
 	if page == "boat":
-		var text := "BOAT · LAKESHORE DOCK (SOUTHEAST)\n"
+		var text := "BOAT · LAKESHORE DOCK\n"
 		for kind in BOAT_PARTS:
 			text += boat_step(kind) + "\n"
 		return text + "FIT ALL PARTS: MARKED REPAIR PAD ON DOCK\nMOTOR: 75% WALK; TEAMMATE HOLDS E TO HELP\nE: START / STAY IN CIRCLE TO ADVANCE 25s\nDODGE WATER SHOTS; LEAVING PAUSES PROGRESS"
-	var text := "RANGER GATE · NORTH ROAD → BRIDGE\n"
+	var text := "RANGER GATE · ROAD → BRIDGE\n"
 	for kind in GATE_CODES:
 		text += ("✓ " if kind in gate_installed else "· ") + kind.replace("_"," ").to_upper() + " / " + WoodsLayout.short_name(level.plan.woods.zones[level.plan.gate_regions[kind]]) + "\n"
 	return text + ("✓ " if gate_powered else "· ") + "FLOODLIGHTS / SUBSTATION + GATE BREAKER\nHOLD E 4s / RUN NORTH\nFIRST AT BRIDGE STARTS 8s TEAM EVACUATION"

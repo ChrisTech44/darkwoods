@@ -71,14 +71,14 @@ func prompt(actor: CampPlayer) -> String:
 	if not active:
 		return ""
 	if near(actor, power_point):
-		return "SUBSTATION ONLINE · RELAY STATION EAST" if powered else "E · FIT EMERGENCY FUSE (FLOODED MILL)"
+		return "SUBSTATION ONLINE · FIND RADIO RELAY" if powered else "E · FIT EMERGENCY FUSE / T FOR LOCATION"
 	if not relay_enabled:
 		return ""
 	if near(actor, relay_point):
 		if transmitted:
 			return "DISTRESS SENT · SIGNAL LANDING ZONE SOUTH OF CHAPEL"
 		if not powered:
-			return "RELAY OFFLINE · RESTORE NORTH SUBSTATION"
+			return "RELAY OFFLINE · RESTORE POWER SUBSTATION"
 		return "HOLD E · CLIMB / TRANSMIT  %d%%" % int(progress / TRANSMIT_SECONDS * 100)
 	for index in range(3):
 		if near(actor, landing + SOCKET_OFFSETS[index]):
@@ -95,13 +95,14 @@ func interact(actor: CampPlayer) -> bool:
 		if powered:
 			return true
 		if "rescue_fuse" not in actor.inventory:
-			level.announce("Emergency fuse: Flooded Mill. It uses no belt slot; carry it north to this cabinet.", actor)
+			var region: int=level.plan.objective_zone.get("rescue_fuse",3)
+			level.announce("Emergency fuse: %s. It uses no belt slot; bring it to this cabinet." % WoodsLayout.short_name(level.plan.woods.zones[region]),actor)
 			return false
 		actor.inventory.erase("rescue_fuse")
 		powered = true
 		SurvivorKits.progress(actor,"substation:power")
 		level.loud_noise(power_point, 750)
-		level.announce("Rescue circuit restored. Transmit from the East Relay Station and light three chapel signals." if relay_enabled else "Substation restored. The Ranger Gate breaker can now power its floodlights.")
+		level.announce("Rescue circuit restored. Transmit from the Radio Relay Station and light three chapel signals." if relay_enabled else "Substation restored. The Ranger Gate breaker can now power its floodlights.")
 		return true
 	if not relay_enabled:
 		return false
@@ -211,7 +212,8 @@ func show_in_pack(_actor: CampPlayer) -> bool:
 
 
 func pack_text() -> String:
-	return "RADIO RESCUE\n%s FUSE / FLOODED MILL → NORTH SUBSTATION\n%s RELAY EAST / HOLD E 6s TO TRANSMIT\nCHAPEL SOUTH / 3 FLARES: %d/3 LIT\nE AT CIRCLE: START 40s HOLD / DOWNED TEAM RESCUED" % ["✓" if powered else "·", "✓" if transmitted else "·", signals.count(true)]
+	var region: int=level.plan.objective_zone.get("rescue_fuse",3)
+	return "RADIO RESCUE\n%s FUSE / %s → SUBSTATION\n%s RADIO RELAY / HOLD E 6s TO TRANSMIT\nCHAPEL LANDING / 3 FLARES: %d/3 LIT\nE AT CIRCLE: START 40s HOLD / DOWNED TEAM RESCUED" % ["✓" if powered else "·",WoodsLayout.short_name(level.plan.woods.zones[region]), "✓" if transmitted else "·", signals.count(true)]
 
 
 func snapshot() -> Dictionary:

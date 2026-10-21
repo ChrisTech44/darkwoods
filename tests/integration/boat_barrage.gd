@@ -141,6 +141,9 @@ func run() -> void:
 	check(level.finished and level.won and actor.status==CampPlayer.Status.ESCAPED and barrage.shots.is_empty(),"circle_completion_extracts_and_clears_shots")
 	field._frame_launch(.1)
 	check(actor.get_node("Camera2D").zoom==Vector2.ONE,"completion_restores_camera_zoom")
+	# Stop world-owned native playback before draining the audio backend.
+	level.soundscape.stop_round()
+	await frames()
 	print(JSON.stringify({"event":"test_result","suite":"boat_barrage","checks":checks,"failures":failures}))
 	await root.get_node("AudioManager").prepare_shutdown()
 	quit(1 if failures else 0)

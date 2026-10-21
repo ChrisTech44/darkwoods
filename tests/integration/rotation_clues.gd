@@ -48,12 +48,14 @@ func _plan_checks() -> void:
 		again.generate(seed_value, "woods")
 		all_ok = all_ok and plan.cache_zone == again.cache_zone and plan.loot == again.loot
 		var directions := {}
+		var distinct := {}
 		for kind: String in plan.cache_zone:
 			var index: int = plan.cache_zone[kind]
 			used[index] = true
+			distinct[index]=true
 			directions[plan.cache_direction[kind]] = true
-			all_ok = all_ok and RoundPlan.REGION_POOL[plan.cache_direction[kind]].has(index)
-		all_ok = all_ok and plan.cache_zone.size() == 5 and directions.size() == 4 and plan.cache_zone.has("fuel")
+			all_ok = all_ok and plan.cache_direction[kind]==WoodsLayout.cardinal(plan.woods.zones[index].position)
+		all_ok = all_ok and plan.cache_zone.size() == 5 and distinct.size()==5 and plan.cache_zone.has("fuel")
 		var notes := plan.loot.filter(func(item: Dictionary) -> bool: return item["kind"] == "ranger_note")
 		var notes_ok := notes.size() == 8
 		for note: Dictionary in notes:
@@ -63,8 +65,8 @@ func _plan_checks() -> void:
 		all_ok = all_ok and notes_ok
 		if not notes_ok:
 			print(JSON.stringify({"event":"note_problem","seed":seed_value,"notes":notes}))
-	_check(all_ok, "24_seeds_five_regions_four_directions_reproducible_notes_toward_regions")
-	_check(used.size() >= 7, "rotation_uses_%d_of_8_regions" % used.size())
+	_check(all_ok, "24_seeds_five_distinct_regions_derived_directions_reproducible_notes_toward_regions")
+	_check(used.size() >= 7, "rotation_uses_%d_of_14_regions" % used.size())
 	var camp := RoundPlan.new()
 	camp.generate(42, "camp")
 	_check(camp.cache_zone.is_empty() and not camp.loot.any(func(item: Dictionary) -> bool: return item["kind"] == "ranger_note"), "quick_camp_has_no_rotation_or_notes")

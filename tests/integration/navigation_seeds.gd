@@ -2,6 +2,7 @@ extends SceneTree
 func _initialize() -> void:
 	_run.call_deferred()
 func _run() -> void:
+	root.get_node("Voice").mode="off"
 	var ok:=true
 	var checks:=0
 	for value in [1,2,3,7,42,99,2026,6789,12345,76543,998877,2147483646]:
@@ -20,7 +21,14 @@ func _run() -> void:
 			pass_seed=pass_seed and path.size()>1 and path[-1].distance_to(goal)<8
 		for item in level.pickups:
 			var path=NavigationServer2D.map_get_path(map,level.player.position,item.position,true)
-			pass_seed=pass_seed and path.size()>1 and path[-1].distance_to(item.position)<8
+			var reachable: bool=path.size()>1 and path[-1].distance_to(item.position)<8
+			if not reachable:print(JSON.stringify({"event":"nav_unreachable","seed":value,"kind":item.kind,"at":item.position,"nearest":NavigationServer2D.map_get_closest_point(map,item.position)}))
+			pass_seed=pass_seed and reachable
+		for goal: Vector2 in [level.rescue.power_point,level.rescue.relay_point,level.rescue.landing,level.escapes.boat_point,level.escapes.gate_point,level.escapes.breaker_point,level.escapes.bridge,level.signal_fire.pyre]:
+			var path=NavigationServer2D.map_get_path(map,level.player.position,goal,true)
+			var reachable: bool=path.size()>1 and path[-1].distance_to(goal)<8
+			if not reachable:print(JSON.stringify({"event":"nav_destination_unreachable","seed":value,"at":goal,"nearest":NavigationServer2D.map_get_closest_point(map,goal)}))
+			pass_seed=pass_seed and reachable
 		print(JSON.stringify({"event":"nav_stress","seed":value,"passed":pass_seed}))
 		ok=ok and pass_seed
 		checks+=1

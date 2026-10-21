@@ -487,7 +487,7 @@ func try_interact(actor: CampPlayer) -> bool:
 			elif pickup.kind in FieldEscapes.BOAT_PARTS or pickup.kind.begins_with("gate_code_") or pickup.kind in SignalFire.PARTS:
 				announce("Objective recovered. T cycles escape plans. Motor carriers: G sets it down; a teammate can hold E nearby to help.", actor)
 			elif pickup.kind == "rescue_fuse":
-				announce("Emergency fuse found. Fit it at the north Power Substation; relay station lies east.", actor)
+				announce("Emergency fuse found. Fit it at the Power Substation. T shows the escape plan.", actor)
 			elif pickup.kind == "boltcutters":
 				announce("Boltcutters found. Woods caches can now be opened with E.",actor)
 			elif pickup.kind == "crowbar":

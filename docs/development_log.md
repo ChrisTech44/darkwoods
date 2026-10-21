@@ -1,5 +1,51 @@
 # Development log
 
+## 2026-10-20 — seed region positions, bend main roads and spread every objective
+
+Confirmed the reported mismatch: maze links varied, but almost every region and
+all major roads used fixed anchors. Regions now exchange positions around a
+seeded jittered outer perimeter; a variable eight-control-point road loop,
+winding spokes and approaches change the large-scale route layout. Fixed camp
+exits remain. Region overlap is rejected before carving, with bounded retries
+and a tested roomy fallback. Guardians move with their regions. Ranger clearing
+height now contains its full bridge road. All 38 creatures plus Stalker remain;
+14 circuit/15 interior starts keep their camp buffer and separation/coverage.
+
+All unique pieces for both offered routes are optimized together, each in a
+distinct region excluding fixed destination/preparation regions. Exhaustive
+subset selection maximizes sorted pairwise closed-barrier trail distances,
+including camp and route destinations; it is conditional on legal region anchors,
+not continuous/native-navigation optimality. Van parts remain outside camp;
+unlocks, locks, clues and normal Van-plus-one-secondary availability remain.
+Fixed cardinal pools and fixed Boat/fuse pickup locations are superseded.
+Bearings, T-plan locations and route hints reflect the actual seeded regions.
+Forced all-route diagnostics exceed the fourteen-region budget and instead use
+per-route spread with bounded distinct pickup offsets, explicitly labelled.
+
+Preserved functioning shortcuts by trying earlier links on their corridors when
+winding junctions are too wide for a gate. Relocated ordinary supplies away from
+solid region machinery; a diagnostic offset that escaped its clearing was also
+corrected. Old fixed-road/under-60s tests were replaced with seed diversity,
+all-fourteen-region reachability and bounded detours; no new human pacing claim.
+
+Final checks: randomized layout **105**, outer/creature coverage **522**, native
+navigation **12 seeds** (all pickups and eight escape interaction/destination
+points), roads **38**, clues **15** (24 plan seeds), barriers **32**, Boat/Gate
+**57**, Signal Fire **31**, native Boat **32**, map capture **1**, real ENet
+listen-host/client **265**, four-client dedicated **153**; all final assertion
+runs passed (**1263 checks**). Additional region geometry covers 32 seeds and
+explicit fallback. Required import/startup, Markdown file links and whitespace
+checks pass. Native 1800×1120 seed maps and normal-light relocated boat capture
+were inspected; overview reveals all information, scene fixture freezes AI and
+stages parts/poses. Microphone stayed off and final graphics used Dummy output.
+An earlier CoreAudio graphical fixture reported 24 leaked native instances on
+exit; physical-device audio/resource acceptance is not extended. No human
+full-round balance, Internet/cross-machine, exports or Windows/Linux acceptance.
+
+Update clients/server together to **lnac-net-34** and start a fresh night; no
+server deployment or package refresh performed.
+[Current seed maps and execution evidence](evidence/random_layout/README.md).
+
 ## 2026-10-20 — double Christian’s straight-shot visuals and hit width
 
 Witch, Seamstress, Lantern Moth and Hitchhiker copied projectiles now have 36px

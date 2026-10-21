@@ -8,15 +8,19 @@ Press **T** to cycle objective pages; **Tab** closes field notes. Human pacing
 tests remain deferred by the user. This slice does not claim all of F5 is done:
 Signal Fire, primary/rumoured escape selection and the revised van finale remain.
 
+**20 October layout update:** all region positions, main roads and objective
+pickup regions now vary by seed. See [current maps and verification](evidence/random_layout/README.md).
+Older screenshots below preserve their original layouts/text.
+
 ## Boat
 
 | Component | Location | Carrying |
 | --- | --- | --- |
-| **Outboard motor** | West Logging Camp | Separate objective inventory, no belt slot. Carrier walks at 75%, cannot sprint or vault. **G** sets down the motor before dropping belt supplies. |
-| **Marine fuel** | East Rail Yard | Dedicated boat fuel, distinct from van fuel. No belt slot. |
-| **Drain plug** | North Observatory | Separate objective inventory, no belt slot. |
+| **Outboard motor** | Seeded region named in T | Separate objective inventory, no belt slot. Carrier walks at 75%, cannot sprint or vault. **G** sets down the motor before dropping belt supplies. |
+| **Marine fuel** | Seeded region named in T | Dedicated boat fuel, distinct from van fuel. No belt slot. |
+| **Drain plug** | Seeded region named in T | Separate objective inventory, no belt slot. |
 
-Carry all three to the **southeast Lakeshore Boathouse**; E at the boat fits
+Carry all three to the **Lakeshore Boathouse (seeded position)**; E at the boat fits
 carried parts. Installation is permanent and shared. Downing or disconnect drops
 uninstalled parts beside the survivor, using the existing reachable-drop rules.
 
@@ -57,12 +61,12 @@ The older art screenshots below show the previous ripple encounter/objective tex
 
 ## Ranger Gate
 
-1. Check the T plan for **three distinct code fragments**. A separate seeded RNG
-   picks one region in each of east, south and west, rotating among existing
-   landmark regions. The plan names their regions; the notes are physical pickups.
+1. Check the T plan for **three distinct code fragments**. Objective placement
+   spreads pieces for both offered routes into separate regions, including the
+   destinations in its trail-distance scoring. The plan names their regions; the notes are physical pickups.
 2. Carry them to **Ranger Gate on the far north road** and E to fit them. Fragments
    use no belt slots, drop on down/disconnect, and install once for the whole team.
-3. Restore the **north Power Substation** with the mill emergency fuse, as for
+3. Restore the **Power Substation** with the emergency fuse from the T plan, as for
    Radio Rescue. Then E at **the gate's left breaker** powers its floodlights and
    the road lamps. Camp blackouts do not undo this dedicated circuit.
 4. Hold E at the gate for **four seconds**. Letting go, moving,
@@ -127,7 +131,7 @@ microphone feature or new audio asset was added.
 ## Playtest clarity update — 18 October 2026
 
 Fit motor, marine fuel and drain plug with E on the **BOAT REPAIR** pad on the
-Lakeshore dock southeast of camp, separate from the Camp Boathouse. Its MOTOR /
+Lakeshore dock (now seeded around the outskirts), separate from the Camp Boathouse. Its MOTOR /
 FUEL / PLUG labels each change to OK. The plan names whoever carries each part;
 carriers are directed to the dock. E again after all three are fitted starts the
 existing 25-second launch; the 80px extraction circle and Lake Thing remain.

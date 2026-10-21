@@ -36,9 +36,13 @@ var toolbox_hint: String = ""
 ## Expedition night schedule: phase that reveals each required part, and seeded events.
 var reveal_phase: Dictionary = {}
 var night_events: Array[Dictionary] = []
-## F4b rotation: which region holds each locked-cache part tonight, and the
-## ranger notes on the roads that name those regions.
-const REGION_POOL := {"NORTH": [0, 5], "EAST": [1, 6], "SOUTH": [2, 8], "WEST": [3, 4]}
+## Seeded objective regions and truthful clue bearings; ranger notes name
+## the van-part regions without revealing undiscovered cache positions.
+var objective_zone: Dictionary = {}
+var objective_spread: ObjectiveSpread
+var objective_anchors: Array[Vector2]=[]
+var objective_excluded: Array[int]=[]
+var objective_score: Array[int]=[]
 var cache_zone: Dictionary = {}
 var cache_direction: Dictionary = {}
 var gate_regions: Dictionary = {}
@@ -75,6 +79,8 @@ func generate(value: int, mode: String) -> void:
 	night_events.clear()
 	cache_zone.clear()
 	cache_direction.clear()
+	objective_zone.clear()
+	objective_anchors.clear();objective_excluded.clear();objective_score.clear()
 	gate_regions.clear()
 	signal_regions.clear()
 	escape_options.assign(["van"])
@@ -89,6 +95,7 @@ func generate(value: int, mode: String) -> void:
 		return
 	weather = ["fog", "rain", "moonless"][rng.randi_range(0, 2)]
 	_choose_night_rules(value)
+	_choose_escapes(value)
 	if has_modifier("fog_bank"):
 		weather = "fog"
 	var extras: Array[String] = ["fuse", "belt", "tire", "spark_plug"]
@@ -98,6 +105,8 @@ func generate(value: int, mode: String) -> void:
 		extras.remove_at(chosen)
 	var battery_pool: Array[Vector2] = [Vector2(228, 120), Vector2(564, 120), Vector2(960, 128)]
 	_add("boltcutters", Vector2(1304, 272), "MAINTENANCE", false)
+	objective_spread=ObjectiveSpread.new(woods)
+	_prepare_objectives(value)
 	var caches: Array = _rotate_caches(value)
 	for index in range(caches.size() - 1, 0, -1):
 		var chosen := rng.randi_range(0, index)
@@ -109,6 +118,7 @@ func generate(value: int, mode: String) -> void:
 		_add(kind, caches[index]["position"], caches[index]["label"], kind not in ["battery","key"])
 		cache_zone[kind] = caches[index]["zone"]
 		cache_direction[kind] = caches[index]["direction"]
+		objective_zone[kind]=caches[index]["zone"]
 	var supply_types: Array[String] = ["flare", "battery_pack", "rations", "medkit", "noise_tin", "salt_ward", "glow_moss"]
 	for index in range(96):
 		var cell := Vector2i(rng.randi_range(0, WoodsLayout.SIZE.x-1), rng.randi_range(0, WoodsLayout.SIZE.y-1))
@@ -125,11 +135,19 @@ func generate(value: int, mode: String) -> void:
 	_add_creature_items(value)
 	_add_spare_tools(value, battery_pool)
 	_add_notes()
-	_choose_escapes(value)
 	# Separate objective/tool inventory, never a belt slot or a van component.
 	# The substation fuse powers both the radio relay and the gate floodlights.
 	if has_escape("radio") or has_escape("gate"):
-		_add("rescue_fuse", woods.zones[3]["position"] + Vector2(76, 88), "FLOODED MILL / EMERGENCY FUSE", false)
+		var fixed: Array[Vector2]=[woods.zones[9].position+Vector2(0,48)]
+		var excluded: Array[int]=[9]
+		if has_escape("radio"):
+			fixed.append(woods.zones[10].position+Vector2(0,56));fixed.append(woods.zones[8].position+Vector2(0,230))
+			excluded.append(10);excluded.append(8)
+		if has_escape("gate"):
+			fixed.append(woods.zones[13].position+Vector2(0,500));excluded.append(13)
+		var region: int=objective_zone.get("rescue_fuse",-1)
+		if region<0:region=objective_spread.choose(1,fixed,excluded,value+9191)[0]
+		_add_objective("rescue_fuse",region)
 	if has_escape("radio"):
 		for index in range(3):
 			_add("flare", woods.zones[8]["position"] + Vector2(-76 + index * 18, 230), "CHAPEL / RESCUE SIGNAL STASH", false)
@@ -145,6 +163,11 @@ func generate(value: int, mode: String) -> void:
 				_add(kinds[index % kinds.size()], woods.center(cell) + Vector2(-16, 12), "WOODS SUPPLIES", false)
 	_schedule_night(value)
 	for item in loot:
+		# Region identities now move over seeded supplies. Keep ordinary loot on
+		# their clear southern edge, away from cabins and solid relay machinery.
+		var region:=woods.zone_at(item.position)
+		if item.hint=="WOODS SUPPLIES" and not region.is_empty():
+			item.position=Vector2(clampf(item.position.x,region.bounds.position.x+48,region.bounds.end.x-48),region.bounds.end.y-48)
 		# Keep ordinary seeded supplies off the new solid lake banks.
 		var lake: Vector2 = woods.zones[12]["position"]
 		if FieldEscapeArt.water_rects(lake).any(func(rect: Rect2) -> bool: return rect.grow(8).has_point(item["position"])):
@@ -266,32 +289,44 @@ static func spawn_gap_squared(at: Vector2,placed: Array[Vector2]) -> float:
 	return gap
 
 
-## Five distinct outer regions: one per cardinal pool, plus one unused region.
-## Battery/key stay unlocked and available at Dusk; the three other locks and
-## phase gates are unchanged. Notes cover every part not named by the corkboard.
-## A separate RNG keeps the rest of the seeded recipe unchanged.
+## Optimize all unique pieces of both offered routes together, destinations included.
+## Forced all-route diagnostics exceed the region budget and retain per-route spread.
+func _prepare_objectives(value: int) -> void:
+	if force_all_escapes:return
+	var kinds: Array[String]=required.duplicate()
+	var fixed: Array[Vector2]=[CampMap.CAMP_BOUNDS.get_center()]
+	var excluded: Array[int]=[]
+	if has_escape("boat"):
+		kinds.append_array(FieldEscapes.BOAT_PARTS)
+		fixed.append(woods.zones[12].position+Vector2(0,-95));excluded.append(12)
+	if has_escape("signal"):
+		kinds.append_array(SignalFire.PARTS)
+		fixed.append(woods.zones[7].position+Vector2(0,-150));excluded.append(7)
+	if has_escape("radio"):
+		kinds.append("rescue_fuse")
+		for row in [[9,Vector2(0,48)],[10,Vector2(0,56)],[8,Vector2(0,230)]]:
+			fixed.append(woods.zones[row[0]].position+row[1]);excluded.append(row[0])
+	if has_escape("gate"):
+		kinds.append("rescue_fuse");kinds.append_array(FieldEscapes.GATE_CODES)
+		fixed.append(woods.zones[9].position+Vector2(0,48));excluded.append(9)
+		fixed.append(woods.zones[13].position+Vector2(0,500));excluded.append(13)
+		fixed.append(woods.zones[13].position+Vector2(0,-500))
+	objective_anchors=fixed;objective_excluded=excluded
+	var selected:=objective_spread.choose(kinds.size(),fixed,excluded,value+5151)
+	objective_score=objective_spread.best_score.duplicate()
+	for i in range(kinds.size()):objective_zone[kinds[i]]=selected[i]
+
+## Five distinct outer regions, maximizing separation from one another and camp.
+## Unlock/phase gates and the camp -> note -> region discovery chain are retained.
 func _rotate_caches(value: int) -> Array:
-	var rng := RandomNumberGenerator.new()
-	rng.seed = value + 4242
-	var directions: Array = REGION_POOL.keys()
-	for index in range(directions.size() - 1, 0, -1):
-		var swap := rng.randi_range(0, index)
-		var held: String = directions[index]
-		directions[index] = directions[swap]
-		directions[swap] = held
-	var caches: Array = []
-	for direction: String in directions:
-		var choices: Array = REGION_POOL[direction]
-		var zone_index: int = choices[0] if rng.randf() < 0.5 else choices[1]
-		var zone: Dictionary = woods.zones[zone_index]
-		caches.append({"position": cache_spot(zone), "label": WoodsLayout.short_name(zone) + " / CACHE", "zone": zone_index, "direction": direction})
-	var remaining: Array = []
-	for direction: String in directions:
-		for zone_index: int in REGION_POOL[direction]:
-			if not caches.any(func(cache): return cache.zone==zone_index): remaining.append({"zone":zone_index,"direction":direction})
-	var extra: Dictionary = remaining[rng.randi_range(0,remaining.size()-1)]
-	var zone: Dictionary = woods.zones[extra.zone]
-	caches.append({"position":cache_spot(zone),"label":WoodsLayout.short_name(zone)+" / CACHE","zone":extra.zone,"direction":extra.direction})
+	var chosen: Array[int]=[]
+	for kind in required:
+		if objective_zone.has(kind):chosen.append(objective_zone[kind])
+	if chosen.is_empty():chosen=objective_spread.choose(5,[CampMap.CAMP_BOUNDS.get_center()],[],value+4242)
+	var caches: Array=[]
+	for index in chosen:
+		var zone: Dictionary=woods.zones[index]
+		caches.append({"position":cache_spot(zone),"label":WoodsLayout.short_name(zone)+" / CACHE","zone":index,"direction":WoodsLayout.cardinal(zone.position)})
 	return caches
 
 
@@ -462,40 +497,49 @@ func rumour_text() -> String:
 	return " / ".join(others)
 
 
-## Signal Fire: two kerosene cans and a flare gun from three directions; the pyre
-## stands on the White Stone Quarry rim (zone 7).
-func _add_signal_fire(value: int) -> void:
-	if not has_escape("signal"):
-		return
-	var rng := RandomNumberGenerator.new()
-	rng.seed = value + 6363
-	var pools := [[0, 5], [1, 6], [2, 8]]
-	var kinds := ["kerosene_1", "kerosene_2", "flare_gun"]
-	for index in range(3):
-		var region: int = pools[index][rng.randi_range(0, 1)]
-		signal_regions[kinds[index]] = region
-		_add(kinds[index], woods.zones[region]["position"] + Vector2(112, -140), WoodsLayout.short_name(woods.zones[region]), false)
+## Each route chooses the most separated legal pickup-region set, destination included.
+func _add_objective(kind: String,region: int) -> void:
+	objective_zone[kind]=region
+	var at:=cache_spot(woods.zones[region])
+	# Only diagnostic all-route nights exceed the fourteen-region budget. Keep
+	# their reused anchors physically distinct so E does not take another part.
+	if force_all_escapes:
+		for offset: Vector2 in [Vector2.ZERO,Vector2(0,96),Vector2(96,96),Vector2(-96,96),Vector2(96,0),Vector2(-96,0),Vector2(0,-96)]:
+			var candidate:=cache_spot(woods.zones[region])+offset
+			if not woods.zones[region].bounds.grow(-24).has_point(candidate):continue
+			if loot.any(func(item): return item.position.distance_to(candidate)<80 and (item.kind in required or item.kind in objective_zone)):continue
+			at=candidate;break
+	_add(kind,at,WoodsLayout.short_name(woods.zones[region]),false)
 
+func _add_signal_fire(value: int) -> void:
+	if not has_escape("signal"):return
+	var regions: Array[int]=[]
+	for kind in SignalFire.PARTS:
+		if objective_zone.has(kind):regions.append(objective_zone[kind])
+	if regions.is_empty():regions=objective_spread.choose(3,[woods.zones[7].position+Vector2(0,-150)],[7],value+6363)
+	for i in range(SignalFire.PARTS.size()):
+		var kind: String=SignalFire.PARTS[i]
+		signal_regions[kind]=regions[i];_add_objective(kind,regions[i])
 
 func _add_field_escapes(value: int) -> void:
-	if not has_escape("boat") and not has_escape("gate"):
-		return
-	if not has_escape("boat"):
-		_add_gate_codes(value)
-		return
-	_add("outboard_motor", woods.zones[11]["position"] + Vector2(-70,48), "WEST / LOGGING CAMP", false)
-	_add("boat_fuel", woods.zones[6]["position"] + Vector2(-92,72), "EAST / RAIL YARD", false)
-	_add("drain_plug", woods.zones[5]["position"] + Vector2(-96,96), "NORTH / OBSERVATORY", false)
-	if has_escape("gate"):
-		_add_gate_codes(value)
-
+	if has_escape("boat"):
+		var regions: Array[int]=[]
+		for kind in FieldEscapes.BOAT_PARTS:
+			if objective_zone.has(kind):regions.append(objective_zone[kind])
+		if regions.is_empty():regions=objective_spread.choose(3,[woods.zones[12].position+Vector2(0,-95)],[12],value+7171)
+		for i in range(FieldEscapes.BOAT_PARTS.size()):_add_objective(FieldEscapes.BOAT_PARTS[i],regions[i])
+	if has_escape("gate"):_add_gate_codes(value)
 
 func _add_gate_codes(value: int) -> void:
-	var rng := RandomNumberGenerator.new()
-	rng.seed = value + 8181
-	for index in range(3):
-		var choices: Array = [[1,6],[2,8],[3,4]][index]
-		var region: int = choices[rng.randi_range(0,1)]
-		var kind := "gate_code_%d" % (index+1)
-		gate_regions[kind] = region
-		_add(kind, woods.zones[region]["position"] + Vector2(-112,152), WoodsLayout.short_name(woods.zones[region]), false)
+	var anchors: Array[Vector2]=[woods.zones[13].position+Vector2(0,500),woods.zones[9].position+Vector2(0,48)]
+	var excluded: Array[int]=[13,9]
+	if objective_zone.has("rescue_fuse"):
+		var region: int=objective_zone.rescue_fuse
+		anchors.append(cache_spot(woods.zones[region]));excluded.append(region)
+	var regions: Array[int]=[]
+	for kind in FieldEscapes.GATE_CODES:
+		if objective_zone.has(kind):regions.append(objective_zone[kind])
+	if regions.is_empty():regions=objective_spread.choose(3,anchors,excluded,value+8181)
+	for i in range(3):
+		var kind: String="gate_code_%d"%(i+1)
+		gate_regions[kind]=regions[i];_add_objective(kind,regions[i])

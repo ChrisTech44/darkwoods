@@ -2,8 +2,8 @@
 
 Godot 4 cooperative woodland horror game — maintained agent brief.
 
-Version 2.0 — 18 October 2026. Maintained update: 19 October 2026
-(ability delivery, host rules and dedicated-server/audio review).
+Version 2.0 — 18 October 2026. Maintained update: 20 October 2026
+(randomized woods, objective spacing and verified multiplayer rules34).
 
 ## Authority and current priority
 
@@ -60,18 +60,24 @@ These are code-backed facts, not a substitute for human acceptance testing.
   a six-slot supply belt,
   separate objectives/tools, health, wounds, downing, teammate rescue and a
   bounded solo recovery mechanism. Consult current code for tuning values.
-- Woods have a central camp, inner ring/spoke roads, outer regions, shortcuts,
+- Woods have a central camp, a seeded bending road loop/spokes, outer regions, shortcuts,
   fences/vaults, clues, signposts, skyline bearings and player pins. All 14 regions
-  are on the outskirts; all five required van parts occupy five distinct outer
-  regions (none in camp). Battery/key remain unlocked from Dusk; three locked
-  parts retain phase gating. Four directions and eight ranger notes support
+  are on the outskirts and change position/identity by seed. Main-road geometry
+  and maze trails change too. All unique objective pieces for both offered routes
+  occupy distinct regions, excluding destination regions. Exhaustive subset
+  selection maximizes the sorted pairwise closed-barrier trail distances,
+  destinations/preparation sites included. Van parts remain outside camp;
+  battery/key remain unlocked from Dusk and three locks retain phase gating.
+  Actual region bearings and eight ranger notes support
   discovery. Camp keeps lock tools and supplies. The 29 roaming starts now split into
   14 approximately evenly spaced around the region-center circuit (within 384px)
   and 15 spread over the enclosed forest by farthest-point sampling. The 1100px
   camp-center buffer remains; starts avoid regions and seek at least 600px
   separation from existing creatures. The circuit is a placement guide, not a
   constructed road or movement limit. Guardians move with regions;
-  patrols/chases have no new hard boundary. Quick Camp keeps its camp parts. Team trail
+  patrols/chases have no new hard boundary.
+  [Random layouts, objective spacing and execution limits](docs/evidence/random_layout/README.md).
+  Quick Camp keeps its camp parts. Team trail
   exploration is recorded for every living/downed survivor at the authority and
   replicated as a bounded bitmap; local prediction does not reveal map cells.
 - Five implemented escape routes: Van, Radio Rescue, Lakeshore Boat, Ranger
@@ -144,7 +150,7 @@ render loop and Dummy audio; server paths skip voice codec/capture/playback.
 Source launch first imports assets/registers script classes and refuses to start
 after import errors, including when Godot exits zero. Exported packs skip import.
 Minimum-player/all-ready start, automatic results-to-lobby reset and empty-round
-cleanup are implemented. The game protocol is `lnac-net-33` (projectile/circle boat-finale snapshot), compatible with
+cleanup are implemented. The game protocol is `lnac-net-34` (random region/road recipe and globally spread objectives), compatible with
 updated main clients. The portable PCK needs Godot 4.7.2 on the target machine.
 The October 19 [server review](docs/server_review.md) fixes mixed-role assignment,
 batched-disconnect packet sends and stale package metadata. Actual four-client
@@ -155,7 +161,7 @@ bounded prediction/reconciliation and buffered remote motion; see evidence below
 
 ## Movement transport
 
-Rules are `lnac-net-33`: authority-only 30Hz player packets include applied-input
+Rules are `lnac-net-34`: authority-only 30Hz player packets include applied-input
 acknowledgements, bounded owner movement state and server-detected discontinuity
 counters. The owner predicts shared collision/movement immediately, with no AI
 hearing, blood or gameplay outcomes; authoritative fields are restored after each
@@ -247,7 +253,7 @@ not player inactivity), loading (90s) and reservation (5m) are separate clocks.
 Detached actors have tethers, holds, casts, riders, targets and vaults cleaned up.
 An empty dedicated round pauses until return/expiry; intentional Leave relinquishes
 recovery. Tokens are memory-only; no restart persistence or host migration.
-Protocol is lnac-net-33. [Investigation and superseded proposals](docs/playtest_followup.md)
+Protocol is lnac-net-34. [Investigation and superseded proposals](docs/playtest_followup.md)
 retain the playtest history. The [new monster plan](docs/new_monster_plan.md)
 now has implemented Lifeguard, Night-Light Kid, Vulture, Huntmaster, Magician,
 Nobody, plus the agreed Shade. All have host brains, journal entries, copied

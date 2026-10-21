@@ -49,19 +49,18 @@ func _layout_checks() -> void:
 	for seed_value in [42, 2026]:
 		var woods := WoodsLayout.new()
 		woods.generate(seed_value)
-		# Same roads every night; lamps skip region clearings, which shift a cell per seed.
-		_check(woods.roads == first.roads and absi(woods.lamps.size() - first.lamps.size()) <= 3, "seed_%d_same_road_network_every_night" % seed_value)
+		# Main roads now change with the seed, in addition to the maze.
+		var again:=WoodsLayout.new();again.generate(seed_value)
+		_check(woods.roads != first.roads and woods.roads==again.roads, "seed_%d_seeded_variable_road_network" % seed_value)
 		_check(woods.links.size() == 2410 and woods.distances_from(WoodsLayout.ENTRY).size() == 2410, "seed_%d_all_clearings_still_connected" % seed_value)
-	var ring := 0
-	for cell: Vector2i in first.road_cells:
-		if cell.x in [WoodsLayout.RING.position.x, WoodsLayout.RING.end.x] or cell.y in [WoodsLayout.RING.position.y, WoodsLayout.RING.end.y]:
-			ring += 1
-	_check(ring >= 60, "ring_road_loops_camp_%d_cells" % ring)
+	var loop_ok: bool=first.ring_cells.size()>40 and first.ring_cells[0]==first.ring_cells[-1]
+	for i in range(1,first.ring_cells.size()):loop_ok=loop_ok and first.ring_cells[i] in first.links[first.ring_cells[i-1]]
+	_check(loop_ok,"seeded_bending_road_loop_closes_around_camp")
 	for index in range(4):
 		var edge: Vector2i = WoodsLayout.ENTRIES[index]
 		var reached_edge := false
 		for cell: Vector2i in first.road_cells:
-			if (index < 2 and cell.y == edge.y and cell.x in [1, WoodsLayout.SIZE.x - 2]) or (index >= 2 and cell.x == edge.x and cell.y in [1, WoodsLayout.SIZE.y - 2]):
+			if (index==0 and cell.x==1) or (index==1 and cell.x==WoodsLayout.SIZE.x-2) or (index==2 and cell.y==1) or (index==3 and cell.y==WoodsLayout.SIZE.y-2):
 				reached_edge = true
 		_check(reached_edge, "spoke_%d_reaches_map_edge" % index)
 	var linked := true
@@ -93,13 +92,7 @@ func _layout_checks() -> void:
 				if WoodsLayout.WORLD_BOUNDS.grow(-1).intersects(wall):
 					on_seam += 1
 		_check(on_seam == 0, "seed_%d_no_woods_wall_edge_on_nav_seam_%d" % [seed_value, on_seam])
-	var objectives := 0
-	for zone in first.zones.slice(0, 3):
-		for cell: Vector2i in first.road_cells:
-			if zone["bounds"].has_point(first.center(cell)):
-				objectives += 1
-				break
-	_check(objectives == 3, "ring_passes_through_all_three_objective_regions")
+	_check(first.approaches.size()==14 and first.approaches.all(func(approach):return approach.cells.size()>1),"every_outer_region_has_an_approach")
 
 
 func _surface_checks() -> void:
@@ -135,8 +128,10 @@ func _travel_checks() -> void:
 			length += path[index - 1].distance_to(path[index])
 		var seconds: float = length / level.config.walk_speed
 		print(JSON.stringify({"event":"travel_time","zone":zone["kind"],"pixels":int(length),"walk_seconds":snappedf(seconds, 0.1)}))
-		if zone["kind"] in ["village", "bog", "graveyard"]:
-			_check(path.size() > 1 and seconds <= 60.0, "walk_to_%s_under_60s_%ds" % [zone["kind"], int(seconds)])
+		# The old 60s limit described fixed inner destinations. User-requested
+		# outer randomized regions instead require a reachable, bounded detour.
+		var direct: float=start.distance_to(zone.position)
+		_check(path.size()>1 and length<=direct*3.0,"walk_to_%s_reachable_without_excessive_detour_%ds"%[zone.kind,int(seconds)])
 
 
 func _lamp_checks() -> void:

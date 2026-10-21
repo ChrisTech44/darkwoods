@@ -22,13 +22,14 @@ const EXPLORATION_BYTES := (SIZE.x * SIZE.y + 7) / 8
 var landmark_distances: Dictionary = {}
 var open_tiles: Dictionary = {}
 var signposts: Array[Dictionary] = []
-## F4a road network: an inner distribution ring and four
-## straight spokes from the camp exits to the map edges. The maze between them
-## stays as the dark "thickets".
+## A seeded bending distribution loop and winding spokes connect fixed camp
+## exits to the outer forest. The maze between them stays dark.
 const ROAD_HALF := 80
 const RING := Rect2i(16, 17, 17, 14)
 ## Region approaches branch from the inner roads to the outer destinations.
 var approaches: Array[Dictionary] = []
+var ring_bounds := RING
+var ring_cells: Array[Vector2i]=[]
 var roads: Array[Rect2] = []
 var road_cells: Dictionary = {}
 var road_tiles: Dictionary = {}
@@ -63,6 +64,7 @@ func generate(seed_value: int) -> void:
 	open_tiles.clear()
 	signposts.clear()
 	roads.clear()
+	ring_cells.clear()
 	approaches.clear()
 	gates.clear()
 	fences.clear()
@@ -94,9 +96,9 @@ func generate(seed_value: int) -> void:
 		if valid(cell) and valid(neighbor):
 			_link(cell, neighbor)
 	_make_zones(rng)
-	_make_roads()
+	_make_roads(rng)
 	_make_shortcuts()
-	_make_approaches()
+	_make_approaches(rng)
 	for cell: Vector2i in links:
 		var at := center(cell)
 		_carve(Rect2(at - Vector2(HALF_TRAIL, HALF_TRAIL), Vector2.ONE * HALF_TRAIL * 2))
@@ -131,35 +133,41 @@ func generate(seed_value: int) -> void:
 	_measure_gates()
 	_make_fences(seed_value)
 
-## Deterministic (no RNG) so roads never shift other seeded content.
-func _make_roads() -> void:
-	var ring: Array[Vector2i] = []
-	for x in range(RING.position.x, RING.end.x):
-		ring.append(Vector2i(x, RING.position.y))
-	for y in range(RING.position.y, RING.end.y):
-		ring.append(Vector2i(RING.end.x, y))
-	for x in range(RING.end.x, RING.position.x, -1):
-		ring.append(Vector2i(x, RING.end.y))
-	for y in range(RING.end.y, RING.position.y - 1, -1):
-		ring.append(Vector2i(RING.position.x, y))
-	_road(ring, true)
-	# Spokes: lit from each camp exit out to the ring, dark beyond it.
-	var spokes: Array = [[ENTRIES[0], Vector2i.LEFT, 1], [ENTRIES[1], Vector2i.RIGHT, SIZE.x - 2], [ENTRIES[2], Vector2i.UP, 1], [ENTRIES[3], Vector2i.DOWN, SIZE.y - 2]]
-	for spoke: Array in spokes:
-		var cells: Array[Vector2i] = []
-		var cell: Vector2i = spoke[0]
-		var step: Vector2i = spoke[1]
-		var limit: int = spoke[2]
-		while valid(cell) and (cell.x if step.x != 0 else cell.y) != limit + (step.x if step.x != 0 else step.y):
-			cells.append(cell)
-			cell += step
-		var inner: Array[Vector2i] = []
-		for index in range(cells.size()):
-			inner.append(cells[index])
-			if ring.has(cells[index]):
-				break
-		_road(inner, true)
-		_road(cells.slice(inner.size() - 1), false)
+## Seeded distribution loop and bending spokes; camp exits remain fixed.
+func _make_roads(rng: RandomNumberGenerator) -> void:
+	ring_bounds=Rect2i(Vector2i(rng.randi_range(14,18),rng.randi_range(15,19)),Vector2i.ZERO)
+	ring_bounds.size=Vector2i(rng.randi_range(31,35),rng.randi_range(30,34))-ring_bounds.position
+	var middle:=ring_bounds.position+ring_bounds.size/2
+	var anchors: Array[Vector2i]=[
+		ring_bounds.position,
+		Vector2i(middle.x+rng.randi_range(-2,2),ring_bounds.position.y+rng.randi_range(-2,2)),
+		Vector2i(ring_bounds.end.x,ring_bounds.position.y),
+		Vector2i(ring_bounds.end.x+rng.randi_range(-2,2),middle.y+rng.randi_range(-2,2)),
+		ring_bounds.end,
+		Vector2i(middle.x+rng.randi_range(-2,2),ring_bounds.end.y+rng.randi_range(-2,2)),
+		Vector2i(ring_bounds.position.x,ring_bounds.end.y),
+		Vector2i(ring_bounds.position.x+rng.randi_range(-2,2),middle.y+rng.randi_range(-2,2))]
+	for i in range(anchors.size()):
+		var segment:=_connect_grid(anchors[i],anchors[(i+1)%anchors.size()],rng)
+		ring_cells.append_array(segment if ring_cells.is_empty() else segment.slice(1))
+	_road(ring_cells,true)
+	var desires: Array[Vector2i]=[
+		Vector2i(ring_bounds.position.x,rng.randi_range(22,26)),
+		Vector2i(ring_bounds.end.x,rng.randi_range(22,26)),
+		Vector2i(rng.randi_range(22,27),ring_bounds.position.y),
+		Vector2i(rng.randi_range(22,27),ring_bounds.end.y)]
+	var targets: Array[Vector2i]=[]
+	for desired in desires:
+		var closest: Vector2i=ring_cells[0]
+		for cell in ring_cells:
+			if Vector2(cell-desired).length_squared()<Vector2(closest-desired).length_squared():closest=cell
+		targets.append(closest)
+	var edges: Array[Vector2i]=[
+		Vector2i(1,rng.randi_range(7,41)),Vector2i(SIZE.x-2,rng.randi_range(7,41)),
+		Vector2i(rng.randi_range(7,42),1),Vector2i(rng.randi_range(7,42),SIZE.y-2)]
+	for index in range(ENTRIES.size()):
+		_road(_connect_grid(ENTRIES[index],targets[index],rng),true)
+		_road(_connect_grid(targets[index],edges[index],rng),false)
 
 
 func _road(cells: Array[Vector2i], lit: bool) -> void:
@@ -216,23 +224,27 @@ func _make_shortcuts() -> void:
 			cells.append(best[0] + best[1] * step)
 		for index in range(1, cells.size()):
 			_link(cells[index - 1], cells[index])
-		gates.append({"zone": zone_index, "inner": cells[-2], "road": cells[-1], "toward_zone": -Vector2(best[1]), "open": false})
+		gates.append({"zone": zone_index, "inner": cells[-2], "road": cells[-1], "toward_zone": -Vector2(best[1]), "open": false,"path":cells})
 
 
 ## Gate rectangles need the carved trail, so they are measured after walls.
 func _measure_gates() -> void:
-	var kept: Array[Dictionary] = []
+	var kept: Array[Dictionary]=[]
 	for gate in gates:
-		var at := (center(gate["inner"]) + center(gate["road"])) * 0.5
-		var across := Vector2(gate["toward_zone"]).orthogonal().abs()
-		var rect := barrier_rect(at, across)
-		# Gates may never cut a cell off: the inner cell must stay reachable without them.
-		if rect.has_area() and _connected_without(gate["inner"], gate["road"]):
-			gate["position"] = at
-			gate["rect"] = rect
-			kept.append(gate)
-			_block(gate["inner"], gate["road"])
-	gates = kept
+		var route: Array[Vector2i]=[];route.assign(gate.path)
+		# A winding road can make its immediate junction too wide for a gate.
+		# Try earlier links on this same shortcut, retaining region-side latching.
+		for i in range(route.size()-1,0,-1):
+			var inner: Vector2i=route[i-1]
+			var road: Vector2i=route[i]
+			if not zone_at(center(inner)).is_empty():continue
+			var at: Vector2=(center(inner)+center(road))*.5
+			var across:=Vector2(gate.toward_zone).orthogonal().abs()
+			var rect:=barrier_rect(at,across)
+			if rect.has_area() and _connected_without(inner,road):
+				gate.inner=inner;gate.road=road;gate.position=at;gate.rect=rect
+				kept.append(gate);_block(inner,road);break
+	gates=kept
 
 
 ## Fences on maze links (not roads, regions or gates) where going around costs
@@ -404,29 +416,33 @@ func _link(a: Vector2i, b: Vector2i) -> void:
 
 ## Each destination gets a traversable approach from the closest inner road.
 ## Roads retain their existing lighting; these are ordinary unlit forest trails.
-func _make_approaches() -> void:
+func _make_approaches(rng: RandomNumberGenerator) -> void:
 	for index in range(zones.size()):
 		var zone: Dictionary = zones[index]
 		var goal := cell_at(zone["position"])
 		var start := ENTRY
 		var gap := INF
 		for cell: Vector2i in road_cells:
-			if not RING.grow(1).has_point(cell): continue
+			if not ring_bounds.grow(1).has_point(cell): continue
 			var distance := Vector2(cell-goal).length_squared()
 			if distance < gap:
 				gap = distance
 				start = cell
-		approaches.append({"zone":index,"cells":_connect_grid(start,goal)})
+		approaches.append({"zone":index,"cells":_connect_grid(start,goal,rng)})
 
-func _connect_grid(start: Vector2i, goal: Vector2i) -> Array[Vector2i]:
+func _connect_grid(start: Vector2i, goal: Vector2i, rng: RandomNumberGenerator) -> Array[Vector2i]:
 	var parents := {start: start}
 	var queue: Array[Vector2i] = [start]
 	var cursor := 0
 	while cursor < queue.size() and not parents.has(goal):
 		var cell := queue[cursor]
 		cursor += 1
-		for direction in DIRECTIONS:
-			var next := cell + direction
+		var directions:=DIRECTIONS.duplicate()
+		for i in range(directions.size()-1,0,-1):
+			var j:=rng.randi_range(0,i)
+			var held: Vector2i=directions[i];directions[i]=directions[j];directions[j]=held
+		for direction in directions:
+			var next: Vector2i = cell + direction
 			if valid(next) and not parents.has(next):
 				parents[next] = cell
 				queue.append(next)
@@ -440,35 +456,98 @@ func _connect_grid(start: Vector2i, goal: Vector2i) -> Array[Vector2i]:
 	route.reverse()
 	return route
 
-func _make_zones(rng: RandomNumberGenerator) -> void:
+func _make_zones(rng: RandomNumberGenerator,attempt: int=0) -> void:
 	var definitions := [
-		["village", "NORTHWEST / ABANDONED VILLAGE", Vector2i(rng.randi_range(12,13), rng.randi_range(2,3)), Vector2i(5,3)],
-		["bog", "EAST / WITCH'S BOG", Vector2i(rng.randi_range(43,44), rng.randi_range(13,14)), Vector2i(4,4)],
-		["graveyard", "SOUTH / OLD GRAVEYARD", Vector2i(rng.randi_range(20,21), rng.randi_range(42,43)), Vector2i(4,4)],
-		["mill", "FLOODED MILL / PIPE LANES", Vector2i(3,20), Vector2i(4,4)],
-		["orchard", "BRAMBLE ORCHARD / THREAD ROWS", Vector2i(9,42), Vector2i(4,4)],
-		["observatory", "STARLESS OBSERVATORY", Vector2i(42,3), Vector2i(4,4)],
-		["rail", "LAST-CAR RAIL YARD", Vector2i(43,33), Vector2i(5,3)],
-		["quarry", "WHITE STONE QUARRY", Vector2i(3,3), Vector2i(4,4)],
-		["chapel", "DROWNED CHAPEL / CANDLE COURT", Vector2i(29,42), Vector2i(4,4)],
-		["substation", "NORTH / POWER SUBSTATION", Vector2i(31 + posmod(rng.seed, 2),3), Vector2i(3,3)],
-		["relay", "EAST / RADIO RELAY STATION", Vector2i(44,23 + posmod(rng.seed, 2)), Vector2i(3,3)],
-		["logging", "WEST / LOGGING CAMP", Vector2i(3,31), Vector2i(3,3)],
-		["boathouse", "SOUTHEAST / LAKESHORE BOATHOUSE", Vector2i(40,42), Vector2i(4,4)],
-		["ranger", "NORTH / RANGER ROAD AND BRIDGE", Vector2i(23,1), Vector2i(3,6)]
-	]
-	for d in definitions:
-		var anchor: Vector2i = d[2]
-		var size: Vector2i = d[3]
-		var bounds := Rect2(ORIGIN + Vector2(anchor) * CELL, Vector2(size) * CELL)
-		zones.append({"kind":d[0], "label":d[1], "cell":anchor, "bounds":bounds, "position":bounds.get_center()})
+		["village","ABANDONED VILLAGE",Vector2i(5,3)],
+		["bog","WITCH'S BOG",Vector2i(4,4)],
+		["graveyard","OLD GRAVEYARD",Vector2i(4,4)],
+		["mill","FLOODED MILL / PIPE LANES",Vector2i(4,4)],
+		["orchard","BRAMBLE ORCHARD / THREAD ROWS",Vector2i(4,4)],
+		["observatory","STARLESS OBSERVATORY",Vector2i(4,4)],
+		["rail","LAST-CAR RAIL YARD",Vector2i(5,3)],
+		["quarry","WHITE STONE QUARRY",Vector2i(4,4)],
+		["chapel","DROWNED CHAPEL / CANDLE COURT",Vector2i(4,4)],
+		["substation","POWER SUBSTATION",Vector2i(3,3)],
+		["relay","RADIO RELAY STATION",Vector2i(3,3)],
+		["logging","LOGGING CAMP",Vector2i(3,3)],
+		["boathouse","LAKESHORE BOATHOUSE",Vector2i(4,4)],
+		["ranger","RANGER ROAD AND BRIDGE",Vector2i(3,7)]]
+	var slots: Array[Vector2]=[]
+	var phase:=rng.randf()*8.0
+	for index in range(definitions.size()):
+		var t:=fposmod(phase+8.0*index/definitions.size()+rng.randf_range(-.06,.06),8.0)
+		var edge: Vector2
+		if t<2:edge=Vector2(-1+t,-1)
+		elif t<4:edge=Vector2(1,t-3)
+		elif t<6:edge=Vector2(5-t,1)
+		else:edge=Vector2(-1,7-t)
+		slots.append(WORLD_BOUNDS.get_center()+edge*WORLD_BOUNDS.size*.5*rng.randf_range(.825,.845))
+	# Rare corner/large-footprint conflicts retry before mutating the trail graph.
+	# A roomy perimeter fallback bounds work even for an adversarial RNG sequence.
+	if attempt>=32:
+		slots.clear()
+		for cell: Vector2 in [Vector2(5,4.5),Vector2(14,4.5),Vector2(24,4.5),Vector2(34,4.5),Vector2(44,4.5),Vector2(46,18),Vector2(46,32),Vector2(44,44.5),Vector2(34,44.5),Vector2(24,44.5),Vector2(14,44.5),Vector2(5,44.5),Vector2(4,32),Vector2(4,18)]:
+			slots.append(ORIGIN+cell*CELL)
+	var assignment: Array=range(definitions.size())
+	for i in range(assignment.size()-1,0,-1):
+		var j:=rng.randi_range(0,i)
+		var held: int=assignment[i];assignment[i]=assignment[j];assignment[j]=held
+	# The radio's three fixed sites form a spread triangle, rotated by the seed.
+	# The fuse and every movable objective are optimized after trails/barriers exist.
+	for row in [[9,0],[10,5],[8,9]]:
+		var previous: int=assignment[row[0]]
+		var other:=assignment.find(row[1])
+		assignment[row[0]]=row[1];assignment[other]=previous
+	var pending: Array[Dictionary]=[]
+	for index in range(definitions.size()):
+		var d: Array=definitions[index]
+		var size: Vector2i=d[2]
+		var anchor:=Vector2i(((slots[assignment[index]]-ORIGIN)/CELL-Vector2(size)*.5).round())
+		anchor=anchor.clamp(Vector2i.ONE,SIZE-size-Vector2i.ONE)
+		var bounds:=Rect2(ORIGIN+Vector2(anchor)*CELL,Vector2(size)*CELL)
+		pending.append({"kind":d[0],"label":bearing(bounds.get_center())+" / "+d[1],"cell":anchor,"bounds":bounds,"position":bounds.get_center()})
+	for i in range(pending.size()):
+		for j in range(i):
+			if pending[i].bounds.grow(48).intersects(pending[j].bounds.grow(48)):
+				assert(attempt<32,"Roomy region fallback must remain separated")
+				_make_zones(rng,attempt+1);return
+	zones.assign(pending)
+	for zone in zones:
+		var anchor: Vector2i=zone.cell
+		var size:=Vector2i(zone.bounds.size/CELL)
 		for y in range(size.y):
 			for x in range(size.x):
-				var cell := anchor + Vector2i(x,y)
+				var cell:=anchor+Vector2i(x,y)
 				for direction in [Vector2i.RIGHT,Vector2i.DOWN]:
-					var next: Vector2i = cell + direction
-					if Rect2i(anchor,size).has_point(next):
-						_link(cell,next)
+					var next: Vector2i=cell+direction
+					if Rect2i(anchor,size).has_point(next):_link(cell,next)
+
+static func cardinal(point: Vector2) -> String:
+	var diff:=point-CAMP_BOUNDS.get_center()
+	return ("EAST" if diff.x>0 else "WEST") if absf(diff.x)>absf(diff.y) else ("SOUTH" if diff.y>0 else "NORTH")
+
+static func bearing(point: Vector2) -> String:
+	var diff:=point-CAMP_BOUNDS.get_center()
+	var vertical: String="NORTH" if diff.y<0 else "SOUTH"
+	var horizontal: String="EAST" if diff.x>0 else "WEST"
+	if absf(diff.x)<absf(diff.y)*.45:return vertical
+	if absf(diff.y)<absf(diff.x)*.45:return horizontal
+	return vertical+horizontal
+
+## Trail-distance fields with every optional shortcut and fence still closed.
+func closed_distances(starts: Array[Vector2i]) -> Dictionary:
+	var result: Dictionary={}
+	var queue: Array[Vector2i]=[]
+	for cell in starts:
+		if links.has(cell):result[cell]=0;queue.append(cell)
+	var cursor:=0
+	while cursor<queue.size():
+		var cell:=queue[cursor];cursor+=1
+		for next: Vector2i in links[cell]:
+			if not result.has(next) and not blocked.has([cell,next]):
+				result[next]=result[cell]+1;queue.append(next)
+	return result
+
 
 func _carve(rect: Rect2) -> void:
 	corridors.append(rect)

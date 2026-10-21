@@ -2,7 +2,7 @@
 
 **Dedicated server:** run a camp without a host survivor. See the
 [server setup and connection guide](docs/dedicated_server.md). Updated `main`
-clients (`lnac-net-33`) can join; the server code is available in this checkout.
+clients (`lnac-net-34`) can join; the server code is available in this checkout.
 
 **Find the parts. Keep your light alive. Get out before the woods get you.**
 
@@ -334,7 +334,7 @@ for the next night and the next launch. Default port: **UDP 27840**. Everyone ma
 the host chooses mode/seed and starts. LAN/Wi-Fi uses the host's local IP;
 Internet needs a reachable public UDP port or an existing virtual LAN/VPN.
 
-Update clients and server together to **lnac-net-33**. Your survivor now responds
+Update clients and server together to **lnac-net-34**. Your survivor now responds
 locally, with server corrections smoothed; other survivors use a short movement
 buffer. A long connection interruption can still pause movement. See
 [measured smoothness improvements](docs/evidence/smoothness/README.md).
@@ -369,10 +369,14 @@ hear. Monsters never hear voice. The HUD shows who is talking. **VOICE** and
 | **Woods Expedition** (a long night at your own pace) | Five van parts in five different outer regions; battery/key available from Dusk, the other three revealed by ranger radio as the night deepens. | A night that deepens as you make progress: the Stalker plus 38 creatures, each with its own trick (camp is safe until Deep Night), a seeded trail maze, survival supplies, weather, storms, blackouts and a draining flashlight. |
 
 Expedition extra parts are drawn from **belt, fuse, tire, and spark plug**.
-The pack lists the current requirements and location clues. The woods contains fourteen outer regions. Five distinct regions across all four
-directions hold the van parts each night: two unlocked pickups and three locked
-caches. The White Stone Quarry never holds a van cache. Six smaller ruined
-landmarks also remain along the trails.
+The pack lists requirements and location clues. All fourteen regions change
+position around the outskirts with the seed; main roads bend differently and
+the maze trails change too. Five distinct regions hold the van parts: two
+unlocked pickups and three locked caches. All unique pieces for both offered
+routes are placed together to maximize separation along the closed-barrier
+trail graph, including their destinations. Pieces never share a region on a
+normal night, and destination regions do not hold pieces. Six smaller ruined
+landmarks remain along the trails. [Compare seeds](docs/evidence/random_layout/sample_layouts.png).
 
 ## The night (Woods Expedition)
 
@@ -391,9 +395,9 @@ phase and how long you have been out.
 | **Witching Hour** | An escape nearly or fully ready (e.g. fourth van part) | Radio reveals the **last extra part**. The stalker chases faster, and pressure reaches a fixed ceiling even if you delay leaving. |
 
 - **Where the parts are changes every night.** The three locked caches (fuel and
-  the two extra parts) go to three different regions in three different
-  directions from camp, drawn from eight regions: village, observatory (north),
-  bog, rail yard (east), graveyard, chapel (south), mill, orchard (west).
+  the two extra parts) occupy distinct seeded regions, alongside separate
+  regions for battery/key and every secondary-route piece. All fourteen
+  regions are eligible; their actual compass bearings change with the seed.
 - **Follow the clues.**
   - The camp corkboard names the fuel's region (shown in the Dusk message and
     on Tab).
@@ -548,15 +552,16 @@ survivors left outside are left behind.
 
 ### Radio Rescue (Woods Expedition)
 
-An alternate escape now crosses the **Flooded Mill → north Power Substation →
-east Radio Relay Station → landing zone south of the Drowned Chapel**. The van
+An alternate escape visits a **seeded emergency-fuse region → Power Substation →
+Radio Relay Station → landing zone south of the Drowned Chapel**. These regions
+change geographic position each seed; follow T and the map labels. The van
 remains available; the first extraction to finish ends the round.
 
-1. Collect the **emergency fuse** beside the mill's central reward area. It uses
+1. Collect the **emergency fuse** from the region named in the T plan. It uses
    no belt slot and drops with your gear if you are downed or disconnect.
 2. Press **E** at the substation cabinet to restore its dedicated rescue circuit.
    Camp blackouts do not undo this repair.
-3. At the east relay's ladder, **hold E for six seconds** to climb and transmit.
+3. At the Radio Relay's ladder, **hold E for six seconds** to climb and transmit.
    The channel opens as soon as the relay has power.
    Moving away, releasing E, getting downed or changing operators resets the hold.
 4. Load one **flare** into each of the three marked holders by pressing **E**.
@@ -575,7 +580,7 @@ remains available; the first extraction to finish ends the round.
 Press **T** to cycle tonight's plans (the van and that night's rumoured
 escape) in the notebook; **Esc** closes it. Quick Camp keeps its van-only escape.
 
-| North Power Substation | East Radio Relay Station |
+| Power Substation (seeded position) | Radio Relay Station (seeded position) |
 | --- | --- |
 | ![Powered substation at night](docs/screenshots/rescue_substation.png) | ![Relay mast, ladder and transmitter at night](docs/screenshots/rescue_relay.png) |
 
@@ -583,8 +588,7 @@ escape) in the notebook; **Esc** closes it. Quick Camp keeps its van-only escape
 
 ### Signal Fire (Woods Expedition)
 
-On Signal Fire nights, **T** names three regions (one each to the north, east and
-south) holding **two kerosene cans and a flare gun**. They use no belt slot. Carry
+On Signal Fire nights, **T** names three separated seeded regions holding **two kerosene cans and a flare gun**. They use no belt slot. Carry
 them to the **signal pyre on the White Stone Quarry rim** and press **E** to fit
 them, then **E** again to light it. The blaze starts a **45-second hold-out**: it
 lights up the quarry and beacons every creature in the woods toward the fire,
@@ -593,15 +597,14 @@ the rescue plane passes are recovered, along with any downed teammates.
 
 ### Boat and Ranger Gate (Woods Expedition)
 
-**Boat:** carry the **outboard motor** from the west Logging Camp, **marine fuel**
-from the east Rail Yard, and the **drain plug** from the north Observatory to the
-southeast Lakeshore Boathouse. E fits them. The motor uses no belt slot, slows its
+**Boat:** carry the **outboard motor**, **marine fuel** and **drain plug** from
+three seeded regions named in T to the **Lakeshore Boathouse**. Their regions
+and the boathouse position change with the seed. E fits them. The motor uses no belt slot, slows its
 carrier to **75% walking speed**, and prevents sprinting/vaulting. **G** sets it
 down immediately. A standing teammate can **hold E within 48 px** to help: both
 walk at normal speed without sprinting while assisting.
 
-Bring all three parts to the **BOAT REPAIR pad on the Lakeshore dock**,
-southeast of camp. This is separate from the Camp Boathouse. Stand on the pad
+Bring all three parts to the **BOAT REPAIR pad on the Lakeshore dock**. This is separate from the Camp Boathouse. Stand on the pad
 and press E to fit the parts you carry; MOTOR / FUEL / PLUG each show OK when
 fitted. The notebook names the carrier and directs them to the dock.
 
@@ -620,8 +623,8 @@ do not repel her. Standing survivors must be on the dock when progress completes
 the existing downed-teammate evacuation rule remains.
 
 **Ranger Gate:** the T plan names three regions holding tonight's distinct
-**gate-code fragments**. Carry them to the gate on the north road and E to fit
-them. Restore the same north substation circuit used by Radio Rescue, then E at
+**gate-code fragments**. Carry them to the Ranger Gate and E to fit
+them. Restore the same Power Substation circuit used by Radio Rescue, then E at
 **the gate's left breaker** to turn on the road floodlights. The alarm draws the
 stalker toward the gate through normal travel; nearby roamers can hear it too.
 Once the gate is powered and coded, **hold E for four seconds** at the gate, then run north along the
@@ -743,11 +746,11 @@ fuse, tire and spark plug; check Tab to see which two your night requires.
 | **Fuel** | Quick Camp: Maintenance. Woods: its own seeded outer-region locked cache. | Required van component in both modes. |
 | **Key** | Quick Camp: Ranger Lodge. Woods: its own seeded outer region; follow the notebook and ranger notes. | Required van component in both modes. |
 | **Drive belt** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
-| **Outboard motor** | Woods: west Logging Camp. | Heavy boat objective; no belt slot. Carry at 75% walk, no sprint/vault. G drops it; an adjacent teammate holding E restores full walking speed. E fits it at the boathouse. |
-| **Marine fuel** | Woods: east Rail Yard. | Dedicated boat fuel, separate from van fuel. No belt slot; E fits it at the boathouse. |
-| **Drain plug** | Woods: north Observatory. | Third boat component. No belt slot; E fits it at the boathouse. |
-| **Gate-code fragments 1–3** | Woods: three seeded regions across east, south and west; T names them. | Separate objective inventory; drop on down/disconnect. E fits each once at the north Ranger Gate. |
-| **Emergency fuse** | Woods only: Flooded Mill, beside its central reward area. | Repairs the north Power Substation for Radio Rescue. Separate objective inventory; no belt slot. Different from the van fuse. |
+| **Outboard motor** | Woods: seeded region named in T. | Heavy boat objective; no belt slot. Carry at 75% walk, no sprint/vault. G drops it; an adjacent teammate holding E restores full walking speed. E fits it at the boathouse. |
+| **Marine fuel** | Woods: seeded region named in T. | Dedicated boat fuel, separate from van fuel. No belt slot; E fits it at the boathouse. |
+| **Drain plug** | Woods: seeded region named in T. | Third boat component. No belt slot; E fits it at the boathouse. |
+| **Gate-code fragments 1–3** | Woods: three separated seeded regions; T names them. | Separate objective inventory; drop on down/disconnect. E fits each once at the Ranger Gate. |
+| **Emergency fuse** | Woods only: seeded region named in T. | Repairs the Power Substation for Radio Rescue. Separate objective inventory; no belt slot. Different from the van fuse. |
 | **Fuse** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
 | **Tire** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
 | **Spark plug** | Woods only, when selected as a required part: a locked objective cache. | One of four possible extra repair parts; install it at the van. |
@@ -755,8 +758,8 @@ fuse, tire and spark plug; check Tab to see which two your night requires.
 | **Crowbar** | Woods only: a seeded bunk cabin. | Pries a locked cache open when you have no cutters, with a loud 500 px noise. Reusable; carried in the pack like cutters. |
 
 In Woods, **all five required van parts are outside camp, in five different
-outer regions**. Each seed uses five of Village, Bog, Graveyard, Mill, Orchard,
-Observatory, Rail Yard and Chapel, covering all four cardinal directions.
+outer regions**. All fourteen regions are eligible; pieces for the secondary
+route also occupy separate regions, and the optimizer includes route destinations.
 Battery and key are unlocked from Dusk. Fuel and the two extra parts retain their
 three locked caches and phase unlocks. The corkboard names fuel's region; ranger
 notes and regional exploration identify the other four. Camp retains cutters,
@@ -1135,12 +1138,12 @@ Stand close and press **E**, with a clear path to the interaction point.
 | **Abandoned Village** | Enter two furnished huts and search the required cache. Ring the square's bell to draw nearby enemies toward it, then slip away; the bell has a cooldown. The well stash awards two flares, a battery, and food once. |
 | **Witch's Bog** | Search the ritual stash. The cauldron restores full flashlight charge once, but hexes your movement briefly and makes noise. |
 | **Old Graveyard** | Search the repair cache among the graves. The crypt yields two flares once, with a loud stone-moving noise. |
-| **Flooded Mill (west)** | Follow shallow channels and plank crossings around the waterwheel and gauge boiler. Its rare-tool altar is optional; watch the Boiler Saint's marked steam disk. |
-| **Bramble Orchard (southwest)** | Fruit rows, trellises and vines mark the clearing. Search the rare-tool altar, then walk around the Seamstress's thorn patches or leave by another approach. |
-| **Starless Observatory (northeast)** | A slit dome, telescope and radial tiled court identify the site. Hold the Wraith in your beam while retreating from the optional altar. |
-| **Last-Car Rail Yard (southeast)** | Paired tracks, sleepers, switches, signal and scrap carts provide orientation. Cross away from the Conductor's inspection marker; the altar is optional. |
-| **White Stone Quarry (far northwest)** | Stepped stone outlines, ladder markings, boulder clusters and survey rings surround the altar. Keep sideways space to dodge the Ram's locked charge. |
-| **Drowned Chapel (deep south)** | Broken column bases, candle pews and a cross mosaic mark the court. Search the altar cautiously; flares attract its Candle Grazer instead of driving it away. |
+| **Flooded Mill (seeded position)** | Follow shallow channels and plank crossings around the waterwheel and gauge boiler. Its rare-tool altar is optional; watch the Boiler Saint's marked steam disk. |
+| **Bramble Orchard (seeded position)** | Fruit rows, trellises and vines mark the clearing. Search the rare-tool altar, then walk around the Seamstress's thorn patches or leave by another approach. |
+| **Starless Observatory (seeded position)** | A slit dome, telescope and radial tiled court identify the site. Hold the Wraith in your beam while retreating from the optional altar. |
+| **Last-Car Rail Yard (seeded position)** | Paired tracks, sleepers, switches, signal and scrap carts provide orientation. Cross away from the Conductor's inspection marker; the altar is optional. |
+| **White Stone Quarry (seeded position)** | Stepped stone outlines, ladder markings, boulder clusters and survey rings surround the altar. Keep sideways space to dodge the Ram's locked charge. |
+| **Drowned Chapel (seeded position)** | Broken column bases, candle pews and a cross mosaic mark the court. Search the altar cautiously; flares attract its Candle Grazer instead of driving it away. |
 
 The six new regions each offer **one rare tool per round**. Searching an altar
 makes a 650px noise stimulus, so plan your exit first. If the belt is full and
